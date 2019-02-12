@@ -1,0 +1,251 @@
+require_relative 'soap_base'
+require_relative 'soap_error'
+
+include OpenSSL
+include Digest
+
+module Zm
+  module Client
+    class SoapAccountConnector < SoapBaseConnector
+
+      MAILSPACE = 'urn:zimbraMail'.freeze
+      ACCOUNTSPACE = 'urn:zimbraAccount'.freeze
+
+      def initialize(scheme, host, port)
+        @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/soap/', nil, nil, nil)
+        init_curl_client
+      end
+
+      def auth(mail, domainkey)
+        ts = (Time.now.to_i * 1000)
+        preauth = compute_preauth(mail, ts, domainkey)
+        body = {
+          Body: {
+            AuthRequest: {
+              _jsns: ACCOUNTSPACE,
+              account: {
+                _content: mail,
+                by: :name
+              },
+              preauth: {
+                _content: preauth,
+                timestamp: ts
+              }
+            }
+          }
+        }
+        res = curl_request(body, AuthError)
+        res[BODY][:AuthResponse][:authToken].first[:_content]
+      end
+
+      # -------------------------------
+      # APPOINTMENT
+
+      def get_appointment(token, id)
+        req = { id: id }
+        body = init_hash_request(token, :GetAppointmentRequest)
+        body[:Body][:GetAppointmentRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
+      # CONTACT
+
+      def get_all_contacts(token, folder_id = nil)
+        body = init_hash_request(token, :GetContactsRequest)
+        unless folder_id.nil?
+          req = { l: folder_id }
+          body[:Body][:GetContactsRequest].merge!(req)
+        end
+        curl_request(body)
+      end
+
+      def create_contact(token, parent_id, a, members)
+        req = { cn: { a: a, l: parent_id, m: members } }
+        body = init_hash_request(token, :CreateContactRequest)
+        body[:Body][:CreateContactRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def modify_contact(token, id, a, members)
+        req = { cn: { a: a, id: id, m: members } }
+        body = init_hash_request(token, :ModifyContactRequest)
+        body[:Body][:ModifyContactRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def delete_contact(token, contact_id)
+        req = { action: { id: contact_id, l: TRASH_ID, op: :move } }
+        body = init_hash_request(token, :ContactActionRequest)
+        body[:Body][:ContactActionRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
+      # FOLDER
+
+      def get_all_folders(token, view = nil)
+        body = init_hash_request(token, :GetFolderRequest)
+        unless view.nil?
+          req = { view: view }
+          body[:Body][:GetFolderRequest].merge!(req)
+        end
+        curl_request(body)
+      end
+
+      def create_folder(token, parent_id, name, view, options = {})
+        req = { folder: { l: parent_id, name: name, view: view } }.merge(options)
+        body = init_hash_request(token, :CreateFolderRequest)
+        body[:Body][:CreateFolderRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def folder_action(token, op, id, options = {})
+        req = { action: { op: op, id: id } }.merge(options)
+        body = init_hash_request(token, :FolderActionRequest)
+        body[:Body][:FolderActionRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
+      # TASK
+
+      def create_task(token, folder_id, name, description = nil, options = {})
+        comp = { name: name }
+        comp.merge!(options) if !options.nil? && !options.empty?
+
+        task = { su: name, l: folder_id, inv: { comp: [comp] } }
+
+        task[:mp] = { ct: 'text/plain', content: description } unless description.nil?
+
+        req = { m: task }
+
+        body = init_hash_request(token, :CreateTaskRequest)
+        body[:Body][:CreateTaskRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
+      # SHARE
+
+      def create_mountpoint(token, parent_id, name, view, owner_id, remote_folder_id)
+        req = {
+          link: {
+            l: parent_id,
+            name: name,
+            view: view,
+            zid: owner_id,
+            rid: remote_folder_id
+          }
+        }
+        body = init_hash_request(token, :CreateMountpointRequest)
+        body[:Body][:CreateMountpointRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def get_share_info(token, options = {})
+        req = { includeSelf: 0 }.merge(options)
+        body = init_hash_request(token, :GetShareInfoRequest, ACCOUNTSPACE)
+        body[:Body][:GetShareInfoRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def grant_rights(token, zid = nil, gt = nil, right = nil, d = nil, key = nil, pw = nil, deny = nil, chkgt = nil)
+        ace = {
+          zid: zid,
+          gt: gt,
+          right: right,
+          d: d,
+          key: key,
+          pw: pw,
+          deny: deny,
+          chkgt: chkgt
+        }.reject { |_, v| v.nil? }
+
+        req = { ace: ace }
+        body = init_hash_request(token, :GrantRightsRequest, ACCOUNTSPACE)
+        body[:Body][:GrantRightsRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def revoke_rights(token, zid = nil, gt = nil, right = nil, d = nil, key = nil, pw = nil, deny = nil, chkgt = nil)
+        ace = {
+          zid: zid,
+          gt: gt,
+          right: right,
+          d: d,
+          key: key,
+          pw: pw,
+          deny: deny,
+          chkgt: chkgt
+        }.reject { |_, v| v.nil? }
+
+        req = { ace: ace }
+        body = init_hash_request(token, :RevokeRightsRequest, ACCOUNTSPACE)
+        body[:Body][:RevokeRightsRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
+      # MESSAGE
+
+      def get_msg(token, id)
+        req = { m: { id: id } }
+        body = init_hash_request(token, :GetMsgRequest)
+        body[:Body][:GetMsgRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def msg_action(token, op, id, options = {})
+        action = { op: op, id: id }.merge(options)
+        req = { action: action }
+        body = init_hash_request(token, :MsgActionRequest)
+        body[:Body][:MsgActionRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
+      # GENERIC
+
+      def get_info(token, sections = 'mbox', rights = nil)
+        req = { rights: rights, sections: sections }.reject { |_, v| v.nil? }
+        body = init_hash_request(token, :GetInfoRequest, ACCOUNTSPACE)
+        body[:Body][:GetInfoRequest].merge!(req) if req.any?
+        curl_request(body)
+      end
+
+      def search(token, types = nil, offset = nil, limit = nil, sortBy = nil, query = nil, options = {})
+        # types: conversation|message|contact|appointment|task|wiki|document
+        req = {
+          types: types,
+          offset: offset,
+          limit: limit,
+          sortBy: sortBy,
+          query: query
+        }.merge!(options)
+        req.reject! { |_, v| v.nil? }
+
+        body = init_hash_request(token, :SearchRequest)
+        body[:Body][:SearchRequest].merge!(req) if req.any?
+        curl_request(body)
+      end
+
+      private
+
+      def compute_preauth(mail, ts, domainkey)
+        data = "#{mail}|name|0|#{ts}"
+        digest = OpenSSL::Digest.new('sha1')
+        hmac = OpenSSL::HMAC.hexdigest(digest, domainkey, data)
+        hmac.to_s
+      end
+
+      def init_hash_request(token, soap_name, jsns = MAILSPACE)
+        {
+          Body: {
+            soap_name => { _jsns: jsns }
+          }
+        }.merge(hash_header(token))
+      end
+    end
+  end
+end
