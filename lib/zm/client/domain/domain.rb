@@ -6,10 +6,12 @@ module Zm
                     :zimbraDomainStatus, :zimbraId, :zimbraDomainType,
                     :zimbraDomainDefaultCOSId, :zimbraGalAccountId,
                     :zimbraPreAuthKey
-      attr_reader :soap_admin_connector
+      # attr_reader :soap_admin_connector
 
       def accounts
-        @accounts ||= AccountsCollection.new sac, self
+        # puts "Domain accounts self #{self.class} #{self.object_id} #{self.soap_admin_connector}"
+        # puts "Domain accounts parent #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
+        @accounts ||= AccountsCollection.new(self)
       end
 
       def init_from_json(json)

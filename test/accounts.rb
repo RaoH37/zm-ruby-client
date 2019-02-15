@@ -4,6 +4,7 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require './lib/zm/client'
 require './lib/zm/client/cluster'
+require './lib/zm/client/account'
 
 class TestAccount < Minitest::Test
   
@@ -16,19 +17,19 @@ class TestAccount < Minitest::Test
   end
 
   def test_all
-    assert_raises SoapError do 
-      @admin.accounts.all.any?
+    assert_raises Zm::Client::SoapError do 
+      @admin.accounts.all.count.is_a? Integer
     end
   end
 
   def test_where
-    assert_raises SoapError do
-      @admin.accounts.where("zimbraAccountStatus=active").any?
+    assert_raises Zm::Client::SoapError do
+      @admin.accounts.where("zimbraAccountStatus=active").count.is_a? Integer
     end
   end
 
   def test_where_chain
-    assert_raises SoapError do
+    assert_raises Zm::Client::SoapError do
       @admin.accounts.where('zimbraAccountStatus=active').order('givenName').attrs(:mail, :givenName, :sn)
     end
   end
@@ -39,11 +40,11 @@ class TestAccount < Minitest::Test
   end
 
   def test_domain_all
-    assert @domain.accounts.all.any?
+    assert @domain.accounts.all.count.is_a? Integer
   end
 
   def test_domain_where
-    assert @domain.accounts.where("zimbraAccountStatus=active").any?
+    assert @domain.accounts.where("zimbraAccountStatus=active").count.is_a? Integer
   end
 
   def test_domain_find

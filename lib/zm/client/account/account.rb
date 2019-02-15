@@ -13,7 +13,8 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::Object
-      attr_reader :name, :id, :domainkey, :used, :token, :company
+      attr_reader :name, :id, :domainkey, :used, :token
+      attr_accessor :company, :zimbraCOSId, :zimbraMailHost
 
       def logged?
         !@token.nil?
@@ -92,18 +93,23 @@ module Zm
       end
 
       def delete!
-        soap_admin_connector.delete_account(@id)
+        sac.delete_account(@id)
+      end
+
+      def update!(hash)
+        sac.modify_account(@id, hash)
+        hash.each { |k, v| send "#{k}=", v }
       end
 
       def modify!
-        soap_admin_connector.modify_account(
+        sac.modify_account(
           @id,
           instance_variables_array(attrs_write)
         )
       end
 
       def create!
-        soap_admin_connector.create_account(
+        sac.create_account(
           @name,
           instance_variables_array(attrs_write)
         )

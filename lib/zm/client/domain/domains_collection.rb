@@ -10,6 +10,7 @@ module Zm
       def find_by(hash, *attrs)
         rep = sac.get_domain(hash.values.first, hash.keys.first, attrs.join(COMMA))
         entry = rep[:Body][:GetDomainResponse][:domain].first
+        # puts "DomainsCollection find_by #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
         domain = Domain.new(@parent)
         domain.init_from_json(entry)
         domain

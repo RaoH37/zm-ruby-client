@@ -151,14 +151,17 @@ module Zm
         req[:_attrs] = attrs unless attrs.nil?
         body = init_hash_request(:GetDomainRequest)
         body[:Body][:GetDomainRequest].merge!(req)
-        puts body
+        # TODO: tester param attrs
+        # puts body
         curl_request(body)
       end
 
       def get_account(name, by = :name, attrs = nil)
-        req = { account: { by: by, _content: name }, attrs: attrs }
+        req = { account: { by: by, _content: name } }
+        req[:_attrs] = attrs unless attrs.nil?
         body = init_hash_request(:GetAccountRequest)
         body[:Body][:GetAccountRequest].merge!(req)
+        # p body
         curl_request(body)
       end
 

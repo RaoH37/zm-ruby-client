@@ -12,6 +12,7 @@ module Zm
 
         def initialize(parent)
           @parent = parent
+          # puts "Object initialize #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
           yield(self) if block_given?
         end
 
@@ -73,7 +74,8 @@ module Zm
 
         def instance_variables_array(zcs_attrs)
           selected_attrs = zcs_attrs.map { |a| a.to_s.insert(0, '@').to_sym }
-          Hash[(instance_variables & selected_attrs).map do |name|
+          attrs_only_set = instance_variables & selected_attrs
+          Hash[attrs_only_set.map do |name|
             [name.to_s[1..-1], instance_variable_get(name)]
           end]
         end

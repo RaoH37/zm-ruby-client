@@ -5,6 +5,7 @@ module Zm
       # Abstract Class Collection
       class ObjectsCollection
         METHODS_MISSING_LIST = %i[select each map].to_set.freeze
+        attr_reader :parent
 
         def find(id)
           find_by(id: id)
@@ -71,11 +72,13 @@ module Zm
         def soap_admin_connector
           @parent.soap_admin_connector
         end
+
         alias sac soap_admin_connector
 
         # return ZCS JSON Response
         def make_query
-          json = soap_admin_connector.search_directory(
+          # puts "ObjectsCollection make_query #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
+          json = sac.search_directory(
             @ldap_query, @max_result, @limit, @offset,
             @domain_name, nil, nil, @sort_by, @search_type,
             @sort_ascending, @count_only, @attrs.join(COMMA)
