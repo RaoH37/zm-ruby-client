@@ -14,7 +14,7 @@ module Zm
     # objectClass: zimbraAccount
     class Account < Base::Object
       attr_reader :name, :id, :domainkey, :used, :token
-      attr_accessor :company, :zimbraCOSId, :zimbraMailHost
+      attr_accessor :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport
 
       def logged?
         !@token.nil?

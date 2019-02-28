@@ -108,7 +108,8 @@ module Zm
       end
 
       def get_cos(name, by = :name, attrs = nil)
-        req = { cos: { by: by, _content: name }, attrs: attrs }
+        req = { cos: { by: by, _content: name } }
+        req[:attrs] = attrs unless attrs.nil? || attrs.empty?
         body = init_hash_request(:GetCosRequest)
         body[:Body][:GetCosRequest].merge!(req)
         curl_request(body)
@@ -195,6 +196,7 @@ module Zm
         # body = { Body: { SearchDirectoryRequest: { _jsns: ADMINSPACE } } }.merge(hash_header(@token))
         body = init_hash_request(:SearchDirectoryRequest)
         body[:Body][:SearchDirectoryRequest].merge!(req)
+        # puts body
 
         curl_request(body)
       end

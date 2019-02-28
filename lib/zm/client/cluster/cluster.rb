@@ -3,8 +3,8 @@ require 'zm/client/connector/soap_account'
 # require 'zm/client/data_source'
 require 'zm/client/domain'
 require 'zm/client/account'
-# require 'zm/client/server'
-# require 'zm/client/cos'
+require 'zm/client/server'
+require 'zm/client/cos'
 # require 'zm/client/distributionlist'
 
 module Zm
