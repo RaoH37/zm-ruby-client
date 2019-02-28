@@ -22,6 +22,12 @@ module Zm
 
         alias sac soap_admin_connector
 
+        def soap_account_connector
+          @parent.soap_account_connector
+        end
+
+        alias sacc soap_account_connector
+
         # def soap_admin_connector=(soap_admin_connector)
         #   @soap_admin_connector = soap_admin_connector
         # end

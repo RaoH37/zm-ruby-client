@@ -55,7 +55,7 @@ module Zm
     end
 
     module SoapUtils
-      MAX_RESULT   = 100_000
+      MAX_RESULT   = 1_000_000
       ON           = 1
       OFF          = 0
       OFFSET       = 0

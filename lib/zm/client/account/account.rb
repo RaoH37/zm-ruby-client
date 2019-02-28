@@ -23,12 +23,12 @@ module Zm
       def login
         # TODO: faire un if admin_connector alors admin_login sinon
         # account_login afin de n'utiliser qu'un seul appel de login
-        @token = @soap_account_connector.auth(@name, @domainkey)
+        @token = soap_account_connector.auth(@name, @domainkey)
       end
 
-      def account_login(domainkey = nil)
-        @domainkey = domainkey
-        @token = @soap_account_connector.auth(@name, @domainkey)
+      def account_login(key = nil)
+        @domainkey = key || domain_key
+        @token = soap_account_connector.auth(@name, @domainkey)
       end
 
       def admin_login
@@ -39,9 +39,13 @@ module Zm
         @name.split('@').last
       end
 
+      def domain_key
+        @parent.domain_key(domain_name)
+      end
+
       def infos
         if @infos.nil?
-          @infos = @soap_account_connector.get_info(@token)[:Body][:GetInfoResponse]
+          @infos = soap_account_connector.get_info(@token)[:Body][:GetInfoResponse]
           @id          ||= @infos[:id]
           @used        ||= @infos[:used]
           @public_url  ||= @infos[:publicURL]
@@ -54,42 +58,42 @@ module Zm
 
       def folders
         @folders ||= FoldersCollection.new(
-          @soap_account_connector, self
+          sacc, self
         )
       end
 
       def shares
         @shares ||= SharesCollection.new(
-          @soap_account_connector, self
+          sacc, self
         )
       end
 
       def contacts
         @contacts ||= ContactsCollection.new(
-          @soap_account_connector, self
+          sacc, self
         )
       end
 
       def appointments
         @appointments ||= AppointmentsCollection.new(
-          @soap_account_connector, self
+          sacc, self
         )
       end
 
       def tags
         @tags ||= TagsCollection.new(
-          @soap_account_connector, self
+          sacc, self
         )
       end
 
       def tasks
         @tasks ||= TasksCollection.new(
-          @soap_account_connector, self
+          sacc, self
         )
       end
 
       def data_sources
-        @data_sources ||= DataSourcesCollection.new soap_admin_connector, self
+        @data_sources ||= DataSourcesCollection.new sac, self
       end
 
       def delete!
