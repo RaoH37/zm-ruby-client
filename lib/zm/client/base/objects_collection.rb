@@ -4,7 +4,7 @@ module Zm
     module Base
       # Abstract Class Collection
       class ObjectsCollection
-        METHODS_MISSING_LIST = %i[select each map].to_set.freeze
+        METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
         attr_reader :parent
 
         def find(id)

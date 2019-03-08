@@ -1,7 +1,7 @@
 # require_relative '../../modules/common/account_common'
 # require_relative '../../modules/common/account_galsync'
 # require 'zm/client/connector/rest_account'
-# require 'zm/client/folder'
+require 'zm/client/folder'
 # require 'zm/client/share'
 # require 'zm/client/contact'
 # require 'zm/client/appointment'
