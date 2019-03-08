@@ -29,7 +29,7 @@ module Zm
         # # puts json
         # # p @zimbraMailHostPool
         super
-        @zimbraMailHostPool = [@zimbraMailHostPool] if !@zimbraMailHostPool.is_a?(Array)
+        @zimbraMailHostPool = [@zimbraMailHostPool] unless @zimbraMailHostPool.is_a?(Array)
       end
 
       def duplicate(attrs = {})
@@ -63,7 +63,9 @@ module Zm
 
       def get_servers
         sc = ServersCollection.new self
-        @zimbraMailHostPool.map{|server_id| sc.find server_id }
+        @zimbraMailHostPool.map do |server_id|
+          sc.find server_id
+        end
       end
     end
   end

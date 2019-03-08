@@ -10,7 +10,6 @@ module Zm
       def find_by(hash, *attrs)
         rep = sac.get_cos(hash.values.first, hash.keys.first, attrs.join(COMMA))
         entry = rep[:Body][:GetCosResponse][:cos].first
-        # puts "AccountsCollection find_by #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
         cos = Cos.new(@parent)
         cos.init_from_json(entry)
         cos

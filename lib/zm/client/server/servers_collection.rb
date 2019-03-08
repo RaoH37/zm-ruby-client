@@ -6,8 +6,8 @@ module Zm
         @parent = parent
       end
 
-      def find_by(h)
-        rep = sac.get_server(h.values.first, h.keys.first)
+      def find_by(hash)
+        rep = sac.get_server(hash.values.first, hash.keys.first)
         entry = rep[:Body][:GetServerResponse][:server].first
         server = Server.new(@parent)
         server.init_from_json(entry)
@@ -15,7 +15,6 @@ module Zm
       end
 
       # def where(services = nil)
-      #   # todo gérer la pagination
       #   services = services.join(COMMA) if services.is_a?(Array)
       #   rep = @soap_admin_connector.get_all_servers(services)
       #   db = ServersBuilder.new @soap_admin_connector, rep
