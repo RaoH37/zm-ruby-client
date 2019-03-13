@@ -11,7 +11,7 @@ class TestAccount < Minitest::Test
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/tmp/example.json'))
     @admin.login
-    @account_name = "maxime.zxt@partage.renater.fr"
+    @account_name = "maxime@domain.tld"
     @domain_name = @account_name.split('@').last
     @domain = @admin.domains.find_by name: @domain_name
   end
