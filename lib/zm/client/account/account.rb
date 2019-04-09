@@ -1,4 +1,4 @@
-# require_relative '../../modules/common/account_common'
+require 'zm/modules/common/account_common'
 # require_relative '../../modules/common/account_galsync'
 # require 'zm/client/connector/rest_account'
 require 'zm/client/folder'
@@ -13,8 +13,14 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::Object
+
       attr_reader :name, :id, :domainkey, :used, :token
-      attr_accessor :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport
+      attr_accessor :password, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
+
+      def initialize(parent)
+        extend(AccountCommon)
+        super(parent)
+      end
 
       def logged?
         !@token.nil?
@@ -113,10 +119,26 @@ module Zm
       end
 
       def create!
-        sac.create_account(
+        rep = sac.create_account(
           @name,
+          @password,
           instance_variables_array(attrs_write)
         )
+        @id = rep[:Body][:CreateAccountResponse][:account].first[:id]
+      end
+
+      def aliases
+        @aliases ||= []
+      end
+
+      def add_alias!(email)
+        sac.add_account_alias(@id, email)
+        aliases.push(email)
+      end
+
+      def remove_alias!(email)
+        sac.remove_account_alias(@id, email)
+        aliases.delete(email)
       end
     end
   end

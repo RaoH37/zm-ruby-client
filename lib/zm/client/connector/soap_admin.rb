@@ -6,6 +6,7 @@ module Zm
     class SoapAdminConnector < SoapBaseConnector
 
       ADMINSPACE = 'urn:zimbraAdmin'.freeze
+      A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
 
       attr_accessor :token
 
@@ -36,7 +37,8 @@ module Zm
           server: server_name,
           folder: folder_name,
           account: { by: :name, _content: account_name },
-          a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
+          a: attrs.to_a.map(&A_NODE_PROC)
+          # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
         }.reject { |_, v| v.nil? }
         body = init_hash_request(:CreateGalSyncAccountRequest)
         body[:Body][:CreateGalSyncAccountRequest].merge!(req)
@@ -71,7 +73,8 @@ module Zm
           dataSource: {
             type: type,
             name: name,
-            a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
+            a: attrs.to_a.map(&A_NODE_PROC)
+            # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
           }
         }
         body = init_hash_request(:CreateDataSourceRequest)
@@ -116,7 +119,12 @@ module Zm
       end
 
       def create_cos(name, attrs = nil)
-        req = { _jsns: ADMINSPACE, name: name, a: attrs.to_a.map { |n| { n: n.first, _content: n.last } } }
+        req = {
+          _jsns: ADMINSPACE,
+          name: name,
+          a: attrs.to_a.map(&A_NODE_PROC)
+          # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
+        }
         body = { Body: { CreateCosRequest: req } }.merge(hash_header(@token))
         # puts body
         # todo ne fonctionne pas !
@@ -133,17 +141,80 @@ module Zm
         curl_request(body)
       end
 
-      def create_account(name, password, attrs = [])
-        req = { name: name, password: password, a: attrs.to_a.map { |n| { n: n.first, _content: n.last } } }
+      def create_account(name, password = nil, attrs = [])
+        req = { name: name, password: password }.reject { |_, v| v.nil? }
+        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
+        # req[:a] = attrs.map{|i|i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i]}.flatten(1).map { |n| { n: n.first, _content: n.last } }
         body = init_hash_request(:CreateAccountRequest)
         body[:Body][:CreateAccountRequest].merge!(req)
+        # puts req
+        curl_request(body)
+      end
+
+      def create_resource(name, password = nil, attrs = [])
+        req = { name: name, password: password }.reject { |_, v| v.nil? }
+        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
+        body = init_hash_request(:CreateCalendarResourceRequest)
+        body[:Body][:CreateCalendarResourceRequest].merge!(req)
+        # puts req
+        curl_request(body)
+      end
+
+      def create_distribution_list(name, attrs = [])
+        req = { name: name }
+        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
+        body = init_hash_request(:CreateDistributionListRequest)
+        body[:Body][:CreateDistributionListRequest].merge!(req)
+        # puts req
         curl_request(body)
       end
 
       def modify_account(id, attrs = [])
-        req = { id: id, a: attrs.to_a.map { |n| { n: n.first, _content: n.last } } }
+        req = {
+          id: id,
+          a: attrs.map(&A_NODE_PROC)
+          # a: attrs.map { |n| { n: n.first, _content: n.last } }
+        }
         body = init_hash_request(:ModifyAccountRequest)
         body[:Body][:ModifyAccountRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def modify_resource(id, attrs = [])
+        req = {
+          id: id,
+          a: attrs.map(&A_NODE_PROC)
+        }
+        body = init_hash_request(:ModifyCalendarResourceRequest)
+        body[:Body][:ModifyCalendarResourceRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def add_account_alias(id, email)
+        req = { id: id, alias: email }
+        body = init_hash_request(:AddAccountAliasRequest)
+        body[:Body][:AddAccountAliasRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def remove_account_alias(id, email)
+        req = { id: id, alias: email }
+        body = init_hash_request(:RemoveAccountAliasRequest)
+        body[:Body][:RemoveAccountAliasRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def add_distribution_list_members(id, emails)
+        req = { id: id, dlm: emails.map { |email| {_content: email} } }
+        body = init_hash_request(:AddDistributionListMemberRequest)
+        body[:Body][:AddDistributionListMemberRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def remove_distribution_list_members(id, emails)
+        req = { id: id, dlm: emails }
+        body = init_hash_request(:RemoveDistributionListMemberRequest)
+        body[:Body][:RemoveDistributionListMemberRequest].merge!(req)
         curl_request(body)
       end
 
@@ -166,10 +237,33 @@ module Zm
         curl_request(body)
       end
 
+      def get_resource(name, by = :name, attrs = nil)
+        req = { account: { by: by, _content: name } }
+        req[:_attrs] = attrs unless attrs.nil?
+        body = init_hash_request(:GetCalendarResourceRequest)
+        body[:Body][:GetCalendarResourceRequest].merge!(req)
+        # p body
+        curl_request(body)
+      end
+
+      def get_distribution_list(name, by = :name, attrs = nil)
+        req = { dl: { by: by, _content: name } }
+        req[:_attrs] = attrs unless attrs.nil?
+        body = init_hash_request(:GetDistributionListRequest)
+        body[:Body][:GetDistributionListRequest].merge!(req)
+        # p body
+        curl_request(body)
+      end
+
       def delete_account(id)
-        req = { id: id }
         body = init_hash_request(:DeleteAccountRequest)
-        body[:Body][:DeleteAccountRequest].merge!(req)
+        body[:Body][:DeleteAccountRequest][:id] = id
+        curl_request(body)
+      end
+
+      def delete_resource(id)
+        body = init_hash_request(:DeleteCalendarResourceRequest)
+        body[:Body][:DeleteCalendarResourceRequest][:id] = id
         curl_request(body)
       end
 

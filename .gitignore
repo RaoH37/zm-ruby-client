@@ -9,6 +9,8 @@
 /test/tmp/
 /test/version_tmp/
 /tmp/
+/.idea
+/zm-ruby-client.iml
 
 # Used by dotenv library to load environment variables.
 # .env
