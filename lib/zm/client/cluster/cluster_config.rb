@@ -34,7 +34,7 @@ module Zm
       end
 
       def domain_key(domain_name)
-        @domains.select { |d| d.name == domain_name }.first.key
+        @domains.find { |d| d.name == domain_name }.key
       end
 
       def to_h

@@ -1,6 +1,6 @@
 require 'zm/modules/common/account_common'
 # require_relative '../../modules/common/account_galsync'
-# require 'zm/client/connector/rest_account'
+require 'zm/client/connector/rest_account'
 require 'zm/client/folder'
 # require 'zm/client/share'
 # require 'zm/client/contact'
@@ -8,6 +8,7 @@ require 'zm/client/folder'
 # require 'zm/client/task'
 # require 'zm/client/data_source'
 # require 'zm/client/message'
+require 'addressable/uri'
 
 module Zm
   module Client
@@ -22,6 +23,12 @@ module Zm
         super(parent)
       end
 
+      def rest_account_connector
+        @rest_account_connector ||= RestAccountConnector.new
+      end
+
+      alias rac rest_account_connector
+
       def logged?
         !@token.nil?
       end
@@ -29,12 +36,12 @@ module Zm
       def login
         # TODO: faire un if admin_connector alors admin_login sinon
         # account_login afin de n'utiliser qu'un seul appel de login
-        @token = soap_account_connector.auth(@name, @domainkey)
+        @token = sacc.auth(@name, @domainkey)
       end
 
       def account_login(key = nil)
         @domainkey = key || domain_key
-        @token = soap_account_connector.auth(@name, @domainkey)
+        @token = sacc.auth(@name, @domainkey)
       end
 
       def admin_login
@@ -51,11 +58,12 @@ module Zm
 
       def infos
         if @infos.nil?
-          @infos = soap_account_connector.get_info(@token)[:Body][:GetInfoResponse]
+          @infos = sacc.get_info(@token)[:Body][:GetInfoResponse]
           @id          ||= @infos[:id]
           @used        ||= @infos[:used]
           @public_url  ||= @infos[:publicURL]
           @zimbraCOSId ||= @infos[:cos][:id]
+          @home_url    ||= @infos[:rest]
           # pertinence ?
           # @zimbraCOSName ||= @infos[:cos][:name]
         end
@@ -139,6 +147,37 @@ module Zm
       def remove_alias!(email)
         sac.remove_account_alias(@id, email)
         aliases.delete(email)
+      end
+
+      def download(folder_path, fmt, types, dest_file_path)
+        url_folder_path = File.join(@home_url, folder_path.to_s)
+        uri = Addressable::URI.new
+        uri.query_values = {
+            fmt: fmt,
+            types: types.join(','),
+            emptyname: 'Vide',
+            charset: 'UTF-8',
+            auth: 'qp',
+            zauthtoken: @token
+        }
+        url_folder_path << '?' << uri.query
+
+        rac.download(url_folder_path, dest_file_path)
+      end
+
+      def upload(folder_path, fmt, types, resolve, src_file_path)
+        url_folder_path = File.join(@home_url, folder_path.to_s)
+        uri = Addressable::URI.new
+        uri.query_values = {
+            fmt: fmt,
+            types: types.join(','),
+            resolve: resolve,
+            auth: 'qp',
+            zauthtoken: @token
+        }
+        url_folder_path << '?' << uri.query
+
+        rac.upload(url_folder_path, src_file_path)
       end
     end
   end

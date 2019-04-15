@@ -3,16 +3,10 @@ module Zm
     module Base
       # Abstract Class Provisionning Object
       class Object
-        # ATTRS_READ = [].freeze
-        # ATTRS_WRITE = [].freeze
-
         attr_accessor :token, :name, :id
-
-        # attr_reader :soap_account_connector, :rest_account_connector
 
         def initialize(parent)
           @parent = parent
-          # puts "Object initialize #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
           yield(self) if block_given?
         end
 
@@ -27,18 +21,6 @@ module Zm
         end
 
         alias sacc soap_account_connector
-
-        # def soap_admin_connector=(soap_admin_connector)
-        #   @soap_admin_connector = soap_admin_connector
-        # end
-
-        # def soap_account_connector=(soap_account_connector)
-        #   @soap_account_connector = soap_account_connector
-        # end
-
-        # def rest_account_connector=(rest_account_connector)
-        #   @rest_account_connector = rest_account_connector
-        # end
 
         def concat
           instance_variables.map { |variable| instance_variable_get(variable) }
