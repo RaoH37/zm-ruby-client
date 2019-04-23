@@ -3,7 +3,7 @@ module Zm
     module Base
       # Abstract Class Provisionning Object
       class Object
-        attr_accessor :token, :name, :id
+        attr_accessor :token, :name, :id, :cn, :zimbraZimletAvailableZimlets
 
         def initialize(parent)
           @parent = parent

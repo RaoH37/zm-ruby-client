@@ -101,9 +101,11 @@ module Zm
       end
 
       def folder_action(token, op, id, options = {})
-        req = { action: { op: op, id: id } }.merge(options)
+        action = { op: op, id: id }.merge(options)
+        req = { action: action }
         body = init_hash_request(token, :FolderActionRequest)
         body[:Body][:FolderActionRequest].merge!(req)
+        puts body
         curl_request(body)
       end
 

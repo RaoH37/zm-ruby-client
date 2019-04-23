@@ -10,7 +10,7 @@ module Zm
 
       def upload(url, src_file_path)
         curb = Curl::Easy.new(url) do |curl|
-          curl.timeout = 7200
+          curl.timeout = 72000
           curl.enable_cookies = false
           curl.encoding = ''
           curl.ssl_verify_peer = false

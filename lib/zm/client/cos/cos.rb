@@ -29,7 +29,8 @@ module Zm
         # # puts json
         # # p @zimbraMailHostPool
         super
-        @zimbraMailHostPool = [@zimbraMailHostPool] unless @zimbraMailHostPool.is_a?(Array)
+        @zimbraMailHostPool = [@zimbraMailHostPool] if @zimbraMailHostPool.is_a?(String)
+        @zimbraZimletAvailableZimlets = [@zimbraZimletAvailableZimlets] if @zimbraZimletAvailableZimlets.is_a?(String)
       end
 
       def duplicate(attrs = {})

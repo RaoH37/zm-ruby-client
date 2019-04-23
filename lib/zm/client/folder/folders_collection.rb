@@ -14,25 +14,6 @@ module Zm
         folder
       end
 
-      # def all
-      #   @all_folders || where
-      # end
-
-      # def all!
-      #   where!
-      # end
-
-      # def where(view = nil)
-      #   rep = @soap_account_connector.get_all_folders(@account.token, view)
-      #   fb = FoldersBuilder.new @account, rep
-      #   all = fb.make
-      #   all.delete_if { |f| f.id == FolderDefault::ROOT[:id] }
-      # end
-
-      # def where!(view = nil)
-      #   @all_folders = where(view)
-      # end
-
       def where(view = nil)
         @view = view
         self

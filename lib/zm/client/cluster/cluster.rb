@@ -46,6 +46,10 @@ module Zm
         @accounts ||= AccountsCollection.new self
       end
 
+      def resources
+        @resources ||= ResourcesCollection.new self
+      end
+
       def servers
         @servers ||= ServersCollection.new self
       end
