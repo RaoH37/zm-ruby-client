@@ -33,6 +33,7 @@ module Zm
         def init_from_json(json)
           @id    = json[:id]
           @name  = json[:name]
+          # todo : attention cette condition est uniquement valable pour les compte et doit être déplacée !!!
           return unless json[:a].is_a? Array
 
           # fix car le tableau peut contenir des {} vide !

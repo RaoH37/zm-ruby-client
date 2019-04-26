@@ -205,6 +205,13 @@ module Zm
         body[:Body][:MsgActionRequest].merge!(req)
         curl_request(body)
       end
+      # -------------------------------
+      # GENERIC
+
+      def get_tag(token)
+        body = init_hash_request(token, :GetTagRequest)
+        curl_request(body)
+      end
 
       # -------------------------------
       # GENERIC
