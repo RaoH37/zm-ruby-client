@@ -1,14 +1,19 @@
 module Zm
   module Client
     class TagsCollection < Base::ObjectsCollection
-      def initialize(soap_account_connector, account)
-        @soap_account_connector = soap_account_connector
-        @account = account
+      def initialize(parent)
+        @parent = parent
+      end
+
+      def new
+        tag = Tag.new(@parent)
+        yield(tag) if block_given?
+        tag
       end
 
       def all
-        rep = @soap_account_connector.get_tag(@account.token)
-        tb = TagBuilder.new @account, rep
+        rep = @parent.sacc.get_tag(@parent.token)
+        tb = TagBuilder.new @parent, rep
         tb.make
       end
     end

@@ -206,10 +206,25 @@ module Zm
         curl_request(body)
       end
       # -------------------------------
-      # GENERIC
+      # TAG
 
       def get_tag(token)
         body = init_hash_request(token, :GetTagRequest)
+        curl_request(body)
+      end
+
+      def create_tag(token, name, color, rgb)
+        body = init_hash_request(token, :CreateTagRequest)
+        req = { tag: { name: name, color: color, rgb: rgb }.reject { |_, v| v.nil? } }
+        body[:Body][:CreateTagRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def tag_action(token, op, id, options = {})
+        action = { op: op, id: id }.merge(options)
+        req = { action: action }
+        body = init_hash_request(token, :TagActionRequest)
+        body[:Body][:TagActionRequest].merge!(req)
         curl_request(body)
       end
 

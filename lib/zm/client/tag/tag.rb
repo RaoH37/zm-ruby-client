@@ -15,6 +15,19 @@ module Zm
         @md      = json[:md]
         @ms      = json[:ms]
       end
+
+      def create!
+        rep = @parent.sacc.create_tag(@parent.token, @name, @color, @rgb)
+        init_from_json(rep[:Body][:CreateTagResponse][:tag].first)
+      end
+
+      def delete!
+        @parent.sacc.tag_action(@parent.token, :delete, @id)
+      end
+
+      def rename!(new_name)
+        @parent.sacc.tag_action(@parent.token, :rename, @id, { name: new_name })
+      end
     end
   end
 end

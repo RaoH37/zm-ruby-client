@@ -1,9 +1,9 @@
 module Zm
   module Client
     class TagBuilder < Base::ObjectsBuilder
-      def initialize(account, json)
-        @account = account
-        @json    = json
+      def initialize(parent, json)
+        @parent = parent
+        @json = json
       end
 
       def make
@@ -12,7 +12,7 @@ module Zm
 
         root = [root] unless root.is_a?(Array)
         root.map do |s|
-          tag = Tag.new(@account)
+          tag = Tag.new(@parent)
           tag.init_from_json(s)
           tag
         end

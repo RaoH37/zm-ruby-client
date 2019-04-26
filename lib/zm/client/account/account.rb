@@ -96,9 +96,7 @@ module Zm
       end
 
       def tags
-        @tags ||= TagsCollection.new(
-          sacc, self
-        )
+        @tags ||= TagsCollection.new(self)
       end
 
       def tasks
