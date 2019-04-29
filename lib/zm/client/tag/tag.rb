@@ -1,6 +1,6 @@
 module Zm
   module Client
-    class Tag < Base::Object
+    class Tag < Base::AccountObject
       attr_accessor :id, :name, :color, :rgb, :u, :n, :d, :rev, :md, :ms
 
       def init_from_json(json)

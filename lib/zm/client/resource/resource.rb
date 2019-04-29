@@ -3,7 +3,7 @@ require 'zm/modules/common/resource_common'
 module Zm
   module Client
     # objectClass: zimbraCalendarResource
-    class Resource < Base::Object
+    class Resource < Base::AdminObject
 
       attr_reader :name, :id, :domainkey, :used, :token
 

@@ -2,7 +2,7 @@ require 'zm/modules/common/dl_common'
 module Zm
   module Client
     # objectClass: zimbraDistributionList
-    class DistributionList < Base::Object
+    class DistributionList < Base::AdminObject
       attr_accessor :members
 
       def initialize(parent)

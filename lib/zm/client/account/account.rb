@@ -14,7 +14,7 @@ require 'addressable/uri'
 module Zm
   module Client
     # objectClass: zimbraAccount
-    class Account < Base::Object
+    class Account < Base::AdminObject
 
       attr_reader :name, :id, :domainkey, :used, :token
       attr_accessor :password, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
@@ -22,6 +22,19 @@ module Zm
       def initialize(parent)
         extend(AccountCommon)
         super(parent)
+      end
+
+      def init_from_json(json)
+        super(json)
+        return unless json[:a].is_a? Array
+
+        # fix car le tableau peut contenir des {} vide !
+        json[:a].reject! { |n| n[:n].nil? }
+        json_map = json[:a].map { |n| ["@#{n[:n]}", n[:_content]] }.freeze
+
+        Hash[json_map].each do |k, v|
+          instance_variable_set(k, convert_json_string_value(v))
+        end
       end
 
       def rest_account_connector

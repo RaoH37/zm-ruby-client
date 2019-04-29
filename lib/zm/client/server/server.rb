@@ -1,7 +1,7 @@
 module Zm
   module Client
     # objectClass: zimbraServer
-    class Server < Base::Object
+    class Server < Base::AdminObject
       attr_accessor :name, :id
 
       # def accounts

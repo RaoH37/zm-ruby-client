@@ -4,6 +4,7 @@ module Zm
 
       def initialize(parent)
         @parent = parent
+        reset_query_params
       end
 
       def new(json)
@@ -15,7 +16,7 @@ module Zm
       private
 
       def build_response
-        options = @owner_name.nil? ? {} : {owner: {by: :name, _content: @owner_name}}
+        options = @owner_name.nil? ? {} : { owner: { by: :name, _content: @owner_name } }
         rep = @parent.sacc.get_share_info @parent.token, options
         sb = ShareBuilder.new @parent, rep
         sb.make

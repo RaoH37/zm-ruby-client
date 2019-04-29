@@ -1,6 +1,6 @@
 module Zm
   module Client
-    class Folder < Base::Object
+    class Folder < Base::AccountObject
       attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :luuid, :f,
                     :view, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled,
                     :n, :s, :i4ms, :i4next, :folder, :zid, :rid, :ruuid,

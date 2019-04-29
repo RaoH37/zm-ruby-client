@@ -1,7 +1,7 @@
 module Zm
   module Client
     # objectClass: zimbraCos
-    class Cos < Base::Object
+    class Cos < Base::AdminObject
 
       attr_accessor :name, :id, :zimbraId, :zimbraMailQuota, :zimbraMailHostPool
 
@@ -28,7 +28,7 @@ module Zm
         # # puts @name
         # # puts json
         # # p @zimbraMailHostPool
-        super
+        super(json)
         @zimbraMailHostPool = [@zimbraMailHostPool] if @zimbraMailHostPool.is_a?(String)
         @zimbraZimletAvailableZimlets = [@zimbraZimletAvailableZimlets] if @zimbraZimletAvailableZimlets.is_a?(String)
       end
