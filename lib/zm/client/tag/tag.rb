@@ -26,7 +26,12 @@ module Zm
       end
 
       def rename!(new_name)
-        @parent.sacc.tag_action(@parent.token, :rename, @id, { name: new_name })
+        @parent.sacc.tag_action(
+          @parent.token,
+          :rename,
+          @id,
+          { name: new_name }
+        )
       end
     end
   end

@@ -78,9 +78,7 @@ module Zm
       end
 
       def shares
-        @shares ||= SharesCollection.new(
-          sacc, self
-        )
+        @shares ||= SharesCollection.new(self)
       end
 
       def contacts

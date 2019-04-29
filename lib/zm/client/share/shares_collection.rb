@@ -2,34 +2,27 @@ module Zm
   module Client
     class SharesCollection < Base::ObjectsCollection
 
-      def initialize(soap_account_connector, account)
-        @soap_account_connector = soap_account_connector
-        @account = account
+      def initialize(parent)
+        @parent = parent
       end
 
       def new(json)
-        share = Share.new(@account, json)
+        share = Share.new(@parent, json)
         yield(share) if block_given?
         share
       end
 
-      def all
-        @all_shares || where
-      end
+      private
 
-      def all!
-        where!
-      end
-
-      def where(name = nil)
-        options = name.nil? ? {} : {owner: {by: :name, _content: name}}
-        rep = @soap_account_connector.get_share_info @account.token, options
-        sb = ShareBuilder.new @account, rep
+      def build_response
+        options = @owner_name.nil? ? {} : {owner: {by: :name, _content: @owner_name}}
+        rep = @parent.sacc.get_share_info @parent.token, options
+        sb = ShareBuilder.new @parent, rep
         sb.make
       end
 
-      def where!(name = nil)
-        @all_shares = where(name)
+      def reset_query_params
+        @owner_name = nil
       end
     end
   end

@@ -1,6 +1,7 @@
 module Zm
   module Client
     COMMA = ','.freeze
+    DOUBLEPOINT = ' :: '.freeze
 
     module FolderDefault
       ROOT = { id: 1, path: '/', type: 'unknown' }.freeze

@@ -3,13 +3,12 @@ module Zm
     class FoldersCollection < Base::ObjectsCollection
       METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
 
-      def initialize(soap_account_connector, account)
-        @soap_account_connector = soap_account_connector
-        @account = account
+      def initialize(parent)
+        @parent = parent
       end
 
       def new
-        folder = Folder.new(@account)
+        folder = Folder.new(@parent)
         yield(folder) if block_given?
         folder
       end
@@ -19,19 +18,11 @@ module Zm
         self
       end
 
-      # def folders(view = nil)
-      #   select_type(:folder, view)
-      # end
-
-      # def links(view = nil)
-      #   select_type(:link, view)
-      # end
-
       private
 
       def build_response
-        rep = @soap_account_connector.get_all_folders(@account.token, @view)
-        fb = FoldersBuilder.new @account, rep
+        rep = @parent.sacc.get_all_folders(@parent.token, @view)
+        fb = FoldersBuilder.new @parent, rep
         all = fb.make
         all.delete_if { |f| f.id == FolderDefault::ROOT[:id] }
       end
@@ -39,12 +30,6 @@ module Zm
       def reset_query_params
         @view = nil
       end
-
-      # def select_type(type, view = nil)
-      #   a = @all_folders.select { |f| f.type == type }
-      #   a.select! { |f| f.view == view } unless view.nil?
-      #   a
-      # end
     end
   end
 end

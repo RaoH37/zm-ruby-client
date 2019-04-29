@@ -27,7 +27,7 @@ module Zm
         end
 
         def to_s
-          concat.join(' :: ')
+          concat.join(DOUBLEPOINT)
         end
 
         def init_from_json(json)

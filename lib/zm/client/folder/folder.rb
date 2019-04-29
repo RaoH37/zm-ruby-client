@@ -9,8 +9,8 @@ module Zm
       alias nb_messages n
       alias parent_id l
 
-      def initialize(account, json = nil, key = :folder)
-        @account = account
+      def initialize(parent, json = nil, key = :folder)
+        @parent = parent
         @type = key
         init_from_json(json) if json.is_a?(Hash)
         yield(self) if block_given?
@@ -24,12 +24,8 @@ module Zm
         ]
       end
 
-      def to_s
-        concat.join(' :: ')
-      end
-
       def create!
-        rep = @account.sacc.create_folder(@account.token, @l, @name, @view)
+        rep = @parent.sacc.create_folder(@parent.token, @l, @name, @view)
         init_from_json(rep[:Body][:CreateFolderResponse][:folder].first)
       end
 
@@ -38,8 +34,8 @@ module Zm
       end
 
       def empty!
-        @account.sacc.folder_action(
-          @account.token,
+        @parent.sacc.folder_action(
+          @parent.token,
           :empty,
           @id,
           recursive: false
@@ -48,23 +44,23 @@ module Zm
       alias clear empty!
 
       def delete!
-        @account.sacc.folder_action(@account.token, :delete, @id)
+        @parent.sacc.folder_action(@parent.token, :delete, @id)
       end
 
-      def grant!(account, right)
-        @account.sacc.folder_action(
-          @account.token,
+      def grant!(parent, right)
+        @parent.sacc.folder_action(
+          @parent.token,
           'grant',
           @id,
           grant: {
-            zid: account.zimbra_id, perm: right
+            zid: parent.zimbra_id, perm: right
           }
         )
       end
 
       def remove_grant!(zid)
-        @account.sacc.folder_action(
-          @account.token,
+        @parent.sacc.folder_action(
+          @parent.token,
           '!grant',
           @id,
           zid: zid
@@ -74,8 +70,6 @@ module Zm
       def import!(file_path)
         # todo
       end
-
-      private
 
       def init_from_json(json)
         @id                 = json[:id].to_i
