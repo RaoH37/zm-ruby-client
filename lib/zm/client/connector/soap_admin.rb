@@ -1,5 +1,6 @@
 require_relative 'soap_base'
 require_relative 'soap_error'
+require_relative 'soap_xml_builder'
 
 module Zm
   module Client
@@ -119,16 +120,14 @@ module Zm
       end
 
       def create_cos(name, attrs = nil)
-        req = {
-          _jsns: ADMINSPACE,
-          name: name,
-          a: attrs.to_a.map(&A_NODE_PROC)
-          # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
-        }
-        body = { Body: { CreateCosRequest: req } }.merge(hash_header(@token))
-        # puts body
+        req = { name: name }
+        body = init_hash_request(:CreateCosRequest)
+        body[:Body][:CreateCosRequest].merge!(req)
+        # a: attrs.to_a.map(&A_NODE_PROC)
+        # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
+        puts SoapXmlBuilder.new(body).to_xml
         # todo ne fonctionne pas !
-        curl_request(body)
+        curl_xml(SoapXmlBuilder.new(body).to_xml)
       end
 
       def modify_cos(id, attrs = nil)

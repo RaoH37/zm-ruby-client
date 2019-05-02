@@ -3,15 +3,13 @@ module Zm
     # class factory [coses]
     class CosesBuilder < Base::ObjectsBuilder
       def make
-        records = []
-        return records if json_items.nil?
+        return [] if json_items.nil?
 
-        json_items.each do |entry|
+        json_items.map do |entry|
           cos = Cos.new(@parent)
           cos.init_from_json(entry)
-          records << cos
+          cos
         end
-        records
       end
 
       private

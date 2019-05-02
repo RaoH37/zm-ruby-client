@@ -35,6 +35,15 @@ module Zm
         soapbody
       end
 
+      def curl_xml(xml, error_handler = SoapError)
+        @curl.http_post(xml)
+
+        soapbody = JSON.parse(@curl.body_str, symbolize_names: true)
+        raise(error_handler, soapbody) if @curl.status.to_i >= 400
+
+        soapbody
+      end
+
       def hash_header(token)
         { Header: { context: { authToken: token }, _jsns: BASESPACE } }
       end

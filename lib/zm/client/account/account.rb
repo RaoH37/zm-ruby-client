@@ -24,19 +24,6 @@ module Zm
         super(parent)
       end
 
-      def init_from_json(json)
-        super(json)
-        return unless json[:a].is_a? Array
-
-        # fix car le tableau peut contenir des {} vide !
-        json[:a].reject! { |n| n[:n].nil? }
-        json_map = json[:a].map { |n| ["@#{n[:n]}", n[:_content]] }.freeze
-
-        Hash[json_map].each do |k, v|
-          instance_variable_set(k, convert_json_string_value(v))
-        end
-      end
-
       def rest_account_connector
         @rest_account_connector ||= RestAccountConnector.new
       end
