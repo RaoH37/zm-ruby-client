@@ -4,18 +4,18 @@ module Zm
     DOUBLEPOINT = ' :: '.freeze
 
     module FolderDefault
-      ROOT = { id: 1, path: '/', type: 'unknown' }.freeze
-      BRIEFCASE = { id: 16, path: '/Briefcase', type: 'document' }.freeze
-      CALENDAR = { id: 10, path: '/Calendar', type: 'appointment' }.freeze
-      CHATS = { id: 14, path: '/Chats', type: 'message' }.freeze
-      CONTACTS = { id: 7, path: '/Contacts', type: 'contact' }.freeze
-      DRAFTS = { id: 6, path: '/Drafts', type: 'message' }.freeze
-      EMAILED = { id: 13, path: '/Emailed Contacts', type: 'contact' }.freeze
-      INBOX = { id: 2, path: '/Inbox', type: 'message' }.freeze
-      JUNK = { id: 4, path: '/Junk', type: 'message' }.freeze
-      SENT = { id: 5, path: '/Sent', type: 'message' }.freeze
-      TASKS = { id: 15, path: '/Tasks', type: 'task' }.freeze
-      TRASH = { id: 3, path: '/Trash', type: 'unknown' }.freeze
+      ROOT =      { id: 1,  name: '',  path: '/', type: 'unknown' }.freeze
+      BRIEFCASE = { id: 16, name: 'Briefcase', path: '/Briefcase', type: 'document' }.freeze
+      CALENDAR =  { id: 10, name: 'Calendar',  path: '/Calendar', type: 'appointment' }.freeze
+      CHATS =     { id: 14, name: 'Chats',     path: '/Chats', type: 'message' }.freeze
+      CONTACTS =  { id: 7,  name: 'Contacts',  path: '/Contacts', type: 'contact' }.freeze
+      DRAFTS =    { id: 6,  name: 'Drafts',    path: '/Drafts', type: 'message' }.freeze
+      EMAILED =   { id: 13, name: 'Emailed Contacts',  path: '/Emailed Contacts', type: 'contact' }.freeze
+      INBOX =     { id: 2,  name: 'Inbox',     path: '/Inbox', type: 'message' }.freeze
+      JUNK =      { id: 4,  name: 'Junk',      path: '/Junk', type: 'message' }.freeze
+      SENT =      { id: 5,  name: 'Sent',      path: '/Sent', type: 'message' }.freeze
+      TASKS =     { id: 15, name: 'Tasks',     path: '/Tasks', type: 'task' }.freeze
+      TRASH =     { id: 3,  name: 'Trash',     path: '/Trash', type: 'unknown' }.freeze
 
       ALL = [
         ROOT,

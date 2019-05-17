@@ -11,5 +11,11 @@ module Zm
 
     class AuthError < SoapError
     end
+
+    class RestError < StandardError
+      def initialize(restbody)
+        super(restbody)
+      end
+    end
   end
 end

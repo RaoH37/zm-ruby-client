@@ -17,7 +17,7 @@ module Zm
     class Account < Base::AdminObject
 
       attr_reader :name, :id, :domainkey, :used, :token
-      attr_accessor :password, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
+      attr_accessor :password, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense, :home_url
 
       def initialize(parent)
         extend(AccountCommon)
@@ -72,9 +72,7 @@ module Zm
       end
 
       def folders
-        @folders ||= FoldersCollection.new(
-          sacc, self
-        )
+        @folders ||= FoldersCollection.new(self)
       end
 
       def shares
@@ -147,22 +145,29 @@ module Zm
       end
 
       def download(folder_path, fmt, types, dest_file_path)
+        rac.download(download_url(folder_path, fmt, types), dest_file_path)
+      end
+
+      def download_url(folder_path, fmt, types)
         url_folder_path = File.join(@home_url, folder_path.to_s)
         uri = Addressable::URI.new
         uri.query_values = {
-            fmt: fmt,
-            types: types.join(','),
-            emptyname: 'Vide',
-            charset: 'UTF-8',
-            auth: 'qp',
-            zauthtoken: @token
+          fmt: fmt,
+          types: types.join(','),
+          emptyname: 'Vide',
+          charset: 'UTF-8',
+          auth: 'qp',
+          zauthtoken: @token
         }
         url_folder_path << '?' << uri.query
-
-        rac.download(url_folder_path, dest_file_path)
+        url_folder_path
       end
 
       def upload(folder_path, fmt, types, resolve, src_file_path)
+        rac.upload(upload_url(folder_path, fmt, types, resolve), src_file_path)
+      end
+
+      def upload_url(folder_path, fmt, types, resolve)
         url_folder_path = File.join(@home_url, folder_path.to_s)
         uri = Addressable::URI.new
         uri.query_values = {
@@ -173,8 +178,7 @@ module Zm
             zauthtoken: @token
         }
         url_folder_path << '?' << uri.query
-
-        rac.upload(url_folder_path, src_file_path)
+        url_folder_path
       end
     end
   end

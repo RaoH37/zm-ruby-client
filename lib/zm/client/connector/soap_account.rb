@@ -105,7 +105,7 @@ module Zm
         req = { action: action }
         body = init_hash_request(token, :FolderActionRequest)
         body[:Body][:FolderActionRequest].merge!(req)
-        puts body
+        # puts body
         curl_request(body)
       end
 

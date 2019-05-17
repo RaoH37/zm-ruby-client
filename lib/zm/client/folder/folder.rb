@@ -79,7 +79,7 @@ module Zm
         @l                  = json[:l]
         @luuid              = json[:luuid]
         @f                  = json[:f]
-        @view               = json[:view]
+        @view               = json[:view]&.to_sym
         @rev                = json[:rev]
         @ms                 = json[:ms]
         @webOfflineSyncDays = json[:webOfflineSyncDays]
