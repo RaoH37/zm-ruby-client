@@ -84,6 +84,13 @@ module Zm
       # -------------------------------
       # FOLDER
 
+      def get_folder(token, id)
+        body = init_hash_request(token, :GetFolderRequest)
+        req = { folder: { l: id } }
+        body[:Body][:GetFolderRequest].merge!(req)
+        curl_request(body)
+      end
+
       def get_all_folders(token, view = nil)
         body = init_hash_request(token, :GetFolderRequest)
         unless view.nil?

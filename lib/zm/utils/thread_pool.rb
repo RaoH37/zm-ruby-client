@@ -42,6 +42,14 @@ module Zm
           schedule { throw :exit }
         end
         @pool.map(&:join)
+        stop
+      end
+
+      def stop
+        @jobs.close
+        @pool.each(&:exit)
+        @pool.clear
+        true
       end
 
       private

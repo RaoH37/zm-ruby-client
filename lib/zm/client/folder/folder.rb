@@ -29,6 +29,11 @@ module Zm
         init_from_json(rep[:Body][:CreateFolderResponse][:folder].first)
       end
 
+      def reload!
+        rep = @parent.sacc.get_folder(@parent.token, @id)
+        init_from_json(rep[:Body][:GetFolderResponse][:folder].first)
+      end
+
       def empty?
         @n.zero?
       end
