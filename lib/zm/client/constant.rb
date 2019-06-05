@@ -31,6 +31,8 @@ module Zm
         TASKS,
         TRASH
       ].freeze
+
+      IDS = ALL.map { |folder| folder[:id] }.freeze
     end
 
     module ShareType
