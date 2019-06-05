@@ -23,6 +23,7 @@ module Zm
           curl.encoding = ''
           curl.headers = HTTP_HEADERS
           curl.ssl_verify_peer = false
+          curl.ssl_verify_host = 0
           curl.verbose = false
         end
       end
