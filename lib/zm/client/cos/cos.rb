@@ -31,18 +31,18 @@ module Zm
         sac.create_cos(name, instance_variables_array(attrs_write))
       end
 
-      # def servers
-      #   @servers ||= get_servers
-      # end
-      #
-      # private
-      #
-      # def get_servers
-      #   sc = ServersCollection.new self
-      #   @zimbraMailHostPool.map do |server_id|
-      #     sc.find server_id
-      #   end
-      # end
+      def servers
+        @servers ||= get_servers
+      end
+
+      private
+
+      def get_servers
+        sc = ServersCollection.new self
+        @zimbraMailHostPool.map do |server_id|
+          sc.find server_id
+        end
+      end
     end
   end
 end

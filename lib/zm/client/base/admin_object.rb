@@ -17,6 +17,7 @@ module Zm
         alias sacc soap_account_connector
 
         def init_from_json(json)
+          # todo : know in advance the typing of variables
           super(json)
           return unless json[:a].is_a? Array
 
@@ -24,9 +25,15 @@ module Zm
           json[:a].reject! { |n| n[:n].nil? }
           json_map = json[:a].map { |n| ["@#{n[:n]}", n[:_content]] }.freeze
 
-          Hash[json_map].each do |k, v|
+          json_hash = json_map.reduce({}){|h, (k,v)| (h[k] ||= []); h[k].push(v); h }.inject({}){|h, (k,v)| v.length == 1 ? h[k]=v.first : h[k]=v; h }
+
+          json_hash.each do |k, v|
             instance_variable_set(k, convert_json_string_value(v))
           end
+
+          # Hash[json_map].each do |k, v|
+          #   instance_variable_set(k, convert_json_string_value(v))
+          # end
         end
       end
     end

@@ -180,6 +180,12 @@ module Zm
         url_folder_path << '?' << uri.query
         url_folder_path
       end
+
+      def local_transport
+        raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
+
+        "lmtp:#{zimbraMailHost}:7025"
+      end
     end
   end
 end
