@@ -16,8 +16,8 @@ module Zm
     # objectClass: zimbraAccount
     class Account < Base::AdminObject
 
-      attr_reader :name, :id, :domainkey, :used, :token
-      attr_accessor :password, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense, :home_url
+      attr_reader :name, :id, :used, :token
+      attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense, :home_url
 
       def initialize(parent)
         extend(AccountCommon)
@@ -35,14 +35,32 @@ module Zm
       end
 
       def login
-        # TODO: faire un if admin_connector alors admin_login sinon
-        # account_login afin de n'utiliser qu'un seul appel de login
-        @token = sacc.auth(@name, @domainkey)
+        if @parent.logged?
+          admin_login
+        else
+          account_login
+        end
       end
 
-      def account_login(key = nil)
-        @domainkey = key || domain_key
-        @token = sacc.auth(@name, @domainkey)
+      def account_login
+        if password
+          account_login_password
+        else
+          account_login_preauth
+        end
+      end
+
+      def account_login_preauth
+        domain_key
+        raise ZmError, 'domain key is required to login !' if @domainkey.nil?
+
+        @token = sacc.auth_preauth(@name, @domainkey)
+      end
+
+      def account_login_password
+        raise ZmError, 'password is required to login !' if password.nil?
+
+        @token = sacc.auth_password(@name, @password)
       end
 
       def admin_login
@@ -54,7 +72,7 @@ module Zm
       end
 
       def domain_key
-        @parent.domain_key(domain_name)
+        @domainkey ||= @parent.domain_key(domain_name)
       end
 
       def infos
@@ -69,6 +87,10 @@ module Zm
           # @zimbraCOSName ||= @infos[:cos][:name]
         end
         @infos
+      end
+
+      def messages
+        @messages ||= MessagesCollection.new(self)
       end
 
       def folders

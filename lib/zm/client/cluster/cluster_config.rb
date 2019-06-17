@@ -6,7 +6,7 @@ module Zm
                     :zimbra_admin_password, :zimbra_public_host,
                     :zimbra_public_scheme, :zimbra_public_port,
                     :domains
-      
+
       def initialize(file_config_path = nil)
         if block_given?
           yield(self)
@@ -33,8 +33,15 @@ module Zm
         end
       end
 
+      def find_domain(domain_name)
+        @domains.find { |d| d.name == domain_name }
+      end
+
       def domain_key(domain_name)
-        @domains.find { |d| d.name == domain_name }.key
+        domain = find_domain(domain_name)
+        return nil if domain.nil?
+
+        domain.key
       end
 
       def to_h

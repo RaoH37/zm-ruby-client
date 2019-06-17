@@ -7,7 +7,7 @@ require './lib/zm/client/cluster'
 require './lib/zm/client/account'
 
 class TestAccount < Minitest::Test
-  
+
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/tmp/example.json'))
     @admin.login
@@ -54,10 +54,9 @@ class TestAccount < Minitest::Test
 
   def test_domain_find_with_attrs
     account = @domain.accounts.find_by name: @account_name
-      
+
     assert_equal @account_name, account.name
     refute_nil account.displayName
     refute_nil account.zimbraCOSId
   end
-
 end

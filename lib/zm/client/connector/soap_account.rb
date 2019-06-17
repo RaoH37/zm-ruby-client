@@ -16,24 +16,64 @@ module Zm
         init_curl_client
       end
 
-      def auth(mail, domainkey)
-        ts = (Time.now.to_i * 1000)
-        preauth = compute_preauth(mail, ts, domainkey)
-        body = {
+      # def auth(mail, domainkey)
+      #   ts = (Time.now.to_i * 1000)
+      #   preauth = compute_preauth(mail, ts, domainkey)
+      #   body = {
+      #     Body: {
+      #       AuthRequest: {
+      #         _jsns: ACCOUNTSPACE,
+      #         account: {
+      #           _content: mail,
+      #           by: :name
+      #         },
+      #         preauth: {
+      #           _content: preauth,
+      #           timestamp: ts
+      #         }
+      #       }
+      #     }
+      #   }
+      #   # res = curl_request(body, AuthError)
+      #   # res[BODY][:AuthResponse][:authToken].first[:_content]
+      #   do_auth(body)
+      # end
+
+      def auth_template(mail)
+        {
           Body: {
             AuthRequest: {
               _jsns: ACCOUNTSPACE,
               account: {
                 _content: mail,
                 by: :name
-              },
-              preauth: {
-                _content: preauth,
-                timestamp: ts
               }
             }
           }
         }
+      end
+
+      def auth_preauth(mail, domainkey)
+        ts = (Time.now.to_i * 1000)
+        preauth = compute_preauth(mail, ts, domainkey)
+        body = auth_template(mail)
+        preauth_h = {
+          preauth: {
+            _content: preauth,
+            timestamp: ts
+          }
+        }
+        body[:Body][:AuthRequest].merge!(preauth_h)
+        do_auth(body)
+      end
+
+      def auth_password(mail, password)
+        body = auth_template(mail)
+        body[:Body][:AuthRequest].merge!({ password: password })
+        do_auth(body)
+      end
+
+      def do_auth(body)
         res = curl_request(body, AuthError)
         res[BODY][:AuthResponse][:authToken].first[:_content]
       end

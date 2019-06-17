@@ -1,5 +1,8 @@
 module Zm
   module Client
+    class ZmError < StandardError
+    end
+
     class SoapError < StandardError
       attr_reader :reason, :code
       def initialize(soapbody)

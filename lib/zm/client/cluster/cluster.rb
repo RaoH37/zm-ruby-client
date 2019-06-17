@@ -30,6 +30,10 @@ module Zm
         )
       end
 
+      def logged?
+        !@soap_admin_connector.token.nil?
+      end
+
       def soap_account_connector
         @soap_account_connector ||= SoapAccountConnector.new(
           @config.zimbra_public_scheme,
@@ -63,7 +67,15 @@ module Zm
       end
 
       def domain_key(domain_name)
-        @config.domain_key(domain_name)
+        key = @config.domain_key(domain_name)
+        key ||= find_domain_key(domain_name)
+        key
+      end
+
+      private
+
+      def find_domain_key(domain_name)
+        domains.find_by({ name: domain_name }, 'zimbraPreAuthKey').zimbraPreAuthKey
       end
     end
   end
