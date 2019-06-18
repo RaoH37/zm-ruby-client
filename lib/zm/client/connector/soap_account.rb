@@ -252,6 +252,13 @@ module Zm
         body[:Body][:MsgActionRequest].merge!(req)
         curl_request(body)
       end
+
+      def send_msg(token, m)
+        req = { m: m }
+        body = init_hash_request(token, :SendMsgRequest)
+        body[:Body][:SendMsgRequest].merge!(req)
+        curl_request(body)
+      end
       # -------------------------------
       # TAG
 

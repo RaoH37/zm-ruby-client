@@ -8,6 +8,10 @@ module Zm
         @curl = easy_curl
       end
 
+      def cookie(cookie)
+        @curl.headers['Cookie'] = cookie
+      end
+
       def download(url, dest_file_path)
         Curl::Easy.download(url, dest_file_path)
       end
@@ -23,6 +27,8 @@ module Zm
           ].compact
           raise RestError, messages.join("\n")
         end
+
+        @curl.body_str
       end
 
       def multi_upload(url_fields)

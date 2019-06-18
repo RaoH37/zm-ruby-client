@@ -8,7 +8,8 @@ require 'zm/client/tag'
 # require 'zm/client/appointment'
 # require 'zm/client/task'
 # require 'zm/client/data_source'
-# require 'zm/client/message'
+require 'zm/client/message'
+require 'zm/client/upload'
 require 'addressable/uri'
 
 module Zm
@@ -89,6 +90,16 @@ module Zm
         @infos
       end
 
+      def public_url
+        infos if @infos.nil?
+        @public_url
+      end
+
+      def home_url
+        infos if @infos.nil?
+        @home_url
+      end
+
       def messages
         @messages ||= MessagesCollection.new(self)
       end
@@ -166,48 +177,56 @@ module Zm
         aliases.delete(email)
       end
 
-      def download(folder_path, fmt, types, dest_file_path)
-        rac.download(download_url(folder_path, fmt, types), dest_file_path)
-      end
-
-      def download_url(folder_path, fmt, types)
-        url_folder_path = File.join(@home_url, folder_path.to_s)
-        uri = Addressable::URI.new
-        uri.query_values = {
-          fmt: fmt,
-          types: types.join(','),
-          emptyname: 'Vide',
-          charset: 'UTF-8',
-          auth: 'qp',
-          zauthtoken: @token
-        }
-        url_folder_path << '?' << uri.query
-        url_folder_path
-      end
-
-      def upload(folder_path, fmt, types, resolve, src_file_path)
-        rac.upload(upload_url(folder_path, fmt, types, resolve), src_file_path)
-      end
-
-      def upload_url(folder_path, fmt, types, resolve)
-        url_folder_path = File.join(@home_url, folder_path.to_s)
-        uri = Addressable::URI.new
-        uri.query_values = {
-            fmt: fmt,
-            types: types.join(','),
-            resolve: resolve,
-            auth: 'qp',
-            zauthtoken: @token
-        }
-        url_folder_path << '?' << uri.query
-        url_folder_path
-      end
-
       def local_transport
         raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 
         "lmtp:#{zimbraMailHost}:7025"
       end
+
+      def uploader
+        @upload ||= Upload.new(self)
+      end
+
+      # Deprecated: use uploader.download_file
+      #
+      # def download(folder_path, fmt, types, dest_file_path)
+      #   rac.download(download_url(folder_path, fmt, types), dest_file_path)
+      # end
+      #
+      # def download_url(folder_path, fmt, types)
+      #   url_folder_path = File.join(@home_url, folder_path.to_s)
+      #   uri = Addressable::URI.new
+      #   uri.query_values = {
+      #     fmt: fmt,
+      #     types: types.join(','),
+      #     emptyname: 'Vide',
+      #     charset: 'UTF-8',
+      #     auth: 'qp',
+      #     zauthtoken: @token
+      #   }
+      #   url_folder_path << '?' << uri.query
+      #   url_folder_path
+      # end
+
+      # Deprecated: use uploader.send_file
+      #
+      # def upload(folder_path, fmt, types, resolve, src_file_path)
+      #   rac.upload(upload_url(folder_path, fmt, types, resolve), src_file_path)
+      # end
+      #
+      # def upload_url(folder_path, fmt, types, resolve)
+      #   url_folder_path = File.join(@home_url, folder_path.to_s)
+      #   uri = Addressable::URI.new
+      #   uri.query_values = {
+      #       fmt: fmt,
+      #       types: types.join(','),
+      #       resolve: resolve,
+      #       auth: 'qp',
+      #       zauthtoken: @token
+      #   }
+      #   url_folder_path << '?' << uri.query
+      #   url_folder_path
+      # end
     end
   end
 end
