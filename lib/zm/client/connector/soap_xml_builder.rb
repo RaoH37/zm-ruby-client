@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'nokogiri'
 # https://stackoverflow.com/questions/11933451/converting-nested-hash-into-xml-using-nokogiri
 

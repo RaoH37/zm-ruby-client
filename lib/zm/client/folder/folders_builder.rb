@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # class factory [folders]
     class FoldersBuilder < Base::ObjectsBuilder
       def initialize(account, json)
         @account = account

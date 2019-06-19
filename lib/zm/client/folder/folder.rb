@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # class for account folder
     class Folder < Base::AccountObject
       attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :luuid, :f,
                     :view, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled,

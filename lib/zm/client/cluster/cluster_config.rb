@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # class config for cluster connection
     class ClusterConfig
+      attr_reader :to_h
       attr_accessor :zimbra_admin_host, :zimbra_admin_scheme,
                     :zimbra_admin_port, :zimbra_admin_login,
                     :zimbra_admin_password, :zimbra_public_host,
@@ -17,7 +21,7 @@ module Zm
       end
 
       def init_from_json(file_config_path)
-        @to_h = JSON.parse(File.read(file_config_path), symbolize_names: true)
+        read_config_file(file_config_path)
 
         @zimbra_admin_host = @to_h[:zimbra_admin_host]
         @zimbra_admin_scheme = @to_h[:zimbra_admin_scheme]
@@ -28,9 +32,17 @@ module Zm
         @zimbra_public_scheme = @to_h[:zimbra_public_scheme]
         @zimbra_public_port = @to_h[:zimbra_public_port]
 
+        make_config_domain
+      end
+
+      def make_config_domain
         @domains = @to_h[:domains].map do |h|
           ClusterConfigDomain.new(h[:name], h[:key])
         end
+      end
+
+      def read_config_file(file_config_path)
+        @to_h = JSON.parse(File.read(file_config_path), symbolize_names: true)
       end
 
       def find_domain(domain_name)
@@ -43,14 +55,10 @@ module Zm
 
         domain.key
       end
-
-      def to_h
-        @to_h
-      end
     end
 
+    # class config for connection
     class ClusterConfigDomain
-
       attr_reader :name, :key
 
       def initialize(name, key)

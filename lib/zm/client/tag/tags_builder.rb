@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # class factory [tags]
     class TagBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         @parent = parent

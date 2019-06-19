@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # class for upload account file
     class Upload
       def initialize(parent)
         @parent = parent
@@ -57,10 +60,11 @@ module Zm
       end
     end
 
+    # class to parse upload attachment response
     class AttachmentResponse
       def initialize(str)
         @str = str
-        @str_h = JSON.parse(str[str.index('['),str.length], symbolize_names: true).first
+        @str_h = JSON.parse(str[str.index('['), str.length], symbolize_names: true).first
       end
 
       def aid

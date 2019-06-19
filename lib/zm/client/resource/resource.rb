@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 require 'zm/modules/common/resource_common'
 
 module Zm
   module Client
     # objectClass: zimbraCalendarResource
     class Resource < Base::AdminObject
-
       attr_reader :name, :id, :domainkey, :used, :token
 
       def initialize(parent)
@@ -46,17 +47,16 @@ module Zm
       end
 
       def infos
-        if @infos.nil?
-          @infos = sacc.get_info(@token)[:Body][:GetInfoResponse]
-          @id          ||= @infos[:id]
-          @used        ||= @infos[:used]
-          @public_url  ||= @infos[:publicURL]
-          @zimbraCOSId ||= @infos[:cos][:id]
-          @home_url    ||= @infos[:rest]
-          # pertinence ?
-          # @zimbraCOSName ||= @infos[:cos][:name]
-        end
-        @infos
+        @infos ||= read_infos
+      end
+
+      def read_infos
+        @infos = sacc.get_info(@token)[:Body][:GetInfoResponse]
+        @id = @infos[:id]
+        @used = @infos[:used]
+        @public_url = @infos[:publicURL]
+        @zimbraCOSId = @infos[:cos][:id]
+        @home_url = @infos[:rest]
       end
 
       def delete!
@@ -104,11 +104,11 @@ module Zm
         url_folder_path = File.join(@home_url, folder_path.to_s)
         uri = Addressable::URI.new
         uri.query_values = {
-            fmt: fmt,
-            types: types.join(','),
-            resolve: resolve,
-            auth: 'qp',
-            zauthtoken: @token
+          fmt: fmt,
+          types: types.join(','),
+          resolve: resolve,
+          auth: 'qp',
+          zauthtoken: @token
         }
         url_folder_path << '?' << uri.query
 

@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'zm/modules/common/cos_common'
 module Zm
   module Client
     # objectClass: zimbraCos
     class Cos < Base::AdminObject
-
       def initialize(parent)
         extend(CosCommon)
         super(parent)
@@ -32,12 +33,12 @@ module Zm
       end
 
       def servers
-        @servers ||= get_servers
+        @servers ||= read_servers
       end
 
       private
 
-      def get_servers
+      def read_servers
         sc = ServersCollection.new self
         @zimbraMailHostPool.map do |server_id|
           sc.find server_id

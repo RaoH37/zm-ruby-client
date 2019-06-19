@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
     module Base

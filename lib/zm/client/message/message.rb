@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # class message for account
     class Message < Base::AccountObject
       attr_accessor :subject
       attr_reader :recipients, :attachments, :body
@@ -29,6 +32,7 @@ module Zm
         @parent.sacc.send_msg(@parent.token, to_jsns)
       end
 
+      # content fo an email
       class Body
         attr_accessor :text, :html
 
@@ -44,12 +48,13 @@ module Zm
           [
             {
               ct: 'multipart/alternative',
-              mp: [ text_jsns, html_jsns ]
+              mp: [text_jsns, html_jsns]
             }
           ]
         end
       end
 
+      # collection attachments
       class Attachments
         def initialize
           @attachments = []
@@ -66,6 +71,7 @@ module Zm
         end
       end
 
+      # class attachment for email
       class Attachment
         attr_accessor :aid, :part, :mid
 
@@ -82,6 +88,7 @@ module Zm
         end
       end
 
+      # Collection recipients
       class Recipients
         def initialize
           @recipients = []
@@ -110,6 +117,7 @@ module Zm
         end
       end
 
+      # Class one recipient for email
       class Recipient
         FROM = :f
         TO = :t

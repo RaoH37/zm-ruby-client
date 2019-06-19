@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'soap_base'
 require_relative 'soap_error'
 require_relative 'soap_xml_builder'

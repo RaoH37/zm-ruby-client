@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # collection account tags
     class TagsCollection < Base::ObjectsCollection
       def initialize(parent)
         @parent = parent

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # collection of shares
     class SharesCollection < Base::ObjectsCollection
-
       def initialize(parent)
         @parent = parent
         reset_query_params

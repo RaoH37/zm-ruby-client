@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'zm/modules/common/dl_common'
 module Zm
   module Client

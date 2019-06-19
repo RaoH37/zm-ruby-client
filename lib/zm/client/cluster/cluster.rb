@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'zm/client/connector/soap_admin'
 require 'zm/client/connector/soap_account'
 # require 'zm/client/data_source'
@@ -11,6 +13,7 @@ require 'zm/client/cos'
 
 module Zm
   module Client
+    # class admin connection
     class Cluster
       attr_reader :soap_admin_connector, :config
 

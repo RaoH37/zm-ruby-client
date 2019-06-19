@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # collection of folders
     class FoldersCollection < Base::ObjectsCollection
       METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
 

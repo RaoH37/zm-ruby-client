@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
+    # class account tag
     class Tag < Base::AccountObject
       attr_accessor :id, :name, :color, :rgb, :u, :n, :d, :rev, :md, :ms
 
@@ -30,7 +33,7 @@ module Zm
           @parent.token,
           :rename,
           @id,
-          { name: new_name }
+          name: new_name
         )
       end
     end

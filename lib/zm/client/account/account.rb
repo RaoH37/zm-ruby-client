@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'zm/modules/common/account_common'
 # require_relative '../../modules/common/account_galsync'
 require 'zm/client/connector/rest_account'
@@ -16,9 +18,9 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::AdminObject
-
       attr_reader :name, :id, :used, :token
-      attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense, :home_url
+      attr_writer :home_url
+      attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
 
       def initialize(parent)
         extend(AccountCommon)
@@ -77,17 +79,16 @@ module Zm
       end
 
       def infos
-        if @infos.nil?
-          @infos = sacc.get_info(@token)[:Body][:GetInfoResponse]
-          @id          ||= @infos[:id]
-          @used        ||= @infos[:used]
-          @public_url  ||= @infos[:publicURL]
-          @zimbraCOSId ||= @infos[:cos][:id]
-          @home_url    ||= @infos[:rest]
-          # pertinence ?
-          # @zimbraCOSName ||= @infos[:cos][:name]
-        end
-        @infos
+        @infos ||= read_infos
+      end
+
+      def read_infos
+        @infos = sacc.get_info(@token)[:Body][:GetInfoResponse]
+        @id = @infos[:id]
+        @used = @infos[:used]
+        @public_url = @infos[:publicURL]
+        @zimbraCOSId = @infos[:cos][:id]
+        @home_url = @infos[:rest]
       end
 
       def public_url
@@ -184,7 +185,7 @@ module Zm
       end
 
       def uploader
-        @upload ||= Upload.new(self)
+        @uploader ||= Upload.new(self)
       end
 
       # Deprecated: use uploader.download_file
