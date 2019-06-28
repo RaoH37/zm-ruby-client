@@ -99,7 +99,7 @@ module Zm
         curl_request(body)
       end
 
-      def get_all_servers(services)
+      def get_all_servers(services = nil)
         req = { service: services }.reject { |_, v| v.nil? }
         body = init_hash_request(:GetAllServersRequest)
         body[:Body][:GetAllServersRequest].merge!(req)

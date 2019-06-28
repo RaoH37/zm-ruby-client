@@ -6,6 +6,7 @@ module Zm
     class ServersCollection < Base::ObjectsCollection
       def initialize(parent)
         @parent = parent
+        @services = [ServerServices::MAILBOX]
       end
 
       def find_by(hash)
@@ -16,12 +17,19 @@ module Zm
         server
       end
 
-      # def where(services = nil)
-      #   services = services.join(COMMA) if services.is_a?(Array)
-      #   rep = @soap_admin_connector.get_all_servers(services)
-      #   db = ServersBuilder.new @soap_admin_connector, rep
-      #   db.make
-      # end
+      def where(*services)
+        @services = services
+      end
+
+      private
+
+      def build_response
+        ServersBuilder.new(@parent, make_query).make
+      end
+
+      def make_query
+        sac.get_all_servers(@services.join(COMMA))
+      end
     end
   end
 end
