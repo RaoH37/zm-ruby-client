@@ -6,7 +6,8 @@ module Zm
     class ServersCollection < Base::ObjectsCollection
       def initialize(parent)
         @parent = parent
-        @services = [ServerServices::MAILBOX]
+        # @service = ServerServices::MAILBOX
+        @service = nil
       end
 
       def find_by(hash)
@@ -17,8 +18,9 @@ module Zm
         server
       end
 
-      def where(*services)
-        @services = services
+      def where(service)
+        @service = service
+        self
       end
 
       private
@@ -28,7 +30,7 @@ module Zm
       end
 
       def make_query
-        sac.get_all_servers(@services.join(COMMA))
+        sac.get_all_servers(@service)
       end
     end
   end

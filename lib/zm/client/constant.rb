@@ -158,6 +158,8 @@ module Zm
     end
     module ServerServices
       MAILBOX = 'mailbox'
+      PROXY = 'proxy'
+      LDAP = 'ldap'
     end
   end
 end
