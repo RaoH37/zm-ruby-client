@@ -41,7 +41,7 @@ module Zm
       def read_servers
         sc = ServersCollection.new self
         @zimbraMailHostPool.map do |server_id|
-          sc.find server_id
+          sc.find_by id: server_id
         end
       end
     end
