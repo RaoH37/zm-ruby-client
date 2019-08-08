@@ -32,6 +32,11 @@ module Zm
         res[BODY][:DelegateAuthResponse][:authToken][0][:_content]
       end
 
+      def get_license
+        body = init_hash_request(:GetLicenseRequest)
+        curl_request(body)
+      end
+
       def create_gal_sync_account(name, domain_name, type, server_name, folder_name, account_name, attrs = {})
         req = {
           name: name,

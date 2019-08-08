@@ -9,6 +9,7 @@ require 'zm/client/resource'
 require 'zm/client/distributionlist'
 require 'zm/client/server'
 require 'zm/client/cos'
+require 'zm/client/license'
 # require 'zm/client/distributionlist'
 
 module Zm
@@ -43,6 +44,10 @@ module Zm
           @config.zimbra_public_host,
           @config.zimbra_public_port
         )
+      end
+
+      def license
+        @license ||= LicensesCollection.new(self).find
       end
 
       def domains
