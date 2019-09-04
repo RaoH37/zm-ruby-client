@@ -8,8 +8,9 @@ module Zm
         return [] if json_items.nil?
 
         json_items.map do |entry|
-          dl = DistributionList.new
+          dl = DistributionList.new(@parent)
           dl.init_from_json(entry)
+          dl
         end
       end
 
