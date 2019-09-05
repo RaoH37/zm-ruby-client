@@ -7,7 +7,7 @@ require './lib/zm-ruby-client'
 Gem::Specification.new do |s|
   s.name          = 'zm-ruby-client'
   s.version       = Zm::Client::gem_version.to_s
-  s.date          = '2019-05-21'
+  s.date          = `date '+%Y-%m-%d'`
   s.summary       = 'zm-ruby-client'
   s.description   = 'Zimbra Soap Librairy using SOAP Json interface'
   s.authors       = ['Maxime Désécot']
