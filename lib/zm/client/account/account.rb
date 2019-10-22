@@ -7,7 +7,7 @@ require 'zm/client/folder'
 require 'zm/client/share'
 require 'zm/client/tag'
 # require 'zm/client/contact'
-# require 'zm/client/appointment'
+require 'zm/client/appointment'
 # require 'zm/client/task'
 # require 'zm/client/data_source'
 require 'zm/client/message'
@@ -120,9 +120,7 @@ module Zm
       end
 
       def appointments
-        @appointments ||= AppointmentsCollection.new(
-          sacc, self
-        )
+        @appointments ||= AppointmentsCollection.new(self)
       end
 
       def tags
