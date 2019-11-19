@@ -18,7 +18,7 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::AdminObject
-      attr_reader :name, :id, :used, :token
+      attr_reader :name, :id, :token
       attr_writer :home_url
       attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
 
@@ -89,6 +89,10 @@ module Zm
         @public_url = @infos[:publicURL]
         @zimbraCOSId = @infos[:cos][:id]
         @home_url = @infos[:rest]
+      end
+
+      def used
+        @used ||= sac.get_mailbox(id)[:Body][:GetMailboxResponse][:mbox].first[:s]
       end
 
       def public_url

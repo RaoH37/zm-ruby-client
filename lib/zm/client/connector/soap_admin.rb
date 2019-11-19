@@ -325,6 +325,17 @@ module Zm
         curl_request(body)
       end
 
+      def get_mailbox(id)
+        req = {
+            mbox: {
+                id: id
+            }
+        }
+        body = init_hash_request(:GetMailboxRequest)
+        body[:Body][:GetMailboxRequest].merge!(req)
+        curl_request(body)
+      end
+
       def flush_cache(type, allServers, id)
         req = { cache: { type: type, allServers: allServers, entry: { by: :id, _content: id } } }
         body = init_hash_request(:FlushCacheRequest)
