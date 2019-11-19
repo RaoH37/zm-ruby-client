@@ -210,6 +210,13 @@ module Zm
         curl_request(body)
       end
 
+      def rename_account(id, email)
+        req = { id: id, newName: email }
+        body = init_hash_request(:RenameAccountRequest)
+        body[:Body][:RenameAccountRequest].merge!(req)
+        curl_request(body)
+      end
+
       def add_distribution_list_members(id, emails)
         req = { id: id, dlm: emails.map { |email| {_content: email} } }
         body = init_hash_request(:AddDistributionListMemberRequest)
@@ -315,6 +322,13 @@ module Zm
         # body = { Body: { GetQuotaUsageRequest: { _jsns: ADMINSPACE } } }.merge(hash_header(@token))
         body = init_hash_request(:GetQuotaUsageRequest)
         body[:Body][:GetQuotaUsageRequest].merge!(req)
+        curl_request(body)
+      end
+
+      def flush_cache(type, allServers, id)
+        req = { cache: { type: type, allServers: allServers, entry: { by: :id, _content: id } } }
+        body = init_hash_request(:FlushCacheRequest)
+        body[:Body][:FlushCacheRequest].merge!(req)
         curl_request(body)
       end
 

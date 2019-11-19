@@ -176,6 +176,11 @@ module Zm
         aliases.delete(email)
       end
 
+      def rename!(email)
+        sac.rename_account(@id, email)
+        @name = email
+      end
+
       def local_transport
         raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 
