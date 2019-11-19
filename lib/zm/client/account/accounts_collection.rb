@@ -19,6 +19,10 @@ module Zm
         account
       end
 
+      def quotas(domain_name = nil)
+        sac.get_quota_usage(domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh)
+      end
+
       private
 
       def build_response
@@ -29,6 +33,8 @@ module Zm
         super
         @search_type = SearchType::ACCOUNT
         @attrs = SearchType::Attributes::ACCOUNT
+        @all_servers = 1
+        @refresh = 0
       end
     end
   end
