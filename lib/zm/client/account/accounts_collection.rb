@@ -19,8 +19,10 @@ module Zm
         account
       end
 
-      def quotas(domain_name = nil)
-        sac.get_quota_usage(domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh)
+      def find_all_quotas(domain_name = nil)
+        json = sac.get_quota_usage(domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh)
+        reset_query_params
+        AccountsBuilder.new(@parent, json).make
       end
 
       private

@@ -235,6 +235,12 @@ module Zm
       #   url_folder_path << '?' << uri.query
       #   url_folder_path
       # end
+
+      def init_from_json(json)
+        @used = json[:used] if json[:used]
+        @zimbraMailQuota = json[:limit] if json[:limit]
+        super(json)
+      end
     end
   end
 end
