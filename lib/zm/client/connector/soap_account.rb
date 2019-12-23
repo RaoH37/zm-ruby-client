@@ -285,6 +285,28 @@ module Zm
       end
 
       # -------------------------------
+      # PREFERENCES
+
+      def get_prefs(token, *names)
+        req = { prefs: names.map { |name| { name: name } } }
+        body = init_hash_request(token, :GetPrefsRequest, ACCOUNTSPACE)
+        body[:Body][:GetPrefsRequest].merge!(req) if req.any?
+        curl_request(body)
+      end
+
+      def modify_prefs(token, prefs)
+        soap_name = :ModifyPrefsRequest
+        req = { pref: prefs.map { |pref, value| { name: pref, _content: value } } }
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req) if req.any?
+        #puts body
+        #curl_request(body)
+        #puts SoapXmlBuilder.new(body).to_xml
+        # todo ne fonctionne pas en JS !
+        curl_xml(SoapXmlBuilder.new(body).to_xml)
+      end
+
+      # -------------------------------
       # GENERIC
 
       def get_info(token, sections = 'mbox', rights = nil)
