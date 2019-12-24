@@ -6,8 +6,11 @@ require 'curb'
 module Zm
   module Client
     class RestAccountConnector
+      attr_accessor :verbose
+
       def initialize
         @curl = easy_curl
+        @verbose = false
       end
 
       def cookie(cookie)
@@ -38,7 +41,7 @@ module Zm
           follow_location: false,
           enable_cookies: false,
           ssl_verify_peer: false,
-          verbose: true,
+          verbose: verbose,
           multipart_form_post: true
         }
         multi_options = { pipeline: Curl::CURLPIPE_HTTP1 }
@@ -76,7 +79,7 @@ module Zm
           curl.encoding = ''
           curl.ssl_verify_peer = false
           curl.multipart_form_post = true
-          curl.verbose = true
+          curl.verbose = verbose
         end
       end
 
