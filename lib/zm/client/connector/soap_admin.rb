@@ -231,6 +231,30 @@ module Zm
         curl_request(body)
       end
 
+      def add_distribution_list_alias(id, email)
+        key = :AddDistributionListAliasRequest
+        req = { id: id, alias: email }
+        body = init_hash_request(key)
+        body[:Body][key].merge!(req)
+        curl_request(body)
+      end
+
+      def remove_distribution_list_alias(id, email)
+        key = :RemoveDistributionListAliasRequest
+        req = { id: id, alias: email }
+        body = init_hash_request(key)
+        body[:Body][key].merge!(req)
+        curl_request(body)
+      end
+
+      def rename_distribution_list(id, email)
+        key = :RenameDistributionListRequest
+        req = { id: id, newName: email }
+        body = init_hash_request(key)
+        body[:Body][key].merge!(req)
+        curl_request(body)
+      end
+
       def get_domain(name, by = :name, attrs = nil)
         req = { domain: { by: by, _content: name } }
         req[:_attrs] = attrs unless attrs.nil?
