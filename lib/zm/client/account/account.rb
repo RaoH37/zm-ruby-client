@@ -3,6 +3,7 @@
 require 'zm/modules/common/account_common'
 # require_relative '../../modules/common/account_galsync'
 require 'zm/client/connector/rest_account'
+require 'zm/client/signature'
 require 'zm/client/folder'
 require 'zm/client/share'
 require 'zm/client/tag'
@@ -135,6 +136,10 @@ module Zm
         @tasks ||= TasksCollection.new(
           sacc, self
         )
+      end
+
+      def signatures
+        @signatures ||= SignaturesCollection.new(self)
       end
 
       def data_sources

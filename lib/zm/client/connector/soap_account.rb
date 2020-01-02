@@ -320,6 +320,11 @@ module Zm
         curl_request(body)
       end
 
+      def get_signatures(token)
+        body = init_hash_request(token, :GetSignaturesRequest, ACCOUNTSPACE)
+        curl_request(body)
+      end
+
       # -------------------------------
       # GENERIC
 
