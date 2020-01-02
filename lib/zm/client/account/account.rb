@@ -141,6 +141,10 @@ module Zm
         @data_sources ||= DataSourcesCollection.new sac, self
       end
 
+      def calendar_folders
+        folders.where(Zm::Client::FolderView::APPOINTMENT)
+      end
+
       def delete!
         sac.delete_account(@id)
       end
