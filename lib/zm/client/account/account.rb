@@ -142,7 +142,7 @@ module Zm
       end
 
       def calendar_folders
-        folders.where(Zm::Client::FolderView::APPOINTMENT)
+        @calendar_folders ||= folders.select { |f| f.view == Zm::Client::FolderView::APPOINTMENT }
       end
 
       def delete!
