@@ -12,6 +12,7 @@ module Zm
       alias nb_messages n
       alias nb_items n
       alias parent_id l
+      alias size s
 
       def initialize(parent, json = nil, key = :folder)
         @parent = parent

@@ -146,8 +146,24 @@ module Zm
         @data_sources ||= DataSourcesCollection.new sac, self
       end
 
+      def message_folders
+        @message_folders ||= folders.select { |f| f.view == Zm::Client::FolderView::MESSAGE }
+      end
+
+      def contact_folders
+        @contact_folders ||= folders.select { |f| f.view == Zm::Client::FolderView::CONTACT }
+      end
+
       def calendar_folders
         @calendar_folders ||= folders.select { |f| f.view == Zm::Client::FolderView::APPOINTMENT }
+      end
+
+      def task_folders
+        @task_folders ||= folders.select { |f| f.view == Zm::Client::FolderView::TASK }
+      end
+
+      def document_folders
+        @document_folders ||= folders.select { |f| f.view == Zm::Client::FolderView::DOCUMENT }
       end
 
       def delete!
