@@ -29,7 +29,7 @@ module Zm
       private
 
       def build_response
-        rep = @parent.sacc.search(@parent.token, 'appointment', 0, 500, 'dateAsc', @query, build_options)
+        rep = @parent.sacc.search(@parent.token, 'appointment', @offset, @limit, 'dateAsc', @query, build_options)
         ab = AppointmentsBuilder.new @parent, rep
         ab.make
       end
@@ -44,6 +44,7 @@ module Zm
       end
 
       def reset_query_params
+        super
         @start_at = nil
         @end_at = nil
         @query = nil

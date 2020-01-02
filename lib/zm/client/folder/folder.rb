@@ -10,6 +10,7 @@ module Zm
                     :owner, :reminder, :acl, :itemCount
 
       alias nb_messages n
+      alias nb_items n
       alias parent_id l
 
       def initialize(parent, json = nil, key = :folder)
