@@ -42,7 +42,7 @@ module Zm
         end
 
         def instance_variables_array(zcs_attrs)
-          selected_attrs = zcs_attrs.map { |a| "@#{a}".to_sym }
+          selected_attrs = zcs_attrs.map { |a| arrow_name(a).to_sym }
           attrs_only_set = instance_variables & selected_attrs
           attrs_only_set.map do |name|
             [name.to_s[1..-1], instance_variable_get(name)]
@@ -51,6 +51,10 @@ module Zm
 
         def instance_variables_hash(zcs_attrs)
           Hash[instance_variables_array(zcs_attrs)]
+        end
+
+        def arrow_name(name)
+          "@#{name}"
         end
       end
     end
