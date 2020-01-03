@@ -14,7 +14,9 @@ module Zm
         tag
       end
 
-      def all
+      private
+
+      def build_response
         rep = @parent.sacc.get_tag(@parent.token)
         tb = TagBuilder.new @parent, rep
         tb.make
