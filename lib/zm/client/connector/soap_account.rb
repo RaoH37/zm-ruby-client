@@ -158,6 +158,11 @@ module Zm
         curl_request(body)
       end
 
+      def get_all_search_folders(token)
+        body = init_hash_request(token, :GetSearchFolderRequest)
+        curl_request(body)
+      end
+
       # -------------------------------
       # TASK
 
