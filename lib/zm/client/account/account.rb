@@ -220,6 +220,10 @@ module Zm
         @uploader ||= Upload.new(self)
       end
 
+      def last_logon
+        @last_logon ||= Time.parse zimbraLastLogonTimestamp unless zimbraLastLogonTimestamp.nil?
+      end
+
       # Deprecated: use uploader.download_file
       #
       # def download(folder_path, fmt, types, dest_file_path)
