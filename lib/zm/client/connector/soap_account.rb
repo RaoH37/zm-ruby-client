@@ -206,6 +206,15 @@ module Zm
         curl_request(body)
       end
 
+      def get_rights(token, rights)
+        key = :GetRightsRequest
+        ace = rights.map { |r| { right: r } }
+        req = { ace: ace }
+        body = init_hash_request(token, key, ACCOUNTSPACE)
+        body[:Body][key].merge!(req)
+        curl_request(body)
+      end
+
       def grant_rights(token, zid = nil, gt = nil, right = nil, d = nil, key = nil, pw = nil, deny = nil, chkgt = nil)
         ace = {
           zid: zid,

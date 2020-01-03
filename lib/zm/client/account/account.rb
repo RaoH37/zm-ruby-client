@@ -8,6 +8,7 @@ require 'zm/client/folder'
 require 'zm/client/search_folder'
 require 'zm/client/share'
 require 'zm/client/tag'
+require 'zm/client/ace'
 # require 'zm/client/contact'
 require 'zm/client/appointment'
 # require 'zm/client/task'
@@ -142,6 +143,11 @@ module Zm
           sacc, self
         )
       end
+
+      def aces
+        @aces ||= AcesCollection.new(self)
+      end
+      alias rights aces
 
       def signatures
         @signatures ||= SignaturesCollection.new(self)
