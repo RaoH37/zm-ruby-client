@@ -15,7 +15,7 @@ module Zm
         json[:content].each do |c|
           @txt = c[:_content] if c[:type] == TYPE_TXT
           @html = c[:_content] if c[:type] == TYPE_HTML
-        end
+        end if json[:content].is_a?(Array)
       end
 
       def create!
