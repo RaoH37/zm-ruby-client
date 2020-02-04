@@ -9,7 +9,7 @@ require 'zm/client/search_folder'
 require 'zm/client/share'
 require 'zm/client/tag'
 require 'zm/client/ace'
-# require 'zm/client/contact'
+require 'zm/client/contact'
 require 'zm/client/appointment'
 # require 'zm/client/task'
 # require 'zm/client/data_source'
@@ -125,9 +125,7 @@ module Zm
       end
 
       def contacts
-        @contacts ||= ContactsCollection.new(
-          sacc, self
-        )
+        @contacts ||= ContactsCollection.new(self)
       end
 
       def appointments
@@ -225,6 +223,10 @@ module Zm
         raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 
         "lmtp:#{zimbraMailHost}:7025"
+      end
+
+      def local_transport!
+        update!(zimbraMailTransport: local_transport)
       end
 
       def uploader

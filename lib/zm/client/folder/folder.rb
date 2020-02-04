@@ -4,10 +4,10 @@ module Zm
   module Client
     # class for account folder
     class Folder < Base::AccountObject
-      attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :luuid, :f,
-                    :view, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled,
-                    :n, :s, :i4ms, :i4next, :folder, :zid, :rid, :ruuid,
-                    :owner, :reminder, :acl, :itemCount
+
+      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l luuid f view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next folder zid rid ruuid owner reminder acl itemCount broken]
+
+      attr_accessor *INSTANCE_VARIABLE_KEYS
 
       alias nb_messages n
       alias nb_items n
@@ -19,14 +19,6 @@ module Zm
         @type = key
         init_from_json(json) if json.is_a?(Hash)
         yield(self) if block_given?
-      end
-
-      def concat
-        [
-          @type, @id, @uuid, @name, @absFolderPath, @l, @luuid, @f, @view, @rev,
-          @ms, @webOfflineSyncDays, @activesyncdisabled, @n, @s, @i4ms, @i4next,
-          @folder, @zid, @rid, @ruuid, @owner, @reminder, @acl
-        ]
       end
 
       def create!
@@ -82,28 +74,10 @@ module Zm
       end
 
       def init_from_json(json)
-        @id                 = json[:id].to_i
-        @uuid               = json[:uuid]
-        @name               = json[:name]
-        @absFolderPath      = json[:absFolderPath]
-        @l                  = json[:l]
-        @luuid              = json[:luuid]
-        @f                  = json[:f]
-        @view               = json[:view]&.to_sym
-        @rev                = json[:rev]
-        @ms                 = json[:ms]
-        @webOfflineSyncDays = json[:webOfflineSyncDays]
-        @activesyncdisabled = json[:activesyncdisabled]
-        @n                  = json[:n].to_i
-        @s                  = json[:s]
-        @i4ms               = json[:i4ms]
-        @i4next             = json[:i4next]
-        @zid                = json[:zid]
-        @rid                = json[:rid]
-        @ruuid              = json[:ruuid]
-        @owner              = json[:owner]
-        @reminder           = json[:reminder]
-        @acl                = json[:acl]
+        INSTANCE_VARIABLE_KEYS.each do |key|
+          var_name = "@#{key}"
+          instance_variable_set(var_name, json[key])
+        end
       end
     end
   end

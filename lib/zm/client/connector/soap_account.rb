@@ -133,12 +133,10 @@ module Zm
         curl_request(body)
       end
 
-      def get_all_folders(token, view = nil)
+      def get_all_folders(token, view = nil, tr = nil)
         body = init_hash_request(token, :GetFolderRequest)
-        unless view.nil?
-          req = { view: view }
-          body[:Body][:GetFolderRequest].merge!(req)
-        end
+        req = { view: view, tr: tr }.reject { |_, v| v.nil? }
+        body[:Body][:GetFolderRequest].merge!(req)
         curl_request(body)
       end
 

@@ -8,6 +8,7 @@ module Zm
 
       def initialize(parent)
         @parent = parent
+        reset_query_params
       end
 
       def new
@@ -16,15 +17,16 @@ module Zm
         folder
       end
 
-      def where(view = nil)
+      def where(view: nil, tr: nil)
         @view = view
+        @tr = tr
         self
       end
 
       private
 
       def build_response
-        rep = @parent.sacc.get_all_folders(@parent.token, @view)
+        rep = @parent.sacc.get_all_folders(@parent.token, @view, @tr)
         fb = FoldersBuilder.new @parent, rep
         all = fb.make
         all.delete_if { |f| f.id == FolderDefault::ROOT[:id] }
@@ -32,6 +34,7 @@ module Zm
 
       def reset_query_params
         @view = nil
+        @tr = nil
       end
     end
   end
