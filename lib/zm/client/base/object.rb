@@ -44,9 +44,17 @@ module Zm
         def instance_variables_array(zcs_attrs)
           selected_attrs = zcs_attrs.map { |a| arrow_name(a).to_sym }
           attrs_only_set = instance_variables & selected_attrs
-          attrs_only_set.map do |name|
-            [name.to_s[1..-1], instance_variable_get(name)]
+
+          arr = attrs_only_set.map do |name|
+            n = name.to_s[1..-1]
+            value = instance_variable_get(name)
+            [n, value]
           end
+
+          multi_value = arr.select { |a| a.last.is_a?(Array) }
+          arr.reject! { |a| a.last.is_a?(Array) }
+          multi_value.each { |a| arr += a.last.map { |v| [a.first, v] } }
+          arr
         end
 
         def instance_variables_hash(zcs_attrs)

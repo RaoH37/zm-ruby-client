@@ -12,6 +12,7 @@ module Zm
 
       MAILSPACE = 'urn:zimbraMail'.freeze
       ACCOUNTSPACE = 'urn:zimbraAccount'.freeze
+      A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
 
       def initialize(scheme, host, port)
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/soap/', nil, nil, nil)
@@ -109,7 +110,8 @@ module Zm
         curl_request(body)
       end
 
-      def modify_contact(token, id, a, members)
+      def modify_contact(token, id, attrs, members = [])
+        a = attrs.to_a.map(&A_NODE_PROC)
         req = { cn: { a: a, id: id, m: members } }
         body = init_hash_request(token, :ModifyContactRequest)
         body[:Body][:ModifyContactRequest].merge!(req)

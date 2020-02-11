@@ -14,6 +14,7 @@ module Zm
       attr_accessor :token
 
       def initialize(scheme, host, port)
+        @verbose = false
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/admin/soap/', nil, nil, nil)
         init_curl_client
       end

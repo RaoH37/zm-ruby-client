@@ -16,6 +16,11 @@ module Zm
       }.freeze
       BODY = :Body
 
+      def verbose!
+        @verbose = true
+        @curl.verbose = @verbose
+      end
+
       private
 
       def init_curl_client
@@ -26,13 +31,15 @@ module Zm
           curl.headers = HTTP_HEADERS
           curl.ssl_verify_peer = false
           curl.ssl_verify_host = 0
-          curl.verbose = false
+          # curl.verbose = @verbose
         end
       end
 
       def curl_request(body, error_handler = SoapError)
+        puts body.to_json if @verbose
         @curl.http_post(body.to_json)
 
+        puts @curl.body_str if @verbose
         soapbody = JSON.parse(@curl.body_str, symbolize_names: true)
         raise(error_handler, soapbody) if @curl.status.to_i >= 400
 

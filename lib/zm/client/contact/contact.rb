@@ -19,6 +19,10 @@ module Zm
         [email, email2, email3, email4, email5, email6, email7].compact
       end
 
+      def emails_h
+        { 'email' => email, 'email2' => email2, 'email3' => email3, 'email4' => email4, 'email5' => email5, 'email6' => email6, 'email7' => email7 }.compact
+      end
+
       def concat
         [@id, @name] + INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
       end
@@ -39,6 +43,14 @@ module Zm
 
       def delete!
         #@parent.sacc.tag_action(@parent.token, :delete, @id)
+      end
+
+      def update!(hash)
+        sacc.modify_contact(@parent.token, @id, hash)
+        hash.each { |k, v| send "#{k}=", v }
+      end
+
+      def modify!
       end
     end
   end

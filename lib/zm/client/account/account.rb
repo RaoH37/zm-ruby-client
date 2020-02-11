@@ -187,7 +187,7 @@ module Zm
       def modify!
         sac.modify_account(
           @id,
-          instance_variables_array(attrs_write)
+          instance_variables_array(attrs_write - %w[zimbraMailHost zimbraDeviceAllowedPasscodeLockoutDuration zimbraFeatureSocialFiltersEnabled zimbraZimletAvailableZimlets zimbraMobileSyncRedoMaxAttempts zimbraZimletUserProperties zimbraSharedItem])
         )
       end
 
