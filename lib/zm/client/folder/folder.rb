@@ -55,7 +55,9 @@ module Zm
           'grant',
           @id,
           grant: {
-            zid: parent.zimbra_id, perm: right
+            zid: parent.id,
+            gt: parent.grantee_type,
+            perm: right
           }
         )
       end

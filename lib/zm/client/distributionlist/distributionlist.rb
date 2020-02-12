@@ -11,6 +11,7 @@ module Zm
         extend(DistributionListCommon)
         super(parent)
         @members = []
+        @grantee_type = 'grp'.freeze
       end
 
       def create!
