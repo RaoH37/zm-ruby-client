@@ -226,7 +226,7 @@ module Zm
       end
 
       def remove_distribution_list_members(id, emails)
-        req = { id: id, dlm: emails }
+        req = { id: id, dlm: emails.map { |email| {_content: email} } }
         body = init_hash_request(:RemoveDistributionListMemberRequest)
         body[:Body][:RemoveDistributionListMemberRequest].merge!(req)
         curl_request(body)
