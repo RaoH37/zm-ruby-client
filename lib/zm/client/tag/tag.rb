@@ -4,19 +4,19 @@ module Zm
   module Client
     # class account tag
     class Tag < Base::AccountObject
-      attr_accessor :id, :name, :color, :rgb, :u, :n, :d, :rev, :md, :ms
+
+      INSTANCE_VARIABLE_KEYS = %i[id name color rgb u n d rev md ms]
+
+      attr_accessor *INSTANCE_VARIABLE_KEYS
+
+      def concat
+        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      end
 
       def init_from_json(json)
-        @id      = json[:id]
-        @name    = json[:name]
-        @color   = json[:color]
-        @rgb     = json[:rgb]
-        @u       = json[:u]
-        @n       = json[:n]
-        @d       = json[:d]
-        @rev     = json[:rev]
-        @md      = json[:md]
-        @ms      = json[:ms]
+        INSTANCE_VARIABLE_KEYS.each do |key|
+          instance_variable_set(arrow_name(key), json[key])
+        end
       end
 
       def create!
