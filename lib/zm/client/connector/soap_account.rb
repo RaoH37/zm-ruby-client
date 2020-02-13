@@ -390,6 +390,30 @@ module Zm
         curl_request(body)
       end
 
+      def create_signature(token, name, type, content)
+        soap_name = :CreateSignatureRequest
+        req = { signature: { name: name, content: { type: type, _content: content } } }
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def modify_signature(token, id, name, type, content)
+        soap_name = :ModifySignatureRequest
+        req = { signature: { id: id, name: name, cid: { content: { type: type, _content: content } } } }
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def delete_signature(token, id)
+        soap_name = :DeleteSignatureRequest
+        req = { signature: { id: id } }
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
       # -------------------------------
       # GENERIC
 

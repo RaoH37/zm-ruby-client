@@ -7,7 +7,13 @@ module Zm
       TYPE_TXT = 'text/plain'
       TYPE_HTML = 'text/html'
 
-      attr_accessor :id, :name, :txt, :html
+      INSTANCE_VARIABLE_KEYS = %i[id name txt html]
+
+      attr_accessor *INSTANCE_VARIABLE_KEYS
+
+      def concat
+        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      end
 
       def init_from_json(json)
         @id      = json[:id]
@@ -19,11 +25,25 @@ module Zm
       end
 
       def create!
-        # todo
+        rep = @parent.sacc.create_signature(@parent.token, name, type, content)
+        @id = rep[:Body][:CreateSignatureResponse][:signature].first[:id]
+      end
+
+      def modify!
+        @parent.sacc.modify_signature(@parent.token, id, name, type, content)
       end
 
       def delete!
-        # todo
+        @parent.sacc.delete_signature(@parent.token, id)
+      end
+
+      def type
+        return TYPE_HTML unless html.nil?
+        TYPE_TXT
+      end
+
+      def content
+        html || txt
       end
     end
   end

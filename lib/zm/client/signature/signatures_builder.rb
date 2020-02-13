@@ -4,8 +4,8 @@ module Zm
   module Client
     # class factory [folders]
     class SignaturesBuilder < Base::ObjectsBuilder
-      def initialize(account, json)
-        @account = account
+      def initialize(parent, json)
+        @parent = parent
         @json = json
       end
 
