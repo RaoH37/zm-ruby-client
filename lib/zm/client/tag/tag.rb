@@ -24,6 +24,10 @@ module Zm
         init_from_json(rep[:Body][:CreateTagResponse][:tag].first)
       end
 
+      def modify!
+        @parent.sacc.tag_action(@parent.token, :update, @id, { color: @color, rgb: @rgb })
+      end
+
       def delete!
         @parent.sacc.tag_action(@parent.token, :delete, @id)
       end
