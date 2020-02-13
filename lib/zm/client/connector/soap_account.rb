@@ -309,6 +309,23 @@ module Zm
         curl_request(body)
       end
 
+      def add_msg(token, l, eml, d = nil, f = nil, tn = nil)
+        key = :AddMsgRequest
+        m = {
+          l: l,
+          d: d,
+          f: f,
+          tn: tn,
+          content: { _content: eml }
+        }.reject { |_, v| v.nil? }
+
+        req = { m: m }
+        body = init_hash_request(token, key)
+        body[:Body][key].merge!(req)
+
+        curl_request(body)
+      end
+
       # -------------------------------
       # TAG
 
