@@ -164,6 +164,39 @@ module Zm
       end
 
       # -------------------------------
+      # SEARCH FOLDER
+
+      def create_search_folder(token, name, query, types = 'messages', l = 1, color = nil, sort_by = nil)
+        search = {
+            name: name,
+            query: query,
+            types: types,
+            sortBy: sort_by,
+            color: color,
+            l: l
+        }.reject { |_, v| v.nil? }
+
+        req = { search: search }
+        body = init_hash_request(token, :CreateSearchFolderRequest)
+        body[:Body][:CreateSearchFolderRequest].merge!(req)
+        puts body
+        curl_request(body)
+      end
+
+      def modify_search_folder(token, id, query, types = 'messages')
+        search = {
+            id: id,
+            query: query,
+            types: types
+        }.reject { |_, v| v.nil? }
+
+        req = { search: search }
+        body = init_hash_request(token, :ModifySearchFolderRequest)
+        body[:Body][:ModifySearchFolderRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
       # TASK
 
       def create_task(token, folder_id, name, description = nil, options = {})
@@ -275,6 +308,7 @@ module Zm
         body[:Body][:SendMsgRequest].merge!(req)
         curl_request(body)
       end
+
       # -------------------------------
       # TAG
 
