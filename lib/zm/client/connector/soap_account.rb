@@ -13,6 +13,7 @@ module Zm
       MAILSPACE = 'urn:zimbraMail'.freeze
       ACCOUNTSPACE = 'urn:zimbraAccount'.freeze
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
+      A_NODE_PROC_NAME = lambda { |n| { name: n.first, _content: n.last } }
 
       def initialize(scheme, host, port)
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/soap/', nil, nil, nil)
@@ -179,7 +180,7 @@ module Zm
         req = { search: search }
         body = init_hash_request(token, :CreateSearchFolderRequest)
         body[:Body][:CreateSearchFolderRequest].merge!(req)
-        puts body
+        # puts body
         curl_request(body)
       end
 
@@ -346,6 +347,38 @@ module Zm
         req = { action: action }
         body = init_hash_request(token, :TagActionRequest)
         body[:Body][:TagActionRequest].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
+      # IDENTITY
+
+      def get_all_identities(token)
+        body = init_hash_request(token, :GetIdentitiesRequest, ACCOUNTSPACE)
+        curl_request(body)
+      end
+
+      def create_identity(token, name, attrs = [])
+        soap_name = :CreateIdentityRequest
+        req = { identity: { name: name, a: attrs.to_a.map(&A_NODE_PROC_NAME) } }
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def modify_identity(token, id, attrs = [])
+        soap_name = :ModifyIdentityRequest
+        req = { identity: { id: id, a: attrs.to_a.map(&A_NODE_PROC_NAME) } }
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def delete_identity(token, id)
+        soap_name = :DeleteIdentityRequest
+        req = { identity: { id: id } }
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 

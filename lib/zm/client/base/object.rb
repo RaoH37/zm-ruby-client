@@ -5,7 +5,7 @@ module Zm
     module Base
       # Abstract Class Provisionning Object
       class Object
-        attr_accessor :token, :name, :id
+        attr_accessor :parent, :token, :name, :id
         attr_reader :grantee_type
 
         def initialize(parent)
@@ -64,6 +64,13 @@ module Zm
 
         def arrow_name(name)
           "@#{name}"
+        end
+
+        def clone
+          obj = super
+          obj.remove_instance_variable(:@id)
+          yield(obj) if block_given?
+          obj
         end
       end
     end

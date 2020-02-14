@@ -14,6 +14,7 @@ require 'zm/client/appointment'
 # require 'zm/client/task'
 # require 'zm/client/data_source'
 require 'zm/client/message'
+require 'zm/client/identity'
 require 'zm/client/upload'
 require 'addressable/uri'
 
@@ -119,6 +120,10 @@ module Zm
 
       def search_folders
         @search_folders ||= SearchFoldersCollection.new(self)
+      end
+
+      def identities
+        @identities ||= IdentitiesCollection.new(self)
       end
 
       def shares
