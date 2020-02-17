@@ -104,25 +104,45 @@ module Zm
         curl_request(body)
       end
 
-      def create_contact(token, parent_id, a, members)
-        req = { cn: { a: a, l: parent_id, m: members } }
-        body = init_hash_request(token, :CreateContactRequest)
-        body[:Body][:CreateContactRequest].merge!(req)
-        curl_request(body)
-      end
-
-      def modify_contact(token, id, attrs, members = [])
+      def create_contact(token, folder_id, attrs)
         a = attrs.to_a.map(&A_NODE_PROC)
-        req = { cn: { a: a, id: id, m: members } }
-        body = init_hash_request(token, :ModifyContactRequest)
-        body[:Body][:ModifyContactRequest].merge!(req)
+        soap_name = :CreateContactRequest
+        req = { cn: { a: a, l: folder_id } }
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
-      def delete_contact(token, contact_id)
-        req = { action: { id: contact_id, l: TRASH_ID, op: :move } }
-        body = init_hash_request(token, :ContactActionRequest)
-        body[:Body][:ContactActionRequest].merge!(req)
+      def modify_contact(token, id, attrs)
+        a = attrs.to_a.map(&A_NODE_PROC)
+        soap_name = :ModifyContactRequest
+        req = { cn: { a: a, id: id } }
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def create_group_contact(token, parent_id, a, members)
+        # req = { cn: { a: a, l: parent_id, m: members } }
+        # body = init_hash_request(token, :CreateContactRequest)
+        # body[:Body][:CreateContactRequest].merge!(req)
+        # curl_request(body)
+      end
+
+      def modify_group_contact(token, id, attrs, members = [])
+        # a = attrs.to_a.map(&A_NODE_PROC)
+        # req = { cn: { a: a, id: id, m: members } }
+        # body = init_hash_request(token, :ModifyContactRequest)
+        # body[:Body][:ModifyContactRequest].merge!(req)
+        # curl_request(body)
+      end
+
+      def contact_action(token, op, id, options = {})
+        soap_name = :ContactActionRequest
+        action = { op: op, id: id }.merge(options)
+        req = { action: action }
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
