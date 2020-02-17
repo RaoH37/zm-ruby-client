@@ -6,8 +6,11 @@ module Zm
     class FoldersCollection < Base::ObjectsCollection
       METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
 
+      attr_reader :root
+
       def initialize(parent)
         @parent = parent
+        @root = nil
         reset_query_params
       end
 
@@ -28,8 +31,8 @@ module Zm
       def build_response
         rep = @parent.sacc.get_all_folders(@parent.token, @view, @tr)
         fb = FoldersBuilder.new @parent, rep
-        all = fb.make
-        all.delete_if { |f| f.id == FolderDefault::ROOT[:id] }
+        @root = fb.make
+        fb.flatten
       end
 
       def reset_query_params

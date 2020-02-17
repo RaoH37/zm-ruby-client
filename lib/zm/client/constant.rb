@@ -56,7 +56,8 @@ module Zm
     module FolderType
       FOLDER = :folder
       LINK = :link
-      ALL = [FOLDER, LINK].freeze
+      SEARCH = :search
+      ALL = [FOLDER, LINK, SEARCH].freeze
     end
 
     module SoapUtils

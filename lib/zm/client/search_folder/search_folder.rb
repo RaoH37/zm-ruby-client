@@ -21,7 +21,8 @@ module Zm
       end
 
       def create!
-        @parent.sacc.create_search_folder(@parent.token, name, query, types, l, color, sortBy)
+        rep = @parent.sacc.create_search_folder(@parent.token, name, query, types, l, color, sortBy)
+        init_from_json(rep[:Body][:CreateSearchFolderResponse][:search].first)
       end
 
       def modify!

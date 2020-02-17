@@ -5,9 +5,14 @@ module Zm
     # class for account folder
     class Folder < Base::AccountObject
 
-      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l luuid f view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next folder zid rid ruuid owner reminder acl itemCount broken]
+      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l luuid f view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid ruuid owner reminder acl itemCount broken deletable color]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_accessor :folders
+
+      def concat
+        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      end
 
       alias nb_messages n
       alias nb_items n
@@ -17,12 +22,13 @@ module Zm
       def initialize(parent, json = nil, key = :folder)
         @parent = parent
         @type = key
+        @folders = []
         init_from_json(json) if json.is_a?(Hash)
         yield(self) if block_given?
       end
 
       def create!
-        rep = @parent.sacc.create_folder(@parent.token, @l, @name, @view)
+        rep = @parent.sacc.create_folder(@parent.token, @l, @name, @view, @color)
         init_from_json(rep[:Body][:CreateFolderResponse][:folder].first)
       end
 

@@ -7,35 +7,37 @@ module Zm
       def initialize(account, json)
         @account = account
         @json = json
+        @key = :folder
+        @root_folder = nil
       end
 
       def make
-        root = @json[:Body][:GetFolderResponse][:folder]
-        folders = FolderType::ALL.map do |key|
-          flatten(root, key).map do |f|
-            Folder.new(@account, f, key)
-          end
+        root = @json[:Body][:GetFolderResponse][@key]
+
+        @root_folder = Folder.new(@account, root.first)
+
+        if !root.first[@key].nil? && root.first[@key].any?
+          construct_tree(@root_folder, root.first[@key])
         end
-        folders.flatten!
 
-        tmp = root.first.clone
-        FolderType::ALL.each { |key| tmp.delete(key) }
-        folders.unshift Folder.new(@account, tmp, FolderType::FOLDER)
-
-        folders
+        @root_folder
       end
 
-      def flatten(json, key, collecter = [])
-        return collecter unless json.is_a?(Array)
+      def construct_tree(parent_folder, json_folders)
+        json_folders.each do |json_folder|
+          folder = Folder.new(@account, json_folder)
+          parent_folder.folders << folder
 
-        json.each do |folder|
-          tmp = folder.clone
-          tmp.delete(key)
-          collecter << tmp if tmp[:name] != FolderDefault::ROOT[:name]
-          collecter << folder[key] if folder[key].is_a?(Hash)
-          flatten(folder[key], key, collecter) if folder[key].is_a?(Array)
+          construct_tree(folder, json_folder[@key]) if !json_folder[@key].nil? && json_folder[@key].any?
         end
-        collecter
+      end
+
+      def flatten(folder = @root_folder, collector = [])
+        collector.push(folder)
+        folder.folders.each do |child|
+          flatten(child, collector)
+        end
+        collector
       end
     end
   end

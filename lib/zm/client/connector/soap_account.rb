@@ -137,14 +137,15 @@ module Zm
       end
 
       def get_all_folders(token, view = nil, tr = nil)
-        body = init_hash_request(token, :GetFolderRequest)
+        soap_name = :GetFolderRequest
+        body = init_hash_request(token, soap_name)
         req = { view: view, tr: tr }.reject { |_, v| v.nil? }
-        body[:Body][:GetFolderRequest].merge!(req)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
-      def create_folder(token, parent_id, name, view, options = {})
-        req = { folder: { l: parent_id, name: name, view: view } }.merge(options)
+      def create_folder(token, parent_id, name, view, color, options = {})
+        req = { folder: { l: parent_id, name: name, view: view, color: color } }.merge(options)
         body = init_hash_request(token, :CreateFolderRequest)
         body[:Body][:CreateFolderRequest].merge!(req)
         curl_request(body)
