@@ -4,13 +4,12 @@ module Zm
   module Client
     # collection of appointments
     class AppointmentsCollection < Base::ObjectsCollection
-      METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
+      attr_accessor :more
 
       def initialize(parent)
         @parent = parent
-        @start_at = nil
-        @end_at = nil
-        @query = nil
+        @more = true
+        reset_query_params
       end
 
       def new
@@ -19,28 +18,61 @@ module Zm
         appointment
       end
 
-      def where(start_at = nil, end_at = nil, query = nil)
+      def start_at(start_at)
         @start_at = start_at
+        self
+      end
+
+      def end_at(end_at)
         @end_at = end_at
+        self
+      end
+
+      def folder_ids(folder_ids)
+        @folder_ids = folder_ids
+        self
+      end
+
+      def where(query)
         @query = query
         self
       end
 
+      def ids
+        search_builder.ids
+      end
+
       private
 
+      def search_response
+        rep = @parent.sacc.search(@parent.token, 'appointment', @offset, @limit, 'dateAsc', query, build_options)
+        @more = rep[:Body][:SearchResponse][:more]
+        rep
+      end
+
+      def search_builder
+        AppointmentsBuilder.new @parent, search_response
+      end
+
       def build_response
-        rep = @parent.sacc.search(@parent.token, 'appointment', @offset, @limit, 'dateAsc', @query, build_options)
-        ab = AppointmentsBuilder.new @parent, rep
-        ab.make
+        search_builder.make
       end
 
       def build_options
-        return nil if !@start_at.is_a?(Time) && !@end_at.is_a?(Time)
+        return {} if !@start_at.is_a?(Time) && !@end_at.is_a?(Time)
 
         {
-            calExpandInstStart: (@start_at.to_f * 1000).to_i,
-            calExpandInstEnd: (@end_at.to_f * 1000).to_i
+          calExpandInstStart: (@start_at.to_f * 1000).to_i,
+          calExpandInstEnd: (@end_at.to_f * 1000).to_i,
         }
+      end
+
+      def query
+        return @query unless @query.nil?
+
+        return nil if @folder_ids.empty?
+
+        @folder_ids.map { |id| %Q{inid:"#{id}"} }.join(' OR ')
       end
 
       def reset_query_params
@@ -48,6 +80,7 @@ module Zm
         @start_at = nil
         @end_at = nil
         @query = nil
+        @folder_ids = []
       end
     end
   end

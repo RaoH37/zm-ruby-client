@@ -32,7 +32,9 @@ module Zm
         rep = @parent.sacc.get_all_folders(@parent.token, @view, @tr)
         fb = FoldersBuilder.new @parent, rep
         @root = fb.make
-        fb.flatten
+        @all = fb.flatten
+        @all.select! { |folder| folder.view == @view } unless @view.nil?
+        @all
       end
 
       def reset_query_params

@@ -10,14 +10,21 @@ module Zm
       end
 
       def make
+        root.map do |s|
+          Appointment.new(@parent, s)
+        end
+      end
+
+      def ids
+        root.map { |s| s[:id] }
+      end
+
+      def root
         root = @json[:Body][:SearchResponse][:appt]
         return [] if root.nil?
 
         root = [root] unless root.is_a?(Array)
-
-        root.map do |s|
-          Appointment.new(@parent, s)
-        end
+        root
       end
     end
   end

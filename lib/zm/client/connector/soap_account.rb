@@ -479,6 +479,7 @@ module Zm
       end
 
       def search(token, types = nil, offset = nil, limit = nil, sortBy = nil, query = nil, options = {})
+        soap_name = :SearchRequest
         # types: conversation|message|contact|appointment|task|wiki|document
         req = {
           types: types,
@@ -489,8 +490,9 @@ module Zm
         }.merge!(options)
         req.reject! { |_, v| v.nil? }
 
-        body = init_hash_request(token, :SearchRequest)
-        body[:Body][:SearchRequest].merge!(req) if req.any?
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req) if req.any?
+        # puts body
         curl_request(body)
       end
 
