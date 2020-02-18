@@ -4,7 +4,10 @@ module Zm
   module Client
     # class for account appointment
     class Appointment < Base::AccountObject
-      attr_accessor :id, :uid, :name, :l, :desc, :start_at, :dur, :end_at
+
+      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at]
+
+      attr_accessor *INSTANCE_VARIABLE_KEYS
 
       alias description desc
       alias parent_id l
@@ -16,7 +19,7 @@ module Zm
       end
 
       def concat
-        [ @id, @uid, @name, @l, @desc, @start_at, @dur ]
+        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
       end
 
       def create!
