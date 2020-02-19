@@ -9,12 +9,13 @@ module Zm
           'vcard' => ['contact']
       }
 
-      def initialize(parent)
+      def initialize(parent, rac = nil)
         @parent = parent
+        @rac = rac || @parent.rac
       end
 
       def download_file(folder_path, fmt, types, ids, dest_file_path)
-        @parent.rac.download(download_file_url(folder_path, fmt, types, ids), dest_file_path)
+        @rac.download(download_file_url(folder_path, fmt, types, ids), dest_file_path)
       end
 
       def download_file_url(folder_path, fmt, types, ids = [])
@@ -36,7 +37,7 @@ module Zm
       end
 
       def send_file(folder_path, fmt, types, resolve, src_file_path)
-        @parent.rac.upload(send_file_url(folder_path, fmt, types, resolve), src_file_path)
+        @rac.upload(send_file_url(folder_path, fmt, types, resolve), src_file_path)
       end
 
       def send_file_url(folder_path, fmt, types, resolve)
@@ -57,12 +58,12 @@ module Zm
       end
 
       def send_attachment(src_file_path)
-        str = @parent.rac.upload(upload_attachment_url, src_file_path)
+        str = @rac.upload(upload_attachment_url, src_file_path)
         AttachmentResponse.new(str)
       end
 
       def upload_attachment_url
-        @parent.rac.cookie("ZM_AUTH_TOKEN=#{@parent.token}")
+        @rac.cookie("ZM_AUTH_TOKEN=#{@parent.token}")
         uri = Addressable::URI.new
         uri.query_values = {
           fmt: 'extended,raw'

@@ -28,7 +28,9 @@ module Zm
       end
 
       def download(dest_file_path)
-        @parent.uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
+        # @parent.uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
+        uploader = Upload.new(@parent, RestAccountConnector.new)
+        uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
       end
 
       def create!
