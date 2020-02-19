@@ -4,25 +4,33 @@ module Zm
   module Client
     # class for upload account file
     class Upload
+      FMT_TYPES_H = {
+          'ics' => ['appointment'],
+          'vcard' => ['contact']
+      }
+
       def initialize(parent)
         @parent = parent
       end
 
-      def download_file(folder_path, fmt, types, dest_file_path)
-        @parent.rac.download(download_file_url(folder_path, fmt, types), dest_file_path)
+      def download_file(folder_path, fmt, types, ids, dest_file_path)
+        @parent.rac.download(download_file_url(folder_path, fmt, types, ids), dest_file_path)
       end
 
-      def download_file_url(folder_path, fmt, types)
+      def download_file_url(folder_path, fmt, types, ids = [])
         url_folder_path = File.join(@parent.home_url, folder_path.to_s)
+
         uri = Addressable::URI.new
         uri.query_values = {
           fmt: fmt,
-          types: types.join(','),
+          types: query_value_types(types, fmt),
           emptyname: 'Vide',
           charset: 'UTF-8',
           auth: 'qp',
+          list: ids.join(','),
           zauthtoken: @parent.token
-        }
+        }.reject { |_, v| v.nil? || v.empty? }
+
         url_folder_path << '?' << uri.query
         url_folder_path
       end
@@ -32,15 +40,18 @@ module Zm
       end
 
       def send_file_url(folder_path, fmt, types, resolve)
+        # resolve=[modfy|replace|reset|skip]
         url_folder_path = File.join(@parent.home_url, folder_path.to_s)
+
         uri = Addressable::URI.new
         uri.query_values = {
           fmt: fmt,
-          types: types.join(','),
+          types: query_value_types(types, fmt),
           resolve: resolve,
           auth: 'qp',
           zauthtoken: @parent.token
-        }
+        }.reject { |_, v| v.nil? || v.empty? }
+
         url_folder_path << '?' << uri.query
         url_folder_path
       end
@@ -57,6 +68,13 @@ module Zm
           fmt: 'extended,raw'
         }
         File.join(@parent.public_url, 'service/upload') << '?' << uri.query
+      end
+
+      def query_value_types(types, fmt)
+        types = FMT_TYPES_H[fmt] if types.nil?
+
+        types = [types] unless types.is_a?(Array)
+        types.join(',')
       end
     end
 

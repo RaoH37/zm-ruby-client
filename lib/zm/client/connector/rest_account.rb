@@ -10,7 +10,7 @@ module Zm
 
       def initialize
         @curl = easy_curl
-        @verbose = false
+        @verbose = true
       end
 
       def cookie(cookie)
@@ -18,11 +18,16 @@ module Zm
       end
 
       def download(url, dest_file_path)
-        Curl::Easy.download(url, dest_file_path)
+        @curl.url = URI.escape(url)
+        File.open(dest_file_path, 'wb') do |f|
+          # @curl.on_progress {|dl_total, dl_now, ul_total, ul_now| print "="; true }
+          @curl.on_body {|data| f << data; data.size }
+          @curl.perform
+        end
       end
 
       def upload(url, src_file_path)
-        @curl.url = url
+        @curl.url = URI.escape(url)
         @curl.http_post(Curl::PostField.file('file', src_file_path))
 
         if @curl.status.to_i >= 400

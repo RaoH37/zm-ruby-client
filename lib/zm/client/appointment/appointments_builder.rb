@@ -4,8 +4,8 @@ module Zm
   module Client
     # class factory [appointments]
     class AppointmentsBuilder < Base::ObjectsBuilder
-      def initialize(account, json)
-        @account = account
+      def initialize(parent, json)
+        @parent = parent
         @json = json
       end
 

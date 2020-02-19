@@ -77,8 +77,9 @@ module Zm
         )
       end
 
-      def import!(file_path)
-        # todo
+      def upload(file_path, fmt = nil, types = nil, resolve = 'reset')
+        fmt ||= File.extname(file_path)[1..-1]
+        @parent.uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
       end
 
       def init_from_json(json)

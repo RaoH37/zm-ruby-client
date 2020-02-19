@@ -8,6 +8,7 @@ module Zm
       INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_writer :folder
 
       alias description desc
       alias parent_id l
@@ -20,6 +21,14 @@ module Zm
 
       def concat
         INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      end
+
+      def folder
+        @folder ||= @parent.folders.all.find { |folder| folder.id == l }
+      end
+
+      def download(dest_file_path)
+        @parent.uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
       end
 
       def create!
