@@ -30,8 +30,7 @@ module Zm
 
       def folders(folders)
         @folders = folders
-        @folder_ids += @folders.map(&:id)
-        @folder_ids.uniq!
+        @folder_ids = @folders.map(&:id)
         self
       end
 

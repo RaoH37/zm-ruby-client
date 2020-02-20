@@ -4,6 +4,8 @@ module Zm
   module Client
     # collection of documents
     class DocumentsCollection < Base::ObjectsCollection
+      DEFAULT_QUERY = 'in:briefcase'
+
       attr_accessor :more
 
       def initialize(parent)
@@ -30,8 +32,7 @@ module Zm
 
       def folders(folders)
         @folders = folders
-        @folder_ids += @folders.map(&:id)
-        @folder_ids.uniq!
+        @folder_ids = @folders.map(&:id)
         self
       end
 
@@ -70,7 +71,7 @@ module Zm
       def query
         return @query unless @query.nil?
 
-        return nil if @folder_ids.empty?
+        return DEFAULT_QUERY if @folder_ids.empty?
 
         @folder_ids.map { |id| %Q{inid:"#{id}"} }.join(' OR ')
       end
@@ -81,7 +82,7 @@ module Zm
 
       def reset_query_params
         super
-        @query = 'in:briefcase'
+        @query = nil
         @folder_ids = []
         @folders = []
       end
