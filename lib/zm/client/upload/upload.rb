@@ -21,18 +21,26 @@ module Zm
       def download_file_url(folder_path, fmt, types, ids = [])
         url_folder_path = File.join(@parent.home_url, folder_path.to_s)
 
-        uri = Addressable::URI.new
-        uri.query_values = {
+        h = {
           fmt: fmt,
           types: query_value_types(types, fmt),
           emptyname: 'Vide',
           charset: 'UTF-8',
           auth: 'qp',
-          list: ids.join(','),
-          zauthtoken: @parent.token
-        }.reject { |_, v| v.nil? || v.empty? }
+          zauthtoken: @parent.token,
+          disp: 'a'
+        }
 
+        h.merge!(query_ids(ids))
+
+        h.reject! { |_, v| v.nil? || v.empty? }
+
+        uri = Addressable::URI.new
+        uri.query_values = h
         url_folder_path << '?' << uri.query
+
+        puts url_folder_path
+
         url_folder_path
       end
 
@@ -44,14 +52,18 @@ module Zm
         # resolve=[modfy|replace|reset|skip]
         url_folder_path = File.join(@parent.home_url, folder_path.to_s)
 
-        uri = Addressable::URI.new
-        uri.query_values = {
+        h = {
           fmt: fmt,
           types: query_value_types(types, fmt),
           resolve: resolve,
           auth: 'qp',
           zauthtoken: @parent.token
-        }.reject { |_, v| v.nil? || v.empty? }
+        }
+
+        h.reject! { |_, v| v.nil? || v.empty? }
+
+        uri = Addressable::URI.new
+        uri.query_values = h
 
         url_folder_path << '?' << uri.query
         url_folder_path
@@ -69,6 +81,13 @@ module Zm
           fmt: 'extended,raw'
         }
         File.join(@parent.public_url, 'service/upload') << '?' << uri.query
+      end
+
+      def query_ids(ids)
+        return {} if ids.nil?
+        return { id: ids } unless ids.is_a?(Array)
+        return { id: ids.first } if ids.length == 1
+        return { list: ids.join(',') }
       end
 
       def query_value_types(types, fmt)

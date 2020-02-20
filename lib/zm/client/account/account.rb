@@ -12,6 +12,7 @@ require 'zm/client/ace'
 require 'zm/client/contact'
 require 'zm/client/appointment'
 require 'zm/client/task'
+require 'zm/client/document'
 # require 'zm/client/data_source'
 require 'zm/client/message'
 require 'zm/client/identity'
@@ -157,6 +158,10 @@ module Zm
 
       def data_sources
         @data_sources ||= DataSourcesCollection.new sac, self
+      end
+
+      def documents
+        @documents ||= DocumentsCollection.new(self)
       end
 
       def message_folders
