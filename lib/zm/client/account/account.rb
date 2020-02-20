@@ -11,7 +11,7 @@ require 'zm/client/tag'
 require 'zm/client/ace'
 require 'zm/client/contact'
 require 'zm/client/appointment'
-# require 'zm/client/task'
+require 'zm/client/task'
 # require 'zm/client/data_source'
 require 'zm/client/message'
 require 'zm/client/identity'
@@ -143,9 +143,7 @@ module Zm
       end
 
       def tasks
-        @tasks ||= TasksCollection.new(
-          sacc, self
-        )
+        @tasks ||= TasksCollection.new(self)
       end
 
       def aces
