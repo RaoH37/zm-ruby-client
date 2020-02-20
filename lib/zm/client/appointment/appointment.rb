@@ -5,10 +5,11 @@ module Zm
     # class for account appointment
     class Appointment < Base::AccountObject
 
-      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at]
+      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_writer :folder
+      attr_reader :json
 
       alias description desc
       alias parent_id l
@@ -27,10 +28,10 @@ module Zm
         @folder ||= @parent.folders.all.find { |folder| folder.id == l }
       end
 
-      def download(dest_file_path)
+      def download(dest_file_path, fmt = 'ics')
         # @parent.uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
+        uploader.download_file(folder.absFolderPath, fmt, ['appointment'], [id], dest_file_path)
       end
 
       def create!
@@ -48,14 +49,16 @@ module Zm
       end
 
       def init_from_json(json)
-        @id       = json[:id].to_i
-        @uid      = json[:uid]
-        @name     = json[:name]
-        @l        = json[:l]
-        @desc     = json[:fr]
+        @json = json
+        @id = json[:id].to_i
+        @uid = json[:uid]
+        @tn = json[:tn]
+        @name = json[:name]
+        @l = json[:l]
+        @desc = json[:fr]
         @start_at = Time.at(json[:inst].first[:s] / 1000)
-        @dur      = json[:dur] / 1000
-        @end_at   = Time.at((json[:inst].first[:s] + json[:dur]) / 1000)
+        @dur = json[:dur] / 1000
+        @end_at = Time.at((json[:inst].first[:s] + json[:dur]) / 1000)
       end
     end
   end

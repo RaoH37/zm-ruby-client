@@ -28,6 +28,13 @@ module Zm
         self
       end
 
+      def folders(folders)
+        @folders = folders
+        @folder_ids += @folders.map(&:id)
+        @folder_ids.uniq!
+        self
+      end
+
       def folder_ids(folder_ids)
         @folder_ids = folder_ids
         self
@@ -51,11 +58,13 @@ module Zm
       end
 
       def search_builder
-        AppointmentsBuilder.new @parent, search_response
+        AppointmentsBuilder.new(@parent, search_response)
       end
 
       def build_response
-        search_builder.make
+        appointments = search_builder.make
+        appointments.each { |appo| appo.folder = find_folder(appo) } unless @folders.empty?
+        appointments
       end
 
       def build_options
@@ -75,12 +84,17 @@ module Zm
         @folder_ids.map { |id| %Q{inid:"#{id}"} }.join(' OR ')
       end
 
+      def find_folder(appointment)
+        @folders.find { |folder| folder.id == appointment.l }
+      end
+
       def reset_query_params
         super
         @start_at = nil
         @end_at = nil
         @query = nil
         @folder_ids = []
+        @folders = []
       end
     end
   end
