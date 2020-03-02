@@ -147,6 +147,18 @@ module Zm
       end
 
       # -------------------------------
+      # DOCUMENT
+
+      def save_document(token, l, options = {})
+        soap_name = :SaveDocumentRequest
+        body = init_hash_request(token, soap_name)
+        req = { doc: { l: l } }
+        req[:doc].merge!(options)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      # -------------------------------
       # FOLDER
 
       def get_folder(token, id)

@@ -25,6 +25,7 @@ module Zm
         @folders = []
         init_from_json(json) if json.is_a?(Hash)
         yield(self) if block_given?
+        extend(DocumentFolder) if view == 'document'
       end
 
       def create!

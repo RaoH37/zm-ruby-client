@@ -70,8 +70,12 @@ module Zm
       end
 
       def send_attachment(src_file_path)
-        str = @rac.upload(upload_attachment_url, src_file_path)
+        str = upload_attachment(src_file_path)
         AttachmentResponse.new(str)
+      end
+
+      def upload_attachment(src_file_path)
+        @rac.upload(upload_attachment_url, src_file_path)
       end
 
       def upload_attachment_url
