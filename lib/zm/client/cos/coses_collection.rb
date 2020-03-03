@@ -26,7 +26,7 @@ module Zm
       def reset_query_params
         super
         @search_type = SearchType::COS
-        @attrs = SearchType::Attributes::COS
+        @attrs = SearchType::Attributes::COS.dup
       end
     end
   end

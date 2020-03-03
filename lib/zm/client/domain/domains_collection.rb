@@ -27,7 +27,7 @@ module Zm
       def reset_query_params
         super
         @search_type = SearchType::DOMAIN
-        @attrs = SearchType::Attributes::DOMAIN
+        @attrs = SearchType::Attributes::DOMAIN.dup
       end
     end
   end

@@ -199,7 +199,7 @@ module Zm
           arrow_attr_sym = "@#{k}".to_sym
 
           if v.empty?
-            self.remove_instance_variable(arrow_attr_sym)
+            self.remove_instance_variable(arrow_attr_sym) if self.instance_variable_get(arrow_attr_sym)
           else
             self.instance_variable_set(arrow_attr_sym, v)
           end
