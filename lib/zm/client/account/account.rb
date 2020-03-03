@@ -97,6 +97,10 @@ module Zm
         @home_url = @infos[:rest]
       end
 
+      def cos
+        @cos ||= @parent.coses.find_by(id: zimbraCOSId)
+      end
+
       def used
         @used ||= sac.get_mailbox(id)[:Body][:GetMailboxResponse][:mbox].first[:s]
       end
@@ -190,7 +194,16 @@ module Zm
 
       def update!(hash)
         sac.modify_account(@id, hash)
-        hash.each { |k, v| send "#{k}=", v }
+
+        hash.each do |k, v|
+          arrow_attr_sym = "@#{k}".to_sym
+
+          if v.empty?
+            self.remove_instance_variable(arrow_attr_sym)
+          else
+            self.instance_variable_set(arrow_attr_sym, v)
+          end
+        end
       end
 
       def modify!

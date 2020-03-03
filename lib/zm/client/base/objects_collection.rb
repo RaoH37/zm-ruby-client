@@ -82,11 +82,18 @@ module Zm
           # puts "ObjectsCollection make_query #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
           json = sac.search_directory(
             @ldap_query, @max_result, @limit, @offset,
-            @domain_name, nil, nil, @sort_by, @search_type,
-            @sort_ascending, @count_only, @attrs.join(COMMA)
+            @domain_name, @apply_cos, nil, @sort_by, @search_type,
+            @sort_ascending, @count_only, attrs_comma
           )
           reset_query_params
           json
+        end
+
+        def attrs_comma
+          return @attrs unless @attrs.is_a?(Array)
+
+          @attrs.uniq!
+          @attrs.join(COMMA)
         end
 
         def reset_query_params

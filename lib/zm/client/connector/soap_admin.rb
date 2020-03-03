@@ -266,12 +266,13 @@ module Zm
         curl_request(body)
       end
 
-      def get_account(name, by = :name, attrs = nil)
-        req = { account: { by: by, _content: name } }
-        req[:_attrs] = attrs unless attrs.nil?
-        body = init_hash_request(:GetAccountRequest)
-        body[:Body][:GetAccountRequest].merge!(req)
-        # p body
+      def get_account(name, by = :name, attrs = nil, applyCos = 1)
+        soap_name = :GetAccountRequest
+        req = { account: { by: by, _content: name }, applyCos: applyCos }
+        req[:_attrs] = attrs unless attrs.nil? || attrs.empty?
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
+        # puts body
         curl_request(body)
       end
 
