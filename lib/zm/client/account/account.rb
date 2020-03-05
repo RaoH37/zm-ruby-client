@@ -251,6 +251,18 @@ module Zm
         update!(zimbraMailTransport: local_transport)
       end
 
+      def is_local_transport?
+        return nil unless zimbraMailTransport
+
+        zimbraMailTransport.start_with?('lmtp')
+      end
+
+      def is_external_transport?
+        return nil unless zimbraMailTransport
+
+        zimbraMailTransport.start_with?('smtp')
+      end
+
       def uploader
         @uploader ||= Upload.new(self)
       end
