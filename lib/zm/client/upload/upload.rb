@@ -33,7 +33,7 @@ module Zm
 
         h.merge!(query_ids(ids))
 
-        h.reject! { |_, v| v.nil? || v.empty? }
+        h.reject! { |_, v| is_blank?(v) }
 
         uri = Addressable::URI.new
         uri.query_values = h
@@ -60,7 +60,7 @@ module Zm
           zauthtoken: @parent.token
         }
 
-        h.reject! { |_, v| v.nil? || v.empty? }
+        h.reject! { |_, v| is_blank?(v) }
 
         uri = Addressable::URI.new
         uri.query_values = h
@@ -99,6 +99,12 @@ module Zm
 
         types = [types] unless types.is_a?(Array)
         types.join(',')
+      end
+
+      def is_blank?(v)
+        return true if v.is_a?(Numeric)
+
+        v.nil? || v.empty?
       end
     end
 
