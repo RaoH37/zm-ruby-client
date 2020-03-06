@@ -102,7 +102,7 @@ module Zm
       end
 
       def is_blank?(v)
-        return true if v.is_a?(Numeric)
+        return false if v.is_a?(Numeric)
 
         v.nil? || v.empty?
       end
