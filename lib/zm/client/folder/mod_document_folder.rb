@@ -7,7 +7,7 @@ module DocumentFolder
 
     uuid = str.scan(UUID_REGEX).first
 
-    raise Zm::Client::RestError, "Upload failed" if uuid.nil?
+    raise Zm::Client::RestError, "failed to extract uuid" if uuid.nil?
 
     upload_options = { upload: { id: uuid } }
     @parent.sacc.save_document(@parent.token, id, upload_options)
