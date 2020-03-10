@@ -9,6 +9,20 @@ module Zm
         @json = json
         @key = :folder
         @root_folder = nil
+        @list = []
+      end
+
+      def ids
+        root = @json[:Body][:GetFolderResponse][@key]
+        construct_tree_ids(root.first[@key])
+        @list
+      end
+
+      def construct_tree_ids(json_folders)
+        json_folders.each do |json_folder|
+          @list << json_folder[:id]
+          construct_tree_ids(json_folder[@key]) if !json_folder[@key].nil? && json_folder[@key].any?
+        end
       end
 
       def make

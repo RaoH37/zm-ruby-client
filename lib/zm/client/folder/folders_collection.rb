@@ -26,15 +26,24 @@ module Zm
         self
       end
 
+      def ids
+        fb = FoldersBuilder.new @parent, make_query
+        fb.ids
+      end
+
       private
 
       def build_response
-        rep = @parent.sacc.get_all_folders(@parent.token, @view, @tr)
+        rep = make_query
         fb = FoldersBuilder.new @parent, rep
         @root = fb.make
         @all = fb.flatten
         @all.select! { |folder| folder.view == @view } unless @view.nil?
         @all
+      end
+
+      def make_query
+        @parent.sacc.get_all_folders(@parent.token, @view, @tr)
       end
 
       def reset_query_params

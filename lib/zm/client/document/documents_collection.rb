@@ -47,13 +47,14 @@ module Zm
       end
 
       def ids
+        @options = { resultMode: 1 }
         search_builder.ids
       end
 
       private
 
       def search_response
-        rep = @parent.sacc.search(@parent.token, 'document', @offset, @limit, 'subjAsc', query)
+        rep = @parent.sacc.search(@parent.token, 'document', @offset, @limit, 'subjAsc', query, @options)
         @more = rep[:Body][:SearchResponse][:more]
         rep
       end
@@ -85,6 +86,7 @@ module Zm
         @query = nil
         @folder_ids = []
         @folders = []
+        @options = {}
       end
     end
   end
