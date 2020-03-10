@@ -312,6 +312,10 @@ module Zm
       #   url_folder_path
       # end
 
+      def flush_cache!
+        sac.flush_cache('account', 1, @id)
+      end
+
       def init_from_json(json)
         @used = json[:used] if json[:used]
         @zimbraMailQuota = json[:limit] if json[:limit]

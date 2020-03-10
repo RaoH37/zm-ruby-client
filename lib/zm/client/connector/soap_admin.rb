@@ -362,8 +362,9 @@ module Zm
         curl_request(body)
       end
 
-      def flush_cache(type, allServers, id)
-        req = { cache: { type: type, allServers: allServers, entry: { by: :id, _content: id } } }
+      def flush_cache(type, allServers, id = nil)
+        req = { cache: { type: type, allServers: allServers } }
+        req[:cache].merge!({ entry: { by: :id, _content: id } }) unless id.nil?
         body = init_hash_request(:FlushCacheRequest)
         body[:Body][:FlushCacheRequest].merge!(req)
         curl_request(body)
