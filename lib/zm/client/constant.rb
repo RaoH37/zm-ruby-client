@@ -5,6 +5,12 @@ module Zm
     COMMA = ','
     DOUBLEPOINT = ' :: '
 
+    module Regex
+      UUID_REGEX = %r{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}}
+      BASEDN_REGEX = %r{^uid=}
+      SHARED_CONTACT = %r{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}:[0-9]+}
+    end
+
     module FolderDefault
       ROOT = { id: 1, name: '', path: '/', type: 'unknown' }.freeze
       BRIEFCASE = { id: 16, name: 'Briefcase', path: '/Briefcase', type: 'document' }.freeze
@@ -102,6 +108,7 @@ module Zm
           zimbraMailHost
           uid
           description
+          zimbraMailForwardingAddress
           zimbraIsAdminGroup
           zimbraMailStatus
           zimbraIsDelegatedAdminAccount

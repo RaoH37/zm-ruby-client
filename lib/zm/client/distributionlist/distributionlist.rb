@@ -14,6 +14,11 @@ module Zm
         @grantee_type = 'grp'.freeze
       end
 
+      def init_from_json(json)
+        @members = json[:a].select { |a| a[:n] == 'zimbraMailForwardingAddress' }.map { |a| a[:_content] }.compact
+        super(json)
+      end
+
       def create!
         rep = sac.create_distribution_list(
           @name,

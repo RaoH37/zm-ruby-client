@@ -9,6 +9,19 @@ module Zm
       ADD      = '+'.freeze
       DEL      = '-'.freeze
 
+      class << self
+        def find_type_by_value(value)
+          return INTERNAL if !value.to_i.zero? || Zm::Client::Regex::SHARED_CONTACT.match(value)
+          return LDAP if Zm::Client::Regex::BASEDN_REGEX.match(value)
+          FREE
+        end
+
+        def init_by_value(value)
+          type_v = find_type_by_value(value)
+          new(type_v, value)
+        end
+      end
+
       attr_reader :type, :value, :op
 
       def initialize(type, value, op = nil)
@@ -26,7 +39,11 @@ module Zm
       end
 
       def internal?
-        @type == INTERNAL
+        @type == INTERNAL && !Zm::Client::Regex::SHARED_CONTACT.match(value)
+      end
+
+      def shared?
+        @type == INTERNAL && Zm::Client::Regex::SHARED_CONTACT.match(value)
       end
 
       def free?
@@ -46,7 +63,7 @@ module Zm
       end
 
       def construct_soap_node
-        node = {type: @type, value: @value}
+        node = { type: @type, value: @value }
         node[:op] = @op if !@op.nil?
         node
       end

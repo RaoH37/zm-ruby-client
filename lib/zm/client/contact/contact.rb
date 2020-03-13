@@ -17,11 +17,11 @@ module Zm
       ]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
-      attr_accessor :id, :name, :l, :type, :members, :tn
+      attr_accessor :id, :name, :l, :type, :members, :old_members, :tn
 
       def initialize(parent, json = nil)
-        @parent = parent
-        @members    = []
+        @parent  = parent
+        @members = []
         init_from_json(json) if json.is_a?(Hash)
         yield(self) if block_given?
         @old_members = @members.clone
@@ -44,11 +44,12 @@ module Zm
       end
 
       def init_from_json(json)
-        puts json
-        @id = json[:id]
+        # puts json
+
+        @id   = json[:id]
         @name = json[:fileAsStr]
-        @l = json[:l]
-        @tn = json[:tn]
+        @l    = json[:l]
+        @tn   = json[:tn]
 
         unless json[:_attrs].nil?
           @type = json[:_attrs][:type]
@@ -59,8 +60,13 @@ module Zm
           end
         end
 
-        if is_group? && !json[:m].nil?
-          @members = json[:m].map{|m| ConcatMember.new(m[:type], m[:value]) }
+        # if is_group? && !json[:m].nil?
+        #   @members = json[:m].map{|m| ConcatMember.new(m[:type], m[:value]) }
+        # end
+
+        if is_group?
+          extend(GroupContact)
+          init_members_from_json(json[:m])
         end
       end
 
@@ -82,33 +88,33 @@ module Zm
         @parent.sacc.modify_contact(@parent.token, id, instance_variables_array(INSTANCE_VARIABLE_KEYS))
       end
 
-      def add_members(members)
-        @members += members
-      end
-
-      def delete_members(members)
-        @members -= members
-      end
-
-      def ldap_members
-        return [] if @members.nil?
-
-        @members.select(&:ldap?)
-      end
-
-      def has_ldap_members?
-        ldap_members.any?
-      end
-
-      def construct_soap_node_members
-        if recorded?
-          (@old_members - @members).each(&:remove!)
-          (@members - @old_members).each(&:add!)
-          (@old_members + @members).uniq.reject { |m| m.op.nil? }.map(&:construct_soap_node)
-        else
-          @members.map(&:construct_soap_node)
-        end
-      end
+      # def add_members(members)
+      #   @members += members
+      # end
+      #
+      # def delete_members(members)
+      #   @members -= members
+      # end
+      #
+      # def ldap_members
+      #   return [] if @members.nil?
+      #
+      #   @members.select(&:ldap?)
+      # end
+      #
+      # def has_ldap_members?
+      #   ldap_members.any?
+      # end
+      #
+      # def construct_soap_node_members
+      #   if recorded?
+      #     (@old_members - @members).each(&:remove!)
+      #     (@members - @old_members).each(&:add!)
+      #     (@old_members + @members).uniq.reject { |m| m.op.nil? }.map(&:construct_soap_node)
+      #   else
+      #     @members.map(&:construct_soap_node)
+      #   end
+      # end
     end
   end
 end

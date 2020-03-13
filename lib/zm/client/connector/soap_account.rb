@@ -122,19 +122,24 @@ module Zm
         curl_request(body)
       end
 
-      def create_group_contact(token, parent_id, a, members)
-        # req = { cn: { a: a, l: parent_id, m: members } }
-        # body = init_hash_request(token, :CreateContactRequest)
-        # body[:Body][:CreateContactRequest].merge!(req)
-        # curl_request(body)
+      def create_group_contact(token, folder_id, attrs, members = [])
+        soap_name = :CreateContactRequest
+        a = attrs.to_a.map(&A_NODE_PROC)
+        req = { cn: { a: a, l: folder_id, m: members } }
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
+        puts body
+        curl_request(body)
       end
 
       def modify_group_contact(token, id, attrs, members = [])
-        # a = attrs.to_a.map(&A_NODE_PROC)
-        # req = { cn: { a: a, id: id, m: members } }
-        # body = init_hash_request(token, :ModifyContactRequest)
-        # body[:Body][:ModifyContactRequest].merge!(req)
-        # curl_request(body)
+        soap_name = :ModifyContactRequest
+        a = attrs.to_a.map(&A_NODE_PROC)
+        req = { cn: { a: a, id: id, m: members } }
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
+        puts body
+        curl_request(body)
       end
 
       def contact_action(token, op, id, options = {})
