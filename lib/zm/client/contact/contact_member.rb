@@ -3,16 +3,17 @@
 module Zm
   module Client
     class ConcatMember
-      INTERNAL = 'C'.freeze
-      FREE     = 'I'.freeze
-      LDAP     = 'G'.freeze
-      ADD      = '+'.freeze
-      DEL      = '-'.freeze
+      INTERNAL = 'C'
+      FREE     = 'I'
+      LDAP     = 'G'
+      ADD      = '+'
+      DEL      = '-'
 
       class << self
         def find_type_by_value(value)
           return INTERNAL if !value.to_i.zero? || Zm::Client::Regex::SHARED_CONTACT.match(value)
           return LDAP if Zm::Client::Regex::BASEDN_REGEX.match(value)
+
           FREE
         end
 
@@ -64,7 +65,7 @@ module Zm
 
       def construct_soap_node
         node = { type: @type, value: @value }
-        node[:op] = @op if !@op.nil?
+        node[:op] = @op unless @op.nil?
         node
       end
     end

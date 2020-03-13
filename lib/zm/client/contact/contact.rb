@@ -4,8 +4,7 @@ module Zm
   module Client
     # class account tag
     class Contact < Base::AccountObject
-
-      GROUP_PATTERN = 'group'.freeze
+      GROUP_PATTERN = 'group'
 
       INSTANCE_VARIABLE_KEYS = %i[
         anniversary assistantPhone birthday callbackPhone carPhone company companyPhone custom1 department email email2
@@ -14,7 +13,7 @@ module Zm
         middleName mobilePhone namePrefix nameSuffix nickname notes otherCity otherCountry otherFax otherPhone
         otherPostalCode otherState otherStreet otherURL pager workCity workCountry workFax workPhone workPostalCode
         workState workStreet workURL
-      ]
+      ].freeze
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_accessor :id, :name, :l, :type, :members, :old_members, :tn
@@ -36,7 +35,15 @@ module Zm
       end
 
       def emails_h
-        { 'email' => email, 'email2' => email2, 'email3' => email3, 'email4' => email4, 'email5' => email5, 'email6' => email6, 'email7' => email7 }.compact
+        {
+            'email' => email,
+            'email2' => email2,
+            'email3' => email3,
+            'email4' => email4,
+            'email5' => email5,
+            'email6' => email6,
+            'email7' => email7
+        }.compact
       end
 
       def concat
@@ -44,8 +51,6 @@ module Zm
       end
 
       def init_from_json(json)
-        # puts json
-
         @id   = json[:id]
         @name = json[:fileAsStr]
         @l    = json[:l]
@@ -60,14 +65,10 @@ module Zm
           end
         end
 
-        # if is_group? && !json[:m].nil?
-        #   @members = json[:m].map{|m| ConcatMember.new(m[:type], m[:value]) }
-        # end
+        return unless is_group?
 
-        if is_group?
-          extend(GroupContact)
-          init_members_from_json(json[:m])
-        end
+        extend(GroupContact)
+        init_members_from_json(json[:m])
       end
 
       def create!
@@ -87,34 +88,6 @@ module Zm
       def modify!
         @parent.sacc.modify_contact(@parent.token, id, instance_variables_array(INSTANCE_VARIABLE_KEYS))
       end
-
-      # def add_members(members)
-      #   @members += members
-      # end
-      #
-      # def delete_members(members)
-      #   @members -= members
-      # end
-      #
-      # def ldap_members
-      #   return [] if @members.nil?
-      #
-      #   @members.select(&:ldap?)
-      # end
-      #
-      # def has_ldap_members?
-      #   ldap_members.any?
-      # end
-      #
-      # def construct_soap_node_members
-      #   if recorded?
-      #     (@old_members - @members).each(&:remove!)
-      #     (@members - @old_members).each(&:add!)
-      #     (@old_members + @members).uniq.reject { |m| m.op.nil? }.map(&:construct_soap_node)
-      #   else
-      #     @members.map(&:construct_soap_node)
-      #   end
-      # end
     end
   end
 end

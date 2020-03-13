@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GroupContact
   def init_members_from_json(m)
     return if m.nil?
@@ -15,7 +17,7 @@ module GroupContact
   end
 
   def construct_soap_attrs
-    [[:nickname, @name], [:fullname, @name], [:fileAs, "8:#{@name}"], [:type, :group]]
+    [[:nickname, @name], [:fullname, @name], [:fileAs, "8:#{@name}"], %i[type group]]
   end
 
   def add_contacts(contacts)
