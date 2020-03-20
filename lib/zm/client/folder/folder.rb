@@ -8,7 +8,7 @@ module Zm
       INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l luuid f view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid ruuid owner reminder acl itemCount broken deletable color]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
-      attr_accessor :folders
+      attr_accessor :folders, :grants
 
       def concat
         INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
@@ -23,6 +23,7 @@ module Zm
         @parent = parent
         @type = key
         @folders = []
+        @grants = []
         init_from_json(json) if json.is_a?(Hash)
         yield(self) if block_given?
         extend(DocumentFolder) if view == 'document'
@@ -89,6 +90,10 @@ module Zm
         INSTANCE_VARIABLE_KEYS.each do |key|
           var_name = "@#{key}"
           instance_variable_set(var_name, json[key])
+        end
+
+        if !json[:acl].nil? && json[:acl][:grant].is_a?(Array)
+          @grants = json[:acl][:grant].map { |grant| FolderGrant.create_by_json(self, grant) }
         end
       end
     end

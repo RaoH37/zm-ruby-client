@@ -133,7 +133,7 @@ module Zm
         body[:Body][:CreateCosRequest].merge!(req)
         # a: attrs.to_a.map(&A_NODE_PROC)
         # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
-        puts SoapXmlBuilder.new(body).to_xml
+        # puts SoapXmlBuilder.new(body).to_xml
         # todo ne fonctionne pas !
         curl_xml(SoapXmlBuilder.new(body).to_xml)
       end

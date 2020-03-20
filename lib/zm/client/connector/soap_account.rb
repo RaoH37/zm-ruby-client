@@ -128,7 +128,7 @@ module Zm
         req = { cn: { a: a, l: folder_id, m: members } }
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req)
-        puts body
+        # puts body
         curl_request(body)
       end
 
@@ -138,7 +138,7 @@ module Zm
         req = { cn: { a: a, id: id, m: members } }
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req)
-        puts body
+        # puts body
         curl_request(body)
       end
 

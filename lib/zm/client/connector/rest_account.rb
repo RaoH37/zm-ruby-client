@@ -52,11 +52,11 @@ module Zm
         multi_options = { pipeline: Curl::CURLPIPE_HTTP1 }
 
         curl_fields = url_fields.map { |path, url| { url: url, post_fields: { file: path } } }
-        puts curl_fields
+        # puts curl_fields
 
         Curl::Multi.post(curl_fields, easy_options, multi_options) do |easy|
           # do something interesting with the easy response
-          puts easy.body_str
+          # puts easy.body_str
         end
 
         # responses = {}
