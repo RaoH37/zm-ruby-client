@@ -60,7 +60,7 @@ module Zm
       end
 
       def make_date(json)
-        return if json[:inst].nil? || json[:inst].first.empty?
+        return if json[:inst].nil? || json[:inst].first.empty? || json[:dur].nil?
 
         @start_at = Time.at(json[:inst].first[:s] / 1000)
         @end_at = Time.at((json[:inst].first[:s] + json[:dur]) / 1000)
