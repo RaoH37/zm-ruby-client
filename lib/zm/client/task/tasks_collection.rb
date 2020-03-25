@@ -91,7 +91,7 @@ module Zm
         super
         @start_at = nil
         @end_at = nil
-        @query = 'in:tasks'
+        @query = nil
         @folder_ids = []
         @folders = []
       end
