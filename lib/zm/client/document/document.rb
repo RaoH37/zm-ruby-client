@@ -27,6 +27,10 @@ module Zm
         @folder ||= @parent.folders.all.find { |folder| folder.id == l }
       end
 
+      def tag!(tag_name)
+        @parent.sacc.item_action(@parent.token, :tag, @id, tn: tag_name)
+      end
+
       def download(dest_file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_file(folder.absFolderPath, nil, nil, [id], dest_file_path)

@@ -163,6 +163,16 @@ module Zm
         curl_request(body)
       end
 
+      def item_action(token, op, id, options = {})
+        soap_name = :ItemActionRequest
+        action = { op: op, id: id }.merge(options)
+        req = { action: action }
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
+        # puts body
+        curl_request(body)
+      end
+
       # -------------------------------
       # FOLDER
 

@@ -14,11 +14,44 @@ module Zm
         end
       end
 
+      def concat
+        [zid, gt, perm, d]
+      end
+
+      def is_account?
+        gt == 'usr'
+      end
+
+      def is_dom?
+        gt == 'dom'
+      end
+
+      def is_dl?
+        gt == 'grp'
+      end
+
+      def is_public?
+        gt == 'pub'
+      end
+
+      def is_external?
+        gt == 'guest'
+      end
+
       def init_from_json(json)
         @zid = json[:zid]
         @gt = json[:gt]
         @perm = json[:perm]
         @d = json[:d]
+      end
+
+      def to_h
+        {
+            zid: @zid,
+            gt: @gt,
+            perm: @perm,
+            d: @d
+        }
       end
     end
   end

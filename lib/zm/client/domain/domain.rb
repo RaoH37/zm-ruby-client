@@ -9,6 +9,11 @@ module Zm
                     :zimbraDomainDefaultCOSId, :zimbraGalAccountId,
                     :zimbraPreAuthKey
 
+      def initialize(parent)
+        super(parent)
+        @grantee_type = 'dom'.freeze
+      end
+
       def accounts
         @accounts ||= AccountsCollection.new(self)
       end
