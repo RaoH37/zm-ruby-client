@@ -23,12 +23,27 @@ module Zm
       def where(view: nil, tr: nil)
         @view = view
         @tr = tr
+        @all = nil
         self
       end
 
       def ids
         fb = FoldersBuilder.new @parent, make_query
         fb.ids
+      end
+
+      def all
+        @all || all!
+      end
+
+      def all!
+        build_response
+      end
+
+      def clear
+        @all = nil
+        @root = nil
+        reset_query_params
       end
 
       private
