@@ -10,7 +10,7 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapBaseConnector
-      BASESPACE = 'urn:zimbra'.freeze
+      BASESPACE = 'urn:zimbra'
       HTTP_HEADERS = {
         'Content-Type' => 'application/json; charset=utf-8'
       }.freeze

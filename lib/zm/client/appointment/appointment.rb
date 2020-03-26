@@ -56,9 +56,19 @@ module Zm
         @name = json[:name]
         @l = json[:l]
         @desc = json[:fr]
+        make_date(json)
+      end
+
+      def make_date(json)
+        return if json[:inst].nil? || json[:inst].first.empty? || json[:dur].nil?
+
         @start_at = Time.at(json[:inst].first[:s] / 1000)
-        @dur = json[:dur] / 1000
         @end_at = Time.at((json[:inst].first[:s] + json[:dur]) / 1000)
+
+        @dur = json[:dur] / 1000
+      rescue StandardError => e
+        puts e.message
+        puts json[:inst]
       end
     end
   end

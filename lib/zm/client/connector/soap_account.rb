@@ -3,15 +3,15 @@
 require_relative 'soap_base'
 require_relative 'soap_error'
 
-include OpenSSL
-include Digest
+# include OpenSSL
+# include Digest
 
 module Zm
   module Client
     class SoapAccountConnector < SoapBaseConnector
 
-      MAILSPACE = 'urn:zimbraMail'.freeze
-      ACCOUNTSPACE = 'urn:zimbraAccount'.freeze
+      MAILSPACE = 'urn:zimbraMail'
+      ACCOUNTSPACE = 'urn:zimbraAccount'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
       A_NODE_PROC_NAME = lambda { |n| { name: n.first, _content: n.last } }
 
@@ -19,29 +19,6 @@ module Zm
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/soap/', nil, nil, nil)
         init_curl_client
       end
-
-      # def auth(mail, domainkey)
-      #   ts = (Time.now.to_i * 1000)
-      #   preauth = compute_preauth(mail, ts, domainkey)
-      #   body = {
-      #     Body: {
-      #       AuthRequest: {
-      #         _jsns: ACCOUNTSPACE,
-      #         account: {
-      #           _content: mail,
-      #           by: :name
-      #         },
-      #         preauth: {
-      #           _content: preauth,
-      #           timestamp: ts
-      #         }
-      #       }
-      #     }
-      #   }
-      #   # res = curl_request(body, AuthError)
-      #   # res[BODY][:AuthResponse][:authToken].first[:_content]
-      #   do_auth(body)
-      # end
 
       def auth_template(mail)
         {
@@ -177,9 +154,10 @@ module Zm
       # FOLDER
 
       def get_folder(token, id)
-        body = init_hash_request(token, :GetFolderRequest)
+        soap_name = :GetFolderRequest
+        body = init_hash_request(token, soap_name)
         req = { folder: { l: id } }
-        body[:Body][:GetFolderRequest].merge!(req)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
@@ -192,17 +170,19 @@ module Zm
       end
 
       def create_folder(token, parent_id, name, view, color, options = {})
+        soap_name = :CreateFolderRequest
         req = { folder: { l: parent_id, name: name, view: view, color: color } }.merge(options)
-        body = init_hash_request(token, :CreateFolderRequest)
-        body[:Body][:CreateFolderRequest].merge!(req)
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
       def folder_action(token, op, id, options = {})
+        soap_name = :FolderActionRequest
         action = { op: op, id: id }.merge(options)
         req = { action: action }
-        body = init_hash_request(token, :FolderActionRequest)
-        body[:Body][:FolderActionRequest].merge!(req)
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
         # puts body
         curl_request(body)
       end
@@ -234,9 +214,9 @@ module Zm
 
       def modify_search_folder(token, id, query, types = 'messages')
         search = {
-            id: id,
-            query: query,
-            types: types
+          id: id,
+          query: query,
+          types: types
         }.reject { |_, v| v.nil? }
 
         req = { search: search }

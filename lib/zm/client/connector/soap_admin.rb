@@ -8,7 +8,7 @@ module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
 
-      ADMINSPACE = 'urn:zimbraAdmin'.freeze
+      ADMINSPACE = 'urn:zimbraAdmin'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
 
       attr_accessor :token
@@ -311,6 +311,8 @@ module Zm
         # Désactivé car moins performant !
         # req = Hash[method(__method__).parameters.map{ |p|[p.last, (eval p.last.to_s)] }].select!{ |k,v|!v.nil? }
 
+        soap_name = :SearchDirectoryRequest
+
         req = {
           query: query,
           maxResults: maxResults,
@@ -327,14 +329,15 @@ module Zm
         }.reject { |_, v| v.nil? }
 
         # body = { Body: { SearchDirectoryRequest: { _jsns: ADMINSPACE } } }.merge(hash_header(@token))
-        body = init_hash_request(:SearchDirectoryRequest)
-        body[:Body][:SearchDirectoryRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         # puts body
 
         curl_request(body)
       end
 
       def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil, refresh = nil)
+        soap_name = :GetQuotaUsageRequest
         req = {
           domain: domain,
           allServers: allServers,
@@ -346,27 +349,29 @@ module Zm
         }.reject { |_, v| v.nil? }
 
         # body = { Body: { GetQuotaUsageRequest: { _jsns: ADMINSPACE } } }.merge(hash_header(@token))
-        body = init_hash_request(:GetQuotaUsageRequest)
-        body[:Body][:GetQuotaUsageRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
       def get_mailbox(id)
+        soap_name = :GetMailboxRequest
         req = {
             mbox: {
                 id: id
             }
         }
-        body = init_hash_request(:GetMailboxRequest)
-        body[:Body][:GetMailboxRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
-      def flush_cache(type, allServers, id = nil)
-        req = { cache: { type: type, allServers: allServers } }
+      def flush_cache(type, all_servers, id = nil)
+        soap_name = :FlushCacheRequest
+        req = { cache: { type: type, allServers: all_servers } }
         req[:cache].merge!({ entry: { by: :id, _content: id } }) unless id.nil?
-        body = init_hash_request(:FlushCacheRequest)
-        body[:Body][:FlushCacheRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 

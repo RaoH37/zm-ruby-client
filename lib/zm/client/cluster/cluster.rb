@@ -48,6 +48,9 @@ module Zm
 
       def license
         @license ||= LicensesCollection.new(self).find
+      rescue Zm::Client::SoapError => e
+        puts e.message
+        nil
       end
 
       def domains
