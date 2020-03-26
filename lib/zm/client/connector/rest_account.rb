@@ -6,11 +6,17 @@ require 'curb'
 module Zm
   module Client
     class RestAccountConnector
-      attr_accessor :verbose
+      attr_reader :verbose, :follow_location
 
       def initialize
+        @verbose = false
+        @follow_location = true
         @curl = easy_curl
+      end
+
+      def verbose!
         @verbose = true
+        @curl.verbose = @verbose
       end
 
       def cookie(cookie)
@@ -43,7 +49,7 @@ module Zm
 
       def multi_upload(url_fields)
         easy_options = {
-          follow_location: false,
+          follow_location: follow_location,
           enable_cookies: false,
           ssl_verify_peer: false,
           verbose: verbose,
@@ -85,6 +91,7 @@ module Zm
           curl.ssl_verify_peer = false
           curl.multipart_form_post = true
           curl.verbose = verbose
+          curl.follow_location = follow_location
         end
       end
 
