@@ -246,34 +246,28 @@ module Zm
       # -------------------------------
       # SHARE
 
-      def create_mountpoint(token, parent_id, name, view, owner_id, remote_folder_id)
-        req = {
-          link: {
-            l: parent_id,
-            name: name,
-            view: view,
-            zid: owner_id,
-            rid: remote_folder_id
-          }
-        }
-        body = init_hash_request(token, :CreateMountpointRequest)
-        body[:Body][:CreateMountpointRequest].merge!(req)
+      def create_mountpoint(token, link_option)
+        soap_name = :CreateMountpointRequest
+        req = { link: link_option }
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
       def get_share_info(token, options = {})
-        req = { includeSelf: 0 }.merge(options)
-        body = init_hash_request(token, :GetShareInfoRequest, ACCOUNTSPACE)
-        body[:Body][:GetShareInfoRequest].merge!(req)
+        soap_name = :GetShareInfoRequest
+        req = { includeSelf: 0 }.merge!(options)
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
       def get_rights(token, rights)
-        key = :GetRightsRequest
+        soap_name = :GetRightsRequest
         ace = rights.map { |r| { right: r } }
         req = { ace: ace }
-        body = init_hash_request(token, key, ACCOUNTSPACE)
-        body[:Body][key].merge!(req)
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 

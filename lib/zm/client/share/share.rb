@@ -4,9 +4,12 @@ module Zm
   module Client
     # class for account share
     class Share < Base::AccountObject
-      attr_accessor :ownerId, :ownerEmail, :ownerName, :folderId, :folderUuid,
-                    :folderPath, :view, :rights, :granteeType, :granteeId,
-                    :granteeName, :mid
+       INSTANCE_VARIABLE_KEYS = %i[
+         ownerId ownerEmail ownerName folderId folderUuid folderPath
+         view rights granteeType granteeId granteeName mid
+      ].freeze
+
+      attr_accessor(*INSTANCE_VARIABLE_KEYS)
 
       def initialize(parent, json = nil)
         @parent = parent
@@ -15,10 +18,7 @@ module Zm
       end
 
       def concat
-        [
-          @ownerId, @ownerEmail, @ownerName, @folderId, @folderUuid, @folderPath,
-          @view, @rights, @granteeType, @granteeId, @granteeName, @mid
-        ]
+        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
       end
 
       def create!
@@ -50,18 +50,10 @@ module Zm
       end
 
       def init_from_json(json)
-        @ownerId     = json[:ownerId]
-        @ownerEmail  = json[:ownerEmail]
-        @ownerName   = json[:ownerName]
-        @folderId    = json[:folderId]
-        @folderUuid  = json[:folderUuid]
-        @folderPath  = json[:folderPath]
-        @view        = json[:view]
-        @rights      = json[:rights]
-        @granteeType = json[:granteeType]
-        @granteeId   = json[:granteeId]
-        @granteeName = json[:granteeName]
-        @mid         = json[:mid]
+        INSTANCE_VARIABLE_KEYS.each do |key|
+          var_name = "@#{key}"
+          instance_variable_set(var_name, json[key])
+        end
       end
     end
   end

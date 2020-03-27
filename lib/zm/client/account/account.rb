@@ -5,6 +5,7 @@ require 'zm/modules/common/account_common'
 require 'zm/client/connector/rest_account'
 require 'zm/client/signature'
 require 'zm/client/folder'
+require 'zm/client/mountpoint'
 require 'zm/client/search_folder'
 require 'zm/client/share'
 require 'zm/client/tag'
@@ -121,6 +122,10 @@ module Zm
 
       def folders
         @folders ||= FoldersCollection.new(self)
+      end
+
+      def mountpoints
+        @mountpointss ||= MountPointsCollection.new(self)
       end
 
       def search_folders

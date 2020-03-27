@@ -2,6 +2,7 @@
 
 module Zm
   module Client
+    # class factory [shares]
     class ShareBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         @parent = parent
