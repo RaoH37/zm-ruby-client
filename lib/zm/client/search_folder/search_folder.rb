@@ -5,7 +5,7 @@ module Zm
     # class account SearchFolder
     class SearchFolder < Base::AccountObject
 
-      INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rev ms webOfflineSyncDays activesyncdisabled query sortBy types]
+      INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rgb rev ms webOfflineSyncDays activesyncdisabled query sortBy types]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
 
@@ -27,7 +27,28 @@ module Zm
 
       def modify!
         @parent.sacc.modify_search_folder(@parent.token, id, query, types)
-        @parent.sacc.folder_action(@parent.token, :update, id, { name: name, color: color })
+        @parent.sacc.folder_action(@parent.token, :update, id, build_update_options)
+      end
+
+      def query!(new_query)
+        @parent.sacc.modify_search_folder(@parent.token, id, new_query, types)
+        instance_variable_set("@query", new_query)
+      end
+
+      def color!(new_color)
+        key = new_color.to_i.zero? ? :rgb : :color
+        options = {}
+        options[key] = new_color
+        @parent.sacc.folder_action(@parent.token, :color, @id, options)
+        instance_variable_set("@#{key}", new_color)
+      end
+
+      def build_update_options
+        {
+          name: @name,
+          color: @color,
+          rgb: @rgb
+        }.delete_if { |_, v| v.nil? }
       end
 
       def delete!
