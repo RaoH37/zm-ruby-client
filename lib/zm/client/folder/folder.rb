@@ -5,7 +5,7 @@ module Zm
     # class for account folder
     class Folder < Base::AccountObject
 
-      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l luuid f view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid ruuid owner reminder acl itemCount broken deletable color rgb]
+      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l url luuid f view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid ruuid owner reminder acl itemCount broken deletable color rgb]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_accessor :folders, :grants
