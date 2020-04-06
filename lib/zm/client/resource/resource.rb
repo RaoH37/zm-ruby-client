@@ -25,14 +25,24 @@ module Zm
       end
 
       def login
-        # TODO: faire un if admin_connector alors admin_login sinon
-        # account_login afin de n'utiliser qu'un seul appel de login
-        @token = soap_account_connector.auth(@name, @domainkey)
+        if @parent.logged?
+          admin_login
+        else
+          account_login
+        end
       end
 
-      def account_login(key = nil)
-        @domainkey = key || domain_key
-        @token = soap_account_connector.auth(@name, @domainkey)
+      def account_login_preauth
+        domain_key
+        raise ZmError, 'domain key is required to login !' if @domainkey.nil?
+
+        @token = sacc.auth_preauth(@name, @domainkey)
+      end
+
+      def account_login_password
+        raise ZmError, 'password is required to login !' if password.nil?
+
+        @token = sacc.auth_password(@name, @password)
       end
 
       def admin_login
@@ -44,7 +54,7 @@ module Zm
       end
 
       def domain_key
-        @parent.domain_key(domain_name)
+        @domainkey ||= @parent.domain_key(domain_name)
       end
 
       def infos
