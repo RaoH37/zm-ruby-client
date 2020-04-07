@@ -5,10 +5,12 @@ module Zm
     # class for account folder
     class Folder < Base::AccountObject
 
-      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l url luuid f view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid ruuid owner reminder acl itemCount broken deletable color rgb]
+      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l url luuid f
+        view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid
+        ruuid owner reminder acl itemCount broken deletable color rgb fb]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
-      attr_accessor :folders, :grants
+      attr_accessor :folders, :grants, :retention_policies
 
       def concat
         INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
@@ -24,6 +26,7 @@ module Zm
         @type = key
         @folders = []
         @grants = []
+        @retention_policies = []
         init_from_json(json) if json.is_a?(Hash)
         yield(self) if block_given?
         extend(DocumentFolder) if view == 'document'
@@ -33,22 +36,35 @@ module Zm
         @is_immutable ||= Zm::Client::FolderDefault::IDS.include?(@id.to_i)
       end
 
+      def to_h
+        {
+          f: f,
+          name: name,
+          l: l,
+          color: color,
+          rgb: rgb,
+          url: url,
+          fb: fb,
+          view: view
+        }
+      end
+
       def create!
-        rep = @parent.sacc.create_folder(@parent.token, @l, @name, @view, @color)
+        options = to_h
+        options.delete_if { |_, v| v.nil? }
+        rep = @parent.sacc.create_folder(@parent.token, options)
+        # rep = @parent.sacc.create_folder(@parent.token, @l, @name, @view, @color)
         init_from_json(rep[:Body][:CreateFolderResponse][:folder].first)
       end
 
       def modify!
-        options = {
-            f: f,
-            name: name,
-            l: l,
-            color: color,
-            rgb: rgb
-        }
+        options = to_h
         options.delete_if { |_, v| v.nil? }
-        options.delete(:name) if @id.to_i <= 16
-        options.delete(:l) if @id.to_i <= 16
+
+        if is_immutable?
+          options.delete(:name)
+          options.delete(:l)
+        end
 
         update!(options)
       end
@@ -60,6 +76,11 @@ module Zm
       def rename!(new_name)
         @parent.sacc.folder_action(@parent.token, 'rename', @id, name: new_name)
         @name = new_name
+      end
+
+      def add_retention_policy!(retention_policies)
+        options = retention_policies.is_a?(Hash) ? retention_policies : retention_policies.map(&:to_h).reduce({}, :merge)
+        @parent.sacc.folder_action(@parent.token, 'retentionPolicy', @id, retentionPolicy: options)
       end
 
       def move!(folder_id)
@@ -132,6 +153,10 @@ module Zm
         )
       end
 
+      def retention_policies_h
+        @retention_policies.map(&:to_h).reduce({}, :merge)
+      end
+
       def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
         fmt ||= File.extname(file_path)[1..-1]
         # @parent.uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
@@ -147,6 +172,12 @@ module Zm
 
         if !json[:acl].nil? && json[:acl][:grant].is_a?(Array)
           @grants = json[:acl][:grant].map { |grant| FolderGrant.create_by_json(self, grant) }
+        end
+
+        if json[:retentionPolicy].is_a?(Array)
+          @retention_policies = json[:retentionPolicy].first.map do |k, v|
+            FolderRetentionPolicy.create_by_json(self, k, v.first)
+          end
         end
       end
     end

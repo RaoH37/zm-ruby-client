@@ -169,9 +169,10 @@ module Zm
         curl_request(body)
       end
 
-      def create_folder(token, parent_id, name, view, color, options = {})
+      def create_folder(token, folder_options)
         soap_name = :CreateFolderRequest
-        req = { folder: { l: parent_id, name: name, view: view, color: color } }.merge(options)
+        # folder = { l: parent_id, name: name, view: view, color: color }.merge(options)
+        req = { folder: folder_options }
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
