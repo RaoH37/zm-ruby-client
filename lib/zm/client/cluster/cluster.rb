@@ -38,6 +38,13 @@ module Zm
         !@soap_admin_connector.token.nil?
       end
 
+      def alive?
+        @soap_admin_connector.noop
+        true
+      rescue Zm::Client::SoapError => _
+        false
+      end
+
       def soap_account_connector
         @soap_account_connector ||= SoapAccountConnector.new(
           @config.zimbra_public_scheme,

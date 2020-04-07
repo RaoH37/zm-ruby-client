@@ -25,6 +25,11 @@ module Zm
         @token = res[BODY][:AuthResponse][:authToken][0][:_content]
       end
 
+      def noop
+        body = init_hash_request(:NoOpRequest)
+        curl_request(body)
+      end
+
       def delegate_auth(name, by = :name, duration = nil)
         req = { duration: duration, account: { by: by, _content: name } }.reject { |_, v| v.nil? }
         body = init_hash_request(:DelegateAuthRequest)
