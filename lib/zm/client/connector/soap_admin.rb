@@ -159,100 +159,99 @@ module Zm
       end
 
       def create_resource(name, password = nil, attrs = [])
-        req = { name: name, password: password }.reject { |_, v| v.nil? }
+        soap_name = :CreateCalendarResourceRequest
+        req = { name: name, password: password }
+        req.reject! { |_, v| v.nil? }
         req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
-        body = init_hash_request(:CreateCalendarResourceRequest)
-        body[:Body][:CreateCalendarResourceRequest].merge!(req)
-        # puts req
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
       def create_distribution_list(name, attrs = [])
+        soap_name = :CreateDistributionListRequest
         req = { name: name }
         req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
-        body = init_hash_request(:CreateDistributionListRequest)
-        body[:Body][:CreateDistributionListRequest].merge!(req)
-        # puts req
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
+        # puts body
         curl_request(body)
       end
 
       def modify_account(id, attrs = [])
-        req = {
-          id: id,
-          a: attrs.map(&A_NODE_PROC)
-          # a: attrs.map { |n| { n: n.first, _content: n.last } }
-        }
-        body = init_hash_request(:ModifyAccountRequest)
-        body[:Body][:ModifyAccountRequest].merge!(req)
-        curl_request(body)
+        generic_modify(:ModifyAccountRequest, id, attrs)
       end
 
       def modify_resource(id, attrs = [])
+        generic_modify(:ModifyCalendarResourceRequest, id, attrs)
+      end
+
+      def modify_distribution_list(id, attrs = [])
+        generic_modify(:ModifyDistributionListRequest, id, attrs)
+      end
+
+      def generic_modify(soap_name, id, attrs)
         req = {
           id: id,
           a: attrs.map(&A_NODE_PROC)
         }
-        body = init_hash_request(:ModifyCalendarResourceRequest)
-        body[:Body][:ModifyCalendarResourceRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
       def add_account_alias(id, email)
-        req = { id: id, alias: email }
-        body = init_hash_request(:AddAccountAliasRequest)
-        body[:Body][:AddAccountAliasRequest].merge!(req)
-        curl_request(body)
+        generic_alias(:AddAccountAliasRequest, id, email)
       end
 
       def remove_account_alias(id, email)
-        req = { id: id, alias: email }
-        body = init_hash_request(:RemoveAccountAliasRequest)
-        body[:Body][:RemoveAccountAliasRequest].merge!(req)
-        curl_request(body)
+        generic_alias(:RemoveAccountAliasRequest, id, email)
       end
 
+
       def rename_account(id, email)
-        req = { id: id, newName: email }
-        body = init_hash_request(:RenameAccountRequest)
-        body[:Body][:RenameAccountRequest].merge!(req)
-        curl_request(body)
+        generic_rename(:RenameAccountRequest, id, email)
       end
 
       def add_distribution_list_members(id, emails)
-        req = { id: id, dlm: emails.map { |email| {_content: email} } }
-        body = init_hash_request(:AddDistributionListMemberRequest)
-        body[:Body][:AddDistributionListMemberRequest].merge!(req)
-        curl_request(body)
+        generic_members(:AddDistributionListMemberRequest, id, emails)
       end
 
       def remove_distribution_list_members(id, emails)
+        generic_members(:RemoveDistributionListMemberRequest, id, emails)
+      end
+
+      def generic_members(soap_name, id, emails)
         req = { id: id, dlm: emails.map { |email| {_content: email} } }
-        body = init_hash_request(:RemoveDistributionListMemberRequest)
-        body[:Body][:RemoveDistributionListMemberRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
       def add_distribution_list_alias(id, email)
-        key = :AddDistributionListAliasRequest
-        req = { id: id, alias: email }
-        body = init_hash_request(key)
-        body[:Body][key].merge!(req)
-        curl_request(body)
+        generic_alias(:AddDistributionListAliasRequest, id, email)
       end
 
       def remove_distribution_list_alias(id, email)
-        key = :RemoveDistributionListAliasRequest
+        generic_alias(:RemoveDistributionListAliasRequest, id, email)
+      end
+
+      def generic_alias(soap_name, id, email)
         req = { id: id, alias: email }
-        body = init_hash_request(key)
-        body[:Body][key].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
+        # puts body
         curl_request(body)
       end
 
       def rename_distribution_list(id, email)
-        key = :RenameDistributionListRequest
+        generic_rename(:RenameDistributionListRequest, id, email)
+      end
+
+      def generic_rename(soap_name, id, email)
         req = { id: id, newName: email }
-        body = init_hash_request(key)
-        body[:Body][key].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 
@@ -277,32 +276,40 @@ module Zm
       end
 
       def get_resource(name, by = :name, attrs = nil)
-        req = { account: { by: by, _content: name } }
+        soap_name = :GetCalendarResourceRequest
+        req = { calresource: { by: by, _content: name } }
         req[:_attrs] = attrs unless attrs.nil?
-        body = init_hash_request(:GetCalendarResourceRequest)
-        body[:Body][:GetCalendarResourceRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         # p body
         curl_request(body)
       end
 
       def get_distribution_list(name, by = :name, attrs = nil)
+        soap_name = :GetDistributionListRequest
         req = { dl: { by: by, _content: name } }
         req[:_attrs] = attrs unless attrs.nil?
-        body = init_hash_request(:GetDistributionListRequest)
-        body[:Body][:GetDistributionListRequest].merge!(req)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         # p body
         curl_request(body)
       end
 
       def delete_account(id)
-        body = init_hash_request(:DeleteAccountRequest)
-        body[:Body][:DeleteAccountRequest][:id] = id
-        curl_request(body)
+        generic_delete(:DeleteAccountRequest, id)
       end
 
       def delete_resource(id)
-        body = init_hash_request(:DeleteCalendarResourceRequest)
-        body[:Body][:DeleteCalendarResourceRequest][:id] = id
+        generic_delete(:DeleteCalendarResourceRequest, id)
+      end
+
+      def delete_distribution_list(id)
+        generic_delete(:DeleteDistributionListRequest, id)
+      end
+
+      def generic_delete(soap_name, id)
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name][:id] = id
         curl_request(body)
       end
 

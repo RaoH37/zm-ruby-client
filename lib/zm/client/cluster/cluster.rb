@@ -77,6 +77,8 @@ module Zm
         @distributionlists ||= DistributionListsCollection.new self
       end
 
+      alias distribution_lists distributionlists
+
       def domain_key(domain_name)
         key = @config.domain_key(domain_name)
         key ||= find_domain_key(domain_name)

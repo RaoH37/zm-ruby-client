@@ -228,7 +228,7 @@ module Zm
       end
 
       def aliases
-        @aliases ||= []
+        @aliases ||= zimbraMailAlias
       end
 
       def add_alias!(email)
@@ -275,47 +275,6 @@ module Zm
       def last_logon
         @last_logon ||= Time.parse zimbraLastLogonTimestamp unless zimbraLastLogonTimestamp.nil?
       end
-
-      # Deprecated: use uploader.download_file
-      #
-      # def download(folder_path, fmt, types, dest_file_path)
-      #   rac.download(download_url(folder_path, fmt, types), dest_file_path)
-      # end
-      #
-      # def download_url(folder_path, fmt, types)
-      #   url_folder_path = File.join(@home_url, folder_path.to_s)
-      #   uri = Addressable::URI.new
-      #   uri.query_values = {
-      #     fmt: fmt,
-      #     types: types.join(','),
-      #     emptyname: 'Vide',
-      #     charset: 'UTF-8',
-      #     auth: 'qp',
-      #     zauthtoken: @token
-      #   }
-      #   url_folder_path << '?' << uri.query
-      #   url_folder_path
-      # end
-
-      # Deprecated: use uploader.send_file
-      #
-      # def upload(folder_path, fmt, types, resolve, src_file_path)
-      #   rac.upload(upload_url(folder_path, fmt, types, resolve), src_file_path)
-      # end
-      #
-      # def upload_url(folder_path, fmt, types, resolve)
-      #   url_folder_path = File.join(@home_url, folder_path.to_s)
-      #   uri = Addressable::URI.new
-      #   uri.query_values = {
-      #       fmt: fmt,
-      #       types: types.join(','),
-      #       resolve: resolve,
-      #       auth: 'qp',
-      #       zauthtoken: @token
-      #   }
-      #   url_folder_path << '?' << uri.query
-      #   url_folder_path
-      # end
 
       def flush_cache!
         sac.flush_cache('account', 1, @id)

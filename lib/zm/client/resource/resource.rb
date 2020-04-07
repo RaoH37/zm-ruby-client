@@ -6,7 +6,8 @@ module Zm
   module Client
     # objectClass: zimbraCalendarResource
     class Resource < Base::AdminObject
-      attr_reader :name, :id, :domainkey, :used, :token
+      # attr_reader :name, :id, :domainkey, :used, :token
+      attr_accessor :home_url
 
       def initialize(parent)
         extend(ResourceCommon)
@@ -95,36 +96,40 @@ module Zm
         @id = rep[:Body][:CreateCalendarResourceResponse][:calresource].first[:id]
       end
 
-      def download(folder_path, fmt, types, dest_file_path)
-        url_folder_path = File.join(@home_url, folder_path.to_s)
-        uri = Addressable::URI.new
-        uri.query_values = {
-            fmt: fmt,
-            types: types.join(','),
-            emptyname: 'Vide',
-            charset: 'UTF-8',
-            auth: 'qp',
-            zauthtoken: @token
-        }
-        url_folder_path << '?' << uri.query
-
-        rac.download(url_folder_path, dest_file_path)
+      def uploader
+        @uploader ||= Upload.new(self)
       end
 
-      def upload(folder_path, fmt, types, resolve, src_file_path)
-        url_folder_path = File.join(@home_url, folder_path.to_s)
-        uri = Addressable::URI.new
-        uri.query_values = {
-          fmt: fmt,
-          types: types.join(','),
-          resolve: resolve,
-          auth: 'qp',
-          zauthtoken: @token
-        }
-        url_folder_path << '?' << uri.query
-
-        rac.upload(url_folder_path, src_file_path)
-      end
+      # def download(folder_path, fmt, types, dest_file_path)
+      #   url_folder_path = File.join(@home_url, folder_path.to_s)
+      #   uri = Addressable::URI.new
+      #   uri.query_values = {
+      #       fmt: fmt,
+      #       types: types.join(','),
+      #       emptyname: 'Vide',
+      #       charset: 'UTF-8',
+      #       auth: 'qp',
+      #       zauthtoken: @token
+      #   }
+      #   url_folder_path << '?' << uri.query
+      #
+      #   rac.download(url_folder_path, dest_file_path)
+      # end
+      #
+      # def upload(folder_path, fmt, types, resolve, src_file_path)
+      #   url_folder_path = File.join(@home_url, folder_path.to_s)
+      #   uri = Addressable::URI.new
+      #   uri.query_values = {
+      #     fmt: fmt,
+      #     types: types.join(','),
+      #     resolve: resolve,
+      #     auth: 'qp',
+      #     zauthtoken: @token
+      #   }
+      #   url_folder_path << '?' << uri.query
+      #
+      #   rac.upload(url_folder_path, src_file_path)
+      # end
     end
   end
 end
