@@ -212,10 +212,10 @@ module Zm
       end
 
       def modify!
-        sac.modify_account(
-          @id,
-          instance_variables_array(attrs_write)
-        )
+        attrs_to_modify = instance_variables_array(attrs_write)
+        return if attrs_to_modify.empty?
+
+        sac.modify_account(@id, attrs_to_modify)
       end
 
       def create!

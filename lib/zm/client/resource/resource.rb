@@ -81,10 +81,10 @@ module Zm
       end
 
       def modify!
-        sac.modify_resource(
-          @id,
-          instance_variables_array(attrs_write)
-        )
+        attrs_to_modify = instance_variables_array(attrs_write)
+        return if attrs_to_modify.empty?
+
+        sac.modify_resource(@id, attrs_to_modify)
       end
 
       def create!
