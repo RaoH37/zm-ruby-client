@@ -2,6 +2,7 @@
 
 require_relative 'soap_base'
 require_relative 'soap_error'
+require 'gyoku'
 
 # include OpenSSL
 # include Digest
@@ -14,6 +15,7 @@ module Zm
       ACCOUNTSPACE = 'urn:zimbraAccount'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
       A_NODE_PROC_NAME = lambda { |n| { name: n.first, _content: n.last } }
+      A_NODE_PROC_ARROW_NAME = lambda { |n| { :@name => n.first, content!: n.last } }
 
       def initialize(scheme, host, port)
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/soap/', nil, nil, nil)
@@ -381,20 +383,44 @@ module Zm
         curl_request(body)
       end
 
+      # def create_identity(token, name, attrs = [])
+      #   soap_name = :CreateIdentityRequest
+      #   req = { identity: { name: name, a: attrs.to_a.map(&A_NODE_PROC__NAME) } }
+      #   body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+      #   body[:Body][soap_name].merge!(req)
+      #   puts body
+      #   curl_request(body)
+      # end
+
+      # def modify_identity(token, id, attrs = [])
+      #   soap_name = :ModifyIdentityRequest
+      #   req = { identity: { id: id, a: attrs.to_a.map(&A_NODE_PROC_NAME) } }
+      #   body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+      #   body[:Body][soap_name].merge!(req)
+      #   puts body
+      #   curl_request(body)
+      # end
+
       def create_identity(token, name, attrs = [])
         soap_name = :CreateIdentityRequest
-        req = { identity: { name: name, a: attrs.to_a.map(&A_NODE_PROC_NAME) } }
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+        req = { identity: { :@name => name, a: attrs.to_a.map(&A_NODE_PROC_ARROW_NAME) } }
+        body = init_hash_arrow_request(token, soap_name, ACCOUNTSPACE)
+        body[:Envelope][:Body][soap_name].merge!(req)
+        body_xml = Gyoku.xml(body, { :key_converter => :none })
+        # puts body_xml
+        # todo ne fonctionne pas en JS !
+        curl_xml(body_xml)
       end
 
       def modify_identity(token, id, attrs = [])
         soap_name = :ModifyIdentityRequest
-        req = { identity: { id: id, a: attrs.to_a.map(&A_NODE_PROC_NAME) } }
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+        req = { identity: { :@id => id, a: attrs.to_a.map(&A_NODE_PROC_ARROW_NAME) } }
+        body = init_hash_arrow_request(token, soap_name, ACCOUNTSPACE)
+        body[:Envelope][:Body][soap_name].merge!(req)
+        body_xml = Gyoku.xml(body, { :key_converter => :none })
+        # puts body_xml
+        # todo ne fonctionne pas en JS !
+        curl_xml(body_xml)
       end
 
       def delete_identity(token, id)
@@ -513,6 +539,26 @@ module Zm
             soap_name => { _jsns: jsns }
           }
         }.merge(hash_header(token))
+      end
+
+      def init_hash_arrow_request(token, soap_name, jsns = MAILSPACE)
+        { Envelope: {
+            :@xmlns => 'http://schemas.xmlsoap.org/soap/envelope/',
+            '@xmlns:urn' => 'urn:zimbra',
+            Header: {
+              context: {
+                authToken: token,
+                :@xmlns => BASESPACE,
+                format: {
+                    :@type => 'js'
+                }
+              }
+            },
+            Body: {
+              soap_name => { :@xmlns => jsns }
+            }
+          }
+        }
       end
     end
   end

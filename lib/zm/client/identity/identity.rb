@@ -36,6 +36,20 @@ module Zm
         init_from_json(rep[:Body][:CreateIdentityResponse][:identity].first)
       end
 
+      def update!(hash)
+        @parent.sacc.modify_identity(@parent.token, id, hash)
+
+        hash.each do |k, v|
+          arrow_attr_sym = "@#{k}".to_sym
+
+          if v.respond_to?(:empty?) && v.empty?
+            self.remove_instance_variable(arrow_attr_sym) if self.instance_variable_get(arrow_attr_sym)
+          else
+            self.instance_variable_set(arrow_attr_sym, v)
+          end
+        end
+      end
+
       def modify!
         @parent.sacc.modify_identity(@parent.token, id, instance_variables_array(ATTRS_WRITE))
       end
