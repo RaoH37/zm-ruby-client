@@ -273,7 +273,7 @@ module Zm
       def get_account(name, by = :name, attrs = nil, applyCos = 1)
         soap_name = :GetAccountRequest
         req = { account: { by: by, _content: name }, applyCos: applyCos }
-        req[:_attrs] = attrs unless attrs.nil? || attrs.empty?
+        req[:attrs] = attrs unless attrs.nil? || attrs.empty?
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         # puts body
@@ -283,7 +283,7 @@ module Zm
       def get_resource(name, by = :name, attrs = nil)
         soap_name = :GetCalendarResourceRequest
         req = { calresource: { by: by, _content: name } }
-        req[:_attrs] = attrs unless attrs.nil?
+        req[:attrs] = attrs unless attrs.nil?
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         # p body
@@ -293,7 +293,7 @@ module Zm
       def get_distribution_list(name, by = :name, attrs = nil)
         soap_name = :GetDistributionListRequest
         req = { dl: { by: by, _content: name } }
-        req[:_attrs] = attrs unless attrs.nil?
+        req[:attrs] = attrs unless attrs.nil?
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         # p body

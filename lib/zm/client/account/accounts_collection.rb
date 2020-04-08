@@ -15,8 +15,7 @@ module Zm
         self
       end
 
-      def find_by(hash, *attrs)
-        @attrs += attrs
+      def find_by(hash)
         rep = sac.get_account(hash.values.first, hash.keys.first, attrs_comma, @apply_cos)
         entry = rep[:Body][:GetAccountResponse][:account].first
         # puts "AccountsCollection find_by #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
