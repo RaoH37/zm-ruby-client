@@ -88,6 +88,9 @@ module Zm
         return if @custom_keys.empty?
 
         self.class.attr_accessor(*@custom_keys)
+      rescue StandardError => _
+        @custom_keys.clear
+        nil
       end
 
       def all_instance_variable_keys
