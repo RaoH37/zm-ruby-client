@@ -36,6 +36,10 @@ module Zm
         @is_immutable ||= Zm::Client::FolderDefault::IDS.include?(@id.to_i)
       end
 
+      def to_query
+        "inid:#{id}"
+      end
+
       def to_h
         {
           f: f,
@@ -162,6 +166,31 @@ module Zm
         # @parent.uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
+      end
+
+      def import(file_path)
+        uploader = Upload.new(@parent, RestAccountConnector.new)
+        uploader.send_file(absFolderPath, 'tgz', nil, 'skip', file_path)
+      end
+
+      def download(dest_file_path, fmt = 'tgz')
+        uploader = Upload.new(@parent, RestAccountConnector.new)
+        uploader.download_file(absFolderPath, fmt, [view], nil, dest_file_path)
+      end
+
+      def export(dest_file_path)
+        h = {
+          fmt: 'tgz',
+          emptyname: 'Vide',
+          charset: 'UTF-8',
+          auth: 'qp',
+          zauthtoken: @parent.token,
+          query: to_query
+        }
+
+        url_query = absFolderPath + '?' + h.map { |k, v| [k, v].join('=') }.join('&')
+
+        @parent.uploader.download_file_with_url(url_query, dest_file_path)
       end
 
       def init_from_json(json)

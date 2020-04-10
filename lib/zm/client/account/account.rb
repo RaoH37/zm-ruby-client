@@ -228,7 +228,7 @@ module Zm
       end
 
       def aliases
-        @aliases ||= zimbraMailAlias
+        @aliases ||= (zimbraMailAlias || [])
       end
 
       def add_alias!(email)

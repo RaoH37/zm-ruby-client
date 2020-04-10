@@ -154,12 +154,13 @@ module Zm
       end
 
       def create_account(name, password = nil, attrs = [])
+        soap_name = :CreateAccountRequest
         req = { name: name, password: password }.reject { |_, v| v.nil? }
         req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
         # req[:a] = attrs.map{|i|i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i]}.flatten(1).map { |n| { n: n.first, _content: n.last } }
-        body = init_hash_request(:CreateAccountRequest)
-        body[:Body][:CreateAccountRequest].merge!(req)
-        # puts req
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
+        # puts body
         curl_request(body)
       end
 
