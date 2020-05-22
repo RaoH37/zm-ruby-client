@@ -15,6 +15,16 @@ module Zm
         @grantee_type = 'usr'.freeze
       end
 
+      def to_h
+        hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+        hashmap.delete_if { |_, v| v.nil? }
+        hashmap
+      end
+
+      def all_instance_variable_keys
+        ResourceCommon::ALL_ATTRS
+      end
+
       def rest_account_connector
         @rest_account_connector ||= RestAccountConnector.new
       end
@@ -69,6 +79,10 @@ module Zm
         @public_url = @infos[:publicURL]
         @zimbraCOSId = @infos[:cos][:id]
         @home_url = @infos[:rest]
+      end
+
+      def folders
+        @folders ||= FoldersCollection.new(self)
       end
 
       def delete!

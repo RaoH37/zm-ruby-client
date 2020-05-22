@@ -14,8 +14,8 @@ module Zm
         self
       end
 
-      def find_by(hash, *attrs)
-        rep = sac.get_resource(hash.values.first, hash.keys.first, attrs.join(COMMA))
+      def find_by(hash)
+        rep = sac.get_resource(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetCalendarResourceResponse][:calresource].first
         resource = Resource.new(@parent)
         resource.init_from_json(entry)

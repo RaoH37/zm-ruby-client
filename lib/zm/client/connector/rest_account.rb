@@ -53,10 +53,11 @@ module Zm
 
       def easy_curl
         Curl::Easy.new do |curl|
-          curl.timeout = 7200
+          curl.timeout = 300
           curl.enable_cookies = false
           curl.encoding = ''
           curl.ssl_verify_peer = false
+          curl.ssl_verify_host = 0
           curl.multipart_form_post = true
           curl.verbose = verbose
           curl.follow_location = follow_location

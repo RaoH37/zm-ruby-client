@@ -271,6 +271,10 @@ module Zm
         curl_request(body)
       end
 
+      def modify_domain(id, attrs = [])
+        generic_modify(:ModifyDomainRequest, id, attrs)
+      end
+
       def get_account(name, by = :name, attrs = nil, applyCos = 1)
         soap_name = :GetAccountRequest
         req = { account: { by: by, _content: name }, applyCos: applyCos }

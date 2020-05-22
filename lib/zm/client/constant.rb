@@ -108,14 +108,8 @@ module Zm
           zimbraMailHost
           uid
           description
-          zimbraMailForwardingAddress
-          zimbraIsAdminGroup
           zimbraMailStatus
-          zimbraIsDelegatedAdminAccount
-          zimbraIsAdminAccount
-          zimbraIsSystemResource
-          zimbraIsSystemAccount
-          zimbraIsExternalVirtualAccount
+          zimbraMailAlias
         ].freeze
 
         ALIAS = %i[

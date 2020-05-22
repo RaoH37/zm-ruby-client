@@ -16,7 +16,7 @@ module Zm
 
       def download_file_with_url(url, dest_file_path)
         url = File.join(@parent.home_url, url) unless url.start_with?('http')
-
+        puts url
         @rac.download(url, dest_file_path)
       end
 

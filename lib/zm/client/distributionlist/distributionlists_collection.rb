@@ -14,8 +14,8 @@ module Zm
         self
       end
 
-      def find_by(hash, *attrs)
-        rep = sac.get_distribution_list(hash.values.first, hash.keys.first, attrs.join(COMMA))
+      def find_by(hash)
+        rep = sac.get_distribution_list(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetDistributionListResponse][:dl].first
         dl = DistributionList.new(@parent)
         dl.init_from_json(entry)

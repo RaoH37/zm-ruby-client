@@ -14,13 +14,23 @@ module Zm
         @grantee_type = 'grp'.freeze
       end
 
+      def to_h
+        hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+        hashmap.delete_if { |_, v| v.nil? }
+        hashmap
+      end
+
+      def all_instance_variable_keys
+        DistributionListCommon::ALL_ATTRS
+      end
+
       def init_from_json(json)
         # @members = json[:a].select { |a| a[:n] == 'zimbraMailForwardingAddress' }.map { |a| a[:_content] }.compact
         @members = json[:dlm].map { |a| a[:_content] }.compact if json[:dlm].is_a?(Array)
         super(json)
-        zimbraMailAlias = [zimbraMailAlias].compact unless zimbraMailAlias.is_a?(Array)
-        zimbraMailAlias.delete(@name)
-        @aliases = zimbraMailAlias
+        @zimbraMailAlias = [@zimbraMailAlias].compact unless @zimbraMailAlias.is_a?(Array)
+        @zimbraMailAlias.delete(@name)
+        @aliases = @zimbraMailAlias
       end
 
       def create!

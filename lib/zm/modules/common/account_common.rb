@@ -54,6 +54,8 @@ module AccountCommon
     zimbraPrefCalendarFirstDayOfWeek
     zimbraPrefCalendarForwardInvitesTo
     zimbraPrefMailForwardingAddress
+    zimbraMailDeliveryAddress
+    zimbraCOSId
   ].freeze
 
   ATTRS_READ.each { |attr| attr_reader attr }

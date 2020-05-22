@@ -25,7 +25,7 @@ module Zm
 
       def init_curl_client
         @curl = ::Curl::Easy.new(@uri.to_s) do |curl|
-          curl.timeout = 7200
+          curl.timeout = 300
           curl.enable_cookies = false
           curl.encoding = ''
           curl.headers = HTTP_HEADERS
