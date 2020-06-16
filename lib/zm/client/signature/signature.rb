@@ -42,6 +42,14 @@ module Zm
         TYPE_TXT
       end
 
+      def html?
+        type == TYPE_HTML
+      end
+
+      def txt?
+        type == TYPE_TXT
+      end
+
       def content
         html || txt
       end

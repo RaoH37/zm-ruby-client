@@ -485,6 +485,7 @@ module Zm
         req = { signature: { id: id, name: name, cid: { content: { type: type, _content: content } } } }
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)
         body[:Body][soap_name].merge!(req)
+        # puts body
         curl_request(body)
       end
 

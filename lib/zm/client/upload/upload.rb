@@ -16,12 +16,37 @@ module Zm
 
       def download_file_with_url(url, dest_file_path)
         url = File.join(@parent.home_url, url) unless url.start_with?('http')
-        puts url
         @rac.download(url, dest_file_path)
       end
 
       def download_file(folder_path, fmt, types, ids, dest_file_path)
         @rac.download(download_file_url(folder_path, fmt, types, ids), dest_file_path)
+      end
+
+      def download_folder(id, fmt, dest_file_path)
+        @rac.download(download_folder_url(id, fmt), dest_file_path)
+      end
+
+      def download_folder_url(id, fmt)
+        url_folder_path = @parent.home_url
+
+        h = {
+          fmt: fmt,
+          id: id,
+          emptyname: 'Vide',
+          charset: 'UTF-8',
+          auth: 'qp',
+          zauthtoken: @parent.token,
+          disp: 'a'
+        }
+
+        uri = Addressable::URI.new
+        uri.query_values = h
+        url_folder_path << '?' << uri.query
+
+        puts url_folder_path
+
+        url_folder_path
       end
 
       def download_file_url(folder_path, fmt, types, ids = [])

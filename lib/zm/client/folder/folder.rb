@@ -175,7 +175,8 @@ module Zm
 
       def download(dest_file_path, fmt = 'tgz')
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(absFolderPath, fmt, [view], nil, dest_file_path)
+        # uploader.download_file(absFolderPath, fmt, [view], nil, dest_file_path)
+        uploader.download_folder(@id, fmt, dest_file_path)
       end
 
       def export(dest_file_path)
