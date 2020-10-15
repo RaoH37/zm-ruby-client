@@ -15,6 +15,7 @@ module DistributionListCommon
     displayName
     cn
     zimbraMailTransport
+    zimbraMailForwardingAddress
   ].freeze
 
   ATTRS_READ.each { |attr| attr_reader attr }

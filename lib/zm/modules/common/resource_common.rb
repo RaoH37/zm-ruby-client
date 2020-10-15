@@ -43,6 +43,7 @@ module ResourceCommon
     zimbraCalResLocationDisplayName
     description
     userPassword
+    zimbraPrefCalendarForwardInvitesTo
   ].freeze
 
   ATTRS_READ.each { |attr| attr_reader attr }

@@ -392,6 +392,14 @@ module Zm
         curl_request(body)
       end
 
+      def get_share_info(id)
+        soap_name = :GetShareInfoRequest
+        req = { owner: { by: :id, _content: id } }
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
       def init_hash_request(soap_name)
         {
           Body: {

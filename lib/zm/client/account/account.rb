@@ -238,7 +238,13 @@ module Zm
       end
 
       def aliases
-        @aliases ||= (zimbraMailAlias || [])
+        @aliases ||= set_aliases
+      end
+
+      def set_aliases
+        return [] if zimbraMailAlias.nil?
+        return [zimbraMailAlias] if zimbraMailAlias.is_a?(String)
+        zimbraMailAlias
       end
 
       def add_alias!(email)
@@ -284,6 +290,10 @@ module Zm
 
       def last_logon
         @last_logon ||= Time.parse zimbraLastLogonTimestamp unless zimbraLastLogonTimestamp.nil?
+      end
+
+      def created_at
+        @created_at ||= Time.parse zimbraCreateTimestamp unless zimbraCreateTimestamp.nil?
       end
 
       def flush_cache!

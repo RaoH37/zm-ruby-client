@@ -6,11 +6,13 @@ module Zm
     # objectClass: zimbraDistributionList
     class DistributionList < Base::AdminObject
       attr_accessor :members
+      attr_reader :owners
 
       def initialize(parent)
         extend(DistributionListCommon)
         super(parent)
         @members = []
+        @owners = []
         @grantee_type = 'grp'.freeze
       end
 
@@ -25,8 +27,10 @@ module Zm
       end
 
       def init_from_json(json)
+        # puts json
         # @members = json[:a].select { |a| a[:n] == 'zimbraMailForwardingAddress' }.map { |a| a[:_content] }.compact
         @members = json[:dlm].map { |a| a[:_content] }.compact if json[:dlm].is_a?(Array)
+        @owners = json[:owners].first[:owner].map { |a| a[:name] }.compact if json[:owners].is_a?(Array)
         super(json)
         @zimbraMailAlias = [@zimbraMailAlias].compact unless @zimbraMailAlias.is_a?(Array)
         @zimbraMailAlias.delete(@name)

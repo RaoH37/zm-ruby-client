@@ -8,6 +8,24 @@ module Zm
         @account = account
         @json = json
       end
+
+      def make
+        root.map do |s|
+          Message.new(@parent, s)
+        end
+      end
+
+      def ids
+        root.map { |s| s[:id] }
+      end
+
+      def root
+        root = @json[:Body][:SearchResponse][:m]
+        return [] if root.nil?
+
+        root = [root] unless root.is_a?(Array)
+        root
+      end
     end
   end
 end

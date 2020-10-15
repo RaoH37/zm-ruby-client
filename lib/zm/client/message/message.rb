@@ -4,6 +4,9 @@ module Zm
   module Client
     # class message for account
     class Message < Base::AccountObject
+      INSTANCE_VARIABLE_KEYS = %i[id date l su fr]
+      attr_accessor *INSTANCE_VARIABLE_KEYS
+
       attr_accessor :subject
       attr_reader :recipients, :attachments, :body
 
@@ -30,6 +33,19 @@ module Zm
 
       def send!
         @parent.sacc.send_msg(@parent.token, to_jsns)
+      end
+
+      def init_from_json(json)
+        @id   = json[:id]
+        @date = Time.at(json[:d]/1000)
+        @l    = json[:l]
+        @su   = json[:su]
+        @fr   = json[:fr]
+
+        json[:e].each do |e|
+          recipient = Recipient.new(e[:t], e[:a], e[:p])
+          @recipients.add(recipient)
+        end
       end
 
       # content fo an email
@@ -115,6 +131,10 @@ module Zm
         def bcc
           @recipients.select { |r| r.field == :b }
         end
+
+        def from
+          @recipients.select { |r| r.field == :f }
+        end
       end
 
       # Class one recipient for email
@@ -128,7 +148,7 @@ module Zm
 
         def initialize(field, email, display_name = nil)
           @email = email
-          @field = field
+          @field = field.to_sym
           @display_name = display_name
         end
 
