@@ -55,8 +55,9 @@ module Zm
         soapbody
       end
 
-      def hash_header(token)
-        { Header: { context: { authToken: token }, _jsns: BASESPACE } }
+      def hash_header(token, target_server = nil)
+        context = { authToken: token, targetServer: target_server }.delete_if { |_, v| v.nil? }
+        { Header: { context: context, _jsns: BASESPACE } }
       end
     end
   end

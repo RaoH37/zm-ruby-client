@@ -400,12 +400,20 @@ module Zm
         curl_request(body)
       end
 
-      def init_hash_request(soap_name)
+      def move_mailbox(name, src, dest, dest_id)
+        soap_name = :MoveMailboxRequest
+        req = { account: { name: name, dest: dest, src: src } }
+        body = init_hash_request(soap_name, dest_id)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def init_hash_request(soap_name, target_server = nil)
         {
           Body: {
             soap_name => { _jsns: ADMINSPACE }
           }
-        }.merge(hash_header(@token))
+        }.merge(hash_header(@token, target_server))
       end
     end
   end

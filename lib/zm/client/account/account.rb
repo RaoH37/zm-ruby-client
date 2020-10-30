@@ -300,6 +300,12 @@ module Zm
         sac.flush_cache('account', 1, @id)
       end
 
+      def move_mailbox(server)
+        raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
+
+        sac.move_mailbox(@name, zimbraMailHost, server.name, server.id)
+      end
+
       def init_from_json(json)
         @used = json[:used] if json[:used]
         @zimbraMailQuota = json[:limit] if json[:limit]
