@@ -8,7 +8,7 @@ module Zm
       attr_accessor *INSTANCE_VARIABLE_KEYS
 
       attr_accessor :subject
-      attr_reader :recipients, :attachments, :body
+      attr_reader :recipients, :attachments, :body, :folder
 
       def initialize(parent, json = nil)
         @parent = parent
@@ -20,6 +20,11 @@ module Zm
         init_from_json(json) if json.is_a?(Hash)
 
         yield(self) if block_given?
+      end
+
+      def folder=(folder)
+        @folder = folder
+        @l = folder.id
       end
 
       def to_jsns

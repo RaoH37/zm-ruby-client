@@ -12,6 +12,16 @@ module Zm
         reset_query_params
       end
 
+
+      def find(id)
+        rep = @parent.sacc.get_msg(@parent.token, id, { part: 0 })
+        entry = rep[:Body][:GetMsgResponse][:m].first
+        puts entry
+        msg = Message.new(@parent)
+        msg.init_from_json(entry)
+        msg
+      end
+
       def new
         message = Message.new(@parent)
         yield(message) if block_given?
@@ -46,6 +56,10 @@ module Zm
 
       def ids
         search_builder.ids
+      end
+
+      def all
+        build_response
       end
 
       private

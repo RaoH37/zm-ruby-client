@@ -313,8 +313,9 @@ module Zm
       # -------------------------------
       # MESSAGE
 
-      def get_msg(token, id)
+      def get_msg(token, id, options = {})
         req = { m: { id: id } }
+        req[:m].merge(options) unless options.empty?
         body = init_hash_request(token, :GetMsgRequest)
         body[:Body][:GetMsgRequest].merge!(req)
         curl_request(body)
