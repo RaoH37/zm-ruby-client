@@ -36,6 +36,18 @@ module Zm
         }
       end
 
+      def delete!
+        @parent.sacc.msg_action(@parent.token, 'delete', id)
+        true
+      end
+
+      def move!(folder_id = nil)
+        folder_id ||= l
+        @parent.sacc.msg_action(@parent.token, 'move', id, { l: folder_id })
+        l = folder_id if l != folder_id
+        true
+      end
+
       def send!
         @parent.sacc.send_msg(@parent.token, to_jsns)
       end
