@@ -8,9 +8,14 @@ module Zm
 
       def initialize(parent)
         @parent = parent
+        @dynamic_methods = []
       end
 
       def all
+        @all ||= all!
+      end
+
+      def all!
         build_response
       end
 
@@ -33,7 +38,24 @@ module Zm
       end
 
       def build_response
-        MtaQueuesBuilder.new(@parent, make_query).make
+        queues = MtaQueuesBuilder.new(@parent, make_query).make
+        clear_dynamic_methods
+
+        queues.each do |queue|
+          s_name = "@#{queue.name}"
+          instance_variable_set(s_name, queue)
+          self.class.attr_reader queue.name
+          @dynamic_methods << s_name
+        end
+        queues
+      end
+
+      def clear_dynamic_methods
+        return if @dynamic_methods.empty?
+
+        @dynamic_methods.each do |name|
+          remove_instance_variable(name) if instance_variable_get(name)
+        end
       end
     end
   end

@@ -11,6 +11,10 @@ module Zm
       end
 
       def all
+        @all ||= all!
+      end
+
+      def all!
         build_response
       end
 

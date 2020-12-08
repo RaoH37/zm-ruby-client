@@ -20,11 +20,7 @@ module Zm
       end
 
       def items
-        @items ||= items!
-      end
-
-      def items!
-        MtaQueueItemsCollection.new self
+        @items ||= MtaQueueItemsCollection.new self
       end
 
       def init_from_json(json)

@@ -20,12 +20,12 @@ module Zm
         @id = json[:id]
         @reason = json[:reason]
         @time = json[:time]
-        @to = json[:to]
+        @to = json[:to] ? json[:to].split(',') : []
         @addr = json[:addr]
         @filter = json[:filter]
         @host = json[:host]
         @from = json[:from]
-        @todomain = json[:todomain]
+        @todomain = json[:todomain] ? json[:todomain].split(',') : []
         @received = json[:received]
       end
     end
