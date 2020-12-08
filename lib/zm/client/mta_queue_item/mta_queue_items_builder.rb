@@ -2,14 +2,14 @@
 
 module Zm
   module Client
-    # class factory [MtaQueue]
-    class MtaQueuesBuilder < Base::ObjectsBuilder
+    # class factory [MtaQueueItem]
+    class MtaQueueItemsBuilder < Base::ObjectsBuilder
       def make
         records = []
         return records if json_items.nil?
 
         json_items.each do |entry|
-          mta_queue = MtaQueue.new(@parent)
+          mta_queue = MtaQueueItem.new(@parent)
           mta_queue.init_from_json(entry)
           records << mta_queue
         end
@@ -19,7 +19,7 @@ module Zm
       private
 
       def json_items
-        @json_items ||= @json[:Body][json_key][:server].first[:queue]
+        @json_items ||= @json[:Body][json_key][:server].first[:queue].first[:qi]
       end
     end
   end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'zm/client/mta_queue_item'
+
 module Zm
   module Client
     class MtaQueue < Base::AdminObject
@@ -15,6 +17,14 @@ module Zm
 
       def all_instance_variable_keys
         %w[name n]
+      end
+
+      def items
+        @items ||= items!
+      end
+
+      def items!
+        MtaQueueItemsCollection.new self
       end
 
       def init_from_json(json)

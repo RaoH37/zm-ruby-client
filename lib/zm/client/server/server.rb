@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 require 'zm/client/mta_queue'
 
 module Zm
