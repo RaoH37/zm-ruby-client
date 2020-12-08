@@ -408,6 +408,22 @@ module Zm
         curl_request(body)
       end
 
+      def get_mail_queue_info(server_name)
+        soap_name = :GetMailQueueInfoRequest
+        body = init_hash_request(soap_name)
+        req = { server: { name: server_name } }
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def get_mail_queue(server_name, queue_name)
+        soap_name = :GetMailQueueRequest
+        body = init_hash_request(soap_name)
+        req = { server: { name: server_name, queue: { name: queue_name, query: { offset: 0, limit: 1000 } } } }
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
       def init_hash_request(soap_name, target_server = nil)
         {
           Body: {

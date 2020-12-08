@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+#
+require 'zm/client/mta_queue'
 
 module Zm
   module Client
@@ -477,6 +479,14 @@ module Zm
       ]
       attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_accessor :name, :id
+
+      def mta_queues
+        @mta_queues ||= mta_queues!
+      end
+
+      def mta_queues!
+        MtaQueuesCollection.new self
+      end
 
       # def accounts
       #   @accounts ||= AccountsCollection.new @soap_admin_connector
