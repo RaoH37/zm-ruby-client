@@ -28,6 +28,7 @@ module Zm
         super
         @search_type = SearchType::DOMAIN
         @attrs = SearchType::Attributes::DOMAIN.dup
+        @ldap_query = nil
       end
     end
   end

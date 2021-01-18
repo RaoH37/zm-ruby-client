@@ -306,6 +306,11 @@ module Zm
         sac.move_mailbox(@name, zimbraMailHost, server.name, server.id)
       end
 
+      def is_on_to_move?(server)
+        resp = sac.query_mailbox_move(@name, server.id)
+        resp[:Body][:QueryMailboxMoveResponse][:account].nil?
+      end
+
       def init_from_json(json)
         @used = json[:used] if json[:used]
         @zimbraMailQuota = json[:limit] if json[:limit]

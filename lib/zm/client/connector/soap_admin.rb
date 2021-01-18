@@ -408,6 +408,14 @@ module Zm
         curl_request(body)
       end
 
+      def query_mailbox_move(name, dest_id)
+        soap_name = :QueryMailboxMoveRequest
+        req = { account: { name: name } }
+        body = init_hash_request(soap_name, dest_id)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
       def get_mail_queue_info(server_name)
         soap_name = :GetMailQueueInfoRequest
         body = init_hash_request(soap_name)
