@@ -158,10 +158,42 @@ module Zm
         ].freeze
       end
     end
+
     module ServerServices
-      MAILBOX = 'mailbox'
-      PROXY = 'proxy'
+      AMAVIS = 'amavis'
+      ANTIVIRUS = 'antivirus'
+      ANTISPAM = 'antispam'
+      OPENDKIM = 'opendkim'
+      DNSCACHE = 'dnscache'
+      LOGGER = 'logger'
       LDAP = 'ldap'
+      SERVICE = 'service'
+      ZIMBRA = 'zimbra'
+      ZIMBRA_ADMIN = 'zimbraAdmin'
+      ZIMLET = 'zimlet'
+      MAILBOX = 'mailbox'
+      MEMCACHED = 'memcached'
+      SPELL = 'spell'
+      MTA = 'mta'
+      PROXY = 'proxy'
+      STATS = 'stats'
+      SNMP = 'snmp'
+    end
+
+    module MtaQueueName
+      INCOMING = 'incoming'
+      DEFERRED = 'deferred'
+      CORRUPT = 'corrupt'
+      ACTIVE = 'active'
+      HOLD = 'hold'
+      ALL = [INCOMING, DEFERRED, CORRUPT, ACTIVE, HOLD]
+    end
+
+    module MtaQueueAction
+      HOLD = 'hold'
+      RELEASE = 'release'
+      DELETE = 'delete'
+      REQUEUE = 'requeue'
     end
   end
 end

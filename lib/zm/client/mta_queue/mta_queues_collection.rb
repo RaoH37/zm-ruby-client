@@ -8,7 +8,7 @@ module Zm
 
       def initialize(parent)
         @parent = parent
-        @dynamic_methods = []
+        reset_query_params
       end
 
       def all
@@ -17,6 +17,29 @@ module Zm
 
       def all!
         build_response
+      end
+
+      def defaults
+        @all || defaults!
+      end
+
+      def defaults!
+        # queues = []
+        Zm::Client::MtaQueueName::ALL.each do |queue_name|
+          queue = MtaQueue.new(@parent)
+          queue.name = queue_name
+          set_dynamic_queue_method(queue)
+          @queues_h[queue_name] = queue
+          # queues << queue
+        end
+        # @all = queues
+        @all = @queues_h.values
+      end
+
+      def find(queue_name)
+        raise ZmError, 'Unknown queue name' unless Zm::Client::MtaQueueName::ALL.include?(queue_name)
+        all! if @queues_h.empty?
+        @queues_h[queue_name]
       end
 
       def method_missing(method, *args, &block)
@@ -42,12 +65,17 @@ module Zm
         clear_dynamic_methods
 
         queues.each do |queue|
-          s_name = "@#{queue.name}"
-          instance_variable_set(s_name, queue)
-          self.class.attr_reader queue.name
-          @dynamic_methods << s_name
+          set_dynamic_queue_method(queue)
+          @queues_h[queue.name] = queue
         end
         queues
+      end
+
+      def set_dynamic_queue_method(queue)
+        s_name = "@#{queue.name}"
+        instance_variable_set(s_name, queue)
+        self.class.attr_reader queue.name
+        @dynamic_methods << s_name
       end
 
       def clear_dynamic_methods
@@ -56,6 +84,11 @@ module Zm
         @dynamic_methods.each do |name|
           remove_instance_variable(name) if instance_variable_get(name)
         end
+      end
+
+      def reset_query_params
+        @dynamic_methods = []
+        @queues_h = {}
       end
     end
   end

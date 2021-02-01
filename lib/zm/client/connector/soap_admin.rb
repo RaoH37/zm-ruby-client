@@ -421,13 +421,45 @@ module Zm
         body = init_hash_request(soap_name)
         req = { server: { name: server_name } }
         body[:Body][soap_name].merge!(req)
+        # puts body.to_json
         curl_request(body)
       end
 
-      def get_mail_queue(server_name, queue_name)
+      def get_mail_queue(server_name, queue_name, offset = 0, limit = 1000, fields = {})
+        # fields = { fromdomain: 'domain.tld', todomain: 'domain.tld' }
+        # AND operator
+
+        query = {
+          offset: offset,
+          limit: limit
+        }
+        query[:field] = fields.map { |k, v| { name: k, match: { value: v } } } unless fields.empty?
+        query.reject! { |_, v| v.nil? || v.empty? }
+
         soap_name = :GetMailQueueRequest
         body = init_hash_request(soap_name)
-        req = { server: { name: server_name, queue: { name: queue_name, query: { offset: 0, limit: 1000 } } } }
+        req = {
+          server: {
+            name: server_name,
+            queue: {
+              name: queue_name,
+              scan: 1,
+              query: query
+            }
+          }
+        }
+        body[:Body][soap_name].merge!(req)
+        # puts body.to_json
+        curl_request(body)
+      end
+
+      def mail_queue_action(server_name, queue_name, op, value, by = :id)
+        # op: hold|release|delete|requeue
+        # by: id|query
+        soap_name = :MailQueueActionRequest
+        value = [value] unless value.is_a?(Array)
+        body = init_hash_request(soap_name)
+        req = { server: { name: server_name, queue: { name: queue_name, action: { op: op, by: by, _content: value.join(',') } } } }
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end

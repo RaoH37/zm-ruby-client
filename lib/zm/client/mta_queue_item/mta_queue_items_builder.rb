@@ -19,6 +19,7 @@ module Zm
       private
 
       def json_items
+        # puts @json
         @json_items ||= @json[:Body][json_key][:server].first[:queue].first[:qi]
       end
     end

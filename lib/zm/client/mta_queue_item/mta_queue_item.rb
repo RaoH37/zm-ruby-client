@@ -8,10 +8,28 @@ module Zm
       INSTANCE_VARIABLE_KEYS = %i[size fromdomain id reason time to addr filter host from todomain received]
       attr_reader *INSTANCE_VARIABLE_KEYS
 
+      def mta_queue
+        parent
+      end
+
+      def server
+        mta_queue.parent
+      end
+
       def to_h
         hashmap = Hash[INSTANCE_VARIABLE_KEYS.map { |key| [key, instance_variable_get(arrow_name(key))] }]
         hashmap.delete_if { |_, v| v.nil? }
         hashmap
+      end
+
+      def sent_at
+        @sent_at ||= Time.at(@time / 1000)
+      rescue StandardError => e
+        nil
+      end
+
+      def hold!
+        sac.mail_queue_action(server.name, mta_queue.name, Zm::Client::MtaQueueAction::HOLD, @id)
       end
 
       def init_from_json(json)
@@ -19,7 +37,7 @@ module Zm
         @fromdomain = json[:fromdomain]
         @id = json[:id]
         @reason = json[:reason]
-        @time = json[:time]
+        @time = json[:time].to_i
         @to = json[:to] ? json[:to].split(',') : []
         @addr = json[:addr]
         @filter = json[:filter]
