@@ -195,5 +195,10 @@ module Zm
       DELETE = 'delete'
       REQUEUE = 'requeue'
     end
+
+    module BackupTypes
+      FULL = 'full'
+      INCREMENTAL = 'incremental'
+    end
   end
 end

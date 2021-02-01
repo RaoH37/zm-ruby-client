@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'zm/client/backup'
 require 'zm/client/mta_queue'
 
 module Zm
@@ -486,6 +487,14 @@ module Zm
 
       def mta_queues!
         MtaQueuesCollection.new self
+      end
+
+      def backups
+        @backups ||= backups!
+      end
+
+      def backups!
+        BackupsCollection.new self
       end
 
       # def accounts

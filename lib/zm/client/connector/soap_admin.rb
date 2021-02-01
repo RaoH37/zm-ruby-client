@@ -464,6 +464,16 @@ module Zm
         curl_request(body)
       end
 
+      def backup_query(dest_id)
+        soap_name = :BackupQueryRequest
+        body = init_hash_request(soap_name, dest_id)
+        req = { query: '' }
+        body[:Body][soap_name].merge!(req)
+        # puts body
+        # curl_request(body)
+        curl_xml(SoapXmlBuilder.new(body).to_xml)
+      end
+
       def init_hash_request(soap_name, target_server = nil)
         {
           Body: {

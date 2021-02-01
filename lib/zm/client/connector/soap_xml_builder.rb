@@ -28,6 +28,9 @@ class SoapXmlBuilder
     xml.Header do
       xml.context_('xmlns' => 'urn:zimbra') do
         xml.authToken @hash[:Header][:context][:authToken]
+        if @hash[:Header][:context][:targetServer]
+          xml.targetServer @hash[:Header][:context][:targetServer]
+        end
         xml.format('type' => 'js')
       end
     end

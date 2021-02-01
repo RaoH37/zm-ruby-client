@@ -47,6 +47,7 @@ module Zm
       end
 
       def curl_xml(xml, error_handler = SoapError)
+        # puts xml
         @curl.http_post(xml)
 
         soapbody = JSON.parse(@curl.body_str, symbolize_names: true)
