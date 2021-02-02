@@ -43,6 +43,14 @@ module Zm
         curl_request(body)
       end
 
+      def count_object(type)
+        soap_name = :CountObjectsRequest
+        body = init_hash_request(soap_name)
+        req = { type: type}
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
       def create_gal_sync_account(name, domain_name, type, server_name, folder_name, account_name, attrs = {})
         req = {
           name: name,

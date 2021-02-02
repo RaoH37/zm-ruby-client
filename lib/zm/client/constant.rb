@@ -200,5 +200,18 @@ module Zm
       FULL = 'full'
       INCREMENTAL = 'incremental'
     end
+
+    module CountTypes
+      USER_ACCOUNT = 'userAccount'
+      ACCOUNT = 'account'
+      ALIAS = 'alias'
+      DL = 'dl'
+      DOMAIN = 'domain'
+      COS = 'cos'
+      SERVER = 'server'
+      RESOURCE = 'calresource'
+      INTERNAL_USER_ACCOUNT = 'internalUserAccount'
+      ALL = [USER_ACCOUNT, ACCOUNT, ALIAS, DL, DOMAIN, COS, SERVER, RESOURCE, INTERNAL_USER_ACCOUNT]
+    end
   end
 end

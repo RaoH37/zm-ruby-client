@@ -92,6 +92,13 @@ module Zm
         key
       end
 
+      def count_object(type)
+        raise ZmError, 'Unknown object type' unless Zm::Client::CountTypes::ALL.include?(type)
+
+        resp = soap_admin_connector.count_object(type)
+        resp[:Body][:CountObjectsResponse][:num]
+      end
+
       private
 
       def find_domain_key(domain_name)
