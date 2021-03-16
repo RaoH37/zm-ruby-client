@@ -22,6 +22,10 @@ module Zm
         yield(self) if block_given?
       end
 
+      def from
+        @from ||= @recipients.find { |r| r.field == Recipient::FROM }
+      end
+
       def folder=(folder)
         @folder = folder
         @l = folder.id
@@ -86,6 +90,7 @@ module Zm
       end
 
       def init_from_json(json)
+        puts json
         @id   = json[:id]
         @date = Time.at(json[:d]/1000)
         @l    = json[:l]
@@ -96,12 +101,10 @@ module Zm
           recipient = Recipient.new(e[:t], e[:a], e[:p])
           @recipients.add(recipient)
         end
+      end
 
-        private
-
-        def msg_action(action_name, options = {})
-          @parent.sacc.msg_action(@parent.token, action_name, id, options)
-        end
+      def msg_action(action_name, options = {})
+        @parent.sacc.msg_action(@parent.token, action_name, id, options)
       end
 
       # content fo an email
@@ -177,19 +180,19 @@ module Zm
         end
 
         def to
-          @recipients.select { |r| r.field == :t }
+          @recipients.select { |r| r.field == Recipient::TO }
         end
 
         def cc
-          @recipients.select { |r| r.field == :c }
+          @recipients.select { |r| r.field == Recipient::CC }
         end
 
         def bcc
-          @recipients.select { |r| r.field == :b }
+          @recipients.select { |r| r.field == Recipient::BCC }
         end
 
         def from
-          @recipients.select { |r| r.field == :f }
+          @recipients.select { |r| r.field == Recipient::FROM }
         end
       end
 

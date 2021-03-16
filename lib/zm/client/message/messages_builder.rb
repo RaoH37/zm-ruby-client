@@ -11,7 +11,7 @@ module Zm
 
       def make
         root.map do |s|
-          Message.new(@parent, s)
+          Message.new(@account, s)
         end
       end
 
