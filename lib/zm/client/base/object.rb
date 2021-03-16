@@ -63,6 +63,8 @@ module Zm
         end
 
         def arrow_name(name)
+          return name if name.to_s.start_with?('@')
+
           "@#{name}"
         end
 

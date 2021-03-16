@@ -37,15 +37,48 @@ module Zm
       end
 
       def delete!
-        @parent.sacc.msg_action(@parent.token, 'delete', id)
-        true
+        msg_action('delete')
       end
 
-      def move!(folder_id = nil)
-        folder_id ||= l
-        @parent.sacc.msg_action(@parent.token, 'move', id, { l: folder_id })
+      def move!(folder_id = l)
+        msg_action('move', l: folder_id)
         l = folder_id if l != folder_id
-        true
+      end
+
+      def unread!
+        msg_action('!read')
+      end
+
+      def read!
+        msg_action('read')
+      end
+
+      def unflag!
+        msg_action('!flag')
+      end
+
+      def flag!
+        msg_action('flag')
+      end
+
+      def untag!(tag_name)
+        msg_action('!tag', tn: tag_name)
+      end
+
+      def tag!(tag_name)
+        msg_action('tag', tn: tag_name)
+      end
+
+      def unspam!
+        msg_action('!spam')
+      end
+
+      def spam!
+        msg_action('spam')
+      end
+
+      def trash!
+        msg_action('trash')
       end
 
       def send!
@@ -62,6 +95,12 @@ module Zm
         json[:e].each do |e|
           recipient = Recipient.new(e[:t], e[:a], e[:p])
           @recipients.add(recipient)
+        end
+
+        private
+
+        def msg_action(action_name, options = {})
+          @parent.sacc.msg_action(@parent.token, action_name, id, options)
         end
       end
 

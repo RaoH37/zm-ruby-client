@@ -28,10 +28,16 @@ module Zm
       attr_writer :home_url
       attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
 
-      def initialize(parent)
+      def initialize(parent, attrs = {})
         extend(AccountCommon)
         super(parent)
         @grantee_type = 'usr'.freeze
+      end
+
+      def init_by_hash(attrs)
+        attrs.each do |k, v|
+          self.instance_variable_set(arrow_name(k), v)
+        end
       end
 
       def to_h

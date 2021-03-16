@@ -50,12 +50,12 @@ module Zm
     end
 
     module FolderView
-      UNKNOWN = :unknown
-      MESSAGE = :message
-      APPOINTMENT = :appointment
-      TASK = :task
-      DOCUMENT = :document
-      CONTACT = :contact
+      UNKNOWN = 'unknown'
+      MESSAGE = 'message'
+      APPOINTMENT = 'appointment'
+      TASK = 'task'
+      DOCUMENT = 'document'
+      CONTACT = 'contact'
       ALL = [MESSAGE, APPOINTMENT, TASK, DOCUMENT, CONTACT].freeze
     end
 
