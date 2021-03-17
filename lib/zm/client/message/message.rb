@@ -105,6 +105,7 @@ module Zm
 
       def msg_action(action_name, options = {})
         @parent.sacc.msg_action(@parent.token, action_name, id, options)
+        true
       end
 
       # content fo an email
