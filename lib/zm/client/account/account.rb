@@ -317,6 +317,10 @@ module Zm
         resp[:Body][:QueryMailboxMoveResponse][:account].nil?
       end
 
+      def memberships
+        @memberships ||= AccountMembershipCollection.new(self)
+      end
+
       def init_from_json(json)
         @used = json[:used] if json[:used]
         @zimbraMailQuota = json[:limit] if json[:limit]
