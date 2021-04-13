@@ -6,7 +6,6 @@ module Zm
     class AccountsCollection < Base::ObjectsCollection
       def initialize(parent)
         @parent = parent
-        # puts "AccountsCollection initialize #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
         reset_query_params
       end
 
@@ -19,8 +18,7 @@ module Zm
         rep = sac.get_account(hash.values.first, hash.keys.first, attrs_comma, @apply_cos)
         reset_query_params
         entry = rep[:Body][:GetAccountResponse][:account].first
-        # puts entry
-        # puts "AccountsCollection find_by #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
+
         account = Account.new(@parent)
         account.init_from_json(entry)
         account

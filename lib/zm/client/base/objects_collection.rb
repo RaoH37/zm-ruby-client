@@ -19,7 +19,11 @@ module Zm
         end
 
         def all
-          build_response
+          @all || all!
+        end
+
+        def all!
+          @all = build_response
         end
 
         def where(ldap_query)
@@ -53,10 +57,6 @@ module Zm
           self
         end
 
-        # def inspect
-        #   build_response
-        # end
-
         def method_missing(method, *args, &block)
           if METHODS_MISSING_LIST.include?(method)
             build_response.send(method, *args, &block)
@@ -77,9 +77,7 @@ module Zm
 
         alias sac soap_admin_connector
 
-        # return ZCS JSON Response
         def make_query
-          # puts "ObjectsCollection make_query #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
           json = sac.search_directory(
             @ldap_query, @max_result, @limit, @offset,
             @domain_name, @apply_cos, nil, @sort_by, @search_type,

@@ -99,6 +99,13 @@ module Zm
         resp[:Body][:CountObjectsResponse][:num]
       end
 
+      def email_exist?(email)
+        filter = "(mail=#{email})"
+        resp = soap_admin_connector.search_directory(filter, nil, nil, nil, nil, nil, nil, nil, 'accounts,distributionlists,aliases,resources',nil, 1)
+        num = resp[:Body][:SearchDirectoryResponse][:num]
+        !num.zero?
+      end
+
       private
 
       def find_domain_key(domain_name)
