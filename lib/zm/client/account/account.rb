@@ -318,7 +318,11 @@ module Zm
       end
 
       def memberships
-        @memberships ||= AccountMembershipCollection.new(self)
+        @memberships ||= AccountDlsMembershipCollection.new(self)
+      end
+
+      def dls_owner
+        @dls_owner ||= AccountDlsOwnerCollection.new(self)
       end
 
       def init_from_json(json)

@@ -26,11 +26,12 @@ module Zm
           @to_h = parameters
         end
 
-        init_from_h
+        unless @to_h.nil?
+          init_from_h
+          make_config_domain
+        end
 
         yield(self) if block_given?
-
-        make_config_domain
       end
 
       def init_from_file(file_config_path)

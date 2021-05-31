@@ -2,8 +2,8 @@
 
 module Zm
   module Client
-    # Collection Account dls relation
-    class AccountMembershipCollection < Base::ObjectsCollection
+    # Collection Account dls membership
+    class AccountDlsOwnerCollection < Base::ObjectsCollection
       def initialize(parent)
         @parent = parent
       end
@@ -11,7 +11,7 @@ module Zm
       private
 
       def make_query
-        @parent.sac.get_account_membership(@parent.id, :id)
+        @parent.sac.search_directory("(zimbraACE=#{@parent.id} usr ownDistList)", SoapUtils::MAX_RESULT, nil, nil, nil, nil, nil, nil, SearchType::DL)
       end
 
       def build_response
