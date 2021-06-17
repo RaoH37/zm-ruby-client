@@ -339,7 +339,7 @@ module Zm
         body = init_hash_request(soap_name)
         body[:Body][soap_name][:_jsns] = Zm::Client::SoapAccountConnector::ACCOUNTSPACE
         body[:Body][soap_name].merge!(req)
-        p body
+        # p body
         curl_request(body)
       end
 
