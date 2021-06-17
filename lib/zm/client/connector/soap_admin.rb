@@ -333,6 +333,16 @@ module Zm
         generic_delete(:DeleteDistributionListRequest, id)
       end
 
+      def distribution_list_action(name, by = :name, action = {})
+        soap_name = :DistributionListActionRequest
+        req = { dl: { by: by, _content: name }, action: action }
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name][:_jsns] = Zm::Client::SoapAccountConnector::ACCOUNTSPACE
+        body[:Body][soap_name].merge!(req)
+        p body
+        curl_request(body)
+      end
+
       def generic_delete(soap_name, id)
         body = init_hash_request(soap_name)
         body[:Body][soap_name][:id] = id
