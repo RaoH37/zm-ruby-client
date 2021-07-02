@@ -27,21 +27,33 @@ module Zm
         end
 
         def where(ldap_query)
+          return self if @ldap_query == ldap_query
+
+          @all = nil
           @ldap_query = ldap_query
           self
         end
 
         def per_page(limit)
+          return self if @limit == limit
+
+          @all = nil
           @limit = limit
           self
         end
 
         def page(offset)
+          return self if @offset == offset
+
+          @all = nil
           @offset = offset
           self
         end
 
         def order(sort_by, sort_ascending = SoapUtils::ON)
+          return self if @sort_by == sort_by && @sort_ascending == sort_ascending
+
+          @all = nil
           @sort_by = sort_by
           @sort_ascending = sort_ascending
           self
@@ -53,6 +65,9 @@ module Zm
         end
 
         def attrs(*attrs)
+          return self if @attrs == attrs
+
+          @all = nil
           @attrs = attrs
           self
         end
