@@ -9,8 +9,20 @@ module Zm
         METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
         attr_reader :parent
 
+        def new
+          child = @child_class.new(@parent)
+          yield(child) if block_given?
+          child
+        end
+
         def find(id)
           find_by(id: id)
+        end
+
+        def build_from_entry(entry)
+          child = @child_class.new(@parent)
+          child.init_from_json(entry)
+          child
         end
 
         def first

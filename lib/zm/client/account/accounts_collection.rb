@@ -5,6 +5,7 @@ module Zm
     # Collection Accounts
     class AccountsCollection < Base::ObjectsCollection
       def initialize(parent)
+        @child_class = Account
         @parent = parent
         reset_query_params
       end
@@ -19,9 +20,7 @@ module Zm
         reset_query_params
         entry = rep[:Body][:GetAccountResponse][:account].first
 
-        account = Account.new(@parent)
-        account.init_from_json(entry)
-        account
+        build_from_entry(entry)
       end
 
       def find_all_quotas(domain_name = nil, target_server_id = nil)

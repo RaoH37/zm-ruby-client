@@ -5,6 +5,7 @@ module Zm
     # Class Collection [Domain]
     class DomainsCollection < Base::ObjectsCollection
       def initialize(parent)
+        @child_class = Domain
         @parent = parent
         reset_query_params
       end
@@ -12,10 +13,8 @@ module Zm
       def find_by(hash, *attrs)
         rep = sac.get_domain(hash.values.first, hash.keys.first, attrs.join(COMMA))
         entry = rep[:Body][:GetDomainResponse][:domain].first
-        # puts "DomainsCollection find_by #{@parent.class} #{@parent.object_id} #{@parent.soap_admin_connector}"
-        domain = Domain.new(@parent)
-        domain.init_from_json(entry)
-        domain
+
+        build_from_entry(entry)
       end
 
       private

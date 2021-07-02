@@ -5,6 +5,7 @@ module Zm
     # Collection Resources
     class ResourcesCollection < Base::ObjectsCollection
       def initialize(parent)
+        @child_class = Resource
         @parent = parent
         reset_query_params
       end
@@ -17,9 +18,8 @@ module Zm
       def find_by(hash)
         rep = sac.get_resource(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetCalendarResourceResponse][:calresource].first
-        resource = Resource.new(@parent)
-        resource.init_from_json(entry)
-        resource
+
+        build_from_entry(entry)
       end
 
       private

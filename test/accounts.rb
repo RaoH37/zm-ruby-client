@@ -41,6 +41,7 @@ class TestAccount < Minitest::Test
 
   def test_find_by_name
     account = @admin.accounts.find_by name: @account_name
+    assert account.is_a? Zm::Client::Account
     assert_equal @account_name, account.name
   end
 
@@ -50,5 +51,14 @@ class TestAccount < Minitest::Test
     assert_equal @account_name, account.name
     refute_nil account.displayName
     refute_nil account.zimbraCOSId
+  end
+
+  def test_new_account
+    name = 'toto@domain.tld'
+    account = @admin.accounts.new do |acc|
+      acc.name = name
+    end
+    assert account.is_a? Zm::Client::Account
+    assert account.name == name
   end
 end

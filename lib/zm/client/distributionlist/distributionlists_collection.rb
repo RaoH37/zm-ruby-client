@@ -5,6 +5,7 @@ module Zm
     # Collection Resources
     class DistributionListsCollection < Base::ObjectsCollection
       def initialize(parent)
+        @child_class = DistributionList
         @parent = parent
         reset_query_params
       end
@@ -17,9 +18,8 @@ module Zm
       def find_by(hash)
         rep = sac.get_distribution_list(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetDistributionListResponse][:dl].first
-        dl = DistributionList.new(@parent)
-        dl.init_from_json(entry)
-        dl
+
+        build_from_entry(entry)
       end
 
       private

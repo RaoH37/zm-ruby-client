@@ -5,6 +5,7 @@ module Zm
     # Collection coses
     class CosesCollection < Base::ObjectsCollection
       def initialize(parent)
+        @child_class = Cos
         @parent = parent
         reset_query_params
       end
@@ -12,9 +13,8 @@ module Zm
       def find_by(hash, *attrs)
         rep = sac.get_cos(hash.values.first, hash.keys.first, attrs.join(COMMA))
         entry = rep[:Body][:GetCosResponse][:cos].first
-        cos = Cos.new(@parent)
-        cos.init_from_json(entry)
-        cos
+
+        build_from_entry(entry)
       end
 
       private
