@@ -4,15 +4,20 @@ module Zm
   module Client
     # class factory [resources]
     class ResourcesBuilder < Base::ObjectsBuilder
-      def make
-        return [] if json_items.nil?
-
-        json_items.map do |entry|
-          resource = Resource.new(@parent)
-          resource.init_from_json(entry)
-          resource
-        end
+      def initialize(parent, json)
+        super(parent, json)
+        @child_class = Resource
       end
+
+      # def make
+      #   return [] if json_items.nil?
+      #
+      #   json_items.map do |entry|
+      #     resource = Resource.new(@parent)
+      #     resource.init_from_json(entry)
+      #     resource
+      #   end
+      # end
 
       private
 

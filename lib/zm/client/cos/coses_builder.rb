@@ -4,15 +4,20 @@ module Zm
   module Client
     # class factory [coses]
     class CosesBuilder < Base::ObjectsBuilder
-      def make
-        return [] if json_items.nil?
-
-        json_items.map do |entry|
-          cos = Cos.new(@parent)
-          cos.init_from_json(entry)
-          cos
-        end
+      def initialize(parent, json)
+        super(parent, json)
+        @child_class = Cos
       end
+
+      # def make
+      #   return [] if json_items.nil?
+      #
+      #   json_items.map do |entry|
+      #     cos = Cos.new(@parent)
+      #     cos.init_from_json(entry)
+      #     cos
+      #   end
+      # end
 
       private
 

@@ -9,7 +9,7 @@ class TestAccount < Minitest::Test
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/tmp/example.json'))
     @admin.login
-    @account_name = "maxime@domain.tld"
+    @account_name = "maxime@testonly.partage.renater.fr"
     @domain_name = @account_name.split('@').last.freeze
     @filter = "(zimbraMailDeliveryAddress=*@#{@domain_name})".freeze
     @filter_2 = "(&(zimbraMailDeliveryAddress=*@#{@domain_name})(zimbraAccountStatus=active))".freeze
@@ -19,6 +19,11 @@ class TestAccount < Minitest::Test
   def test_all
     accounts = @admin.accounts.where(@filter).all
     assert accounts == @admin.accounts.where(@filter).all
+  end
+
+  def test_all_is_account
+    accounts = @admin.accounts.where(@filter).all
+    assert accounts.map(&:class).uniq.first == Zm::Client::Account
   end
 
   def test_all_where

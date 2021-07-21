@@ -10,6 +10,16 @@ module Zm
           @json = json
         end
 
+        def make
+          return [] if json_items.nil?
+
+          json_items.map do |entry|
+            child = @child_class.new(@parent)
+            child.init_from_json(entry)
+            child
+          end
+        end
+
         private
 
         def json_key
