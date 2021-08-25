@@ -16,7 +16,7 @@ module Zm
       def find(id)
         rep = @parent.sacc.get_msg(@parent.token, id, { part: 0 })
         entry = rep[:Body][:GetMsgResponse][:m].first
-        puts entry
+        # puts entry
         msg = Message.new(@parent)
         msg.init_from_json(entry)
         msg
@@ -81,7 +81,9 @@ module Zm
       end
 
       def build_options
-        {}
+        {
+          recip: 2
+        }
       end
 
       def query

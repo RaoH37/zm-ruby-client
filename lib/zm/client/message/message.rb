@@ -90,7 +90,7 @@ module Zm
       end
 
       def init_from_json(json)
-        puts json
+        # puts json
         @id   = json[:id]
         @date = Time.at(json[:d]/1000)
         @l    = json[:l]

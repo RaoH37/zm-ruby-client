@@ -3,16 +3,15 @@ require 'minitest/autorun'
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require './lib/zm/client'
-require './lib/zm/client/cluster'
 
 class TestClusterConfig < Minitest::Test
 
   def test_json_path
-    assert Zm::Client::ClusterConfig.new('./test/tmp/example.json').is_a? Zm::Client::ClusterConfig
+    assert Zm::Client::ClusterConfig.new('./test/fixtures/config.json').is_a? Zm::Client::ClusterConfig
   end
 
   def test_yaml_path
-    assert Zm::Client::ClusterConfig.new('./test/tmp/example.yml').is_a? Zm::Client::ClusterConfig
+    assert Zm::Client::ClusterConfig.new('./test/fixtures/config.yml').is_a? Zm::Client::ClusterConfig
   end
 
   def test_hash

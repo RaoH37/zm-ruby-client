@@ -1,44 +1,62 @@
 require "minitest/autorun"
+require 'yaml'
 
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require './lib/zm/client'
-require './lib/zm/client/cluster'
 
 class TestDomain < Minitest::Test
   def setup
-    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/tmp/example.json'))
+    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
     @admin.login
-  end
 
-  # COLLECTION
+    @fixture_domains = YAML.load(File.read('./test/fixtures/domains.yml'))
+  end
 
   def test_all
-    assert @admin.domains.all.any?
+    domains = @admin.domains.where(@fixture_domains['collections']['where']['local']).all
+    assert domains == @admin.domains.where(@fixture_domains['collections']['where']['local']).all
   end
 
-  # COUNT
-
-  def test_count
-    assert @admin.domains.count.is_a? Integer
+  def test_all_is_domain
+    domains = @admin.domains.where(@fixture_domains['collections']['where']['local']).all
+    assert domains.map(&:class).uniq.first == Zm::Client::Domain
   end
 
-  def test_count_where_chain
-    assert @admin.domains.where('zimbraDomainStatus=active').count.is_a? Integer
+  def test_all_where
+    domains = @admin.domains.where(@fixture_domains['collections']['where']['local']).all
+    assert domains != @admin.domains.where(@fixture_domains['collections']['where']['alias']).all
   end
 
-  def test_count_limited
-    assert_equal @admin.domains.per_page(10).count, 10
+  def test_all!
+    domains = @admin.domains.where(@fixture_domains['collections']['where']['local']).all
+    assert domains != @admin.domains.where(@fixture_domains['collections']['where']['local']).all!
   end
 
-  # OBJECT
-
-  def test_find_by_id
-    assert @admin.domains.find('25b0a31a-cde7-46cc-9c50-64aa31698b38').is_a? Zm::Client::Domain
+  def test_where
+    assert @admin.domains.where(@fixture_domains['collections']['where']['local']).count.is_a? Integer
   end
 
-  def test_first
-    assert @admin.domains.where('zimbraDomainStatus=active').first.is_a? Zm::Client::Domain
+  def test_where_chain
+    where_clause = @fixture_domains['collections']['where']['local']
+    order_clause = @fixture_domains['collections']['order']['default']
+    attrs_clause = @fixture_domains['collections']['attrs']['default']
+    assert @admin.domains.where(where_clause).order(order_clause).attrs(*attrs_clause).all.any?
+  end
+
+  def test_find_by_name
+    domain = @admin.domains.find_by name: @fixture_domains['domains']['default']['name']
+    assert domain.is_a? Zm::Client::Domain
+    assert_equal @fixture_domains['domains']['default']['name'], domain.name
+  end
+
+  def test_new_domain
+    name = @fixture_domains['domains']['toto']['name']
+    domain = @admin.domains.new do |acc|
+      acc.name = name
+    end
+    assert domain.is_a? Zm::Client::Domain
+    assert domain.name == name
   end
 
 end

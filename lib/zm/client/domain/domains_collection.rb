@@ -27,7 +27,9 @@ module Zm
         super
         @search_type = SearchType::DOMAIN
         @attrs = SearchType::Attributes::DOMAIN.dup
-        @ldap_query = nil
+        @all_servers = 1
+        @refresh = 0
+        @apply_cos = 1
       end
     end
   end
