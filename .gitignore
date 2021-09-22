@@ -16,6 +16,7 @@
 /zm-ruby-client.iml
 
 /examples
+/vendor
 
 # Used by dotenv library to load environment variables.
 # .env

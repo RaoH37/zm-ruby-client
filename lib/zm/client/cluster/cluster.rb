@@ -2,6 +2,7 @@
 
 require 'zm/client/connector/soap_admin'
 require 'zm/client/connector/soap_account'
+require 'zm/client/common'
 # require 'zm/client/data_source'
 require 'zm/client/domain'
 require 'zm/client/account'

@@ -12,6 +12,12 @@ module Zm
         reset_query_params
       end
 
+      def find(id)
+        rep = @parent.sacc.get_msg(@parent.token, id)
+        entry = rep[:Body][:GetMsgResponse][:m].first
+        AppointmentJsnsInitializer.new(@parent, entry).create
+      end
+
       def new
         appointment = Appointment.new(@parent)
         yield(appointment) if block_given?

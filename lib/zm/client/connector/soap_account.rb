@@ -71,6 +71,27 @@ module Zm
         curl_request(body)
       end
 
+      def create_appointment(token, jsns)
+        soap_name = :CreateAppointmentRequest
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(jsns)
+        curl_request(body)
+      end
+
+      def modify_appointment(token, jsns)
+        soap_name = :ModifyAppointmentRequest
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(jsns)
+        curl_request(body)
+      end
+
+      def cancel_appointment(token, jsns)
+        soap_name = :CancelAppointmentRequest
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(jsns)
+        curl_request(body)
+      end
+
       # -------------------------------
       # CONTACT
 
@@ -107,7 +128,6 @@ module Zm
         req = { cn: { a: a, l: folder_id, m: members } }
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -117,7 +137,6 @@ module Zm
         req = { cn: { a: a, id: id, m: members } }
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -148,7 +167,6 @@ module Zm
         req = { action: action }
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -186,7 +204,6 @@ module Zm
         req = { action: action }
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -211,7 +228,6 @@ module Zm
         req = { search: search }
         body = init_hash_request(token, :CreateSearchFolderRequest)
         body[:Body][:CreateSearchFolderRequest].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -384,24 +400,6 @@ module Zm
         curl_request(body)
       end
 
-      # def create_identity(token, name, attrs = [])
-      #   soap_name = :CreateIdentityRequest
-      #   req = { identity: { name: name, a: attrs.to_a.map(&A_NODE_PROC__NAME) } }
-      #   body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-      #   body[:Body][soap_name].merge!(req)
-      #   puts body
-      #   curl_request(body)
-      # end
-
-      # def modify_identity(token, id, attrs = [])
-      #   soap_name = :ModifyIdentityRequest
-      #   req = { identity: { id: id, a: attrs.to_a.map(&A_NODE_PROC_NAME) } }
-      #   body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-      #   body[:Body][soap_name].merge!(req)
-      #   puts body
-      #   curl_request(body)
-      # end
-
       def create_identity(token, name, attrs = [])
         soap_name = :CreateIdentityRequest
         req = { identity: { :@name => name, a: attrs.to_a.map(&A_NODE_PROC_ARROW_NAME) } }
@@ -469,24 +467,22 @@ module Zm
       end
 
       def get_signatures(token)
-        body = init_hash_request(token, :GetSignaturesRequest, ACCOUNTSPACE)
+        soap_name = :GetSignaturesRequest
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
         curl_request(body)
       end
 
-      def create_signature(token, name, type, content)
+      def create_signature(token, jsns)
         soap_name = :CreateSignatureRequest
-        req = { signature: { name: name, content: { type: type, _content: content } } }
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
+        body[:Body][soap_name].merge!(jsns)
         curl_request(body)
       end
 
-      def modify_signature(token, id, name, type, content)
+      def modify_signature(token, jsns)
         soap_name = :ModifySignatureRequest
-        req = { signature: { id: id, name: name, cid: { content: { type: type, _content: content } } } }
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        # puts body
+        body[:Body][soap_name].merge!(jsns)
         curl_request(body)
       end
 
@@ -522,7 +518,6 @@ module Zm
 
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req) if req.any?
-        # puts body
         curl_request(body)
       end
 

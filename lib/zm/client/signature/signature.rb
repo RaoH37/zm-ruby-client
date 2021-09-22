@@ -25,12 +25,12 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.create_signature(@parent.token, name, type, content)
+        rep = @parent.sacc.create_signature(@parent.token, as_jsns)
         @id = rep[:Body][:CreateSignatureResponse][:signature].first[:id]
       end
 
       def modify!
-        @parent.sacc.modify_signature(@parent.token, id, name, type, content)
+        @parent.sacc.modify_signature(@parent.token, as_jsns)
       end
 
       def delete!
@@ -52,6 +52,10 @@ module Zm
 
       def content
         html || txt
+      end
+
+      def as_jsns
+        SignatureJsnsBuilder.new(self).to_jsns
       end
     end
   end

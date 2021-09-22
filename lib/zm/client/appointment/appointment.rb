@@ -5,18 +5,24 @@ module Zm
     # class for account appointment
     class Appointment < Base::AccountObject
 
-      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn]
+      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn allDay organizer timezone calItemId apptId invId rev]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_writer :folder
       attr_reader :json
+      attr_reader :recipients, :attendees, :body
 
       alias description desc
       alias parent_id l
 
-      def initialize(parent, json = nil)
+      # def initialize(parent, json = nil)
+      def initialize(parent)
         @parent = parent
-        init_from_json(json) if json.is_a?(Hash)
+        @recipients = Recipients.new
+        @body = BodyMail.new
+        @attendees = Attendees.new
+        @allDay = false
+        @timezone = 'Europe/Berlin'
         yield(self) if block_given?
       end
 
@@ -35,40 +41,82 @@ module Zm
       end
 
       def create!
-        # rep = @parent.sacc.create_appointment(@parent.token, @l, @name, @view)
-        # init_from_json(rep[:Body][:CreateAppointmentResponse][:appointment].first)
+        jsns_builder = AppointmentJsnsBuilder.new(self)
+        rep = @parent.sacc.create_appointment(@parent.token, jsns_builder.to_jsns)
+        rep_h = rep[:Body][:CreateAppointmentResponse]
+
+        aji = AppointmentJsnsInitializer.new(@parent, rep_h)
+        aji.appointment = self
+        aji.update
+      end
+
+      def modify!
+        jsns_builder = AppointmentJsnsBuilder.new(self)
+        @parent.sacc.modify_appointment(@parent.token, jsns_builder.to_update)
       end
 
       def reload!
-        # rep = @parent.sacc.get_appointment(@parent.token, @id)
-        # init_from_json(rep[:Body][:GetAppointmentResponse][:appointment].first)
+        rep = @parent.sacc.get_msg(@parent.token, @id)
+        entry = rep[:Body][:GetMsgResponse][:m].first
+        aji = AppointmentJsnsInitializer.new(@parent, entry)
+        aji.appointment = self
+        aji.create
       end
 
       def delete!
-        # @parent.sacc.appointment_action(@parent.token, :delete, @id)
+        jsns_builder = AppointmentJsnsBuilder.new(self)
+        @parent.sacc.cancel_appointment(@parent.token, jsns_builder.to_delete)
       end
 
-      def init_from_json(json)
-        @json = json
-        @id = json[:id].to_i
-        @uid = json[:uid]
-        @tn = json[:tn]
-        @name = json[:name]
-        @l = json[:l]
-        @desc = json[:fr]
-        make_date(json)
+      class Organizer
+        attr_accessor :email, :display_name
+
+        def initialize(email, display_name = nil)
+          @email = email
+          @display_name = display_name
+        end
       end
 
-      def make_date(json)
-        return if json[:inst].nil? || json[:inst].first.empty? || json[:dur].nil?
+      # Collection attendees
+      class Attendees
+        def initialize
+          @attendees = []
+        end
 
-        @start_at = Time.at(json[:inst].first[:s] / 1000)
-        @end_at = Time.at((json[:inst].first[:s] + json[:dur]) / 1000)
+        def map(&block)
+          @attendees.map(&block)
+        end
 
-        @dur = json[:dur] / 1000
-      rescue StandardError => e
-        puts e.message
-        puts json[:inst]
+        def add(attendee)
+          return unless attendee.is_a?(Attendee)
+
+          @attendees.push(attendee)
+        end
+
+        def del(attendee)
+          if attendee.is_a?(Attendee)
+            @attendees.delete(attendee)
+          elsif attendee.is_a?(String)
+            @attendees.delete_if { |at| at.email == attendee }
+          end
+        end
+
+        def clear
+          @attendees.clear
+        end
+      end
+
+      # Class one recipient for email
+      class Attendee
+        attr_accessor :email, :display_name, :role, :ptst, :rsvp
+
+        def initialize(email, display_name = nil, role = 'REQ', ptst = 'NE', rsvp = 1)
+          @email = email
+          @display_name = display_name
+          @role = role
+          @ptst = ptst
+          @rsvp = rsvp
+        end
       end
     end
   end
