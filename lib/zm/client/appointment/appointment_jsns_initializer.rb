@@ -56,6 +56,8 @@ module Zm
 
       def init_from_inv
         @appointment.uid = comp[:uid]
+        @appointment.fb = comp[:fb]
+        @appointment.transp = comp[:transp]
         @appointment.timezone = tz[:id]
         @appointment.name = comp[:name]
         @appointment.desc = comp[:desc].first[:_content] unless comp[:desc].nil?

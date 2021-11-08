@@ -75,7 +75,9 @@ module Zm
             e: end_at_jsns,
             s: start_at_jsns,
             or: organizer_to_jsns,
-            name: @appointment.name
+            name: @appointment.name,
+            fb: @appointment.fb,
+            transp: @appointment.transp
           }.reject { |_, v| v.nil? }
         ]
       end

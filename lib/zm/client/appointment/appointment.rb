@@ -5,7 +5,7 @@ module Zm
     # class for account appointment
     class Appointment < Base::AccountObject
 
-      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn allDay organizer timezone calItemId apptId invId rev]
+      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn allDay organizer timezone calItemId apptId invId rev fb transp]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_writer :folder
@@ -66,6 +66,26 @@ module Zm
       def delete!
         jsns_builder = AppointmentJsnsBuilder.new(self)
         @parent.sacc.cancel_appointment(@parent.token, jsns_builder.to_delete)
+      end
+
+      def free!
+        self.fb = 'F'
+        self.transp = 'O'
+      end
+
+      def busy!
+        self.fb = 'B'
+        self.transp = 'T'
+      end
+
+      def must_confirm!
+        self.fb = 'T'
+        self.transp = 'T'
+      end
+
+      def out_of_office!
+        self.fb = 'O'
+        self.transp = 'O'
       end
 
       class Organizer
