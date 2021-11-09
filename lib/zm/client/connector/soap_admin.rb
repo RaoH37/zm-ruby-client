@@ -8,6 +8,7 @@ module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
 
+      SOAP_PATH = '/service/admin/soap/'
       ADMINSPACE = 'urn:zimbraAdmin'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
 
@@ -15,7 +16,7 @@ module Zm
 
       def initialize(scheme, host, port)
         @verbose = false
-        @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/admin/soap/', nil, nil, nil)
+        @uri = URI::HTTP.new(scheme, nil, host, port, nil, SOAP_PATH, nil, nil, nil)
         init_curl_client
       end
 

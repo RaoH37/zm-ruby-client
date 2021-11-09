@@ -11,6 +11,7 @@ module Zm
   module Client
     class SoapAccountConnector < SoapBaseConnector
 
+      SOAP_PATH = '/service/soap/'
       MAILSPACE = 'urn:zimbraMail'
       ACCOUNTSPACE = 'urn:zimbraAccount'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
@@ -18,7 +19,7 @@ module Zm
       A_NODE_PROC_ARROW_NAME = lambda { |n| { :@name => n.first, content!: n.last } }
 
       def initialize(scheme, host, port)
-        @uri = URI::HTTP.new(scheme, nil, host, port, nil, '/service/soap/', nil, nil, nil)
+        @uri = URI::HTTP.new(scheme, nil, host, port, nil, SOAP_PATH, nil, nil, nil)
         init_curl_client
       end
 
