@@ -108,7 +108,8 @@ module Zm
       end
 
       def delete!
-        @parent.sacc.contact_action(@parent.token, :delete, id)
+        @parent.sacc.contact_action(@parent.token, :delete, @id)
+        super
       end
 
       def update!(hash)

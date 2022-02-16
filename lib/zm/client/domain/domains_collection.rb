@@ -3,29 +3,26 @@
 module Zm
   module Client
     # Class Collection [Domain]
-    class DomainsCollection < Base::ObjectsCollection
+    class DomainsCollection < Base::AdminObjectsCollection
       def initialize(parent)
         @child_class = Domain
-        @parent = parent
-        reset_query_params
+        @builder_class = DomainsBuilder
+        @search_type = SearchType::DOMAIN
+        super(parent)
       end
 
-      def find_by(hash, *attrs)
-        rep = sac.get_domain(hash.values.first, hash.keys.first, attrs.join(COMMA))
+      def find_by(hash)
+        rep = sac.get_domain(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetDomainResponse][:domain].first
 
+        reset_query_params
         build_from_entry(entry)
       end
 
       private
 
-      def build_response
-        DomainsBuilder.new(@parent, make_query).make
-      end
-
       def reset_query_params
         super
-        @search_type = SearchType::DOMAIN
         @attrs = SearchType::Attributes::DOMAIN.dup
         @all_servers = 1
         @refresh = 0

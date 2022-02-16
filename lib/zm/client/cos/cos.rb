@@ -16,11 +16,11 @@ module Zm
         @zimbraZimletAvailableZimlets = [@zimbraZimletAvailableZimlets] if @zimbraZimletAvailableZimlets.is_a?(String)
       end
 
-      def to_h
-        hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
-        hashmap.delete_if { |_, v| v.nil? }
-        hashmap
-      end
+      # def to_h
+      #   hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+      #   hashmap.delete_if { |_, v| v.nil? }
+      #   hashmap
+      # end
 
       def all_instance_variable_keys
         attrs_write
@@ -44,6 +44,10 @@ module Zm
 
       def servers
         @servers ||= read_servers
+      end
+
+      def accounts
+        # todo sélectionner tous les comptes qui ont zimbraCOSID=self.id
       end
 
       private

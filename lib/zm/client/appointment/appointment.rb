@@ -15,7 +15,6 @@ module Zm
       alias description desc
       alias parent_id l
 
-      # def initialize(parent, json = nil)
       def initialize(parent)
         @parent = parent
         @recipients = Recipients.new
@@ -26,8 +25,8 @@ module Zm
         yield(self) if block_given?
       end
 
-      def concat
-        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
 
       def folder
@@ -41,7 +40,6 @@ module Zm
       end
 
       def create!
-        jsns_builder = AppointmentJsnsBuilder.new(self)
         rep = @parent.sacc.create_appointment(@parent.token, jsns_builder.to_jsns)
         rep_h = rep[:Body][:CreateAppointmentResponse]
 
@@ -51,7 +49,6 @@ module Zm
       end
 
       def modify!
-        jsns_builder = AppointmentJsnsBuilder.new(self)
         @parent.sacc.modify_appointment(@parent.token, jsns_builder.to_update)
       end
 
@@ -64,8 +61,8 @@ module Zm
       end
 
       def delete!
-        jsns_builder = AppointmentJsnsBuilder.new(self)
         @parent.sacc.cancel_appointment(@parent.token, jsns_builder.to_delete)
+        super
       end
 
       def free!
@@ -137,6 +134,12 @@ module Zm
           @ptst = ptst
           @rsvp = rsvp
         end
+      end
+
+      private
+
+      def jsns_builder
+        @jsns_builder ||= AppointmentJsnsBuilder.new(self)
       end
     end
   end

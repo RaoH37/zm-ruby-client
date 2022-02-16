@@ -11,7 +11,7 @@ module Zm
   module Client
     class SoapAccountConnector < SoapBaseConnector
 
-      SOAP_PATH = '/service/soap/'
+      # SOAP_PATH = '/service/soap/'
       MAILSPACE = 'urn:zimbraMail'
       ACCOUNTSPACE = 'urn:zimbraAccount'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
@@ -19,8 +19,7 @@ module Zm
       A_NODE_PROC_ARROW_NAME = lambda { |n| { :@name => n.first, content!: n.last } }
 
       def initialize(scheme, host, port)
-        @uri = URI::HTTP.new(scheme, nil, host, port, nil, SOAP_PATH, nil, nil, nil)
-        init_curl_client
+        super(scheme, host, port, '/service/soap/')
       end
 
       def auth_template(mail)
@@ -174,75 +173,41 @@ module Zm
       # -------------------------------
       # FOLDER
 
-      def get_folder(token, id)
-        soap_name = :GetFolderRequest
-        body = init_hash_request(token, soap_name)
-        req = { folder: { l: id } }
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def get_folder(token, jsns)
+        jsns_request(:GetFolderRequest, token, jsns)
       end
 
-      def get_all_folders(token, view = nil, tr = nil)
-        soap_name = :GetFolderRequest
-        body = init_hash_request(token, soap_name)
-        req = { view: view, tr: tr }.reject { |_, v| v.nil? }
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      # def get_all_folders(token, view = nil, tr = nil)
+      #   soap_name = :GetFolderRequest
+      #   body = init_hash_request(token, soap_name)
+      #   req = { view: view, tr: tr }.reject { |_, v| v.nil? }
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
+
+      def create_folder(token, jsns)
+        jsns_request(:CreateFolderRequest, token, jsns)
       end
 
-      def create_folder(token, folder_options)
-        soap_name = :CreateFolderRequest
-        # folder = { l: parent_id, name: name, view: view, color: color }.merge(options)
-        req = { folder: folder_options }
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
-
-      def folder_action(token, op, id, options = {})
-        soap_name = :FolderActionRequest
-        action = { op: op, id: id }.merge(options)
-        req = { action: action }
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def folder_action(token, jsns)
+        jsns_request(:FolderActionRequest, token, jsns)
       end
 
       def get_all_search_folders(token)
-        body = init_hash_request(token, :GetSearchFolderRequest)
+        soap_name = :GetSearchFolderRequest
+        body = init_hash_request(token, soap_name)
         curl_request(body)
       end
 
       # -------------------------------
       # SEARCH FOLDER
 
-      def create_search_folder(token, name, query, types = 'messages', l = 1, color = nil, sort_by = nil)
-        search = {
-            name: name,
-            query: query,
-            types: types,
-            sortBy: sort_by,
-            color: color,
-            l: l
-        }.reject { |_, v| v.nil? }
-
-        req = { search: search }
-        body = init_hash_request(token, :CreateSearchFolderRequest)
-        body[:Body][:CreateSearchFolderRequest].merge!(req)
-        curl_request(body)
+      def create_search_folder(token, jsns)
+        jsns_request(:CreateSearchFolderRequest, token, jsns)
       end
 
-      def modify_search_folder(token, id, query, types = 'messages')
-        search = {
-          id: id,
-          query: query,
-          types: types
-        }.reject { |_, v| v.nil? }
-
-        req = { search: search }
-        body = init_hash_request(token, :ModifySearchFolderRequest)
-        body[:Body][:ModifySearchFolderRequest].merge!(req)
-        curl_request(body)
+      def modify_search_folder(token, jsns)
+        jsns_request(:ModifySearchFolderRequest, token, jsns)
       end
 
       # -------------------------------
@@ -266,12 +231,8 @@ module Zm
       # -------------------------------
       # SHARE
 
-      def create_mountpoint(token, link_option)
-        soap_name = :CreateMountpointRequest
-        req = { link: link_option }
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def create_mountpoint(token, jsns)
+        jsns_request(:CreateMountpointRequest, token, jsns)
       end
 
       def get_share_info(token, options = {})
@@ -282,49 +243,16 @@ module Zm
         curl_request(body)
       end
 
-      def get_rights(token, rights)
-        soap_name = :GetRightsRequest
-        ace = rights.map { |r| { right: r } }
-        req = { ace: ace }
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def get_rights(token, jsns)
+        jsns_request(:GetRightsRequest, token, jsns, ACCOUNTSPACE)
       end
 
-      def grant_rights(token, zid = nil, gt = nil, right = nil, d = nil, key = nil, pw = nil, deny = nil, chkgt = nil)
-        ace = {
-          zid: zid,
-          gt: gt,
-          right: right,
-          d: d,
-          key: key,
-          pw: pw,
-          deny: deny,
-          chkgt: chkgt
-        }.reject { |_, v| v.nil? }
-
-        req = { ace: ace }
-        body = init_hash_request(token, :GrantRightsRequest, ACCOUNTSPACE)
-        body[:Body][:GrantRightsRequest].merge!(req)
-        curl_request(body)
+      def grant_rights(token, jsns)
+        jsns_request(:GrantRightsRequest, token, jsns, ACCOUNTSPACE)
       end
 
-      def revoke_rights(token, zid = nil, gt = nil, right = nil, d = nil, key = nil, pw = nil, deny = nil, chkgt = nil)
-        ace = {
-          zid: zid,
-          gt: gt,
-          right: right,
-          d: d,
-          key: key,
-          pw: pw,
-          deny: deny,
-          chkgt: chkgt
-        }.reject { |_, v| v.nil? }
-
-        req = { ace: ace }
-        body = init_hash_request(token, :RevokeRightsRequest, ACCOUNTSPACE)
-        body[:Body][:RevokeRightsRequest].merge!(req)
-        curl_request(body)
+      def revoke_rights(token, jsns)
+        jsns_request(:RevokeRightsRequest, token, jsns, ACCOUNTSPACE)
       end
 
       # -------------------------------
@@ -332,7 +260,7 @@ module Zm
 
       def get_msg(token, id, options = {})
         req = { m: { id: id } }
-        req[:m].merge(options) unless options.empty?
+        req[:m].merge!(options) unless options.empty?
         body = init_hash_request(token, :GetMsgRequest)
         body[:Body][:GetMsgRequest].merge!(req)
         curl_request(body)
@@ -350,7 +278,7 @@ module Zm
         req = { m: m }
         body = init_hash_request(token, :SendMsgRequest)
         body[:Body][:SendMsgRequest].merge!(req)
-        curl_request(body)
+        # curl_request(body)
       end
 
       def add_msg(token, l, eml, d = nil, f = nil, tn = nil)
@@ -378,19 +306,12 @@ module Zm
         curl_request(body)
       end
 
-      def create_tag(token, name, color, rgb)
-        body = init_hash_request(token, :CreateTagRequest)
-        req = { tag: { name: name, color: color, rgb: rgb }.reject { |_, v| v.nil? } }
-        body[:Body][:CreateTagRequest].merge!(req)
-        curl_request(body)
+      def create_tag(token, jsns)
+        jsns_request(:CreateTagRequest, token, jsns)
       end
 
-      def tag_action(token, op, id, options = {})
-        action = { op: op, id: id }.merge(options)
-        req = { action: action }
-        body = init_hash_request(token, :TagActionRequest)
-        body[:Body][:TagActionRequest].merge!(req)
-        curl_request(body)
+      def tag_action(token, jsns)
+        jsns_request(:TagActionRequest, token, jsns)
       end
 
       # -------------------------------
@@ -487,11 +408,10 @@ module Zm
         curl_request(body)
       end
 
-      def delete_signature(token, id)
+      def delete_signature(token, jsns)
         soap_name = :DeleteSignatureRequest
-        req = { signature: { id: id } }
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
+        body[:Body][soap_name].merge!(jsns)
         curl_request(body)
       end
 
@@ -513,12 +433,19 @@ module Zm
           offset: offset,
           limit: limit,
           sortBy: sortBy,
-          query: query
+          query: query,
+          header: [{ n: 'messageIdHeader' }]
         }.merge!(options)
         req.reject! { |_, v| v.nil? }
 
         body = init_hash_request(token, soap_name)
         body[:Body][soap_name].merge!(req) if req.any?
+        curl_request(body)
+      end
+
+      def jsns_request(soap_name, token, jsns, namespace = MAILSPACE)
+        body = init_hash_request(token, soap_name, namespace)
+        body[:Body][soap_name].merge!(jsns) if jsns.is_a?(Hash)
         curl_request(body)
       end
 
@@ -531,15 +458,15 @@ module Zm
         hmac.to_s
       end
 
-      def init_hash_request(token, soap_name, jsns = MAILSPACE)
+      def init_hash_request(token, soap_name, namespace = MAILSPACE)
         {
           Body: {
-            soap_name => { _jsns: jsns }
+            soap_name => { _jsns: namespace }
           }
         }.merge(hash_header(token))
       end
 
-      def init_hash_arrow_request(token, soap_name, jsns = MAILSPACE)
+      def init_hash_arrow_request(token, soap_name, namespace = MAILSPACE)
         { Envelope: {
             :@xmlns => 'http://schemas.xmlsoap.org/soap/envelope/',
             '@xmlns:urn' => 'urn:zimbra',
@@ -553,7 +480,7 @@ module Zm
               }
             },
             Body: {
-              soap_name => { :@xmlns => jsns }
+              soap_name => { :@xmlns => namespace }
             }
           }
         }

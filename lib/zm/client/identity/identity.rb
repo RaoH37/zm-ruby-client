@@ -17,13 +17,14 @@ module Zm
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
 
-      def concat
-        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
 
       def init_from_json(json)
-        super(json)
-        INSTANCE_VARIABLE_KEYS.each do |key|
+        @id    = json[:id]
+        @name  = json[:name]
+        all_instance_variable_keys.each do |key|
           value = json[:_attrs][key]
           next if value.nil?
 
@@ -55,7 +56,8 @@ module Zm
       end
 
       def delete!
-        @parent.sacc.delete_identity(@parent.token, id)
+        @parent.sacc.delete_identity(@parent.token, @id)
+        super
       end
 
       def rename!(new_name)

@@ -3,45 +3,36 @@
 module Zm
   module Client
     # Collection Accounts
-    class AccountsCollection < Base::ObjectsCollection
+    class AccountsCollection < Base::AdminObjectsCollection
       def initialize(parent)
         @child_class = Account
-        @parent = parent
-        reset_query_params
-      end
-
-      def ldap
-        @apply_cos = 0
-        self
+        @builder_class = AccountsBuilder
+        @search_type = SearchType::ACCOUNT
+        super(parent)
       end
 
       def find_by(hash)
         rep = sac.get_account(hash.values.first, hash.keys.first, attrs_comma, @apply_cos)
-        reset_query_params
         entry = rep[:Body][:GetAccountResponse][:account].first
+        puts entry
 
+        reset_query_params
         build_from_entry(entry)
       end
 
-      def find_all_quotas(domain_name = nil, target_server_id = nil)
-        json = sac.get_quota_usage(domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh, target_server_id)
+      def quotas
+        return nil if @domain_name.nil? && @target_server_id.nil?
+
+        json = sac.get_quota_usage(@domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh, @target_server_id)
         reset_query_params
-        AccountsBuilder.new(@parent, json).make
+        @builder_class.new(@parent, json).make
       end
 
       private
 
-      def build_response
-        AccountsBuilder.new(@parent, make_query).make
-      end
-
       def reset_query_params
         super
-        @search_type = SearchType::ACCOUNT
         @attrs = SearchType::Attributes::ACCOUNT.dup
-        @all_servers = 1
-        @refresh = 0
-        @apply_cos = 1
       end
     end
   end

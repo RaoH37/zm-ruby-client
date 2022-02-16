@@ -3,17 +3,21 @@
 module Zm
   module Client
     # class for account folder
-    class Folder < Base::AccountObject
+    class Folder < Base::FolderObject
+      include Zm::Model::AttributeChangeObserver
 
       INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l url luuid f
         view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid
         ruuid owner reminder acl itemCount broken deletable color rgb fb]
 
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_reader :type, :id, :uuid, :absFolderPath, :luuid, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner, :reminder, :acl, :itemCount, :broken, :deletable, :fb
+
       attr_accessor :folders, :grants, :retention_policies
 
-      def concat
-        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      define_changed_attributes :name, :color, :rgb, :l, :url, :f, :view
+
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
 
       alias nb_messages n
@@ -21,14 +25,16 @@ module Zm
       alias parent_id l
       alias size s
 
-      def initialize(parent, json = nil, key = :folder)
-        @parent = parent
-        @type = key
+      def initialize(parent)
+        super(parent)
+
+        @type = :folder
         @folders = []
-        @grants = []
-        @retention_policies = []
-        init_from_json(json) if json.is_a?(Hash)
+        @grants = FolderGrantsCollection.new(self)
+        @retention_policies = FolderRetentionPoliciesCollection.new(self)
+
         yield(self) if block_given?
+
         extend(DocumentFolder) if view == 'document'
       end
 
@@ -40,46 +46,15 @@ module Zm
         "inid:#{id}"
       end
 
-      def to_h
-        {
-          f: f,
-          name: name,
-          l: l,
-          color: color,
-          rgb: rgb,
-          url: url,
-          fb: fb,
-          view: view
-        }
-      end
-
       def create!
-        options = to_h
-        options.delete_if { |_, v| v.nil? }
-        rep = @parent.sacc.create_folder(@parent.token, options)
-        # rep = @parent.sacc.create_folder(@parent.token, @l, @name, @view, @color)
-        init_from_json(rep[:Body][:CreateFolderResponse][:folder].first)
-      end
-
-      def modify!
-        options = to_h
-        options.delete_if { |_, v| v.nil? }
-
-        if is_immutable?
-          options.delete(:name)
-          options.delete(:l)
-        end
-
-        update!(options)
+        rep = @parent.sacc.create_folder(@parent.token, jsns_builder.to_jsns)
+        json = rep[:Body][:CreateFolderResponse][:folder].first
+        FolderJsnsInitializer.update(self, json)
       end
 
       def update!(options)
-        @parent.sacc.folder_action(@parent.token, 'update', @id, options)
-      end
-
-      def rename!(new_name)
-        @parent.sacc.folder_action(@parent.token, 'rename', @id, name: new_name)
-        @name = new_name
+        # @parent.sacc.folder_action(@parent.token, 'update', @id, options)
+        # todo
       end
 
       def add_retention_policy!(retention_policies)
@@ -87,22 +62,11 @@ module Zm
         @parent.sacc.folder_action(@parent.token, 'retentionPolicy', @id, retentionPolicy: options)
       end
 
-      def move!(folder_id)
-        @parent.sacc.folder_action(@parent.token, 'move', @id, l: folder_id)
-        @l = folder_id
-      end
-
-      def color!(new_color)
-        key = new_color.to_i.zero? ? :rgb : :color
-        options = {}
-        options[key] = new_color
-        @parent.sacc.folder_action(@parent.token, 'color', @id, options)
-        instance_variable_set("@#{key}", new_color)
-      end
-
       def reload!
-        rep = @parent.sacc.get_folder(@parent.token, @id)
-        init_from_json(rep[:Body][:GetFolderResponse][:folder].first)
+        rep = @parent.sacc.get_folder(@parent.token, jsns_builder.to_find)
+        json = rep[:Body][:GetFolderResponse][:folder].first
+        FolderJsnsInitializer.update(self, json)
+        true
       end
 
       def empty?
@@ -110,55 +74,15 @@ module Zm
       end
 
       def empty!
-        @parent.sacc.folder_action(
-          @parent.token,
-          :empty,
-          @id,
-          recursive: false
-        )
+        @parent.sacc.folder_action(@parent.token, jsns_builder.to_empty) unless @n.zero?
+        @n = 0
       end
       alias clear empty!
 
       def delete!
-        @parent.sacc.folder_action(@parent.token, :delete, @id)
-      end
+        return false if is_immutable?
 
-      #
-      # folder_grant: Zm::Client::FolderGrant
-      #
-      def grant!(folder_grant)
-        @parent.sacc.folder_action(
-            @parent.token,
-            'grant',
-            @id,
-            grant: folder_grant.to_h
-        )
-      end
-
-      # def grant!(parent, right)
-      #   @parent.sacc.folder_action(
-      #     @parent.token,
-      #     'grant',
-      #     @id,
-      #     grant: {
-      #       zid: parent.id,
-      #       gt: parent.grantee_type,
-      #       perm: right
-      #     }
-      #   )
-      # end
-
-      def remove_grant!(zid)
-        @parent.sacc.folder_action(
-          @parent.token,
-          '!grant',
-          @id,
-          zid: zid
-        )
-      end
-
-      def retention_policies_h
-        @retention_policies.map(&:to_h).reduce({}, :merge)
+        super
       end
 
       def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
@@ -194,21 +118,10 @@ module Zm
         @parent.uploader.download_file_with_url(url_query, dest_file_path)
       end
 
-      def init_from_json(json)
-        INSTANCE_VARIABLE_KEYS.each do |key|
-          var_name = "@#{key}"
-          instance_variable_set(var_name, json[key])
-        end
+      private
 
-        if !json[:acl].nil? && json[:acl][:grant].is_a?(Array)
-          @grants = json[:acl][:grant].map { |grant| FolderGrant.create_by_json(self, grant) }
-        end
-
-        if json[:retentionPolicy].is_a?(Array)
-          @retention_policies = json[:retentionPolicy].first.map do |k, v|
-            FolderRetentionPolicy.create_by_json(self, k, v.first)
-          end
-        end
+      def jsns_builder
+        @jsns_builder ||= FolderJsnsBuilder.new(self)
       end
     end
   end

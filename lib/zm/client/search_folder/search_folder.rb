@@ -3,60 +3,40 @@
 module Zm
   module Client
     # class account SearchFolder
-    class SearchFolder < Base::AccountObject
+    class SearchFolder < Base::FolderObject
+      include Zm::Model::AttributeChangeObserver
 
       INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rgb rev ms webOfflineSyncDays activesyncdisabled query sortBy types]
 
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      # attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_reader :id, :absFolderPath, :types
 
-      def concat
-        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
+
+      def initialize(parent)
+        super(parent)
+        @types = 'messages'
       end
 
-      def init_from_json(json)
-        INSTANCE_VARIABLE_KEYS.each do |key|
-          var_name = "@#{key}"
-          instance_variable_set(var_name, json[key])
-        end
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
 
       def create!
-        rep = @parent.sacc.create_search_folder(@parent.token, name, query, types, l, color, sortBy)
-        init_from_json(rep[:Body][:CreateSearchFolderResponse][:search].first)
+        rep = @parent.sacc.create_search_folder(@parent.token, jsns_builder.to_jsns)
+        json = rep[:Body][:CreateSearchFolderResponse][:search].first
+        SearchFolderJsnsInitializer.update(self, json)
       end
 
       def modify!
-        @parent.sacc.modify_search_folder(@parent.token, id, query, types)
-        @parent.sacc.folder_action(@parent.token, :update, id, build_update_options)
+        @parent.sacc.modify_search_folder(@parent.token, jsns_builder.to_modify)
+        super
       end
 
-      def query!(new_query)
-        @parent.sacc.modify_search_folder(@parent.token, id, new_query, types)
-        instance_variable_set("@query", new_query)
-      end
+      private
 
-      def color!(new_color)
-        key = new_color.to_i.zero? ? :rgb : :color
-        options = {}
-        options[key] = new_color
-        @parent.sacc.folder_action(@parent.token, :color, @id, options)
-        instance_variable_set("@#{key}", new_color)
-      end
-
-      def build_update_options
-        {
-          name: @name,
-          color: @color,
-          rgb: @rgb
-        }.delete_if { |_, v| v.nil? }
-      end
-
-      def delete!
-        @parent.sacc.folder_action(@parent.token, :delete, id)
-      end
-
-      def rename!(new_name)
-        # todo
+      def jsns_builder
+        @jsns_builder ||= SearchFolderJsnsBuilder.new(self)
       end
     end
   end

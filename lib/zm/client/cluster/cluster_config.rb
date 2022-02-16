@@ -11,13 +11,14 @@ module Zm
                     :zimbra_admin_port, :zimbra_admin_login,
                     :zimbra_admin_password, :zimbra_public_host,
                     :zimbra_public_scheme, :zimbra_public_port,
-                    :domains
+                    :domains, :zimbra_version
 
       def initialize(parameters = nil)
         @zimbra_admin_scheme = 'https'
         @zimbra_admin_port = 7071
         @zimbra_public_scheme = 'https'
         @zimbra_public_port = 443
+        @zimbra_version = '8.6.0'
         @domains = []
 
         if parameters.is_a?(String)
@@ -53,6 +54,7 @@ module Zm
         @zimbra_public_host = @to_h[:zimbra_public_host] unless @to_h[:zimbra_public_host].nil?
         @zimbra_public_scheme = @to_h[:zimbra_public_scheme] unless @to_h[:zimbra_public_scheme].nil?
         @zimbra_public_port = @to_h[:zimbra_public_port] unless @to_h[:zimbra_public_port].nil?
+        @zimbra_version = @to_h[:zimbra_version] unless @to_h[:zimbra_version].nil?
       end
 
       def init_from_yml(file_config_path)

@@ -4,37 +4,35 @@ module Zm
   module Client
     # class account signature
     class Signature < Base::AccountObject
+      include Zm::Model::AttributeChangeObserver
+
       TYPE_TXT = 'text/plain'
       TYPE_HTML = 'text/html'
 
       INSTANCE_VARIABLE_KEYS = %i[id name txt html]
 
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_reader :id
 
-      def concat
-        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
-      end
+      define_changed_attributes :name, :txt, :html
 
-      def init_from_json(json)
-        @id      = json[:id]
-        @name    = json[:name]
-        json[:content].each do |c|
-          @txt = c[:_content] if c[:type] == TYPE_TXT
-          @html = c[:_content] if c[:type] == TYPE_HTML
-        end if json[:content].is_a?(Array)
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
 
       def create!
         rep = @parent.sacc.create_signature(@parent.token, as_jsns)
         @id = rep[:Body][:CreateSignatureResponse][:signature].first[:id]
+        super
       end
 
       def modify!
         @parent.sacc.modify_signature(@parent.token, as_jsns)
+        super
       end
 
       def delete!
-        @parent.sacc.delete_signature(@parent.token, id)
+        @parent.sacc.delete_signature(@parent.token, jsns_builder.to_delete)
+        super
       end
 
       def type
@@ -54,8 +52,14 @@ module Zm
         html || txt
       end
 
+      private
+
+      def jsns_builder
+        @jsns_builder ||= SignatureJsnsBuilder.new(self)
+      end
+
       def as_jsns
-        SignatureJsnsBuilder.new(self).to_jsns
+        jsns_builder.to_jsns
       end
     end
   end

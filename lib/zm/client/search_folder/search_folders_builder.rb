@@ -2,23 +2,19 @@
 
 module Zm
   module Client
-    # class factory [folders]
+    # class factory [Search folders]
     class SearchFoldersBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        @parent = parent
-        @json = json
+        super(parent, json)
+        @child_class = SearchFolder
+        @json_item_key = :search
       end
 
       def make
-        root = @json[:Body][:GetSearchFolderResponse][:search]
-        return [] if root.nil?
+        return [] if json_items.nil?
 
-        root = [root] unless root.is_a?(Array)
-
-        root.map do |s|
-          f = SearchFolder.new(@parent)
-          f.init_from_json(s)
-          f
+        json_items.map do |entry|
+          SearchFolderJsnsInitializer.create(@parent, entry)
         end
       end
     end

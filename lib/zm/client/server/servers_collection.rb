@@ -3,19 +3,18 @@
 module Zm
   module Client
     # Collection servers
-    class ServersCollection < Base::ObjectsCollection
+    class ServersCollection < Base::AdminObjectsCollection
       def initialize(parent)
-        @parent = parent
-        # @service = ServerServices::MAILBOX
+        @child_class = Server
+        @builder_class = ServersBuilder
         @service = nil
+        super(parent)
       end
 
       def find_by(hash)
         rep = sac.get_server(hash.values.first, hash.keys.first)
         entry = rep[:Body][:GetServerResponse][:server].first
-        server = Server.new(@parent)
-        server.init_from_json(entry)
-        server
+        build_from_entry(entry)
       end
 
       def where(service)
@@ -24,10 +23,6 @@ module Zm
       end
 
       private
-
-      def build_response
-        ServersBuilder.new(@parent, make_query).make
-      end
 
       def make_query
         sac.get_all_servers(@service)

@@ -13,11 +13,15 @@ module Zm
         parent
       end
 
-      def to_h
-        hashmap = Hash[INSTANCE_VARIABLE_KEYS.map { |key| [key, instance_variable_get(arrow_name(key))] }]
-        hashmap.delete_if { |_, v| v.nil? }
-        hashmap
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
+
+      # def to_h
+      #   hashmap = Hash[INSTANCE_VARIABLE_KEYS.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+      #   hashmap.delete_if { |_, v| v.nil? }
+      #   hashmap
+      # end
 
       def to_s
         to_h.to_s

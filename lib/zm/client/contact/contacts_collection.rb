@@ -3,23 +3,17 @@
 module Zm
   module Client
     # collection account contacts
-    class ContactsCollection < Base::ObjectsCollection
+    class ContactsCollection < Base::AccountObjectsCollection
       def initialize(parent)
-        @parent = parent
-      end
-
-      def new
-        contact = Contact.new(@parent)
-        yield(contact) if block_given?
-        contact
+        @child_class = Contact
+        @builder_class = ContactBuilder
+        super(parent)
       end
 
       private
 
-      def build_response
-        rep = @parent.sacc.get_all_contacts(@parent.token)
-        cb = ContactBuilder.new @parent, rep
-        cb.make
+      def make_query
+        @parent.sacc.get_all_contacts(@parent.token)
       end
     end
   end

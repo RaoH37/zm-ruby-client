@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'openssl'
-require 'curb'
-
 module Zm
   module Client
     class RestAccountConnector

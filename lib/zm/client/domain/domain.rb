@@ -15,11 +15,11 @@ module Zm
         @grantee_type = 'dom'.freeze
       end
 
-      def to_h
-        hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
-        hashmap.delete_if { |_, v| v.nil? }
-        hashmap
-      end
+      # def to_h
+      #   hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+      #   hashmap.delete_if { |_, v| v.nil? }
+      #   hashmap
+      # end
 
       def all_instance_variable_keys
         INSTANCE_VARIABLE_KEYS
@@ -40,8 +40,13 @@ module Zm
       end
 
       def accounts
-        @accounts ||= AccountsCollection.new(self)
+        @accounts ||= DomainAccountsCollection.new(self)
       end
+
+      # def account_quotas(server_id)
+      #   rep = sac.get_quota_usage(name, nil, nil, nil, nil, nil, nil, server_id)
+      #   AccountsBuilder.new(@parent, rep).make
+      # end
 
       def init_from_json(json)
         super(json)

@@ -5,19 +5,16 @@ module Zm
     # class factory [aces]
     class AcesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        @parent = parent
-        @json = json
+        super(parent, json)
+        @child_class = Ace
+        @json_item_key = :ace
       end
 
       def make
-        root = @json[:Body][:GetRightsResponse][:ace]
-        return [] if root.nil?
+        return [] if json_items.nil?
 
-        root = [root] unless root.is_a?(Array)
-        root.map do |s|
-          ace = Ace.new(@parent)
-          ace.init_from_json(s)
-          ace
+        json_items.map do |entry|
+          AceJsnsInitializer.create(@parent, entry)
         end
       end
     end

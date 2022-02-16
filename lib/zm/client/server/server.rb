@@ -481,6 +481,10 @@ module Zm
       attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_accessor :name, :id
 
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
+      end
+
       def mta_queues
         @mta_queues ||= mta_queues!
       end
@@ -497,20 +501,9 @@ module Zm
         BackupsCollection.new self
       end
 
-      # def accounts
-      #   @accounts ||= AccountsCollection.new @soap_admin_connector
-      # end
-
-      # def quotas
-      #   # todo
-      #   rep = @soap_admin_connector.get_quota_usage(name, 1)
-      #   AccountsBuilder.new(@soap_admin_connector, rep).make
-      # end
-
-      # def quotas!
-      #   @accounts = quotas
-      #   # todo il faudrait merger quotas dans @accounts
-      # end
+      def accounts
+        @accounts ||= ServerAccountsCollection.new(self)
+      end
     end
   end
 end

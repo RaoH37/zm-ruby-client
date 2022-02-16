@@ -3,34 +3,27 @@
 module Zm
   module Client
     # Collection Resources
-    class DistributionListsCollection < Base::ObjectsCollection
+    class DistributionListsCollection < Base::AdminObjectsCollection
       def initialize(parent)
         @child_class = DistributionList
+        @builder_class = DistributionListsBuilder
+        @search_type = SearchType::DL
         @parent = parent
         reset_query_params
-      end
-
-      def ldap
-        @apply_cos = 0
-        self
       end
 
       def find_by(hash)
         rep = sac.get_distribution_list(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetDistributionListResponse][:dl].first
 
+        reset_query_params
         build_from_entry(entry)
       end
 
       private
 
-      def build_response
-        DistributionListsBuilder.new(@parent, make_query).make
-      end
-
       def reset_query_params
         super
-        @search_type = SearchType::DL
         @attrs = SearchType::Attributes::DL.dup
         @all_servers = 1
         @refresh = 0

@@ -38,14 +38,6 @@ module Zm
           @all = build_response
         end
 
-        def where(ldap_query)
-          return self if @ldap_query == ldap_query
-
-          @all = nil
-          @ldap_query = ldap_query
-          self
-        end
-
         def per_page(limit)
           return self if @limit == limit
 
@@ -71,19 +63,6 @@ module Zm
           self
         end
 
-        def count
-          @count_only = SoapUtils::ON
-          make_query[:Body][:SearchDirectoryResponse][:num]
-        end
-
-        def attrs(*attrs)
-          return self if @attrs == attrs
-
-          @all = nil
-          @attrs = attrs
-          self
-        end
-
         def method_missing(method, *args, &block)
           if METHODS_MISSING_LIST.include?(method)
             build_response.send(method, *args, &block)
@@ -96,23 +75,20 @@ module Zm
           METHODS_MISSING_LIST.include?(method) || super
         end
 
+        def logger
+          @parent.logger
+        end
+
         private
+
+        def build_response
+          @builder_class.new(@parent, make_query).make
+        end
 
         def soap_admin_connector
           @parent.soap_admin_connector
         end
-
         alias sac soap_admin_connector
-
-        def make_query
-          json = sac.search_directory(
-            @ldap_query, @max_result, @limit, @offset,
-            @domain_name, @apply_cos, nil, @sort_by, @search_type,
-            @sort_ascending, @count_only, attrs_comma
-          )
-          reset_query_params
-          json
-        end
 
         def attrs_comma
           return @attrs unless @attrs.is_a?(Array)
@@ -128,6 +104,9 @@ module Zm
           @sort_by = nil
           @sort_ascending = SoapUtils::ON
           @count_only = SoapUtils::OFF
+          @all_servers = 0
+          @refresh = 0
+          @apply_cos = 1
         end
       end
     end

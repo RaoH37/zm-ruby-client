@@ -4,31 +4,42 @@ require 'zm/client/connector/soap_admin'
 require 'zm/client/connector/soap_account'
 require 'zm/client/common'
 # require 'zm/client/data_source'
-require 'zm/client/domain'
 require 'zm/client/account'
+require 'zm/client/domain'
 require 'zm/client/resource'
 require 'zm/client/distributionlist'
 require 'zm/client/server'
 require 'zm/client/cos'
 require 'zm/client/license'
-# require 'zm/client/distributionlist'
 
 module Zm
   module Client
     # class admin connection
     class Cluster
-      attr_reader :soap_admin_connector, :config
+
+      attr_reader :soap_admin_connector, :config, :zimbra_attributes
+
+      attr_reader :type, :version, :release, :buildDate, :host, :majorversion, :minorversion, :microversion
 
       def initialize(config)
+        extend(ZmLogger)
+
         @config = config
+        @version = config.zimbra_version
+
+        @zimbra_attributes = Base::ZimbraAttributesCollection.new(self)
+        @zimbra_attributes.set_methods
+
         @soap_admin_connector = SoapAdminConnector.new(
           @config.zimbra_admin_scheme,
           @config.zimbra_admin_host,
           @config.zimbra_admin_port
         )
+        @soap_admin_connector.logger = logger
       end
 
       def login
+        logger.info "Get Admin session token"
         @soap_admin_connector.auth(
           @config.zimbra_admin_login,
           @config.zimbra_admin_password
@@ -42,22 +53,27 @@ module Zm
       def alive?
         @soap_admin_connector.noop
         true
-      rescue Zm::Client::SoapError => _
+      rescue Zm::Client::SoapError => e
+        logger.error "Admin session token alive ? #{e.message}"
         false
       end
 
       def soap_account_connector
-        @soap_account_connector ||= SoapAccountConnector.new(
+        return @soap_account_connector unless @soap_account_connector.nil?
+
+        @soap_account_connector = SoapAccountConnector.new(
           @config.zimbra_public_scheme,
           @config.zimbra_public_host,
           @config.zimbra_public_port
         )
+        @soap_account_connector.logger = logger
+        @soap_account_connector
       end
 
       def license
         @license ||= LicensesCollection.new(self).find
       rescue Zm::Client::SoapError => e
-        puts e.message
+        logger.error "Get License info #{e.message}"
         nil
       end
 
@@ -107,10 +123,24 @@ module Zm
         !num.zero?
       end
 
+      def infos!
+        rep = soap_admin_connector.get_version_info
+        json = rep[:Body][:GetVersionInfoResponse][:info].first
+
+        instance_variable_set(:@type, json[:type])
+        instance_variable_set(:@version, json[:version])
+        instance_variable_set(:@release, json[:release])
+        instance_variable_set(:@buildDate, json[:buildDate])
+        instance_variable_set(:@host, json[:host])
+        instance_variable_set(:@majorversion, json[:majorversion])
+        instance_variable_set(:@minorversion, json[:minorversion])
+        instance_variable_set(:@microversion, json[:microversion])
+      end
+
       private
 
       def find_domain_key(domain_name)
-        domains.find_by({ name: domain_name }, 'zimbraPreAuthKey').zimbraPreAuthKey
+        domains.attrs('zimbraPreAuthKey').find_by(name: domain_name).zimbraPreAuthKey
       end
     end
   end

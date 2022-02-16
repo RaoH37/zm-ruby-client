@@ -3,25 +3,17 @@
 module Zm
   module Client
     # collection of signatures
-    class SignaturesCollection < Base::ObjectsCollection
-      METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
-
+    class SignaturesCollection < Base::AccountObjectsCollection
       def initialize(parent)
-        @parent = parent
-      end
-
-      def new
-        signature = Signature.new(@parent)
-        yield(signature) if block_given?
-        signature
+        @child_class = Signature
+        @builder_class = SignaturesBuilder
+        super(parent)
       end
 
       private
 
-      def build_response
-        rep = @parent.sacc.get_signatures(@parent.token)
-        sb = SignaturesBuilder.new @parent, rep
-        sb.make
+      def make_query
+        @parent.sacc.get_signatures(@parent.token)
       end
     end
   end

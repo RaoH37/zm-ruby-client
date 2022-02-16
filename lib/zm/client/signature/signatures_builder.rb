@@ -2,23 +2,19 @@
 
 module Zm
   module Client
-    # class factory [folders]
+    # class factory [signatures]
     class SignaturesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        @parent = parent
-        @json = json
+        super(parent, json)
+        @child_class = Signature
+        @json_item_key = :signature
       end
 
       def make
-        root = @json[:Body][:GetSignaturesResponse][:signature]
-        return [] if root.nil?
+        return [] if json_items.nil?
 
-        root = [root] unless root.is_a?(Array)
-
-        root.map do |s|
-          signature = Signature.new(@parent)
-          signature.init_from_json(s)
-          signature
+        json_items.map do |entry|
+          SignatureJsnsInitializer.new(@parent, entry).create
         end
       end
     end

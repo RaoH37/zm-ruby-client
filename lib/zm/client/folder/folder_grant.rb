@@ -3,19 +3,29 @@
 module Zm
   module Client
     # class for account folder
-    class FolderGrant < Base::AccountObject
-      attr_accessor :zid, :gt, :perm, :d
+    class FolderGrant
+      attr_reader :parent, :folder_id
+      attr_accessor :zid, :gt, :perm, :d, :expiry, :key
 
-      class << self
-        def create_by_json(parent, json)
-          fg = self.new(parent)
-          fg.init_from_json(json)
-          fg
-        end
+      # pour créer un nouveau partage, il faut indiquer zid et/ou d
+      # l'attribut gt est obligatoire !
+      # l'attribut perm est obligatoire !
+
+      def initialize(parent, zid, gt, perm, d)
+        @parent = parent
+        @zid = zid
+        @gt = gt
+        @perm = perm
+        @d = d
+        @expiry = nil
+        @key = nil
+        @folder_id = parent.parent.id
       end
 
-      def concat
-        [zid, gt, perm, d]
+      def to_h
+        h = Hash[instance_variables.reject { |iv| iv == :@parent }.map { |iv| [iv, instance_variable_get(iv)] }]
+        h.merge!({ :@parent => @parent.class })
+        h
       end
 
       def is_account?
@@ -38,20 +48,32 @@ module Zm
         gt == 'guest'
       end
 
-      def init_from_json(json)
-        @zid = json[:zid]
-        @gt = json[:gt]
-        @perm = json[:perm]
-        @d = json[:d]
+      def is_key?
+        gt == 'key'
       end
 
-      def to_h
-        {
-            zid: @zid,
-            gt: @gt,
-            perm: @perm,
-            d: @d
-        }
+      def save!
+        @parent.sacc.folder_action(get_token, jsns_builder.to_create)
+      end
+
+      def delete!
+        @parent.sacc.folder_action(get_token, jsns_builder.to_delete)
+        @parent.all.delete(self)
+      end
+
+      private
+
+      def jsns_builder
+        @jsns_builder ||= FolderGrantJsnsBuilder.new(self)
+      end
+
+      def get_token(target = self)
+        token = nil
+        return target.token if target.respond_to?(:token) && !target.token.nil?
+
+        token = get_token(target.parent) if target.respond_to?(:parent)
+
+        token
       end
     end
   end

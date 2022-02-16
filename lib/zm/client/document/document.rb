@@ -19,8 +19,8 @@ module Zm
         yield(self) if block_given?
       end
 
-      def concat
-        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
 
       def folder
@@ -34,13 +34,6 @@ module Zm
       def download(dest_file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_file(folder.absFolderPath, nil, nil, [id], dest_file_path)
-      end
-
-      def init_from_json(json)
-        INSTANCE_VARIABLE_KEYS.each do |key|
-          var_name = "@#{key}"
-          instance_variable_set(var_name, json[key])
-        end
       end
     end
   end

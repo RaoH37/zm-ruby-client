@@ -8,16 +8,14 @@ module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
 
-      SOAP_PATH = '/service/admin/soap/'
+      # SOAP_PATH = '/service/admin/soap/'
       ADMINSPACE = 'urn:zimbraAdmin'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
 
       attr_accessor :token
 
       def initialize(scheme, host, port)
-        @verbose = false
-        @uri = URI::HTTP.new(scheme, nil, host, port, nil, SOAP_PATH, nil, nil, nil)
-        init_curl_client
+        super(scheme, host, port, '/service/admin/soap/')
       end
 
       def auth(mail, password)
@@ -156,7 +154,6 @@ module Zm
         # req = { _jsns: ADMINSPACE, id: id, a: attrs.to_a.map{ |n| { n: n.first, _content: n.last } } }
         req = { _jsns: ADMINSPACE, id: id }
         body = { Body: { ModifyCosRequest: req } }.merge(hash_header(@token))
-        # puts body
         # todo ne fonctionne pas !
         # peut-être seul la version xml fonctionne. Il faudrait créer une fonction qui converti le json en xml
         curl_request(body)
@@ -169,7 +166,6 @@ module Zm
         # req[:a] = attrs.map{|i|i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i]}.flatten(1).map { |n| { n: n.first, _content: n.last } }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -189,7 +185,6 @@ module Zm
         req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -255,7 +250,6 @@ module Zm
         req = { id: id, alias: email }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -276,7 +270,6 @@ module Zm
         body = init_hash_request(:GetDomainRequest)
         body[:Body][:GetDomainRequest].merge!(req)
         # TODO: tester param attrs
-        # puts body
         curl_request(body)
       end
 
@@ -290,7 +283,6 @@ module Zm
         req[:attrs] = attrs unless attrs.nil? || attrs.empty?
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
       end
 
@@ -375,7 +367,6 @@ module Zm
         # body = { Body: { SearchDirectoryRequest: { _jsns: ADMINSPACE } } }.merge(hash_header(@token))
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
-        # puts body
 
         curl_request(body)
       end
@@ -448,7 +439,6 @@ module Zm
         body = init_hash_request(soap_name)
         req = { server: { name: server_name } }
         body[:Body][soap_name].merge!(req)
-        # puts body.to_json
         curl_request(body)
       end
 
@@ -476,7 +466,6 @@ module Zm
           }
         }
         body[:Body][soap_name].merge!(req)
-        # puts body.to_json
         curl_request(body)
       end
 
@@ -496,9 +485,22 @@ module Zm
         body = init_hash_request(soap_name, dest_id)
         req = { query: {} }
         body[:Body][soap_name].merge!(req)
-        # puts body
         curl_request(body)
         # curl_xml(SoapXmlBuilder.new(body).to_xml)
+      end
+
+      def set_password(id, new_password)
+        soap_name = :SetPasswordRequest
+        body = init_hash_request(soap_name)
+        req = { id: id, newPassword: new_password }
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
+      def get_version_info
+        soap_name = :GetVersionInfoRequest
+        body = init_hash_request(soap_name)
+        curl_request(body)
       end
 
       def init_hash_request(soap_name, target_server = nil)

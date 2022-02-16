@@ -7,22 +7,7 @@ module Zm
       def initialize(parent, json)
         super(parent, json)
         @child_class = Cos
-      end
-
-      # def make
-      #   return [] if json_items.nil?
-      #
-      #   json_items.map do |entry|
-      #     cos = Cos.new(@parent)
-      #     cos.init_from_json(entry)
-      #     cos
-      #   end
-      # end
-
-      private
-
-      def json_items
-        @json_items ||= @json[:Body][json_key][:cos]
+        @json_item_key = :cos
       end
     end
   end

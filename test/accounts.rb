@@ -16,7 +16,7 @@ class TestAccount < Minitest::Test
 
   def test_all
     accounts = @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).all
-    assert accounts == @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).all
+    assert accounts == @admin.accounts.all
   end
 
   def test_all_is_account
@@ -58,5 +58,19 @@ class TestAccount < Minitest::Test
     end
     assert account.is_a? Zm::Client::Account
     assert account.name == name
+  end
+
+  def test_attrs
+    account = @admin.accounts.attrs('zimbraMailQuota').find_by name: @fixture_accounts['accounts']['maxime']['email']
+    assert account.respond_to?(:zimbraMailQuota)
+  end
+
+  def test_has_quota
+    accounts = @admin.accounts.where('(zimbraMailQuota=*)').per_page(10).attrs('zimbraMailQuota').all
+    assert accounts.any?
+
+    accounts.each do |account|
+      assert account.zimbraMailQuota.is_a?(Integer)
+    end
   end
 end

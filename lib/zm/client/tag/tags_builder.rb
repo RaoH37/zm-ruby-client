@@ -5,19 +5,16 @@ module Zm
     # class factory [tags]
     class TagBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        @parent = parent
-        @json = json
+        super(parent, json)
+        @child_class = Tag
+        @json_item_key = :tag
       end
 
       def make
-        root = @json[:Body][:GetTagResponse][:tag]
-        return [] if root.nil?
+        return [] if json_items.nil?
 
-        root = [root] unless root.is_a?(Array)
-        root.map do |s|
-          tag = Tag.new(@parent)
-          tag.init_from_json(s)
-          tag
+        json_items.map do |entry|
+          TagJsnsInitializer.create(@parent, entry)
         end
       end
     end

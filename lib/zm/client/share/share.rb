@@ -17,8 +17,8 @@ module Zm
         yield(self) if block_given?
       end
 
-      def concat
-        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
       end
 
       def create!
@@ -47,13 +47,6 @@ module Zm
         folder_name = @folderPath[1..-1].split('/').last
         owner_name = (@ownerName || @ownerEmail).tr('/', '-')
         "#{folder_name} (#{owner_name})"
-      end
-
-      def init_from_json(json)
-        INSTANCE_VARIABLE_KEYS.each do |key|
-          var_name = "@#{key}"
-          instance_variable_set(var_name, json[key])
-        end
       end
     end
   end

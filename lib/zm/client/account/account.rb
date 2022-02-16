@@ -24,27 +24,28 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::AdminObject
-      attr_reader :name, :id, :token
-      attr_writer :home_url
-      attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
+      # attr_reader :name, :id, :token
+      # attr_writer :home_url
+      # attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
+      attr_accessor :name, :id, :token, :home_url, :password, :domainkey, :carLicense
 
-      def initialize(parent, attrs = {})
-        extend(AccountCommon)
+      def initialize(parent)
+        # extend(AccountCommon)
         super(parent)
         @grantee_type = 'usr'.freeze
       end
 
-      def init_by_hash(attrs)
-        attrs.each do |k, v|
-          self.instance_variable_set(arrow_name(k), v)
-        end
-      end
+      # def init_by_hash(attrs)
+      #   attrs.each do |k, v|
+      #     self.instance_variable_set(arrow_name(k), v)
+      #   end
+      # end
 
-      def to_h
-        hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
-        hashmap.delete_if { |_, v| v.nil? }
-        hashmap
-      end
+      # def to_h
+      #   hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+      #   hashmap.delete_if { |_, v| v.nil? }
+      #   hashmap
+      # end
 
       def all_instance_variable_keys
         AccountCommon::ZM_ACCOUNT_ATTRS
@@ -94,7 +95,7 @@ module Zm
       end
 
       def domain_name
-        @name.split('@').last
+        @domain_name ||= @name.split('@').last
       end
 
       def domain_key
@@ -241,6 +242,12 @@ module Zm
           instance_variables_array(attrs_write)
         )
         @id = rep[:Body][:CreateAccountResponse][:account].first[:id]
+      end
+
+      def set_password(new_password = nil)
+        new_password ||= @password
+        sac.set_password(@id, new_password)
+        @password = new_password
       end
 
       def aliases
