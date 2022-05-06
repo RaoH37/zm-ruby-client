@@ -2,6 +2,7 @@
 
 require 'zm/modules/common/account_common'
 # require_relative '../../modules/common/account_galsync'
+require 'zm/client/common'
 require 'zm/client/connector/rest_account'
 require 'zm/client/signature'
 require 'zm/client/folder'
@@ -92,6 +93,10 @@ module Zm
 
       def admin_login
         @token = sac.delegate_auth(@name)
+      end
+
+      def token_metadata
+        @token_metadata ||= TokenMetaData.new(@token)
       end
 
       def domain_name
@@ -212,6 +217,11 @@ module Zm
 
       def delete!
         sac.delete_account(@id)
+      end
+
+      def password!(new_password)
+        sac.set_password(@id, new_password)
+        @password = new_password
       end
 
       def update!(hash)

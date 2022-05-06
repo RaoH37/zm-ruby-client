@@ -7,6 +7,7 @@ module DistributionListCommon
     cn
     zimbraMailForwardingAddress
     description
+    zimbraDistributionListSendShareMessageToNewMembers
   ].freeze
 
   ATTRS_READ = %w[zimbraMailAlias]
@@ -18,6 +19,7 @@ module DistributionListCommon
     zimbraMailTransport
     zimbraMailForwardingAddress
     description
+    zimbraDistributionListSendShareMessageToNewMembers
   ].freeze
 
   ATTRS_READ.each { |attr| attr_reader attr }

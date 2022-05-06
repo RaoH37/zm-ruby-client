@@ -8,12 +8,12 @@ module Zm
       INSTANCE_VARIABLE_KEYS = %i[id name zimbraPrefIdentityName zimbraPrefFromDisplay zimbraPrefFromAddress
         zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
         zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
-        zimbraPrefWhenInFoldersEnabled]
+        zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses]
 
       ATTRS_WRITE = %i[zimbraPrefIdentityName zimbraPrefFromDisplay zimbraPrefFromAddress
         zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
         zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
-        zimbraPrefWhenInFoldersEnabled]
+        zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
 

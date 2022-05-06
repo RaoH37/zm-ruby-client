@@ -70,6 +70,10 @@ module Zm
         @soap_account_connector
       end
 
+      def token_metadata
+        @token_metadata ||= TokenMetaData.new(@soap_admin_connector.token)
+      end
+
       def license
         @license ||= LicensesCollection.new(self).find
       rescue Zm::Client::SoapError => e

@@ -210,6 +210,14 @@ module Zm
         curl_request(body)
       end
 
+      def set_password(id, new_password)
+        soap_name = :SetPasswordRequest
+        req = { id: id, newPassword: new_password }
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
+      end
+
       def add_account_alias(id, email)
         generic_alias(:AddAccountAliasRequest, id, email)
       end
@@ -270,6 +278,17 @@ module Zm
         body = init_hash_request(:GetDomainRequest)
         body[:Body][:GetDomainRequest].merge!(req)
         # TODO: tester param attrs
+        curl_request(body)
+      end
+
+      def create_domain(name, attrs = [])
+        soap_name = :CreateDomainRequest
+        req = {
+          name: name,
+          a: attrs.map(&A_NODE_PROC)
+        }
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
 

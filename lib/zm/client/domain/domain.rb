@@ -6,7 +6,7 @@ module Zm
     class Domain < Base::AdminObject
       INSTANCE_VARIABLE_KEYS = %i[name description zimbraDomainName zimbraDomainStatus zimbraId zimbraDomainType
         zimbraDomainDefaultCOSId zimbraGalAccountId zimbraPreAuthKey zimbraGalLdapBindDn zimbraGalLdapBindPassword
-        zimbraGalLdapFilter zimbraGalLdapSearchBase zimbraGalLdapURL zimbraGalMode]
+        zimbraGalLdapFilter zimbraGalLdapSearchBase zimbraGalLdapURL zimbraGalMode zimbraMailTransport]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
 
@@ -23,6 +23,17 @@ module Zm
 
       def all_instance_variable_keys
         INSTANCE_VARIABLE_KEYS
+      end
+
+      def create!
+        attrs_write = INSTANCE_VARIABLE_KEYS.dup
+        attrs_write.delete(:name)
+
+        rep = sac.create_domain(
+          @name,
+          instance_variables_array(attrs_write)
+        )
+        @id = rep[:Body][:CreateDomainResponse][:domain].first[:id]
       end
 
       def update!(hash)
