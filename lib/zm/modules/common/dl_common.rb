@@ -8,6 +8,8 @@ module DistributionListCommon
     zimbraMailForwardingAddress
     description
     zimbraDistributionListSendShareMessageToNewMembers
+    zimbraHideInGal
+    zimbraNotes
   ].freeze
 
   ATTRS_READ = %w[zimbraMailAlias]

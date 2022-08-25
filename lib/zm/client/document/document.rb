@@ -31,6 +31,10 @@ module Zm
         @parent.sacc.item_action(@parent.token, :tag, @id, tn: tag_name)
       end
 
+      def delete!
+        @parent.sacc.item_action(@parent.token, :delete, @id)
+      end
+
       def download(dest_file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_file(folder.absFolderPath, nil, nil, [id], dest_file_path)

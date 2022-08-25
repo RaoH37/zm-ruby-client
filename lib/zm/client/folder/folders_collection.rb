@@ -42,6 +42,31 @@ module Zm
         reset_query_params
       end
 
+      def document
+        @view = FolderDefault::BRIEFCASE[:type]
+        self
+      end
+
+      def appointment
+        @view = FolderDefault::CALENDAR[:type]
+        self
+      end
+
+      def contact
+        @view = FolderDefault::CONTACTS[:type]
+        self
+      end
+
+      def message
+        @view = FolderDefault::INBOX[:type]
+        self
+      end
+
+      def task
+        @view = FolderDefault::TASKS[:type]
+        self
+      end
+
       private
 
       def build_response
