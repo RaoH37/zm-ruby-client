@@ -108,7 +108,7 @@ module Zm
       end
 
       def infos
-        @infos ||= read_infos
+        @infos || read_infos
       end
 
       def read_infos
@@ -118,6 +118,7 @@ module Zm
         @public_url = @infos[:publicURL]
         @zimbraCOSId = @infos[:cos][:id]
         @home_url = @infos[:rest]
+        @infos
       end
 
       def cos

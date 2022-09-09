@@ -31,6 +31,11 @@ module Zm
         @parent.sacc.item_action(@parent.token, :tag, @id, tn: tag_name)
       end
 
+      def move!(folder_id)
+        @parent.sacc.item_action(@parent.token, 'move', @id, l: folder_id)
+        @l = folder_id
+      end
+
       def delete!
         @parent.sacc.item_action(@parent.token, :delete, @id)
       end
