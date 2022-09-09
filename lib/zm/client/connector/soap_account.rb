@@ -418,7 +418,7 @@ module Zm
       # -------------------------------
       # GENERIC
 
-      def get_info(token, sections = 'mbox', rights = nil)
+      def get_info(token, sections = 'mbox,prefs,attrs,zimlets,props,idents,sigs,dsrcs,children', rights = nil)
         req = { rights: rights, sections: sections }.reject { |_, v| v.nil? }
         body = init_hash_request(token, :GetInfoRequest, ACCOUNTSPACE)
         body[:Body][:GetInfoRequest].merge!(req) if req.any?
