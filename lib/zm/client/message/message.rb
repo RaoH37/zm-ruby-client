@@ -22,6 +22,10 @@ module Zm
         yield(self) if block_given?
       end
 
+      def has_attachment?
+        @has_attachment ||= @attachments.all.any?
+      end
+
       def all_instance_variable_keys
         INSTANCE_VARIABLE_KEYS
       end
@@ -99,7 +103,7 @@ module Zm
       end
 
       def init_from_json(json)
-        puts json
+        # puts json
         @id   = json[:id]
         @date = Time.at(json[:d]/1000)
         @l    = json[:l]
@@ -108,6 +112,7 @@ module Zm
         @autoSendTime   = json[:autoSendTime]
         @mid  = json[:mid]
         @idnt = json[:idnt]
+        @has_attachment = json[:f].to_s.include?('a')
 
         json[:e].each do |e|
           recipient = Recipient.new(e[:t], e[:a], e[:p])
@@ -134,14 +139,14 @@ module Zm
       end
 
       def init_body_from_json(json)
-        puts "\ninit_body_from_json #{json}\n"
+        # puts "\ninit_body_from_json #{json}\n"
         body.text = json[:content] if json[:ct] == 'text/plain'
         body.html = json[:content] if json[:ct] == 'text/html'
       end
 
       def init_attachment_from_json(json)
-        puts "\ninit_attachment_from_json #{json}\n"
-        pj = Zm::Client::Message::Attachment.new
+        # puts "\ninit_attachment_from_json #{json}\n"
+        pj = Zm::Client::Message::Attachment.new(self)
         # pj.part = json[:part],
         pj.mid  = json[:mid]
         pj.aid  = json[:aid]
@@ -150,6 +155,7 @@ module Zm
         pj.filename = json[:filename]
         pj.ci   = json[:ci]
         pj.cd   = json[:cd]
+        pj.part = json[:part]
         attachments.add(pj)
       end
 
@@ -182,18 +188,19 @@ module Zm
 
       # collection attachments
       class Attachments
+        attr_reader :all
         def initialize
-          @attachments = []
+          @all = []
         end
 
         def add(attachment)
           return unless attachment.is_a?(Attachment)
 
-          @attachments.push(attachment)
+          @all.push(attachment)
         end
 
         def to_jsns
-          @attachments.map(&:to_jsns)
+          @all.map(&:to_jsns)
         end
       end
 
@@ -201,8 +208,28 @@ module Zm
       class Attachment
         attr_accessor :aid, :part, :mid, :ct, :s, :filename, :ci, :cd
 
-        def initialize
+        def initialize(parent)
+          @parent = parent
           yield(self) if block_given?
+        end
+
+        def download(dest_file_path)
+          h = {
+            id: @parent.id,
+            part: part,
+            auth: 'qp',
+            zauthtoken: account.token,
+            disp: 'a'
+          }
+
+          url = account.home_url
+
+          uri = Addressable::URI.new
+          uri.query_values = h
+          url << '?' << uri.query
+
+          uploader = Upload.new(@parent, RestAccountConnector.new)
+          uploader.download_file_with_url(url, dest_file_path)
         end
 
         def to_jsns
@@ -216,6 +243,10 @@ module Zm
             ci: ci,
             cd: cd
           }.reject { |_, v| v.nil? }
+        end
+
+        def account
+          @parent.parent
         end
       end
 
@@ -265,6 +296,10 @@ module Zm
           @email = email
           @field = field.to_sym
           @display_name = display_name
+        end
+
+        def to_s
+          "#{@email} (#{@display_name})"
         end
 
         def to_jsns

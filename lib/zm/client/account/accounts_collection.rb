@@ -14,7 +14,7 @@ module Zm
       def find_by(hash)
         rep = sac.get_account(hash.values.first, hash.keys.first, attrs_comma, @apply_cos)
         entry = rep[:Body][:GetAccountResponse][:account].first
-        puts entry
+        # puts entry
 
         reset_query_params
         build_from_entry(entry)

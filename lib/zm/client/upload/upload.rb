@@ -44,7 +44,7 @@ module Zm
         uri.query_values = h
         url_folder_path << '?' << uri.query
 
-        puts url_folder_path
+        # puts url_folder_path
 
         url_folder_path
       end

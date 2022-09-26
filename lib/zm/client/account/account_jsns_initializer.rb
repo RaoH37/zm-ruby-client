@@ -15,7 +15,7 @@ module Zm
 
           attr_types_h = item.parent.zimbra_attributes.all_account_attr_types_h
 
-          puts attr_types_h
+          # puts attr_types_h
 
           item.id    = json[:id]
           item.name  = json[:name]
@@ -23,7 +23,7 @@ module Zm
           json[:a].reject! { |n| n[:n].nil? }
           json_map = Hash[json[:a].map { |n| [n[:n], n[:_content]] }].freeze
 
-          puts json_map
+          # puts json_map
 
           # item.parent.zimbra_attributes.all_account_attrs.each do |attr|
           #   if attr.type.nil?
