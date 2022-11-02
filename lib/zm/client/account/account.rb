@@ -343,6 +343,10 @@ module Zm
         @dls_owner ||= AccountDlsOwnerCollection.new(self)
       end
 
+      def ranking(op, email = nil)
+        sacc.ranking_action(@token, op, email)
+      end
+
       def init_from_json(json)
         @used = json[:used] if json[:used]
         @zimbraMailQuota = json[:limit] if json[:limit]

@@ -449,6 +449,22 @@ module Zm
         curl_request(body)
       end
 
+      def ranking_action(token, op, email = nil)
+        soap_name = :RankingActionRequest
+        req = {
+          action: {
+            op: op,
+            email: email
+          }
+        }
+        req[:action].delete_if { |_, v| v.nil? }
+
+        body = init_hash_request(token, soap_name)
+        body[:Body][soap_name].merge!(req) if req.any?
+
+        curl_request(body)
+      end
+
       private
 
       def compute_preauth(mail, ts, domainkey)
