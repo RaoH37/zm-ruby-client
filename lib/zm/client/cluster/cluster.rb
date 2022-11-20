@@ -38,7 +38,13 @@ module Zm
         @soap_admin_connector.logger = logger
       end
 
+      def has_admin_credentials?
+        @config.has_admin_credentials?
+      end
+
       def login
+        raise ClusterConfigError, 'admin credentials are missing' unless @config.has_admin_credentials?
+
         logger.info "Get Admin session token"
         @soap_admin_connector.auth(
           @config.zimbra_admin_login,

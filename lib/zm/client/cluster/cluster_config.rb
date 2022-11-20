@@ -14,16 +14,12 @@ module Zm
                     :domains, :zimbra_version
 
       def initialize(parameters = nil)
-        @zimbra_admin_scheme = 'https'
-        @zimbra_admin_port = 7071
-        @zimbra_public_scheme = 'https'
-        @zimbra_public_port = 443
-        @zimbra_version = '8.6.0'
         @domains = []
 
-        if parameters.is_a?(String)
+        case parameters
+        when String
           init_from_file(parameters)
-        elsif parameters.is_a?(Hash)
+        when Hash
           @to_h = parameters
         end
 
@@ -46,15 +42,15 @@ module Zm
       end
 
       def init_from_h
-        @zimbra_admin_host = @to_h[:zimbra_admin_host] unless @to_h[:zimbra_admin_host].nil?
-        @zimbra_admin_scheme = @to_h[:zimbra_admin_scheme] unless @to_h[:zimbra_admin_scheme].nil?
-        @zimbra_admin_port = @to_h[:zimbra_admin_port] unless @to_h[:zimbra_admin_port].nil?
-        @zimbra_admin_login = @to_h[:zimbra_admin_login] unless @to_h[:zimbra_admin_login].nil?
-        @zimbra_admin_password = @to_h[:zimbra_admin_password] unless @to_h[:zimbra_admin_password].nil?
-        @zimbra_public_host = @to_h[:zimbra_public_host] unless @to_h[:zimbra_public_host].nil?
-        @zimbra_public_scheme = @to_h[:zimbra_public_scheme] unless @to_h[:zimbra_public_scheme].nil?
-        @zimbra_public_port = @to_h[:zimbra_public_port] unless @to_h[:zimbra_public_port].nil?
-        @zimbra_version = @to_h[:zimbra_version] unless @to_h[:zimbra_version].nil?
+        @zimbra_admin_host = @to_h.fetch(:zimbra_admin_host, nil)
+        @zimbra_admin_scheme = @to_h.fetch(:zimbra_admin_scheme, 'https')
+        @zimbra_admin_port = @to_h.fetch(:zimbra_admin_port, 7071)
+        @zimbra_admin_login = @to_h.fetch(:zimbra_admin_login, nil)
+        @zimbra_admin_password = @to_h.fetch(:zimbra_admin_password, nil)
+        @zimbra_public_host = @to_h.fetch(:zimbra_public_host, nil)
+        @zimbra_public_scheme = @to_h.fetch(:zimbra_public_scheme, 'https')
+        @zimbra_public_port = @to_h.fetch(:zimbra_public_port, 443)
+        @zimbra_version = @to_h.fetch(:zimbra_version, '8.8.15')
       end
 
       def init_from_yml(file_config_path)
@@ -83,6 +79,10 @@ module Zm
 
         domain.key
       end
+
+      def has_admin_credentials?
+        !@zimbra_admin_host.nil? && !@zimbra_admin_login.nil? && !@zimbra_admin_password.nil?
+      end
     end
 
     # class config for connection
@@ -96,7 +96,6 @@ module Zm
     end
 
     # class error for config
-    class ClusterConfigError < StandardError
-    end
+    class ClusterConfigError < StandardError; end
   end
 end

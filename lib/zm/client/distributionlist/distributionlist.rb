@@ -99,6 +99,16 @@ module Zm
         @members -= emails
       end
 
+      def add_owners!(*emails)
+        # todo à tester
+        sac.distribution_list_action(@id, :id, { op: 'addOwners', owner: { by: :name, type: :usr, _content: emails } })
+      end
+
+      def remove_owners!(*emails)
+        # todo à tester
+        sac.distribution_list_action(@id, :id, { op: 'removeOwners', owner: { by: :name, type: :usr, _content: emails } })
+      end
+
       def local_transport
         raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 

@@ -53,8 +53,8 @@ module Zm
       end
 
       def update!(options)
-        # @parent.sacc.folder_action(@parent.token, 'update', @id, options)
-        # todo
+        # todo folder_action utilise maintenant le FolderJsnsBuilder
+        @parent.sacc.folder_action(@parent.token, 'update', @id, options)
       end
 
       def add_retention_policy!(retention_policies)
