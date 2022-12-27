@@ -7,10 +7,11 @@ module Zm
       include Zm::Model::AttributeChangeObserver
 
       INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l url luuid f
-        view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid
-        ruuid owner reminder acl itemCount broken deletable color rgb fb]
+                                  view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid
+                                  ruuid owner reminder acl itemCount broken deletable color rgb fb].freeze
 
-      attr_reader :type, :id, :uuid, :absFolderPath, :luuid, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner, :reminder, :acl, :itemCount, :broken, :deletable, :fb
+      attr_reader :type, :id, :uuid, :absFolderPath, :luuid, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled, :n,
+                  :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner, :reminder, :acl, :itemCount, :broken, :deletable, :fb
 
       attr_accessor :folders, :grants, :retention_policies
 
@@ -53,14 +54,27 @@ module Zm
       end
 
       def update!(options)
-        # todo folder_action utilise maintenant le FolderJsnsBuilder
-        @parent.sacc.folder_action(@parent.token, 'update', @id, options)
+        options.delete_if { |k, v| v.nil? || !respond_to?(k) }
+        return false if options.empty?
+
+        @parent.sacc.folder_action(@parent.token, jsns_builder.to_patch(options))
+
+        options.each do |k, v|
+          instance_variable_set("@#{k}", v)
+        end
+
+        true
       end
 
-      def add_retention_policy!(retention_policies)
-        options = retention_policies.is_a?(Hash) ? retention_policies : retention_policies.map(&:to_h).reduce({}, :merge)
-        @parent.sacc.folder_action(@parent.token, 'retentionPolicy', @id, retentionPolicy: options)
-      end
+      # def add_retention_policy!(retention_policies)
+      #   options = if retention_policies.is_a?(Hash)
+      #               retention_policies
+      #             else
+      #               retention_policies.map(&:to_h).reduce({}, :merge)
+      #             end
+      #
+      #   @parent.sacc.folder_action(@parent.token, 'retentionPolicy', @id, retentionPolicy: options)
+      # end
 
       def reload!
         rep = @parent.sacc.get_folder(@parent.token, jsns_builder.to_find)
@@ -86,8 +100,7 @@ module Zm
       end
 
       def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
-        fmt ||= File.extname(file_path)[1..-1]
-        # @parent.uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
+        fmt ||= File.extname(file_path)[1..]
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
       end

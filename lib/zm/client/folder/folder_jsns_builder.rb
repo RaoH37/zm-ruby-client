@@ -48,6 +48,15 @@ module Zm
         { action: action }
       end
 
+      def to_patch(options)
+        action = {
+          op: :update,
+          id: @item.id
+        }.merge(options)
+
+        { action: action }
+      end
+
       def to_rename
         action = {
           op: :rename,

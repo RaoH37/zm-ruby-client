@@ -49,6 +49,22 @@ class TestSearchFolder < Minitest::Test
     assert is_modified
   end
 
+  def test_update
+    folder = @account.folders.first
+    colors = (1..5).to_a
+    colors.delete(folder.color)
+    selected_color = colors.sample
+
+    begin
+      is_modified = folder.update!(color: selected_color)
+    rescue StandardError => _
+      is_modified = false
+    end
+
+    assert is_modified
+    assert selected_color == folder.color
+  end
+
   def test_reload
     folder = @account.folders.first
     id = folder.id
