@@ -2,11 +2,11 @@
 
 module Zm
   module Client
-    # class for initialize account
-    class AccountJsnsInitializer < Base::BaseJsnsInitializer
+    # class for initialize resource
+    class ResourceJsnsInitializer < Base::BaseJsnsInitializer
       class << self
         def create(parent, json)
-          item = Account.new(parent)
+          item = Resource.new(parent)
 
           update(item, json)
         end

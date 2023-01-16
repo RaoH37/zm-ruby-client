@@ -15,6 +15,7 @@ module Zm
 
       def initialize(parameters = nil)
         @domains = []
+        @zimbra_version = '8.8.15'
 
         case parameters
         when String

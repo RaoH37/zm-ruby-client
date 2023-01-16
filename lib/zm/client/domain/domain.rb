@@ -21,23 +21,20 @@ module Zm
       #   hashmap
       # end
 
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
-      end
+      # def all_instance_variable_keys
+      #   INSTANCE_VARIABLE_KEYS
+      # end
 
       def create!
-        attrs_write = INSTANCE_VARIABLE_KEYS.dup
-        attrs_write.delete(:name)
-
-        rep = sac.create_domain(
-          @name,
-          instance_variables_array(attrs_write)
-        )
+        rep = sac.create_domain(jsns_builder.to_jsns)
         @id = rep[:Body][:CreateDomainResponse][:domain].first[:id]
       end
 
       def update!(hash)
-        sac.modify_domain(@id, hash)
+        hash.delete_if { |k, v| v.nil? || !respond_to?(k) }
+        return false if hash.empty?
+
+        sac.modify_domain(jsns_builder.to_patch(hash))
 
         hash.each do |k, v|
           arrow_attr_sym = "@#{k}".to_sym
@@ -50,6 +47,16 @@ module Zm
         end
       end
 
+      def modify!
+        sac.modify_domain(jsns_builder.to_update)
+        true
+      end
+
+      def delete!
+        sac.delete_domain(@id)
+        true
+      end
+
       def accounts
         @accounts ||= DomainAccountsCollection.new(self)
       end
@@ -59,31 +66,41 @@ module Zm
       #   AccountsBuilder.new(@parent, rep).make
       # end
 
-      def init_from_json(json)
-        super(json)
-        return unless json[:a].is_a? Array
+      # def init_from_json(json)
+      #   super(json)
+      #   return unless json[:a].is_a? Array
+      #
+      #   n_key = :n
+      #   c_key = :_content
+      #   at_key = '@'
+      #
+      #   attrs = {}
+      #
+      #   # TODO: definir ici le typage fort des attributs pour ne pas avoir
+      #   # a faire des cases sur les class des attributs dans le code.
+      #
+      #   json[:a].each do |a|
+      #     k = "#{at_key}#{a[n_key]}".to_sym
+      #     v = a[c_key]
+      #     if !attrs[k].nil?
+      #       attrs[k] = [attrs[k]] unless attrs[k].is_a?(Array)
+      #       attrs[k].push(v)
+      #     else
+      #       attrs[k] = v
+      #     end
+      #   end
+      #
+      #   attrs.each { |k, v| instance_variable_set(k, v) }
+      # end
 
-        n_key = :n
-        c_key = :_content
-        at_key = '@'
+      def attrs_write
+        @parent.zimbra_attributes.all_domain_attrs_writable_names
+      end
 
-        attrs = {}
+      private
 
-        # TODO: definir ici le typage fort des attributs pour ne pas avoir
-        # a faire des cases sur les class des attributs dans le code.
-
-        json[:a].each do |a|
-          k = "#{at_key}#{a[n_key]}".to_sym
-          v = a[c_key]
-          if !attrs[k].nil?
-            attrs[k] = [attrs[k]] unless attrs[k].is_a?(Array)
-            attrs[k].push(v)
-          else
-            attrs[k] = v
-          end
-        end
-
-        attrs.each { |k, v| instance_variable_set(k, v) }
+      def jsns_builder
+        @jsns_builder ||= DomainJsnsBuilder.new(self)
       end
     end
   end

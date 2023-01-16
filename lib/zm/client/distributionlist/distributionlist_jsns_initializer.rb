@@ -2,11 +2,11 @@
 
 module Zm
   module Client
-    # class for initialize account
-    class AccountJsnsInitializer < Base::BaseJsnsInitializer
+    # class for initialize distribution list
+    class DistributionListJsnsInitializer < Base::BaseJsnsInitializer
       class << self
         def create(parent, json)
-          item = Account.new(parent)
+          item = DistributionList.new(parent)
 
           update(item, json)
         end
@@ -14,12 +14,13 @@ module Zm
         def update(item, json)
           item.id = json[:id]
           item.name = json[:name]
-          item.used = json[:used] unless json[:used].nil?
-          item.zimbraMailQuota = json[:limit] unless json[:limit].nil?
 
           formatted_json(json).each do |k, v|
             valorise(item, k, v)
           end
+
+          item.members.all = json[:dlm].map { |a| a[:_content] }.compact if json[:dlm].is_a?(Array)
+          item.owners.all = json[:owners].first[:owner].map { |a| a[:name] }.compact if json[:owners].is_a?(Array)
 
           item
         end

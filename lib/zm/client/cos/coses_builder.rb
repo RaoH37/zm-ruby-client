@@ -9,6 +9,14 @@ module Zm
         @child_class = Cos
         @json_item_key = :cos
       end
+
+      def make
+        return [] if json_items.nil?
+
+        json_items.map do |entry|
+          CosJsnsInitializer.create(@parent, entry)
+        end
+      end
     end
   end
 end

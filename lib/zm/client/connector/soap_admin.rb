@@ -139,65 +139,43 @@ module Zm
         curl_request(body)
       end
 
-      def create_cos(name, attrs = nil)
-        req = { name: name }
-        body = init_hash_request(:CreateCosRequest)
-        body[:Body][:CreateCosRequest].merge!(req)
-        # a: attrs.to_a.map(&A_NODE_PROC)
-        # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
-        # puts SoapXmlBuilder.new(body).to_xml
-        # todo ne fonctionne pas !
-        curl_xml(SoapXmlBuilder.new(body).to_xml)
+      def create_cos(jsns)
+        jsns_request(:CreateCosRequest, jsns)
       end
 
-      def modify_cos(id, attrs = nil)
-        # req = { _jsns: ADMINSPACE, id: id, a: attrs.to_a.map{ |n| { n: n.first, _content: n.last } } }
-        req = { _jsns: ADMINSPACE, id: id }
-        body = { Body: { ModifyCosRequest: req } }.merge(hash_header(@token))
-        # todo ne fonctionne pas !
-        # peut-être seul la version xml fonctionne. Il faudrait créer une fonction qui converti le json en xml
-        curl_request(body)
+      def modify_cos(jsns)
+        jsns_request(:ModifyCosRequest, jsns)
       end
 
-      def create_account(name, password = nil, attrs = [])
-        soap_name = :CreateAccountRequest
-        req = { name: name, password: password }.reject { |_, v| v.nil? }
-        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
-        # req[:a] = attrs.map{|i|i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i]}.flatten(1).map { |n| { n: n.first, _content: n.last } }
+      def jsns_request(soap_name, jsns)
         body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
+        body[:Body][soap_name].merge!(jsns) if jsns.is_a?(Hash)
+        puts body
         curl_request(body)
       end
 
-      def create_resource(name, password = nil, attrs = [])
-        soap_name = :CreateCalendarResourceRequest
-        req = { name: name, password: password }
-        req.reject! { |_, v| v.nil? }
-        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def create_account(jsns)
+        jsns_request(:CreateAccountRequest, jsns)
       end
 
-      def create_distribution_list(name, attrs = [])
-        soap_name = :CreateDistributionListRequest
-        req = { name: name }
-        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def create_resource(jsns)
+        jsns_request(:CreateCalendarResourceRequest, jsns)
       end
 
-      def modify_account(id, attrs = [])
-        generic_modify(:ModifyAccountRequest, id, attrs)
+      def create_distribution_list(jsns)
+        jsns_request(:CreateDistributionListRequest, jsns)
       end
 
-      def modify_resource(id, attrs = [])
-        generic_modify(:ModifyCalendarResourceRequest, id, attrs)
+      def modify_account(jsns)
+        jsns_request(:ModifyAccountRequest, jsns)
       end
 
-      def modify_distribution_list(id, attrs = [])
-        generic_modify(:ModifyDistributionListRequest, id, attrs)
+      def modify_resource(jsns)
+        jsns_request(:ModifyCalendarResourceRequest, jsns)
+      end
+
+      def modify_distribution_list(jsns)
+        jsns_request(:ModifyDistributionListRequest, jsns)
       end
 
       def generic_modify(soap_name, id, attrs)
@@ -205,14 +183,6 @@ module Zm
           id: id,
           a: attrs.map(&A_NODE_PROC)
         }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
-
-      def set_password(id, new_password)
-        soap_name = :SetPasswordRequest
-        req = { id: id, newPassword: new_password }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
@@ -281,19 +251,12 @@ module Zm
         curl_request(body)
       end
 
-      def create_domain(name, attrs = [])
-        soap_name = :CreateDomainRequest
-        req = {
-          name: name,
-          a: attrs.map(&A_NODE_PROC)
-        }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def create_domain(jsns)
+        jsns_request(:CreateDomainRequest, jsns)
       end
 
-      def modify_domain(id, attrs = [])
-        generic_modify(:ModifyDomainRequest, id, attrs)
+      def modify_domain(jsns)
+        jsns_request(:ModifyDomainRequest, jsns)
       end
 
       def get_account(name, by = :name, attrs = nil, applyCos = 1)
@@ -333,8 +296,22 @@ module Zm
         curl_request(body)
       end
 
+      def get_distribution_list_membership(by_key, by = 'name', limit = nil, offset = nil)
+        soap_name = :GetDistributionListMembershipRequest
+        req = { dl: { by: by, _content: by_key }, limit: limit, offset: offset }
+        req.reject! { |_, v| v.nil? }
+        body = init_hash_request(soap_name)
+        body[:Body][soap_name].merge!(req)
+
+        curl_request(body)
+      end
+
       def delete_account(id)
         generic_delete(:DeleteAccountRequest, id)
+      end
+
+      def delete_domain(id)
+        generic_delete(:DeleteDomainRequest, id)
       end
 
       def delete_resource(id)
@@ -420,11 +397,11 @@ module Zm
         curl_request(body)
       end
 
-      def flush_cache(type, all_servers, id = nil)
+      def flush_cache(type, all_servers, id = nil, target_server_id = nil)
         soap_name = :FlushCacheRequest
         req = { cache: { type: type, allServers: all_servers } }
         req[:cache].merge!({ entry: { by: :id, _content: id } }) unless id.nil?
-        body = init_hash_request(soap_name)
+        body = init_hash_request(soap_name, target_server_id)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end

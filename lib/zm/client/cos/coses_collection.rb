@@ -16,7 +16,8 @@ module Zm
         entry = rep[:Body][:GetCosResponse][:cos].first
 
         reset_query_params
-        build_from_entry(entry)
+        # build_from_entry(entry)
+        CosJsnsInitializer.create(@parent, entry)
       end
 
       private

@@ -8,8 +8,6 @@ module Zm
     module Base
       class ZimbraAttribute < OpenStruct
 
-        # attr_accessor :flags, :id, :immutable, :max, :min, :name, :optionalIn, :order, :requiredIn, :since, :type, :value
-
         def version_start
           return @version_start unless @version_start.nil?
 
@@ -20,6 +18,10 @@ module Zm
           end
 
           @version_start
+        end
+
+        def immutable?
+          @immutable.to_s == '1'
         end
 
         def objects_scope

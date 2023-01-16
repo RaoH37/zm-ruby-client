@@ -5,23 +5,55 @@ module Zm
     module Base
       # class for account object jsns initializer
       class BaseJsnsInitializer
+        class << self
 
-        def initialize(parent, json)
-          @parent = parent
-          @json = json
-        end
+          def update(item, json)
+            item.id = json[:id]
+            item.name = json[:name]
 
-        def create
-          @item ||= @child_class.new(@parent)
+            formatted_json(json).each do |k, v|
+              valorise(item, k, v)
+            end
 
-          @item.instance_variable_set(:@id, @json[:id])
-          @item.instance_variable_set(:@name, @json[:name])
-        end
+            item
+          end
 
-        def arrow_name(name)
-          return name if name.to_s.start_with?('@')
+          def formatted_json(json)
+            return [] if json[:a].nil?
 
-          "@#{name}"
+            json[:a].reject! { |n| n[:n].nil? }
+            json_map = json[:a].map { |n| [n[:n], n[:_content]] }.freeze
+
+            hash_multivalued = json_map.each_with_object({}) do |(k, v), h|
+              h[k] ||= []
+              h[k].push(v)
+            end
+
+            hash_multivalued.transform_values do |v|
+              v.length == 1 ? v.first : v
+            end
+          end
+
+          def valorise(item, k, v)
+            setter_method_name = "#{k}="
+            return unless item.respond_to?(setter_method_name)
+
+            item.send(setter_method_name, convert_json_string_value(v))
+          end
+
+          def convert_json_string_value(value)
+            return value unless value.is_a?(String)
+            return 0 if value == '0'
+
+            c = value.to_i
+            c.to_s == value ? c : value
+          end
+
+          # def arrow_name(name)
+          #   return name if name.to_s.start_with?('@')
+          #
+          #   "@#{name}"
+          # end
         end
       end
     end

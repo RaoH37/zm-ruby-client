@@ -9,6 +9,14 @@ module Zm
         @child_class = Resource
         @json_item_key = :calresource
       end
+
+      def make
+        return [] if json_items.nil?
+
+        json_items.map do |entry|
+          ResourceJsnsInitializer.create(@parent, entry)
+        end
+      end
     end
   end
 end

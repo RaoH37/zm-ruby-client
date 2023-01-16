@@ -15,7 +15,7 @@ class TestDomain < Minitest::Test
 
   def test_all
     domains = @admin.domains.where(@fixture_domains['collections']['where']['local']).all
-    assert domains == @admin.domains.where(@fixture_domains['collections']['where']['local']).all
+    assert domains == @admin.domains.all
   end
 
   def test_all_is_domain
@@ -66,5 +66,6 @@ class TestDomain < Minitest::Test
     end
     domain.save!
     assert !domain.id.nil?
+    assert domain.delete!
   end
 end

@@ -17,7 +17,8 @@ module Zm
         # puts entry
 
         reset_query_params
-        build_from_entry(entry)
+        # build_from_entry(entry)
+        AccountJsnsInitializer.create(@parent, entry)
       end
 
       def quotas

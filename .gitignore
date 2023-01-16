@@ -12,6 +12,7 @@
 /test/fixtures/
 /test/version_tmp/
 /tmp/
+/demo/
 /.idea
 /zm-ruby-client.iml
 

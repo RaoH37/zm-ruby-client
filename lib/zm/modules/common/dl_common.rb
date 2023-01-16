@@ -12,7 +12,7 @@ module DistributionListCommon
     zimbraNotes
   ].freeze
 
-  ATTRS_READ = %w[zimbraMailAlias]
+  ATTRS_READ = %w[zimbraMailAlias zimbraACE]
 
   ATTRS_WRITE = %w[
     zimbraMailStatus
@@ -21,6 +21,7 @@ module DistributionListCommon
     zimbraMailTransport
     zimbraMailForwardingAddress
     description
+    zimbraHideInGal
     zimbraDistributionListSendShareMessageToNewMembers
   ].freeze
 
