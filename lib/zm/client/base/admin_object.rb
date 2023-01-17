@@ -27,7 +27,6 @@ module Zm
         end
 
         def init_from_json(json)
-          # TODO : know in advance the typing of variables
           super(json)
           return unless json[:a].is_a? Array
 
