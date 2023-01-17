@@ -2,7 +2,7 @@
 
 require_relative 'soap_base'
 require_relative 'soap_error'
-require 'gyoku'
+# require 'gyoku'
 
 # include OpenSSL
 # include Digest
@@ -15,8 +15,8 @@ module Zm
       MAILSPACE = 'urn:zimbraMail'
       ACCOUNTSPACE = 'urn:zimbraAccount'
       A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
-      A_NODE_PROC_NAME = lambda { |n| { name: n.first, _content: n.last } }
-      A_NODE_PROC_ARROW_NAME = lambda { |n| { :@name => n.first, content!: n.last } }
+      # A_NODE_PROC_NAME = lambda { |n| { name: n.first, _content: n.last } }
+      # A_NODE_PROC_ARROW_NAME = lambda { |n| { :@name => n.first, content!: n.last } }
 
       def initialize(scheme, host, port)
         super(scheme, host, port, '/service/soap/')
@@ -324,24 +324,30 @@ module Zm
 
       def create_identity(token, name, attrs = [])
         soap_name = :CreateIdentityRequest
-        req = { identity: { :@name => name, a: attrs.to_a.map(&A_NODE_PROC_ARROW_NAME) } }
-        body = init_hash_arrow_request(token, soap_name, ACCOUNTSPACE)
-        body[:Envelope][:Body][soap_name].merge!(req)
-        body_xml = Gyoku.xml(body, { :key_converter => :none })
-        # puts body_xml
-        # todo ne fonctionne pas en JS !
-        curl_xml(body_xml)
+        req = {
+          identity: {
+            id: id,
+            _attrs: attrs
+          }
+        }
+
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
       end
 
       def modify_identity(token, id, attrs = [])
         soap_name = :ModifyIdentityRequest
-        req = { identity: { :@id => id, a: attrs.to_a.map(&A_NODE_PROC_ARROW_NAME) } }
-        body = init_hash_arrow_request(token, soap_name, ACCOUNTSPACE)
-        body[:Envelope][:Body][soap_name].merge!(req)
-        body_xml = Gyoku.xml(body, { :key_converter => :none })
-        # puts body_xml
-        # todo ne fonctionne pas en JS !
-        curl_xml(body_xml)
+        req = {
+          identity: {
+            id: id,
+            _attrs: attrs
+          }
+        }
+
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+        body[:Body][soap_name].merge!(req)
+        curl_request(body)
       end
 
       def delete_identity(token, id)
@@ -364,14 +370,30 @@ module Zm
 
       def modify_prefs(token, prefs)
         soap_name = :ModifyPrefsRequest
-        req = { pref: prefs.map { |pref, value| { name: pref, _content: value } } }
+
+# The JSON version is different:
+# {
+#   ModifyPrefsRequest: {
+#     "_attrs": {
+#       "prefName1": "prefValue1",
+#       "prefName2": "prefValue2"
+#       "+nameOfMulitValuedPref3": "addedPrefValue3",
+#       "-nameOfMulitValuedPref4": "removedPrefValue4",
+#       "nameOfMulitValuedPref5": ["prefValue5one","prefValue5two"],
+#       ...
+#     },
+#     _jsns: "urn:zimbraAccount"
+#   }
+# }
+
+        req = {
+         _attrs: prefs
+        }
+
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)
         body[:Body][soap_name].merge!(req) if req.any?
-        #puts body
-        #curl_request(body)
-        #puts SoapXmlBuilder.new(body).to_xml
-        # todo ne fonctionne pas en JS !
-        curl_xml(SoapXmlBuilder.new(body).to_xml)
+        puts body
+        curl_request(body)
       end
 
       def get_filter_rules(token)
@@ -482,25 +504,25 @@ module Zm
         }.merge(hash_header(token))
       end
 
-      def init_hash_arrow_request(token, soap_name, namespace = MAILSPACE)
-        { Envelope: {
-            :@xmlns => 'http://schemas.xmlsoap.org/soap/envelope/',
-            '@xmlns:urn' => 'urn:zimbra',
-            Header: {
-              context: {
-                authToken: token,
-                :@xmlns => BASESPACE,
-                format: {
-                    :@type => 'js'
-                }
-              }
-            },
-            Body: {
-              soap_name => { :@xmlns => namespace }
-            }
-          }
-        }
-      end
+      # def init_hash_arrow_request(token, soap_name, namespace = MAILSPACE)
+      #   { Envelope: {
+      #       :@xmlns => 'http://schemas.xmlsoap.org/soap/envelope/',
+      #       '@xmlns:urn' => 'urn:zimbra',
+      #       Header: {
+      #         context: {
+      #           authToken: token,
+      #           :@xmlns => BASESPACE,
+      #           format: {
+      #               :@type => 'js'
+      #           }
+      #         }
+      #       },
+      #       Body: {
+      #         soap_name => { :@xmlns => namespace }
+      #       }
+      #     }
+      #   }
+      # end
     end
   end
 end

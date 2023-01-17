@@ -2,7 +2,7 @@
 
 require_relative 'soap_base'
 require_relative 'soap_error'
-require_relative 'soap_xml_builder'
+# require_relative 'soap_xml_builder'
 
 module Zm
   module Client
