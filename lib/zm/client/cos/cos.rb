@@ -53,10 +53,6 @@ module Zm
         end
       end
 
-      def accounts
-        # todo sélectionner tous les comptes qui ont zimbraCOSID=self.id
-      end
-
       def attrs_write
         @parent.zimbra_attributes.all_cos_attrs_writable_names
       end
