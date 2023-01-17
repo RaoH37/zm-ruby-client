@@ -32,6 +32,17 @@ module Zm
         { action: action }
       end
 
+      def to_patch(hash)
+        action = {
+         op: :update,
+         id: @tag.id
+        }.merge(hash)
+
+        action.reject! { |_, v| v.nil? }
+
+        { action: action }
+      end
+
       def to_delete
         action = {
           op: :delete,
