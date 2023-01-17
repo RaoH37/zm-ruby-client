@@ -28,10 +28,6 @@ module Zm
         MountpointJsnsInitializer.update(self, json)
       end
 
-      def update!(options)
-        # todo
-      end
-
       private
 
       def jsns_builder
