@@ -150,7 +150,6 @@ module Zm
       def jsns_request(soap_name, jsns)
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(jsns) if jsns.is_a?(Hash)
-        puts body
         curl_request(body)
       end
 
@@ -244,10 +243,9 @@ module Zm
 
       def get_domain(name, by = :name, attrs = nil)
         req = { domain: { by: by, _content: name } }
-        req[:_attrs] = attrs unless attrs.nil?
+        req[:attrs] = attrs unless attrs.nil?
         body = init_hash_request(:GetDomainRequest)
         body[:Body][:GetDomainRequest].merge!(req)
-        # TODO: tester param attrs
         curl_request(body)
       end
 

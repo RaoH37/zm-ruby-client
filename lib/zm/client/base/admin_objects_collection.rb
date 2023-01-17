@@ -23,7 +23,6 @@ module Zm
         end
 
         def attrs(*attrs)
-          # todo: remove attribute not in version list (insensitive case)
           return self if @attrs == attrs
 
           @all = nil

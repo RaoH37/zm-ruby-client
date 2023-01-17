@@ -16,7 +16,6 @@ module Zm
         entry = rep[:Body][:GetDomainResponse][:domain].first
 
         reset_query_params
-        # build_from_entry(entry)
         DomainJsnsInitializer.create(@parent, entry)
       end
 

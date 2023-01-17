@@ -50,6 +50,12 @@ class TestDomain < Minitest::Test
     assert_equal @fixture_domains['domains']['default']['name'], domain.name
   end
 
+  def test_find_by_name_with_attrs
+    domain = @admin.domains.attrs('zimbraPreAuthKey', 'description', 'zimbraACE').find_by name: @fixture_domains['domains']['default']['name']
+    assert domain.is_a? Zm::Client::Domain
+    assert_equal @fixture_domains['domains']['default']['name'], domain.name
+  end
+
   def test_new_domain
     name = @fixture_domains['domains']['toto']['name']
     domain = @admin.domains.new do |acc|
