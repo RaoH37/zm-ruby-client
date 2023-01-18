@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'zm/client/connector/rest_account'
-require 'zm/client/common'
 require 'zm/client/signature'
 require 'zm/client/folder'
 require 'zm/client/mountpoint'
@@ -16,7 +15,6 @@ require 'zm/client/document'
 require 'zm/client/message'
 require 'zm/client/identity'
 require 'zm/client/upload'
-require 'addressable/uri'
 
 module Zm
   module Client

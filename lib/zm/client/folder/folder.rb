@@ -122,11 +122,10 @@ module Zm
           emptyname: 'Vide',
           charset: 'UTF-8',
           auth: 'qp',
-          zauthtoken: @parent.token,
-          query: to_query
+          zauthtoken: @parent.token
         }
 
-        url_query = absFolderPath + '?' + h.map { |k, v| [k, v].join('=') }.join('&')
+        url_query = absFolderPath + '?' + Utils.format_url_params(h)
 
         @parent.uploader.download_file_with_url(url_query, dest_file_path)
       end

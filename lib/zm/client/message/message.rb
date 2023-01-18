@@ -224,9 +224,7 @@ module Zm
 
           url = account.home_url
 
-          uri = Addressable::URI.new
-          uri.query_values = h
-          url << '?' << uri.query
+          url << '?' << Utils.format_url_params(h)
 
           uploader = Upload.new(@parent, RestAccountConnector.new)
           uploader.download_file_with_url(url, dest_file_path)
