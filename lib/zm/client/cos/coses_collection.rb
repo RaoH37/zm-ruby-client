@@ -8,15 +8,14 @@ module Zm
         @child_class = Cos
         @builder_class = CosesBuilder
         @search_type = SearchType::COS
-        @parent = parent
+        super(parent)
       end
 
-      def find_by(hash)
+      def find_by!(hash)
         rep = sac.get_cos(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetCosResponse][:cos].first
 
         reset_query_params
-        # build_from_entry(entry)
         CosJsnsInitializer.create(@parent, entry)
       end
 

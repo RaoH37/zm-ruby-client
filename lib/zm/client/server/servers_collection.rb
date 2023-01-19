@@ -11,10 +11,12 @@ module Zm
         super(parent)
       end
 
-      def find_by(hash)
+      def find_by!(hash)
         rep = sac.get_server(hash.values.first, hash.keys.first)
         entry = rep[:Body][:GetServerResponse][:server].first
-        build_from_entry(entry)
+
+        reset_query_params
+        ServerJsnsInitializer.create(@parent, entry)
       end
 
       def where(service)

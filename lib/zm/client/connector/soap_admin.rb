@@ -7,10 +7,9 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
-
       # SOAP_PATH = '/service/admin/soap/'
       ADMINSPACE = 'urn:zimbraAdmin'
-      A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
+      A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
 
       attr_accessor :token
 
@@ -45,7 +44,7 @@ module Zm
       def count_object(type)
         soap_name = :CountObjectsRequest
         body = init_hash_request(soap_name)
-        req = { type: type}
+        req = { type: type }
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
@@ -88,7 +87,7 @@ module Zm
         curl_request(body)
       end
 
-      def create_data_source(name, account_id, type, attrs = { })
+      def create_data_source(name, account_id, type, attrs = {})
         req = {
           id: account_id,
           dataSource: {
@@ -195,7 +194,6 @@ module Zm
         generic_alias(:RemoveAccountAliasRequest, id, email)
       end
 
-
       def rename_account(id, email)
         generic_rename(:RenameAccountRequest, id, email)
       end
@@ -209,7 +207,7 @@ module Zm
       end
 
       def generic_members(soap_name, id, emails)
-        req = { id: id, dlm: emails.map { |email| {_content: email} } }
+        req = { id: id, dlm: emails.map { |email| { _content: email } } }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
@@ -336,11 +334,8 @@ module Zm
         curl_request(body)
       end
 
-      def search_directory(query = nil, maxResults = nil, limit = nil, offset = nil, domain = nil, applyCos = nil, applyConfig = nil, sortBy = nil, types = nil, sortAscending = nil, countOnly = nil, attrs = nil)
-
-        # Désactivé car moins performant !
-        # req = Hash[method(__method__).parameters.map{ |p|[p.last, (eval p.last.to_s)] }].select!{ |k,v|!v.nil? }
-
+      def search_directory(query = nil, maxResults = nil, limit = nil, offset = nil, domain = nil, applyCos = nil,
+                           applyConfig = nil, sortBy = nil, types = nil, sortAscending = nil, countOnly = nil, attrs = nil)
         soap_name = :SearchDirectoryRequest
 
         req = {
@@ -358,14 +353,14 @@ module Zm
           attrs: attrs
         }.reject { |_, v| v.nil? }
 
-        # body = { Body: { SearchDirectoryRequest: { _jsns: ADMINSPACE } } }.merge(hash_header(@token))
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
 
         curl_request(body)
       end
 
-      def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil, refresh = nil, target_server_id = nil)
+      def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil,
+                          refresh = nil, target_server_id = nil)
         soap_name = :GetQuotaUsageRequest
         req = {
           domain: domain,
@@ -386,9 +381,9 @@ module Zm
       def get_mailbox(id)
         soap_name = :GetMailboxRequest
         req = {
-            mbox: {
-                id: id
-            }
+          mbox: {
+            id: id
+          }
         }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
@@ -469,7 +464,8 @@ module Zm
         soap_name = :MailQueueActionRequest
         value = [value] unless value.is_a?(Array)
         body = init_hash_request(soap_name)
-        req = { server: { name: server_name, queue: { name: queue_name, action: { op: op, by: by, _content: value.join(',') } } } }
+        req = { server: { name: server_name,
+                          queue: { name: queue_name, action: { op: op, by: by, _content: value.join(',') } } } }
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end

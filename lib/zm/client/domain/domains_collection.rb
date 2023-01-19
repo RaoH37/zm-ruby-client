@@ -11,7 +11,7 @@ module Zm
         super(parent)
       end
 
-      def find_by(hash)
+      def find_by!(hash)
         rep = sac.get_domain(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetDomainResponse][:domain].first
 
@@ -24,9 +24,6 @@ module Zm
       def reset_query_params
         super
         @attrs = SearchType::Attributes::DOMAIN.dup
-        @all_servers = 1
-        @refresh = 0
-        @apply_cos = 1
       end
     end
   end
