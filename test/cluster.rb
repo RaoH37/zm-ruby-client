@@ -7,9 +7,15 @@ require './lib/zm/client'
 class TestCluster < Minitest::Test
 
   def setup
-    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.json')
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
+    @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
+
     @admin = Zm::Client::Cluster.new(@config)
     @admin.login
+  end
+
+  def email_exist?
+    assert @admin.email_exist?(@fixture_accounts['accounts']['maxime']['email'])
   end
 
   def test_login

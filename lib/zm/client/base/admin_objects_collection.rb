@@ -70,11 +70,7 @@ module Zm
         private
 
         def make_query
-          sac.search_directory(
-            ldap_filter.join, @max_result, @limit, @offset,
-            @domain_name, @apply_cos, @apply_config, @sort_by, @search_type,
-            @sort_ascending, @count_only, attrs_comma
-          )
+          sac.search_directory(jsns)
         end
 
         def ldap_filter
@@ -85,6 +81,23 @@ module Zm
           return nil if @all.nil?
 
           @all.find { |item| item.send(hash.keys.first) == hash.values.first }
+        end
+
+        def jsns
+          {
+            query: ldap_filter.join,
+            maxResults: @max_result,
+            limit: @limit,
+            offset: @offset,
+            domain: @domain_name,
+            applyCos: @apply_cos,
+            applyConfig: @apply_config,
+            sortBy: @sort_by,
+            types: @search_type,
+            sortAscending: @sort_ascending,
+            countOnly: @count_only,
+            attrs: attrs_comma
+          }.reject { |_, v| v.nil? }
         end
       end
     end

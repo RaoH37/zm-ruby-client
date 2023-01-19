@@ -334,27 +334,10 @@ module Zm
         curl_request(body)
       end
 
-      def search_directory(query = nil, maxResults = nil, limit = nil, offset = nil, domain = nil, applyCos = nil,
-                           applyConfig = nil, sortBy = nil, types = nil, sortAscending = nil, countOnly = nil, attrs = nil)
+      def search_directory(jsns)
         soap_name = :SearchDirectoryRequest
-
-        req = {
-          query: query,
-          maxResults: maxResults,
-          limit: limit,
-          offset: offset,
-          domain: domain,
-          applyCos: applyCos,
-          applyConfig: applyConfig,
-          sortBy: sortBy,
-          types: types,
-          sortAscending: sortAscending,
-          countOnly: countOnly,
-          attrs: attrs
-        }.reject { |_, v| v.nil? }
-
         body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
+        body[:Body][soap_name].merge!(jsns)
 
         curl_request(body)
       end

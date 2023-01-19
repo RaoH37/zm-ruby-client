@@ -127,8 +127,13 @@ module Zm
       end
 
       def email_exist?(email)
-        filter = "(mail=#{email})"
-        resp = soap_admin_connector.search_directory(filter, nil, nil, nil, nil, nil, nil, nil, 'accounts,distributionlists,aliases,resources',nil, 1)
+        jsns = {
+         query: "(mail=#{email})",
+         types: 'accounts,distributionlists,aliases,resources',
+         countOnly: SoapUtils::ON
+        }
+
+        resp = soap_admin_connector.search_directory(jsns)
         num = resp[:Body][:SearchDirectoryResponse][:num]
         !num.zero?
       end
