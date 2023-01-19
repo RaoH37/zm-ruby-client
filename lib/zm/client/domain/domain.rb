@@ -45,6 +45,15 @@ module Zm
         @accounts ||= DomainAccountsCollection.new(self)
       end
 
+      def distributionlists
+        @distributionlists ||= DomainDistributionListsCollection.new(self)
+      end
+      alias distribution_lists distributionlists
+
+      def resources
+        @resources ||= DomainResourcesCollection.new(self)
+      end
+
       def attrs_write
         @parent.zimbra_attributes.all_domain_attrs_writable_names
       end
