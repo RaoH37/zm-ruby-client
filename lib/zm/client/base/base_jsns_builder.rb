@@ -33,7 +33,7 @@ module Zm
         def to_patch(hash)
           {
            id: @item.id,
-           a: hash.map(&A_NODE_PROC)
+           a: hash.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
           }
         end
 

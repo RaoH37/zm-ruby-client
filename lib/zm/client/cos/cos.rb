@@ -42,15 +42,7 @@ module Zm
       end
 
       def servers
-        @servers || servers!
-      end
-
-      def servers!
-        sc = ServersCollection.new(self)
-
-        @servers = @zimbraMailHostPool.map do |server_id|
-          sc.find_by id: server_id
-        end
+        @servers ||= CosServersCollection.new(self)
       end
 
       def attrs_write
