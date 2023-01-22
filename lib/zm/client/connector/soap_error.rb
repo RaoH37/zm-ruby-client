@@ -7,6 +7,7 @@ module Zm
 
     class SoapError < StandardError
       attr_reader :reason, :code
+
       def initialize(soapbody)
         @reason = soapbody[:Body][:Fault][:Reason][:Text]
         @code = soapbody[:Body][:Fault][:Detail][:Error][:Code]
@@ -18,9 +19,6 @@ module Zm
     end
 
     class RestError < StandardError
-      def initialize(restbody)
-        super(restbody)
-      end
     end
   end
 end

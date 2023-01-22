@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for account appointment
     class AppointmentJsnsBuilder
-
       def initialize(appointment)
         @appointment = appointment
       end

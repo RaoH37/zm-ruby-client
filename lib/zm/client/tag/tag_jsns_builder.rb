@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for account tag jsns builder
     class TagJsnsBuilder
-
       def initialize(tag)
         @tag = tag
       end
@@ -34,8 +33,8 @@ module Zm
 
       def to_patch(hash)
         action = {
-         op: :update,
-         id: @tag.id
+          op: :update,
+          id: @tag.id
         }.merge(hash)
 
         action.reject! { |_, v| v.nil? }

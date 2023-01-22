@@ -65,7 +65,9 @@ module Zm
       end
 
       def hash_header(token, target_server = nil)
-        context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if { |_, v| v.nil? }
+        context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
+          v.nil?
+        end
         { Header: { context: context, _jsns: BASESPACE } }
       end
     end

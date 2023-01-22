@@ -6,7 +6,6 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
-
       # #################################################################
       # Associations
       # #################################################################

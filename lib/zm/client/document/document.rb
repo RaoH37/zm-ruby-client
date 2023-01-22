@@ -4,10 +4,10 @@ module Zm
   module Client
     # class for account document
     class Document < Base::AccountObject
+      INSTANCE_VARIABLE_KEYS = %i[id uuid name s d l luuid ms mdver md rev f tn t meta ct descEnabled ver leb cr cd acl
+                                  loid sf tn].freeze
 
-      INSTANCE_VARIABLE_KEYS = %i[id uuid name s d l luuid ms mdver md rev f tn t meta ct descEnabled ver leb cr cd acl loid sf tn]
-
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_accessor(*INSTANCE_VARIABLE_KEYS)
       attr_writer :folder
       attr_reader :json
 

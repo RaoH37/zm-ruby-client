@@ -5,9 +5,9 @@ module Zm
     # class for upload account file
     class Upload
       FMT_TYPES_H = {
-          'ics' => ['appointment'],
-          'vcard' => ['contact']
-      }
+        'ics' => ['appointment'],
+        'vcard' => ['contact']
+      }.freeze
 
       def initialize(parent, rac = nil)
         @parent = parent
@@ -112,7 +112,8 @@ module Zm
         return {} if ids.nil?
         return { id: ids } unless ids.is_a?(Array)
         return { id: ids.first } if ids.length == 1
-        return { list: ids.join(',') }
+
+        { list: ids.join(',') }
       end
 
       def query_value_types(types, fmt)

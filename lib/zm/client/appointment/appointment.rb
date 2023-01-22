@@ -4,13 +4,12 @@ module Zm
   module Client
     # class for account appointment
     class Appointment < Base::AccountObject
+      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn allDay organizer timezone calItemId apptId
+                                  invId rev fb transp].freeze
 
-      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn allDay organizer timezone calItemId apptId invId rev fb transp]
-
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_accessor(*INSTANCE_VARIABLE_KEYS)
       attr_writer :folder
-      attr_reader :json
-      attr_reader :recipients, :attendees, :body
+      attr_reader :json, :recipients, :attendees, :body
 
       alias description desc
       alias parent_id l
@@ -111,9 +110,10 @@ module Zm
         end
 
         def del(attendee)
-          if attendee.is_a?(Attendee)
+          case attendee
+          when Attendee
             @attendees.delete(attendee)
-          elsif attendee.is_a?(String)
+          when String
             @attendees.delete_if { |at| at.email == attendee }
           end
         end

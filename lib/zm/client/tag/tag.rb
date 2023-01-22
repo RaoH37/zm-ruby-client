@@ -6,7 +6,7 @@ module Zm
     class Tag < Base::AccountObject
       include Zm::Model::AttributeChangeObserver
 
-      INSTANCE_VARIABLE_KEYS = %i[id name color rgb]
+      INSTANCE_VARIABLE_KEYS = %i[id name color rgb].freeze
 
       attr_accessor :id
 

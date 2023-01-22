@@ -4,18 +4,17 @@ module Zm
   module Client
     # class account identity
     class Identity < Base::AccountObject
-
       INSTANCE_VARIABLE_KEYS = %i[id name zimbraPrefIdentityName zimbraPrefFromDisplay zimbraPrefFromAddress
-        zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
-        zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
-        zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses]
+                                  zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
+                                  zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
+                                  zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses].freeze
 
       ATTRS_WRITE = %i[zimbraPrefIdentityName zimbraPrefFromDisplay zimbraPrefFromAddress
-        zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
-        zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
-        zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses]
+                       zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
+                       zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
+                       zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses].freeze
 
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_accessor(*INSTANCE_VARIABLE_KEYS)
 
       def all_instance_variable_keys
         INSTANCE_VARIABLE_KEYS
@@ -44,9 +43,9 @@ module Zm
           arrow_attr_sym = "@#{k}".to_sym
 
           if v.respond_to?(:empty?) && v.empty?
-            self.remove_instance_variable(arrow_attr_sym) if self.instance_variable_get(arrow_attr_sym)
+            remove_instance_variable(arrow_attr_sym) if instance_variable_get(arrow_attr_sym)
           else
-            self.instance_variable_set(arrow_attr_sym, v)
+            instance_variable_set(arrow_attr_sym, v)
           end
         end
       end
@@ -60,12 +59,11 @@ module Zm
         super
       end
 
-      def rename!(new_name)
-      end
+      def rename!(new_name); end
 
       def clone
         new_identity = super do |obj|
-          [:@zimbraPrefDefaultSignatureId, :@zimbraPrefForwardReplySignatureId].each do |arrow_key|
+          %i[@zimbraPrefDefaultSignatureId @zimbraPrefForwardReplySignatureId].each do |arrow_key|
             obj.remove_instance_variable(arrow_key) if obj.instance_variable_get(arrow_key)
           end
         end

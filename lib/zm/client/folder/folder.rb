@@ -125,7 +125,7 @@ module Zm
           zauthtoken: @parent.token
         }
 
-        url_query = absFolderPath + '?' + Utils.format_url_params(h)
+        url_query = "#{absFolderPath}?#{Utils.format_url_params(h)}"
 
         @parent.uploader.download_file_with_url(url_query, dest_file_path)
       end

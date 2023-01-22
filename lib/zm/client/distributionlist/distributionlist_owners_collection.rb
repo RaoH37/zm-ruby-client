@@ -16,7 +16,8 @@ module Zm
         emails.delete_if { |email| @all.include?(email) }
         return false if emails.empty?
 
-        @parent.sac.distribution_list_action(@parent.id, :id, { op: 'addOwners', owner: { by: :name, type: :usr, _content: emails } })
+        @parent.sac.distribution_list_action(@parent.id, :id,
+                                             { op: 'addOwners', owner: { by: :name, type: :usr, _content: emails } })
         @all += emails
         true
       end
@@ -26,7 +27,8 @@ module Zm
         emails.delete_if { |email| !@all.include?(email) }
         return false if emails.empty?
 
-        @parent.sac.distribution_list_action(@parent.id, :id, { op: 'removeOwners', owner: { by: :name, type: :usr, _content: emails } })
+        @parent.sac.distribution_list_action(@parent.id, :id,
+                                             { op: 'removeOwners', owner: { by: :name, type: :usr, _content: emails } })
         @all -= emails
         true
       end

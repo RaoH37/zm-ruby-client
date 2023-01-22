@@ -6,7 +6,7 @@ module Zm
     class Domain < Base::AdminObject
       def initialize(parent)
         super(parent)
-        @grantee_type = 'dom'.freeze
+        @grantee_type = 'dom'
       end
 
       def create!
@@ -24,9 +24,9 @@ module Zm
           arrow_attr_sym = "@#{k}".to_sym
 
           if v.respond_to?(:empty?) && v.empty?
-            self.remove_instance_variable(arrow_attr_sym) if self.instance_variable_get(arrow_attr_sym)
+            remove_instance_variable(arrow_attr_sym) if instance_variable_get(arrow_attr_sym)
           else
-            self.instance_variable_set(arrow_attr_sym, v)
+            instance_variable_set(arrow_attr_sym, v)
           end
         end
       end

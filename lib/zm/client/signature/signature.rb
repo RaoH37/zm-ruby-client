@@ -9,7 +9,7 @@ module Zm
       TYPE_TXT = 'text/plain'
       TYPE_HTML = 'text/html'
 
-      INSTANCE_VARIABLE_KEYS = %i[id name txt html]
+      INSTANCE_VARIABLE_KEYS = %i[id name txt html].freeze
 
       attr_reader :id
 
@@ -37,6 +37,7 @@ module Zm
 
       def type
         return TYPE_HTML unless html.nil?
+
         TYPE_TXT
       end
 

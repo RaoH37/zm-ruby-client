@@ -5,7 +5,6 @@ module Zm
     module Base
       # Abstract Class Provisionning AccountObject
       class AccountObject < Object
-
         def soap_account_connector
           @parent.soap_account_connector
         end
@@ -19,6 +18,7 @@ module Zm
         def init_from_json(json)
           all_instance_variable_keys.each do |key|
             next if json[key].nil?
+
             instance_variable_set(arrow_name(key), json[key])
           end
         end

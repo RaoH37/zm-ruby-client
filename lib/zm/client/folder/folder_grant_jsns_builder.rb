@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for account folder grant jsns builder
     class FolderGrantJsnsBuilder < Base::BaseJsnsBuilder
-
       def to_jsns
         grant = {
           zid: @item.zid,

@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for account signature jsns builder
     class SignatureJsnsBuilder
-
       def initialize(signature)
         @signature = signature
       end

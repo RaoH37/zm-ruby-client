@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for account folder retention policy
     class FolderRetentionPolicy
-
       attr_accessor :type, :policy, :lifetime
 
       def initialize(parent, policy, lifetime, type)

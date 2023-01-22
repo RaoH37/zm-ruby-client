@@ -4,16 +4,15 @@ module Zm
   module Client
     # objectClass: zimbraDomain
     class License < Base::AdminObject
-
       INSTANCE_VARIABLE_KEYS = %i[
         AccountsLimit ArchivingAccountsLimit AttachmentConversionEnabled AttachmentIndexingAccountsLimit BackupEnabled
         CrossMailboxSearchEnabled EwsAccountsLimit HierarchicalStorageManagementEnabled ISyncAccountsLimit InstallType
         IssuedOn IssuedToEmail IssuedToName LicenseId MAPIConnectorAccountsLimit MobileSyncAccountsLimit
         MobileSyncEnabled ResellerName SMIMEAccountsLimit TouchClientsAccountsLimit TwoFactorAuthAccountsLimit
         ValidFrom ValidUntil VoiceAccountsLimit ZSSAccountsLimit ZTalkAccountsLimit
-      ]
+      ].freeze
 
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_accessor(*INSTANCE_VARIABLE_KEYS)
 
       def init_from_json(json)
         json[:attr].each do |a|

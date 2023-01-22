@@ -6,7 +6,6 @@ module Zm
       # class for account object jsns initializer
       class BaseJsnsInitializer
         class << self
-
           def update(item, json)
             item.id = json[:id]
             item.name = json[:name]

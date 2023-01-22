@@ -4,7 +4,6 @@ module Zm
   module Client
     # collection of mountpoints
     class MountPointsCollection < Base::AccountObjectsCollection
-
       attr_reader :root
 
       attr_accessor :view, :tr, :visible, :needGranteeName, :depth

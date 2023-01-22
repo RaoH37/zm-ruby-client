@@ -7,15 +7,14 @@ module Zm
   module Client
     module Base
       class ZimbraAttribute < OpenStruct
-
         def version_start
           return @version_start unless @version_start.nil?
 
-          if since.nil?
-            @version_start = '0.0.0'
-          else
-            @version_start = VersionSorter.sort(since.split(',')).first
-          end
+          @version_start = if since.nil?
+                             '0.0.0'
+                           else
+                             VersionSorter.sort(since.split(',')).first
+                           end
 
           @version_start
         end

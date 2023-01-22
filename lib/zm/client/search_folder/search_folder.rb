@@ -6,7 +6,8 @@ module Zm
     class SearchFolder < Base::FolderObject
       include Zm::Model::AttributeChangeObserver
 
-      INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rgb rev ms webOfflineSyncDays activesyncdisabled query sortBy types]
+      INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rgb rev ms webOfflineSyncDays
+                                  activesyncdisabled query sortBy types].freeze
 
       # attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_reader :id, :absFolderPath, :types

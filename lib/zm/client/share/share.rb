@@ -4,9 +4,9 @@ module Zm
   module Client
     # class for account share
     class Share < Base::AccountObject
-       INSTANCE_VARIABLE_KEYS = %i[
-         ownerId ownerEmail ownerName folderId folderUuid folderPath
-         view rights granteeType granteeId granteeName mid
+      INSTANCE_VARIABLE_KEYS = %i[
+        ownerId ownerEmail ownerName folderId folderUuid folderPath
+        view rights granteeType granteeId granteeName mid
       ].freeze
 
       attr_accessor(*INSTANCE_VARIABLE_KEYS)
@@ -44,7 +44,7 @@ module Zm
       end
 
       def default_mountpoint_name
-        folder_name = @folderPath[1..-1].split('/').last
+        folder_name = @folderPath[1..].split('/').last
         owner_name = (@ownerName || @ownerEmail).tr('/', '-')
         "#{folder_name} (#{owner_name})"
       end

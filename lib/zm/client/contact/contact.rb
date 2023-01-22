@@ -15,8 +15,7 @@ module Zm
         workState workStreet workURL image
       ].freeze
 
-      attr_accessor *INSTANCE_VARIABLE_KEYS
-      attr_accessor :id, :name, :l, :type, :members, :old_members, :tn
+      attr_accessor(*INSTANCE_VARIABLE_KEYS, :id, :name, :l, :type, :members, :old_members, :tn)
 
       def initialize(parent, json = nil)
         @parent  = parent
@@ -37,13 +36,13 @@ module Zm
 
       def emails_h
         {
-            'email' => email,
-            'email2' => email2,
-            'email3' => email3,
-            'email4' => email4,
-            'email5' => email5,
-            'email6' => email6,
-            'email7' => email7
+          'email' => email,
+          'email2' => email2,
+          'email3' => email3,
+          'email4' => email4,
+          'email5' => email5,
+          'email6' => email6,
+          'email7' => email7
         }.compact
       end
 
@@ -88,7 +87,7 @@ module Zm
         return if @custom_keys.empty?
 
         self.class.attr_accessor(*@custom_keys)
-      rescue StandardError => _
+      rescue StandardError => _e
         @custom_keys.clear
         nil
       end

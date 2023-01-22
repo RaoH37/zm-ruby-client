@@ -3,9 +3,9 @@
 module Zm
   module Client
     class Backup < Base::AdminObject
-      INSTANCE_VARIABLE_KEYS = %i[label type aborted start end minRedoSeq maxRedoSeq live accounts]
+      INSTANCE_VARIABLE_KEYS = %i[label type aborted start end minRedoSeq maxRedoSeq live accounts].freeze
 
-      attr_reader *INSTANCE_VARIABLE_KEYS
+      attr_reader(*INSTANCE_VARIABLE_KEYS)
 
       alias name label
 

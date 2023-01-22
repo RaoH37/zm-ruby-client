@@ -5,35 +5,33 @@ module Zm
     module Base
       # class for account object jsns builder
       class BaseJsnsBuilder
-        A_ARRAY_PROC = lambda { |i| i.last.is_a?(Array) ? i.last.map{ |j| [i.first, j] } : [i] }
-        A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
+        A_ARRAY_PROC = ->(i) { i.last.is_a?(Array) ? i.last.map { |j| [i.first, j] } : [i] }
+        A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
 
         def initialize(item)
           @item = item
         end
 
         def to_jsns
-          req = {
-           name: @item.name,
-           a: instance_variables_array.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
+          {
+            name: @item.name,
+            a: instance_variables_array.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
           }
-
-          req
         end
 
         alias to_create to_jsns
 
         def to_update
           {
-           id: @item.id,
-           a: instance_variables_array.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
+            id: @item.id,
+            a: instance_variables_array.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
           }
         end
 
         def to_patch(hash)
           {
-           id: @item.id,
-           a: hash.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
+            id: @item.id,
+            a: hash.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
           }
         end
 
@@ -46,7 +44,7 @@ module Zm
           attrs_only_set = @item.instance_variables & selected_attrs
 
           arr = attrs_only_set.map do |name|
-            n = name.to_s[1..-1]
+            n = name.to_s[1..]
             value = @item.instance_variable_get(name)
             [n, value]
           end

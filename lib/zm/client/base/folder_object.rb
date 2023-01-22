@@ -5,7 +5,6 @@ module Zm
     module Base
       # Abstract Class FolderObject
       class FolderObject < AccountObject
-
         def initialize(parent)
           @l = FolderDefault::ROOT[:id]
           super(parent)

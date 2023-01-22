@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for folder retention policies collection
     class FolderGrantsCollection
-
       attr_reader :parent, :all
 
       def initialize(parent)

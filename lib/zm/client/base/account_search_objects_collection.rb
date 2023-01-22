@@ -96,7 +96,7 @@ module Zm
 
           return nil if @folder_ids.empty?
 
-          @folder_ids.map { |id| %Q{inid:"#{id}"} }.join(' OR ')
+          @folder_ids.map { |id| %(inid:"#{id}") }.join(' OR ')
         end
 
         def build_options
@@ -106,7 +106,7 @@ module Zm
           {
             resultMode: @resultMode,
             calExpandInstStart: start_at_ts,
-            calExpandInstEnd: end_at_ts,
+            calExpandInstEnd: end_at_ts
           }.delete_if { |_, v| v.nil? }
         end
 

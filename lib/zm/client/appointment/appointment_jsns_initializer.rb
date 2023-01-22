@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for account appointment
     class AppointmentJsnsInitializer
-
       attr_accessor :appointment
 
       def initialize(parent, json)
@@ -46,7 +45,9 @@ module Zm
       end
 
       def init_from_search
-        @appointment.organizer = Zm::Client::Appointment::Organizer.new(search_organizer_name) unless search_organizer_name.nil?
+        unless search_organizer_name.nil?
+          @appointment.organizer = Zm::Client::Appointment::Organizer.new(search_organizer_name)
+        end
         @appointment.name = @json[:name]
         @appointment.id = @json[:invId]
         @appointment.desc = @json[:fr]
@@ -64,7 +65,9 @@ module Zm
         @appointment.apptId = comp[:apptId]
         @appointment.allDay = comp[:allDay] unless comp[:allDay].nil?
 
-        @appointment.organizer = Zm::Client::Appointment::Organizer.new(comp_organizer_name) unless comp_organizer_name.nil?
+        unless comp_organizer_name.nil?
+          @appointment.organizer = Zm::Client::Appointment::Organizer.new(comp_organizer_name)
+        end
 
         attendees.each do |attendee|
           @appointment.attendees.add(Zm::Client::Appointment::Attendee.new(attendee[:a]))

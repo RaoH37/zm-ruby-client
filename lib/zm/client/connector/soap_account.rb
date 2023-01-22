@@ -10,11 +10,10 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapAccountConnector < SoapBaseConnector
-
       # SOAP_PATH = '/service/soap/'
       MAILSPACE = 'urn:zimbraMail'
       ACCOUNTSPACE = 'urn:zimbraAccount'
-      A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
+      A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
       # A_NODE_PROC_NAME = lambda { |n| { name: n.first, _content: n.last } }
       # A_NODE_PROC_ARROW_NAME = lambda { |n| { :@name => n.first, content!: n.last } }
 
@@ -322,7 +321,7 @@ module Zm
         curl_request(body)
       end
 
-      def create_identity(token, name, attrs = [])
+      def create_identity(token, _name, attrs = [])
         soap_name = :CreateIdentityRequest
         req = {
           identity: {
@@ -371,23 +370,23 @@ module Zm
       def modify_prefs(token, prefs)
         soap_name = :ModifyPrefsRequest
 
-# The JSON version is different:
-# {
-#   ModifyPrefsRequest: {
-#     "_attrs": {
-#       "prefName1": "prefValue1",
-#       "prefName2": "prefValue2"
-#       "+nameOfMulitValuedPref3": "addedPrefValue3",
-#       "-nameOfMulitValuedPref4": "removedPrefValue4",
-#       "nameOfMulitValuedPref5": ["prefValue5one","prefValue5two"],
-#       ...
-#     },
-#     _jsns: "urn:zimbraAccount"
-#   }
-# }
+        # The JSON version is different:
+        # {
+        #   ModifyPrefsRequest: {
+        #     "_attrs": {
+        #       "prefName1": "prefValue1",
+        #       "prefName2": "prefValue2"
+        #       "+nameOfMulitValuedPref3": "addedPrefValue3",
+        #       "-nameOfMulitValuedPref4": "removedPrefValue4",
+        #       "nameOfMulitValuedPref5": ["prefValue5one","prefValue5two"],
+        #       ...
+        #     },
+        #     _jsns: "urn:zimbraAccount"
+        #   }
+        # }
 
         req = {
-         _attrs: prefs
+          _attrs: prefs
         }
 
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)

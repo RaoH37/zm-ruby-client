@@ -12,8 +12,8 @@ module Zm
 
       def make_query
         jsns = {
-         query: "(zimbraACE=#{@parent.id} usr ownDistList)",
-         types: SearchType::DL
+          query: "(zimbraACE=#{@parent.id} usr ownDistList)",
+          types: SearchType::DL
         }
 
         @parent.sac.search_directory(jsns)

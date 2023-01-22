@@ -2,7 +2,6 @@
 
 module Zm
   module Client
-
     # Collection recipients
     class Recipients
       def initialize
@@ -20,9 +19,10 @@ module Zm
       end
 
       def del(recipient)
-        if recipient.is_a?(Recipient)
+        case recipient
+        when Recipient
           @recipients.delete(recipient)
-        elsif recipient.is_a?(String)
+        when String
           @recipients.delete_if { |r| r.email == recipient }
         end
       end

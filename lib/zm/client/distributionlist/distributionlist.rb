@@ -9,10 +9,9 @@ module Zm
   module Client
     # objectClass: zimbraDistributionList
     class DistributionList < Base::AdminObject
-
       def initialize(parent)
         super(parent)
-        @grantee_type = 'grp'.freeze
+        @grantee_type = 'grp'
       end
 
       def aliases
@@ -55,9 +54,9 @@ module Zm
           arrow_attr_sym = "@#{k}".to_sym
 
           if v.respond_to?(:empty?) && v.empty?
-            self.remove_instance_variable(arrow_attr_sym) if self.instance_variable_get(arrow_attr_sym)
+            remove_instance_variable(arrow_attr_sym) if instance_variable_get(arrow_attr_sym)
           else
-            self.instance_variable_set(arrow_attr_sym, v)
+            instance_variable_set(arrow_attr_sym, v)
           end
         end
       end

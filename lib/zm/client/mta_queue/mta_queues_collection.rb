@@ -38,6 +38,7 @@ module Zm
 
       def find(queue_name)
         raise ZmError, 'Unknown queue name' unless Zm::Client::MtaQueueName::ALL.include?(queue_name)
+
         all! if @queues_h.empty?
         @queues_h[queue_name]
       end

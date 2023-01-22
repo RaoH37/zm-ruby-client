@@ -74,7 +74,7 @@ module Zm
 
         return DEFAULT_QUERY if @folder_ids.empty?
 
-        @folder_ids.map { |id| %Q{inid:"#{id}"} }.join(' OR ')
+        @folder_ids.map { |id| %(inid:"#{id}") }.join(' OR ')
       end
 
       def find_folder(document)

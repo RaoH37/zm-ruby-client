@@ -7,7 +7,6 @@ module Zm
     module Base
       # Abstract Class Provisionning AdminObject
       class AdminObject < Object
-
         def soap_admin_connector
           @parent.soap_admin_connector
         end
@@ -34,7 +33,12 @@ module Zm
           json[:a].reject! { |n| n[:n].nil? }
           json_map = json[:a].map { |n| ["@#{n[:n]}", n[:_content]] }.freeze
 
-          json_hash = json_map.reduce({}) { |h, (k, v)| (h[k] ||= []); h[k].push(v); h }.inject({}) { |h, (k, v)| v.length == 1 ? h[k] = v.first : h[k] = v; h }
+          json_hash = json_map.each_with_object({}) do |(k, v), h|
+                        (h[k] ||= [])
+                        h[k].push(v)
+                      end.transform_values do |v|
+            v.length == 1 ? v.first : v
+          end
 
           json_hash.each do |k, v|
             instance_variable_set(k, convert_json_string_value(v))

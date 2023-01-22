@@ -26,7 +26,7 @@ module Zm
 
         def initialize(parent)
           super(parent)
-          @grantee_type = 'usr'.freeze
+          @grantee_type = 'usr'
         end
 
         def rest_account_connector

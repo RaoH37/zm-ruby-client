@@ -4,7 +4,6 @@ module Zm
   module Client
     # class for account search folder jsns builder
     class SearchFolderJsnsBuilder
-
       def initialize(search_folder)
         @item = search_folder
       end

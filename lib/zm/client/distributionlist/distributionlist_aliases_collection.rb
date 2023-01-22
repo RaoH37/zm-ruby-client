@@ -41,9 +41,10 @@ module Zm
       def build_aliases
         return if @parent.zimbraMailAlias.nil?
 
-        if @parent.zimbraMailAlias.is_a?(Array)
+        case @parent.zimbraMailAlias
+        when Array
           @memorized += @parent.zimbraMailAlias
-        elsif @parent.zimbraMailAlias.is_a?(String)
+        when String
           @memorized.push(@parent.zimbraMailAlias)
         end
 

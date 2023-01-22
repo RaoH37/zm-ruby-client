@@ -16,10 +16,8 @@ module Zm
   module Client
     # class admin connection
     class Cluster
-
-      attr_reader :soap_admin_connector, :config, :zimbra_attributes
-
-      attr_reader :type, :version, :release, :buildDate, :host, :majorversion, :minorversion, :microversion
+      attr_reader :soap_admin_connector, :config, :zimbra_attributes, :type, :version, :release, :buildDate, :host,
+                  :majorversion, :minorversion, :microversion
 
       def initialize(config)
         extend(ZmLogger)
@@ -45,7 +43,7 @@ module Zm
       def login
         raise ClusterConfigError, 'admin credentials are missing' unless @config.has_admin_credentials?
 
-        logger.info "Get Admin session token"
+        logger.info 'Get Admin session token'
         @soap_admin_connector.auth(
           @config.zimbra_admin_login,
           @config.zimbra_admin_password
@@ -128,9 +126,9 @@ module Zm
 
       def email_exist?(email)
         jsns = {
-         query: "(mail=#{email})",
-         types: 'accounts,distributionlists,aliases,resources',
-         countOnly: SoapUtils::ON
+          query: "(mail=#{email})",
+          types: 'accounts,distributionlists,aliases,resources',
+          countOnly: SoapUtils::ON
         }
 
         resp = soap_admin_connector.search_directory(jsns)

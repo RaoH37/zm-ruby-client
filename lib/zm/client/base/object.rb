@@ -62,7 +62,7 @@ module Zm
           attrs_only_set = instance_variables & selected_attrs
 
           arr = attrs_only_set.map do |name|
-            n = name.to_s[1..-1]
+            n = name.to_s[1..]
             value = instance_variable_get(name)
             [n, value]
           end

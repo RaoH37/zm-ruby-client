@@ -4,7 +4,6 @@ module Zm
   module Client
     # collection of folders
     class FoldersCollection < Base::AccountObjectsCollection
-
       attr_reader :root
 
       attr_accessor :view, :tr, :visible, :needGranteeName, :depth

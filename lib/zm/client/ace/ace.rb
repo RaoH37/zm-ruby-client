@@ -4,10 +4,9 @@ module Zm
   module Client
     # class account ace
     class Ace < Base::AccountObject
+      INSTANCE_VARIABLE_KEYS = %i[zid gt right d].freeze
 
-      INSTANCE_VARIABLE_KEYS = %i[zid gt right d]
-
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_accessor(*INSTANCE_VARIABLE_KEYS)
 
       def all_instance_variable_keys
         INSTANCE_VARIABLE_KEYS

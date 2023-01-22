@@ -4,10 +4,9 @@ module Zm
   module Client
     # class for account task
     class Task < Base::AccountObject
+      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn].freeze
 
-      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn]
-
-      attr_accessor *INSTANCE_VARIABLE_KEYS
+      attr_accessor(*INSTANCE_VARIABLE_KEYS)
       attr_writer :folder
       attr_reader :json
 
