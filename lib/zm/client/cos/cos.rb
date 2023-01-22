@@ -45,6 +45,18 @@ module Zm
         @servers ||= CosServersCollection.new(self)
       end
 
+      def domains
+        return if @id.nil?
+
+        @domains ||= CosDomainsCollection.new(self)
+      end
+
+      def accounts
+        return if @id.nil?
+
+        @accounts ||= CosAccountsCollection.new(self)
+      end
+
       def attrs_write
         @parent.zimbra_attributes.all_cos_attrs_writable_names
       end
