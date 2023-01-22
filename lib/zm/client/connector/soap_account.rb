@@ -2,10 +2,6 @@
 
 require_relative 'soap_base'
 require_relative 'soap_error'
-# require 'gyoku'
-
-# include OpenSSL
-# include Digest
 
 module Zm
   module Client
@@ -14,8 +10,6 @@ module Zm
       MAILSPACE = 'urn:zimbraMail'
       ACCOUNTSPACE = 'urn:zimbraAccount'
       A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
-      # A_NODE_PROC_NAME = lambda { |n| { name: n.first, _content: n.last } }
-      # A_NODE_PROC_ARROW_NAME = lambda { |n| { :@name => n.first, content!: n.last } }
 
       def initialize(scheme, host, port)
         super(scheme, host, port, '/service/soap/')
@@ -57,7 +51,7 @@ module Zm
 
       def do_auth(body)
         res = curl_request(body, AuthError)
-        res[BODY][:AuthResponse][:authToken].first[:_content]
+        res[:Body][:AuthResponse][:authToken].first[:_content]
       end
 
       # -------------------------------
@@ -175,14 +169,6 @@ module Zm
       def get_folder(token, jsns)
         jsns_request(:GetFolderRequest, token, jsns)
       end
-
-      # def get_all_folders(token, view = nil, tr = nil)
-      #   soap_name = :GetFolderRequest
-      #   body = init_hash_request(token, soap_name)
-      #   req = { view: view, tr: tr }.reject { |_, v| v.nil? }
-      #   body[:Body][soap_name].merge!(req)
-      #   curl_request(body)
-      # end
 
       def create_folder(token, jsns)
         jsns_request(:CreateFolderRequest, token, jsns)
@@ -502,26 +488,6 @@ module Zm
           }
         }.merge(hash_header(token))
       end
-
-      # def init_hash_arrow_request(token, soap_name, namespace = MAILSPACE)
-      #   { Envelope: {
-      #       :@xmlns => 'http://schemas.xmlsoap.org/soap/envelope/',
-      #       '@xmlns:urn' => 'urn:zimbra',
-      #       Header: {
-      #         context: {
-      #           authToken: token,
-      #           :@xmlns => BASESPACE,
-      #           format: {
-      #               :@type => 'js'
-      #           }
-      #         }
-      #       },
-      #       Body: {
-      #         soap_name => { :@xmlns => namespace }
-      #       }
-      #     }
-      #   }
-      # end
     end
   end
 end

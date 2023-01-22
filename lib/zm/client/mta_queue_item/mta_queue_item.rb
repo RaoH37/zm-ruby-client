@@ -4,7 +4,7 @@ module Zm
   module Client
     class MtaQueueItem < Base::AdminObject
       INSTANCE_VARIABLE_KEYS = %i[size fromdomain id reason time to addr filter host from todomain received].freeze
-      
+
       attr_reader :name, :n, *INSTANCE_VARIABLE_KEYS
 
       def mta_queue

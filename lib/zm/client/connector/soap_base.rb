@@ -14,7 +14,6 @@ module Zm
       HTTP_HEADERS = {
         'Content-Type' => 'application/json; charset=utf-8'
       }.freeze
-      BODY = :Body
 
       def initialize(scheme, host, port, soap_path)
         extend(ZmLogger)
@@ -38,7 +37,6 @@ module Zm
           curl.headers = HTTP_HEADERS
           curl.ssl_verify_peer = false
           curl.ssl_verify_host = 0
-          # curl.verbose = @verbose
         end
       end
 
@@ -47,16 +45,6 @@ module Zm
         @curl.http_post(body.to_json)
 
         logger.debug @curl.body_str
-
-        soapbody = JSON.parse(@curl.body_str, symbolize_names: true)
-        raise(error_handler, soapbody) if @curl.status.to_i >= 400
-
-        soapbody
-      end
-
-      def curl_xml(xml, error_handler = SoapError)
-        logger.debug xml
-        @curl.http_post(xml)
 
         soapbody = JSON.parse(@curl.body_str, symbolize_names: true)
         raise(error_handler, soapbody) if @curl.status.to_i >= 400

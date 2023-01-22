@@ -2,12 +2,10 @@
 
 require_relative 'soap_base'
 require_relative 'soap_error'
-# require_relative 'soap_xml_builder'
 
 module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
-      # SOAP_PATH = '/service/admin/soap/'
       ADMINSPACE = 'urn:zimbraAdmin'
       A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
 
@@ -20,7 +18,7 @@ module Zm
       def auth(mail, password)
         body = { Body: { AuthRequest: { _jsns: ADMINSPACE, name: mail, password: password } } }
         res = curl_request(body, AuthError)
-        @token = res[BODY][:AuthResponse][:authToken][0][:_content]
+        @token = res[:Body][:AuthResponse][:authToken][0][:_content]
       end
 
       def noop
@@ -33,7 +31,7 @@ module Zm
         body = init_hash_request(:DelegateAuthRequest)
         body[:Body][:DelegateAuthRequest].merge!(req)
         res = curl_request(body)
-        res[BODY][:DelegateAuthResponse][:authToken][0][:_content]
+        res[:Body][:DelegateAuthResponse][:authToken][0][:_content]
       end
 
       def get_license
@@ -58,10 +56,11 @@ module Zm
           folder: folder_name,
           account: { by: :name, _content: account_name },
           a: attrs.to_a.map(&A_NODE_PROC)
-          # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
         }.reject { |_, v| v.nil? }
+
         body = init_hash_request(:CreateGalSyncAccountRequest)
         body[:Body][:CreateGalSyncAccountRequest].merge!(req)
+
         curl_request(body)
       end
 
@@ -94,7 +93,6 @@ module Zm
             type: type,
             name: name,
             a: attrs.to_a.map(&A_NODE_PROC)
-            # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
           }
         }
         body = init_hash_request(:CreateDataSourceRequest)
@@ -278,7 +276,6 @@ module Zm
         req[:attrs] = attrs unless attrs.nil?
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
-        # p body
         curl_request(body)
       end
 
@@ -288,7 +285,6 @@ module Zm
         req[:attrs] = attrs unless attrs.nil?
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
-        # p body
         curl_request(body)
       end
 
@@ -324,7 +320,6 @@ module Zm
         body = init_hash_request(soap_name)
         body[:Body][soap_name][:_jsns] = Zm::Client::SoapAccountConnector::ACCOUNTSPACE
         body[:Body][soap_name].merge!(req)
-        # p body
         curl_request(body)
       end
 
@@ -355,7 +350,6 @@ module Zm
           refresh: refresh
         }.reject { |_, v| v.nil? }
 
-        # body = { Body: { GetQuotaUsageRequest: { _jsns: ADMINSPACE } } }.merge(hash_header(@token))
         body = init_hash_request(soap_name, target_server_id)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
@@ -415,9 +409,6 @@ module Zm
       end
 
       def get_mail_queue(server_name, queue_name, offset = 0, limit = 1000, fields = {})
-        # fields = { fromdomain: 'domain.tld', todomain: 'domain.tld' }
-        # AND operator
-
         query = {
           offset: offset,
           limit: limit
@@ -459,7 +450,6 @@ module Zm
         req = { query: {} }
         body[:Body][soap_name].merge!(req)
         curl_request(body)
-        # curl_xml(SoapXmlBuilder.new(body).to_xml)
       end
 
       def set_password(id, new_password)
