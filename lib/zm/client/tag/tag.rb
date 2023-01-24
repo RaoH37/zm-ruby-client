@@ -6,15 +6,9 @@ module Zm
     class Tag < Base::AccountObject
       include Zm::Model::AttributeChangeObserver
 
-      INSTANCE_VARIABLE_KEYS = %i[id name color rgb].freeze
-
       attr_accessor :id
 
       define_changed_attributes :name, :color, :rgb
-
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
-      end
 
       def create!
         rep = @parent.sacc.create_tag(@parent.token, jsns_builder.to_jsns)
