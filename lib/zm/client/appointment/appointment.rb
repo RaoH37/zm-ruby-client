@@ -4,12 +4,10 @@ module Zm
   module Client
     # class for account appointment
     class Appointment < Base::AccountObject
-      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn allDay organizer timezone calItemId apptId
-                                  invId rev fb transp].freeze
-
-      attr_accessor(*INSTANCE_VARIABLE_KEYS)
+      attr_accessor :id, :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
+                    :calItemId, :apptId, :invId, :rev, :fb, :transp
       attr_writer :folder
-      attr_reader :json, :recipients, :attendees, :body
+      attr_reader :recipients, :attendees, :body
 
       alias description desc
       alias parent_id l
@@ -21,11 +19,8 @@ module Zm
         @attendees = Attendees.new
         @allDay = false
         @timezone = 'Europe/Berlin'
-        yield(self) if block_given?
-      end
 
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
+        yield(self) if block_given?
       end
 
       def folder
@@ -33,9 +28,14 @@ module Zm
       end
 
       def download(dest_file_path, fmt = 'ics')
-        # @parent.uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(folder.absFolderPath, fmt, ['appointment'], [id], dest_file_path)
+        uploader.download_file(
+          Zm::Client::FolderDefault::ROOT[:path],
+          fmt,
+          [Zm::Client::FolderView::APPOINTMENT],
+          [@id],
+          dest_file_path
+        )
       end
 
       def create!

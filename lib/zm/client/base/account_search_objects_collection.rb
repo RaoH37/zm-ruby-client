@@ -32,13 +32,18 @@ module Zm
           self
         end
 
-        def folders(folders)
+        def folders(*folders)
+          folders.select! { |folder| folder.is_a?(Zm::Client::Folder) }
+          return self if folders.empty?
+
           @folders = folders
-          @folder_ids = @folders.map(&:id)
-          self
+          folder_ids(*@folders.map(&:id))
         end
 
-        def folder_ids(folder_ids)
+        def folder_ids(*folder_ids)
+          folder_ids.uniq!
+          return self if @folder_ids == folder_ids
+
           @folder_ids = folder_ids
           self
         end
