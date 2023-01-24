@@ -42,7 +42,6 @@ module Zm
       end
 
       def reset_query_params
-        # @rights = %i[sendAs sendOnBehalfOf]
         @rights = []
       end
     end

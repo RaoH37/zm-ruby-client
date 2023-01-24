@@ -4,13 +4,7 @@ module Zm
   module Client
     # class account ace
     class Ace < Base::AccountObject
-      INSTANCE_VARIABLE_KEYS = %i[zid gt right d].freeze
-
-      attr_accessor(*INSTANCE_VARIABLE_KEYS)
-
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
-      end
+      attr_accessor :zid, :gt, :right, :d
 
       def create!
         rep = @parent.sacc.grant_rights(get_token, jsns_builder.to_jsns)
