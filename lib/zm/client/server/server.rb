@@ -8,19 +8,11 @@ module Zm
     # objectClass: zimbraServer
     class Server < Base::AdminObject
       def mta_queues
-        @mta_queues ||= mta_queues!
-      end
-
-      def mta_queues!
-        MtaQueuesCollection.new self
+        @mta_queues ||= MtaQueuesCollection.new(self)
       end
 
       def backups
-        @backups ||= backups!
-      end
-
-      def backups!
-        BackupsCollection.new self
+        @backups ||= BackupsCollection.new(self)
       end
 
       def accounts
