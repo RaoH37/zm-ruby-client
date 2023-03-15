@@ -14,7 +14,7 @@ module Zm
       end
 
       def add!(email)
-        return false if all.include?(format_email(email))
+        return false if all.include?(Utils.format_email(email))
 
         @parent.sac.add_account_alias(@parent.id, email)
         all.push(email)
@@ -22,7 +22,7 @@ module Zm
       end
 
       def remove!(email)
-        return false unless all.include?(format_email(email))
+        return false unless all.include?(Utils.format_email(email))
 
         @parent.sac.remove_account_alias(@parent.id, email)
         all.delete(email)
@@ -30,12 +30,6 @@ module Zm
       end
 
       private
-
-      def format_email(email)
-        email.strip!
-        email.downcase!
-        email
-      end
 
       def build_aliases
         return if @parent.zimbraMailAlias.is_a?(Array)

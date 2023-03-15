@@ -6,49 +6,43 @@ module Zm
     class DistributionListAliasesCollection
       def initialize(parent)
         @parent = parent
-        @memorized = []
+        @all = []
         build_aliases
       end
 
       def all
-        @memorized
+        @all
       end
 
       def add!(email)
-        return false if @memorized.include?(format_email(email))
+        return false if @all.include?(Utils.format_email(email))
 
         @parent.sac.add_distribution_list_alias(@parent.id, email)
-        @memorized.push(email)
+        @all.push(email)
         true
       end
 
       def remove!(email)
-        return false unless @memorized.include?(format_email(email))
+        return false unless @all.include?(Utils.format_email(email))
 
         @parent.sac.remove_distribution_list_alias(@parent.id, email)
-        @memorized.delete(email)
+        @all.delete(email)
         true
       end
 
       private
-
-      def format_email(email)
-        email.strip!
-        email.downcase!
-        email
-      end
 
       def build_aliases
         return if @parent.zimbraMailAlias.nil?
 
         case @parent.zimbraMailAlias
         when Array
-          @memorized += @parent.zimbraMailAlias
+          @all += @parent.zimbraMailAlias
         when String
-          @memorized.push(@parent.zimbraMailAlias)
+          @all.push(@parent.zimbraMailAlias)
         end
 
-        @memorized.delete(@parent.name)
+        @all.delete(@parent.name)
       end
     end
   end

@@ -51,16 +51,6 @@ module Zm
       def jsns_builder
         @jsns_builder ||= CosJsnsBuilder.new(self)
       end
-
-      def update_attribute(key, value)
-        arrow_attr_sym = Utils.arrow_name_sym(key)
-
-        if value.respond_to?(:empty?) && value.empty?
-          remove_instance_variable(arrow_attr_sym) if instance_variable_get(arrow_attr_sym)
-        else
-          instance_variable_set(arrow_attr_sym, value)
-        end
-      end
     end
   end
 end

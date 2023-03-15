@@ -9,19 +9,12 @@ module Zm
       end
 
       def update!(hash)
-        hash.delete_if { |k, v| v.nil? || !respond_to?(k) }
-        return false if hash.empty?
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
         sac.modify_resource(jsns_builder.to_patch(hash))
 
-        hash.each do |k, v|
-          arrow_attr_sym = "@#{k}".to_sym
-
-          if v.respond_to?(:empty?) && v.empty?
-            remove_instance_variable(arrow_attr_sym) if instance_variable_get(arrow_attr_sym)
-          else
-            instance_variable_set(arrow_attr_sym, v)
-          end
+        hash.each do |key, value|
+          update_attribute(key, value)
         end
 
         true

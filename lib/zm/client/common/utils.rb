@@ -11,6 +11,12 @@ module Zm
       EQUALS = '='
 
       class << self
+        def format_email(email)
+          email.strip!
+          email.downcase!
+          email
+        end
+
         def format_url_params(hash)
           uri = Addressable::URI.new
           uri.query_values = hash

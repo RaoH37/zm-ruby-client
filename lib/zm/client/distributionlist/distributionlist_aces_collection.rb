@@ -8,12 +8,12 @@ module Zm
     class DistributionListAcesCollection
       def initialize(parent)
         @parent = parent
-        @memorized = []
+        @all = []
         build_aces
       end
 
       def all
-        @memorized
+        @all
       end
 
       private
@@ -23,7 +23,7 @@ module Zm
 
         zimbra_aces = @parent.zimbraACE.is_a?(Array) ? @parent.zimbraACE : [@parent.zimbraACE]
 
-        @memorized = zimbra_aces.map do |str|
+        @all = zimbra_aces.map do |str|
           parts = str.split(/\s+/)
           DistributionListAce.new(parts[0], parts[1], parts[2])
         end

@@ -12,7 +12,7 @@ module Zm
       end
 
       def add!(emails)
-        emails.each { |email| format_email(email) }
+        emails.each { |email| Utils.format_email(email) }
         emails.delete_if { |email| @all.include?(email) }
         return false if emails.empty?
 
@@ -22,21 +22,13 @@ module Zm
       end
 
       def remove!(emails)
-        emails.each { |email| format_email(email) }
+        emails.each { |email| Utils.format_email(email) }
         emails.delete_if { |email| !@all.include?(email) }
         return false if emails.empty?
 
         @parent.sac.remove_distribution_list_members(@parent.id, emails)
         @all -= emails
         true
-      end
-
-      private
-
-      def format_email(email)
-        email.strip!
-        email.downcase!
-        email
       end
     end
   end

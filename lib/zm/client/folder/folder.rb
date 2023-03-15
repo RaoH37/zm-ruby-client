@@ -53,14 +53,13 @@ module Zm
         FolderJsnsInitializer.update(self, json)
       end
 
-      def update!(options)
-        options.delete_if { |k, v| v.nil? || !respond_to?(k) }
-        return false if options.empty?
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
-        @parent.sacc.folder_action(@parent.token, jsns_builder.to_patch(options))
+        @parent.sacc.folder_action(@parent.token, jsns_builder.to_patch(hash))
 
-        options.each do |k, v|
-          instance_variable_set("@#{k}", v)
+        hash.each do |key, value|
+          update_attribute(key, value)
         end
 
         true
