@@ -2,6 +2,12 @@
 
 Library to interface with Zimbra simply.
 
+## Installation
+
+```bash
+sudo apt install make gcc curl libcurl4-openssl-dev
+```
+
 ## Examples of uses:
 
 ### Connection:

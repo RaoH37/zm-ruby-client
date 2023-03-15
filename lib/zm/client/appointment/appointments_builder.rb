@@ -11,8 +11,6 @@ module Zm
 
       def make
         root.map do |s|
-          # Appointment.new(@parent, s)
-          # Appointment.new(@parent)
           AppointmentJsnsInitializer.new(@parent, s).create
         end
       end

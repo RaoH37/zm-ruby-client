@@ -11,9 +11,9 @@ module Zm
 
         alias sacc soap_account_connector
 
-        def concat
-          all_instance_variable_keys.map { |key| instance_variable_get(arrow_name(key)) }
-        end
+        # def concat
+        #   all_instance_variable_keys.map { |key| instance_variable_get(arrow_name(key)) }
+        # end
 
         def init_from_json(json)
           all_instance_variable_keys.each do |key|

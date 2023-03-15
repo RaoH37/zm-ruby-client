@@ -10,23 +10,23 @@ module Zm
 
         def initialize(parent)
           @parent = parent
-          @use_builder = true
+          # @use_builder = true
           yield(self) if block_given?
         end
 
-        def disable_builder
-          @use_builder = false
-          self
-        end
-
-        def enable_builder
-          @use_builder = true
-          self
-        end
-
-        def use_builder?
-          @use_builder
-        end
+        # def disable_builder
+        #   @use_builder = false
+        #   self
+        # end
+        #
+        # def enable_builder
+        #   @use_builder = true
+        #   self
+        # end
+        #
+        # def use_builder?
+        #   @use_builder
+        # end
 
         def init_from_json(json)
           @id    = json[:id]
