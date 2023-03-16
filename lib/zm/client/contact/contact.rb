@@ -15,14 +15,6 @@ module Zm
                     :pager, :workCity, :workCountry, :workFax, :workPhone, :workPostalCode, :workState, :workStreet,
                     :workURL, :image, :id, :name, :l, :type, :tn
 
-      alias folder_id l
-
-      # def initialize(parent)
-      #   @parent = parent
-      #
-      #   yield(self) if block_given?
-      # end
-
       def group?
         @type == GROUP_PATTERN
       end
@@ -41,11 +33,6 @@ module Zm
         super
       end
 
-      def delete!
-        @parent.sacc.contact_action(@parent.token, jsns_builder.to_delete)
-        super
-      end
-
       def update!(hash)
         hash.delete_if { |k, v| v.nil? || !respond_to?(k) }
         return false if hash.empty?
@@ -56,14 +43,6 @@ module Zm
 
       def modify!
         @parent.sacc.modify_contact(@parent.token, jsns_builder.to_update)
-      end
-
-      def move!(new_folder_id = @l)
-        new_folder_id = new_folder_id.id if new_folder_id.is_a?(Folder)
-        return false if new_folder_id == @l
-
-        @l = new_folder_id
-        @parent.sacc.contact_action(@parent.token, jsns_builder.to_move)
       end
 
       private

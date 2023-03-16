@@ -3,23 +3,12 @@
 module Zm
   module Client
     # class for account appointment
-    class AppointmentJsnsBuilder
-      def initialize(appointment)
-        @appointment = appointment
-      end
-
-      def to_delete
-        {
-          comp: 0,
-          id: @appointment.id
-        }
-      end
-
+    class AppointmentJsnsBuilder < BaseAccountJsnsBuilder
       def to_jsns
         {
           m: {
-            l: @appointment.l,
-            su: @appointment.name,
+            l: @item.l,
+            su: @item.name,
             e: recipients_to_jsns,
             mp: body_to_jsns,
             inv: {
@@ -34,13 +23,13 @@ module Zm
       def to_update
         jsns = to_jsns
         jsns[:comp] = 0
-        jsns[:id] = @appointment.id
-        jsns[:m][:inv][:uid] = @appointment.uid
+        jsns[:id] = @item.id
+        jsns[:m][:inv][:uid] = @item.uid
         jsns
       end
 
       def recipients_to_jsns
-        @appointment.recipients.map do |recipient|
+        @item.recipients.map do |recipient|
           {
             t: recipient.field,
             a: recipient.email,
@@ -59,30 +48,30 @@ module Zm
       end
 
       def body_text_jsns
-        { ct: 'text/plain', content: { _content: @appointment.body.text } }
+        { ct: 'text/plain', content: { _content: @item.body.text } }
       end
 
       def body_html_jsns
-        { ct: 'text/html', content: { _content: @appointment.body.html } }
+        { ct: 'text/html', content: { _content: @item.body.html } }
       end
 
       def comp_to_jsns
         [
           {
-            allDay: @appointment.allDay,
+            allDay: @item.allDay,
             at: attendees_to_jsns,
             e: end_at_jsns,
             s: start_at_jsns,
             or: organizer_to_jsns,
-            name: @appointment.name,
-            fb: @appointment.fb,
-            transp: @appointment.transp
+            name: @item.name,
+            fb: @item.fb,
+            transp: @item.transp
           }.reject { |_, v| v.nil? }
         ]
       end
 
       def attendees_to_jsns
-        @appointment.attendees.map do |attendee|
+        @item.attendees.map do |attendee|
           {
             a: attendee.email,
             d: attendee.display_name,
@@ -95,29 +84,29 @@ module Zm
 
       def end_at_jsns
         {
-          d: @appointment.end_at.strftime(time_format),
-          tz: @appointment.timezone
+          d: @item.end_at.strftime(time_format),
+          tz: @item.timezone
         }
       end
 
       def start_at_jsns
         {
-          d: @appointment.start_at.strftime(time_format),
-          tz: @appointment.timezone
+          d: @item.start_at.strftime(time_format),
+          tz: @item.timezone
         }
       end
 
       def organizer_to_jsns
-        return nil if @appointment.organizer.nil?
+        return nil if @item.organizer.nil?
 
         {
-          a: @appointment.organizer.email,
-          d: @appointment.organizer.display_name
+          a: @item.organizer.email,
+          d: @item.organizer.display_name
         }.reject { |_, v| v.nil? }
       end
 
       def time_format
-        @time_format ||= @appointment.allDay ? '%Y%m%d' : '%Y%m%dT%H%M00'
+        @time_format ||= @item.allDay ? '%Y%m%d' : '%Y%m%dT%H%M00'
       end
     end
   end

@@ -23,10 +23,6 @@ module Zm
         yield(self) if block_given?
       end
 
-      def folder
-        @folder ||= @parent.folders.all.find { |folder| folder.id == l }
-      end
-
       def download(dest_file_path, fmt = 'ics')
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_file(
@@ -57,11 +53,6 @@ module Zm
         aji = AppointmentJsnsInitializer.new(@parent, entry)
         aji.appointment = self
         aji.create
-      end
-
-      def delete!
-        @parent.sacc.cancel_appointment(@parent.token, jsns_builder.to_delete)
-        super
       end
 
       def free!

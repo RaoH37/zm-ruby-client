@@ -78,12 +78,12 @@ module Zm
         curl_request(body)
       end
 
-      def cancel_appointment(token, jsns)
-        soap_name = :CancelAppointmentRequest
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
+      # def cancel_appointment(token, jsns)
+      #   soap_name = :CancelAppointmentRequest
+      #   body = init_hash_request(token, soap_name)
+      #   body[:Body][soap_name].merge!(jsns)
+      #   curl_request(body)
+      # end
 
       # -------------------------------
       # CONTACT
@@ -109,12 +109,12 @@ module Zm
         curl_request(body)
       end
 
-      def contact_action(token, jsns)
-        soap_name = :ContactActionRequest
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
+      # def contact_action(token, jsns)
+      #   soap_name = :ContactActionRequest
+      #   body = init_hash_request(token, soap_name)
+      #   body[:Body][soap_name].merge!(jsns)
+      #   curl_request(body)
+      # end
 
       # -------------------------------
       # DOCUMENT
@@ -128,13 +128,8 @@ module Zm
         curl_request(body)
       end
 
-      def item_action(token, op, id, options = {})
-        soap_name = :ItemActionRequest
-        action = { op: op, id: id }.merge(options)
-        req = { action: action }
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
+      def item_action(token, jsns)
+        jsns_request(:ItemActionRequest, token, jsns)
       end
 
       # -------------------------------
@@ -351,7 +346,7 @@ module Zm
 
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)
         body[:Body][soap_name].merge!(req) if req.any?
-        puts body
+        # puts body
         curl_request(body)
       end
 

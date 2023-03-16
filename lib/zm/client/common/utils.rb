@@ -39,6 +39,20 @@ module Zm
 
           "#{name}#{EQUALS}"
         end
+
+        def map_format(array, klass, method_name)
+          array.map! do |item|
+            if item.is_a?(klass)
+              item
+            elsif item.respond_to?(method_name)
+              item.name
+            else
+              nil
+            end
+          end
+          array.compact!
+          array
+        end
       end
     end
   end

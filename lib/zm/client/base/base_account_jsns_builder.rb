@@ -8,6 +8,14 @@ module Zm
         @item = item
       end
 
+      def to_tag(tag_name)
+        { action: { op: :tag, id: @item.id, tn: tag_name } }
+      end
+
+      def to_move(new_folder_id)
+        { action: { op: :move, id: @item.id, l: new_folder_id } }
+      end
+
       def to_patch(hash)
         action = {
          op: :update,
@@ -28,11 +36,11 @@ module Zm
         { action: action }
       end
 
-      def to_rename
+      def to_rename(new_name)
         action = {
          op: :rename,
          id: @item.id,
-         name: @item.name
+         name: new_name
         }
 
         { action: action }

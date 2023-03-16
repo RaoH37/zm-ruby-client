@@ -5,26 +5,16 @@ module Zm
     # class factory [documents]
     class DocumentsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        @parent = parent
-        @json = json
+        super(parent, json)
+        @json_item_key = :doc
       end
 
       def make
-        root.map do |s|
-          Document.new(@parent, s)
+        return [] if json_items.nil?
+
+        json_items.map do |entry|
+          DocumentJsnsInitializer.create(@parent, entry)
         end
-      end
-
-      def ids
-        root.map { |s| s[:id] }
-      end
-
-      def root
-        root = @json[:Body][:SearchResponse][:doc]
-        return [] if root.nil?
-
-        root = [root] unless root.is_a?(Array)
-        root
       end
     end
   end

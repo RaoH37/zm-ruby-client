@@ -20,6 +20,10 @@ module Zm
           end
         end
 
+        def ids
+          root.map { |s| s[:id] }
+        end
+
         private
 
         def json_items
