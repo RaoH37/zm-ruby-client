@@ -4,7 +4,6 @@ module Zm
   module Client
     # Collection MtaQueues
     class MtaQueuesCollection < Base::ObjectsCollection
-
       def initialize(parent)
         @parent = parent
         reset_query_params

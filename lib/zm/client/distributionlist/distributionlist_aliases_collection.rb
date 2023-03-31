@@ -10,9 +10,7 @@ module Zm
         build_aliases
       end
 
-      def all
-        @all
-      end
+      attr_reader :all
 
       def add!(email)
         return false if @all.include?(Utils.format_email(email))

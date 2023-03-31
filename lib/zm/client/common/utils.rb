@@ -46,8 +46,6 @@ module Zm
               item
             elsif item.respond_to?(method_name)
               item.name
-            else
-              nil
             end
           end
           array.compact!

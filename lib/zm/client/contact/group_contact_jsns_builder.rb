@@ -12,30 +12,30 @@ module Zm
 
       def to_jsns
         {
-         cn: {
-          a: instance_variables_array.map(&Utils::A_NODE_PROC),
-          l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS[:id],
-          m: members_node
-         }
+          cn: {
+            a: instance_variables_array.map(&Utils::A_NODE_PROC),
+            l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS[:id],
+            m: members_node
+          }
         }
       end
 
       def to_update
         {
-         cn: {
-          a: instance_variables_array.map(&Utils::A_NODE_PROC),
-          id: @item.id,
-          m: members_node
-         }
+          cn: {
+            a: instance_variables_array.map(&Utils::A_NODE_PROC),
+            id: @item.id,
+            m: members_node
+          }
         }
       end
 
       def to_patch(hash)
         {
-         cn: {
-          id: @item.id,
-          a: hash.map(&Utils::A_ARRAY_PROC).flatten(1).map(&Utils::A_NODE_PROC)
-         }
+          cn: {
+            id: @item.id,
+            a: hash.map(&Utils::A_ARRAY_PROC).flatten(1).map(&Utils::A_NODE_PROC)
+          }
         }
       end
 
@@ -50,7 +50,7 @@ module Zm
       alias to_create to_jsns
 
       def members_node
-        @item.members.all.reject { |m| m.current? }.map do |m|
+        @item.members.all.reject(&:current?).map do |m|
           { type: m.type, value: m.value, op: m.op }
         end
       end

@@ -78,6 +78,7 @@ module Zm
 
       def empty!
         return false if empty?
+
         @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_empty)
         @n = 0
       end

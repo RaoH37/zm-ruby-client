@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Zm
   module Utils
     class ThreadPool
@@ -20,7 +22,7 @@ module Zm
         @finish = true
         @result = result
         @number = number
-        @jobs = [[ Proc.new {}, nil]]
+        @jobs = [[proc {}, nil]]
       end
 
       def jobs_size
@@ -61,7 +63,7 @@ module Zm
               loop do
                 job, args = @jobs.pop
                 job.call(*args)
-                break if @jobs.size.zero?
+                break if @jobs.empty?
               end
             end
           end

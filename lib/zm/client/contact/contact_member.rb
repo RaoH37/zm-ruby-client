@@ -9,7 +9,7 @@ module Zm
       ADD      = '+'
       DEL      = '-'
 
-      # todo: voir s'il y a possibilité d'utiliser ces méthodes autrement (pas obligé)
+      # TODO: voir s'il y a possibilité d'utiliser ces méthodes autrement (pas obligé)
       # class << self
       #   def find_type_by_value(value)
       #     return INTERNAL if !value.to_i.zero? || Zm::Client::Regex::SHARED_CONTACT.match(value)

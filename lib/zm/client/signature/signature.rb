@@ -25,6 +25,7 @@ module Zm
 
       def delete!
         return false if @id.nil?
+
         @parent.sacc.delete_signature(@parent.token, jsns_builder.to_delete)
         @id = nil
       end

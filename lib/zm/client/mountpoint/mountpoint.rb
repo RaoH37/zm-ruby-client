@@ -7,7 +7,7 @@ module Zm
       include Zm::Model::AttributeChangeObserver
 
       attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid,
-                  :activesyncdisabled, :absFolderPath, :view, :zid, :id, :webOfflineSyncDays
+                    :activesyncdisabled, :absFolderPath, :view, :zid, :id, :webOfflineSyncDays
 
       define_changed_attributes :name, :color, :rgb, :l
 

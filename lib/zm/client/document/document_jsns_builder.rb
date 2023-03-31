@@ -10,9 +10,9 @@ module Zm
 
       def to_delete
         action = {
-         op: :delete,
-         comp: 0,
-         id: @item.id
+          op: :delete,
+          comp: 0,
+          id: @item.id
         }
 
         { action: action }

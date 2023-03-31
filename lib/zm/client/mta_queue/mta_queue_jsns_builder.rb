@@ -8,7 +8,7 @@ module Zm
         {
           server: {
             name: @item.server.name,
-              queue: {
+            queue: {
               name: @item.name,
               action: {
                 op: op,

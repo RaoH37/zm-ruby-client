@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ZmLogger
   attr_accessor :logger, :logger_file_path, :logger_level
 

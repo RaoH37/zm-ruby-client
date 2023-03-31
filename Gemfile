@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-ruby '~> 2.6'
+ruby ">= 2.7"
 
-gem 'addressable', '~> 2.6'
-gem 'curb', '~> 0.9.8'
-gem 'version_sorter'
+gem 'addressable', '~> 2.8'
+gem 'curb', '~> 1.0'
+gem 'version_sorter', '~> 2.3'

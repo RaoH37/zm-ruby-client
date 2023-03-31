@@ -12,9 +12,7 @@ module Zm
         build_aces
       end
 
-      def all
-        @all
-      end
+      attr_reader :all
 
       private
 

@@ -18,7 +18,10 @@ module Zm
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_update) if color_changed? || rgb_changed?
+        return unless color_changed? || rgb_changed?
+
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token,
+                                  jsns_builder.to_update)
       end
 
       private

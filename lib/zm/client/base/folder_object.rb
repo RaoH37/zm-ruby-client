@@ -11,7 +11,10 @@ module Zm
         end
 
         def color!
-          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_color) if color_changed? || rgb_changed?
+          if color_changed? || rgb_changed?
+            @parent.sacc.jsns_request(:FolderActionRequest, @parent.token,
+                                      jsns_builder.to_color)
+          end
           true
         end
 

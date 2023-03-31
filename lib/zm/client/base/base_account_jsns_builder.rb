@@ -20,8 +20,8 @@ module Zm
 
       def to_patch(hash)
         action = {
-         op: :update,
-         id: @item.id
+          op: :update,
+          id: @item.id
         }.merge(hash)
 
         action.reject! { |_, v| v.nil? }
@@ -31,8 +31,8 @@ module Zm
 
       def to_delete
         action = {
-         op: :delete,
-         id: @item.id
+          op: :delete,
+          id: @item.id
         }
 
         { action: action }
@@ -42,9 +42,9 @@ module Zm
         new_name ||= @item.name
 
         action = {
-         op: :rename,
-         id: @item.id,
-         name: new_name
+          op: :rename,
+          id: @item.id,
+          name: new_name
         }
 
         { action: action }

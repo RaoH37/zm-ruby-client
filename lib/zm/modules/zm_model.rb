@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Zm
   module Model
     module AttributeChangeObserver
@@ -17,11 +19,11 @@ module Zm
             def #{attr_name}_changed
               @#{attr_name}_changed ||= false
             end
-    
+
             def #{attr_name}_changed?
               #{attr_name}_changed
             end
-    
+
             def #{attr_name}=(value)
               return @#{attr_name} if value == @#{attr_name}
               @#{attr_name}_changed = true

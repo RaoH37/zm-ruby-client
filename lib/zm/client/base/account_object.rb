@@ -45,12 +45,14 @@ module Zm
 
         def rename!(new_name)
           return false if new_name == @name
+
           @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_rename(new_name))
           @name = new_name
         end
 
         def delete!
           return false if @id.nil?
+
           @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
           @id = nil
         end
