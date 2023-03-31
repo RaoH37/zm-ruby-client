@@ -21,11 +21,6 @@ module Zm
         @token = res[:Body][:AuthResponse][:authToken][0][:_content]
       end
 
-      # def noop
-      #   body = init_hash_request(:NoOpRequest)
-      #   curl_request(body)
-      # end
-
       def delegate_auth(name, by = :name, duration = nil)
         req = { duration: duration, account: { by: by, _content: name } }.reject { |_, v| v.nil? }
         body = init_hash_request(:DelegateAuthRequest)
@@ -33,93 +28,6 @@ module Zm
         res = curl_request(body)
         res[:Body][:DelegateAuthResponse][:authToken][0][:_content]
       end
-
-      # def get_license
-      #   body = init_hash_request(:GetLicenseRequest)
-      #   curl_request(body)
-      # end
-
-      # def count_object(type)
-      #   soap_name = :CountObjectsRequest
-      #   body = init_hash_request(soap_name)
-      #   req = { type: type }
-      #   body[:Body][soap_name].merge!(req)
-      #   curl_request(body)
-      # end
-
-      # def create_gal_sync_account(name, domain_name, type, server_name, folder_name, account_name, attrs = {})
-      #   req = {
-      #     name: name,
-      #     domain: domain_name,
-      #     type: type,
-      #     server: server_name,
-      #     folder: folder_name,
-      #     account: { by: :name, _content: account_name },
-      #     a: attrs.to_a.map(&A_NODE_PROC)
-      #   }.reject { |_, v| v.nil? }
-      #
-      #   body = init_hash_request(:CreateGalSyncAccountRequest)
-      #   body[:Body][:CreateGalSyncAccountRequest].merge!(req)
-      #
-      #   curl_request(body)
-      # end
-
-      # def sync_gal_account(gal_account_id, data_source, by = :name, full_sync = 1, reset = 1)
-      #   req = {
-      #     account: {
-      #       id: gal_account_id,
-      #       datasource: {
-      #         by: by,
-      #         fullSync: full_sync,
-      #         reset: reset,
-      #         _content: data_source
-      #       }
-      #     }
-      #   }
-      #   body = init_hash_request(:SyncGalAccountRequest)
-      #   body[:Body][:SyncGalAccountRequest].merge!(req)
-      #   curl_request(body)
-      # end
-
-      # def get_all_domains
-      #   body = init_hash_request(:GetAllDomainsRequest)
-      #   curl_request(body)
-      # end
-
-      # def create_data_source(name, account_id, type, attrs = {})
-      #   req = {
-      #     id: account_id,
-      #     dataSource: {
-      #       type: type,
-      #       name: name,
-      #       a: attrs.to_a.map(&A_NODE_PROC)
-      #     }
-      #   }
-      #   body = init_hash_request(:CreateDataSourceRequest)
-      #   body[:Body][:CreateDataSourceRequest].merge!(req)
-      #   curl_request(body)
-      # end
-
-      # def get_data_sources(id)
-      #   req = { id: id }
-      #   body = init_hash_request(:GetDataSourcesRequest)
-      #   body[:Body][:GetDataSourcesRequest].merge!(req)
-      #   curl_request(body)
-      # end
-
-      # def delete_data_source(account_id, data_source_id)
-      #   req = { id: account_id, dataSource: { id: data_source_id } }
-      #   body = init_hash_request(:DeleteDataSourceRequest)
-      #   body[:Body][:DeleteDataSourceRequest].merge!(req)
-      #   curl_request(body)
-      # end
-
-      # def get_all_servers(services = nil)
-      #   req = { service: services }.reject { |_, v| v.nil? }
-      #   body = init_hash_request(:GetAllServersRequest)
-      #   body[:Body][:GetAllServersRequest].merge!(req)
-      #   curl_request(body)
-      # end
 
       def get_server(name, by = :name, attrs = nil)
         req = { server: { by: by, _content: name }, attrs: attrs }
@@ -136,43 +44,11 @@ module Zm
         curl_request(body)
       end
 
-      # def create_cos(jsns)
-      #   jsns_request(:CreateCosRequest, jsns)
-      # end
-
-      # def modify_cos(jsns)
-      #   jsns_request(:ModifyCosRequest, jsns)
-      # end
-
       def jsns_request(soap_name, jsns)
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(jsns) if jsns.is_a?(Hash)
         curl_request(body)
       end
-
-      # def create_account(jsns)
-      #   jsns_request(:CreateAccountRequest, jsns)
-      # end
-
-      # def create_resource(jsns)
-      #   jsns_request(:CreateCalendarResourceRequest, jsns)
-      # end
-
-      # def create_distribution_list(jsns)
-      #   jsns_request(:CreateDistributionListRequest, jsns)
-      # end
-
-      # def modify_account(jsns)
-      #   jsns_request(:ModifyAccountRequest, jsns)
-      # end
-
-      # def modify_resource(jsns)
-      #   jsns_request(:ModifyCalendarResourceRequest, jsns)
-      # end
-
-      # def modify_distribution_list(jsns)
-      #   jsns_request(:ModifyDistributionListRequest, jsns)
-      # end
 
       def generic_modify(soap_name, id, attrs)
         req = {
@@ -245,14 +121,6 @@ module Zm
         curl_request(body)
       end
 
-      # def create_domain(jsns)
-      #   jsns_request(:CreateDomainRequest, jsns)
-      # end
-
-      # def modify_domain(jsns)
-      #   jsns_request(:ModifyDomainRequest, jsns)
-      # end
-
       def get_account(name, by = :name, attrs = nil, applyCos = 1)
         soap_name = :GetAccountRequest
         req = { account: { by: by, _content: name }, applyCos: applyCos }
@@ -298,22 +166,6 @@ module Zm
         curl_request(body)
       end
 
-      # def delete_account(id)
-      #   generic_delete(:DeleteAccountRequest, id)
-      # end
-
-      # def delete_domain(id)
-      #   generic_delete(:DeleteDomainRequest, id)
-      # end
-
-      # def delete_resource(id)
-      #   generic_delete(:DeleteCalendarResourceRequest, id)
-      # end
-
-      # def delete_distribution_list(id)
-      #   generic_delete(:DeleteDistributionListRequest, id)
-      # end
-
       def distribution_list_action(name, by = :name, action = {})
         soap_name = :DistributionListActionRequest
         req = { dl: { by: by, _content: name }, action: action }
@@ -322,20 +174,6 @@ module Zm
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
-
-      # def generic_delete(soap_name, id)
-      #   body = init_hash_request(soap_name)
-      #   body[:Body][soap_name][:id] = id
-      #   curl_request(body)
-      # end
-
-      # def search_directory(jsns)
-      #   soap_name = :SearchDirectoryRequest
-      #   body = init_hash_request(soap_name)
-      #   body[:Body][soap_name].merge!(jsns)
-      #
-      #   curl_request(body)
-      # end
 
       def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil,
                           refresh = nil, target_server_id = nil)
@@ -415,20 +253,6 @@ module Zm
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
-
-      # def set_password(id, new_password)
-      #   soap_name = :SetPasswordRequest
-      #   body = init_hash_request(soap_name)
-      #   req = { id: id, newPassword: new_password }
-      #   body[:Body][soap_name].merge!(req)
-      #   curl_request(body)
-      # end
-
-      # def get_version_info
-      #   soap_name = :GetVersionInfoRequest
-      #   body = init_hash_request(soap_name)
-      #   curl_request(body)
-      # end
 
       def init_hash_request(soap_name, target_server = nil)
         {
