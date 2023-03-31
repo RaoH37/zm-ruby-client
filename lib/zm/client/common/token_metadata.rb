@@ -21,11 +21,7 @@ module Zm
       end
 
       def metadatas
-        @metadatas ||= Hash[decoded.split('
-').map do |v|
-  key, len, str = v.split(/[:=]/)
-  [key, str]
-end].freeze
+        @metadatas ||= Hash[decoded.split(';').map { |v| key, len, str = v.split(/[:=]/); [key, str] }].freeze
       end
 
       def zimbra_id

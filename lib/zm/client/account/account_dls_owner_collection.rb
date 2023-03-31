@@ -11,12 +11,7 @@ module Zm
       private
 
       def make_query
-        jsns = {
-          query: "(zimbraACE=#{@parent.id} usr ownDistList)",
-          types: SearchType::DL
-        }
-
-        @parent.sac.jsns_request(:SearchDirectoryRequest, jsns)
+        @parent.sac.search_directory("(zimbraACE=#{@parent.id} usr ownDistList)", SoapUtils::MAX_RESULT, nil, nil, nil, nil, nil, nil, SearchType::DL)
       end
 
       def build_response

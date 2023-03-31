@@ -7,15 +7,25 @@ module Zm
       def initialize(parent, json)
         super(parent, json)
         @child_class = Domain
-        @json_item_key = :domain
       end
 
-      def make
-        return [] if json_items.nil?
+      # def make
+      #   records = []
+      #   return records if json_items.nil?
+      #
+      #   json_items.each do |entry|
+      #     domain = Domain.new(@parent)
+      #     domain.init_from_json(entry)
+      #     records << domain
+      #   end
+      #
+      #   records
+      # end
 
-        json_items.map do |entry|
-          DomainJsnsInitializer.create(@parent, entry)
-        end
+      private
+
+      def json_items
+        @json_items ||= @json[:Body][json_key][:domain]
       end
     end
   end

@@ -3,32 +3,23 @@
 module Zm
   module Client
     # collection account contacts
-    class ContactsCollection < Base::AccountObjectsCollection
+    class ContactsCollection < Base::ObjectsCollection
       def initialize(parent)
-        @child_class = Contact
-        @builder_class = ContactBuilder
-        @folder_id = nil
-        super(parent)
+        @parent = parent
       end
 
-      def folder(folder)
-        return self unless folder.is_a?(Zm::Client::Folder)
-
-        folder_id(folder.id)
-      end
-
-      def folder_id(folder_id)
-        return self if @folder_id == folder_id
-
-        @folder_id = folder_id
-        self
+      def new
+        contact = Contact.new(@parent)
+        yield(contact) if block_given?
+        contact
       end
 
       private
 
-      def make_query
-        jsns = @folder_id.nil? ? nil : { l: @folder_id }
-        @parent.sacc.jsns_request(:GetContactsRequest, @parent.token, jsns)
+      def build_response
+        rep = @parent.sacc.get_all_contacts(@parent.token)
+        cb = ContactBuilder.new @parent, rep
+        cb.make
       end
     end
   end

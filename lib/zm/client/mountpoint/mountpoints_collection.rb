@@ -3,17 +3,21 @@
 module Zm
   module Client
     # collection of mountpoints
-    class MountPointsCollection < Base::AccountObjectsCollection
+    class MountPointsCollection < Base::ObjectsCollection
+      METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
+
       attr_reader :root
 
-      attr_accessor :view, :tr, :visible, :needGranteeName, :depth
-
       def initialize(parent)
-        @child_class = MountPoint
-        @builder_class = MountPointsBuilder
-        super(parent)
+        @parent = parent
         @root = nil
         reset_query_params
+      end
+
+      def new
+        mountpoint = MountPoint.new(@parent)
+        yield(mountpoint) if block_given?
+        mountpoint
       end
 
       def where(view: nil, tr: nil)
@@ -21,6 +25,14 @@ module Zm
         @tr = tr
         @all = nil
         self
+      end
+
+      def all
+        @all || all!
+      end
+
+      def all!
+        build_response
       end
 
       def clear
@@ -31,20 +43,18 @@ module Zm
 
       private
 
+      def build_response
+        @all = MountPointsBuilder.new(@parent, make_query).make
+        @all
+      end
+
       def make_query
-        @parent.sacc.jsns_request(:GetFolderRequest, @parent.token, jsns_builder.to_jsns)
+        @parent.sacc.get_all_folders(@parent.token, @view, @tr)
       end
 
       def reset_query_params
         @view = nil
         @tr = nil
-        @visible = nil
-        @needGranteeName = nil
-        @depth = nil
-      end
-
-      def jsns_builder
-        @jsns_builder ||= FoldersJsnsBuilder.new(self)
       end
     end
   end

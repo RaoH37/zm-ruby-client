@@ -2,8 +2,9 @@
 
 module Zm
   module Client
-    # class for account signature jsns builder
+    # class for account signature
     class SignatureJsnsBuilder
+
       def initialize(signature)
         @signature = signature
       end
@@ -22,10 +23,6 @@ module Zm
         jsns[:signature][:id] = @signature.id unless @signature.id.nil?
 
         jsns
-      end
-
-      def to_delete
-        { signature: { id: @signature.id } }
       end
     end
   end

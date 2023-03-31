@@ -3,17 +3,23 @@
 module Zm
   module Client
     # collection account tags
-    class TagsCollection < Base::AccountObjectsCollection
+    class TagsCollection < Base::ObjectsCollection
       def initialize(parent)
-        @child_class = Tag
-        @builder_class = TagBuilder
-        super(parent)
+        @parent = parent
+      end
+
+      def new
+        tag = Tag.new(@parent)
+        yield(tag) if block_given?
+        tag
       end
 
       private
 
-      def make_query
-        @parent.sacc.jsns_request(:GetTagRequest, @parent.token, nil)
+      def build_response
+        rep = @parent.sacc.get_tag(@parent.token)
+        tb = TagBuilder.new @parent, rep
+        tb.make
       end
     end
   end

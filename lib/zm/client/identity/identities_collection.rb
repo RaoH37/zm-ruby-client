@@ -2,18 +2,24 @@
 
 module Zm
   module Client
-    # collection account identities
-    class IdentitiesCollection < Base::AccountObjectsCollection
+    # collection account identitys
+    class IdentitiesCollection < Base::ObjectsCollection
       def initialize(parent)
-        @child_class = Identity
-        @builder_class = IdentitiesBuilder
-        super(parent)
+        @parent = parent
+      end
+
+      def new
+        identity = Identity.new(@parent)
+        yield(identity) if block_given?
+        identity
       end
 
       private
 
-      def make_query
-        @parent.sacc.get_all_identities(@parent.token)
+      def build_response
+        rep = @parent.sacc.get_all_identities(@parent.token)
+        ib = IdentitiesBuilder.new @parent, rep
+        ib.make
       end
     end
   end

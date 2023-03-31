@@ -7,15 +7,24 @@ module Zm
       def initialize(parent, json)
         @parent = parent
         @json = json
-        @json_item_key = :task
       end
 
       def make
-        return [] if json_items.nil?
-
-        json_items.map do |entry|
-          TaskJsnsInitializer.create(@parent, entry)
+        root.map do |s|
+          Task.new(@parent, s)
         end
+      end
+
+      def ids
+        root.map { |s| s[:id] }
+      end
+
+      def root
+        root = @json[:Body][:SearchResponse][:task]
+        return [] if root.nil?
+
+        root = [root] unless root.is_a?(Array)
+        root
       end
     end
   end

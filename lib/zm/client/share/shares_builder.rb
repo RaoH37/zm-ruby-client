@@ -5,15 +5,17 @@ module Zm
     # class factory [shares]
     class ShareBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
-        @json_item_key = :share
+        @parent = parent
+        @json = json
       end
 
       def make
-        return [] if json_items.nil?
+        root = @json[:Body][:GetShareInfoResponse][:share]
+        return [] if root.nil?
 
-        json_items.map do |entry|
-          ShareJsnsInitializer.create(@parent, entry)
+        root = [root] unless root.is_a?(Array)
+        root.map do |s|
+          Share.new(@parent, s)
         end
       end
     end

@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 module DocumentFolder
-  UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/.freeze
+  UUID_REGEX = %r{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}:[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}}
 
   def upload(file_path)
     uploader = Zm::Client::Upload.new(@parent, Zm::Client::RestAccountConnector.new)
@@ -9,7 +7,7 @@ module DocumentFolder
 
     uuid = str.scan(UUID_REGEX).first
 
-    raise Zm::Client::RestError, 'failed to extract uuid' if uuid.nil?
+    raise Zm::Client::RestError, "failed to extract uuid" if uuid.nil?
 
     upload_options = { upload: { id: uuid } }
     rep = @parent.sacc.save_document(@parent.token, id, upload_options)

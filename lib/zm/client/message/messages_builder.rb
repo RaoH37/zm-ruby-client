@@ -16,7 +16,7 @@ module Zm
       end
 
       def ids
-        @json[:Body][:SearchResponse][:hit].map { |s| s[:id] }
+        root.map { |s| s[:id] }
       end
 
       def root

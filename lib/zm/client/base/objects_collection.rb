@@ -38,6 +38,14 @@ module Zm
           @all = build_response
         end
 
+        def where(ldap_query)
+          return self if @ldap_query == ldap_query
+
+          @all = nil
+          @ldap_query = ldap_query
+          self
+        end
+
         def per_page(limit)
           return self if @limit == limit
 
@@ -45,8 +53,6 @@ module Zm
           @limit = limit
           self
         end
-
-        alias limit per_page
 
         def page(offset)
           return self if @offset == offset
@@ -56,14 +62,25 @@ module Zm
           self
         end
 
-        alias offset page
-
         def order(sort_by, sort_ascending = SoapUtils::ON)
           return self if @sort_by == sort_by && @sort_ascending == sort_ascending
 
           @all = nil
           @sort_by = sort_by
           @sort_ascending = sort_ascending
+          self
+        end
+
+        def count
+          @count_only = SoapUtils::ON
+          make_query[:Body][:SearchDirectoryResponse][:num]
+        end
+
+        def attrs(*attrs)
+          return self if @attrs == attrs
+
+          @all = nil
+          @attrs = attrs
           self
         end
 
@@ -79,20 +96,23 @@ module Zm
           METHODS_MISSING_LIST.include?(method) || super
         end
 
-        def logger
-          @parent.logger
-        end
-
         private
-
-        def build_response
-          @builder_class.new(@parent, make_query).make
-        end
 
         def soap_admin_connector
           @parent.soap_admin_connector
         end
+
         alias sac soap_admin_connector
+
+        def make_query
+          json = sac.search_directory(
+            @ldap_query, @max_result, @limit, @offset,
+            @domain_name, @apply_cos, nil, @sort_by, @search_type,
+            @sort_ascending, @count_only, attrs_comma
+          )
+          reset_query_params
+          json
+        end
 
         def attrs_comma
           return @attrs unless @attrs.is_a?(Array)
@@ -108,9 +128,6 @@ module Zm
           @sort_by = nil
           @sort_ascending = SoapUtils::ON
           @count_only = SoapUtils::OFF
-          @all_servers = SoapUtils::OFF
-          @refresh = SoapUtils::OFF
-          @apply_cos = SoapUtils::ON
         end
       end
     end

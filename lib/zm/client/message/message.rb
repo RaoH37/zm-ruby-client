@@ -4,8 +4,10 @@ module Zm
   module Client
     # class message for account
     class Message < Base::AccountObject
-      INSTANCE_VARIABLE_KEYS = %i[id date l su fr autoSendTime mid idnt].freeze
-      attr_accessor(*INSTANCE_VARIABLE_KEYS, :subject)
+      INSTANCE_VARIABLE_KEYS = %i[id date l su fr]
+      attr_accessor *INSTANCE_VARIABLE_KEYS
+
+      attr_accessor :subject
       attr_reader :recipients, :attachments, :body, :folder
 
       def initialize(parent, json = nil)
@@ -20,14 +22,6 @@ module Zm
         yield(self) if block_given?
       end
 
-      def has_attachment?
-        @has_attachment ||= @attachments.all.any?
-      end
-
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
-      end
-
       def from
         @from ||= @recipients.find { |r| r.field == Recipient::FROM }
       end
@@ -35,6 +29,15 @@ module Zm
       def folder=(folder)
         @folder = folder
         @l = folder.id
+      end
+
+      def to_jsns
+        {
+          attach: @attachments.to_jsns,
+          e: @recipients.to_jsns,
+          su: { _content: @subject },
+          mp: @body.to_jsns
+        }
       end
 
       def delete!
@@ -86,76 +89,18 @@ module Zm
         @parent.sacc.send_msg(@parent.token, to_jsns)
       end
 
-      def to_jsns
-        h = {
-          id: @id,
-          attach: @attachments.to_jsns,
-          e: @recipients.to_jsns,
-          su: { _content: @su },
-          mp: @body.to_jsns
-        }.delete_if { |_, v| v.nil? }
-
-        h[:did] = @id if l.to_i == FolderDefault::DRAFTS[:id]
-
-        h
-      end
-
       def init_from_json(json)
         # puts json
         @id   = json[:id]
-        @date = Time.at(json[:d] / 1000)
+        @date = Time.at(json[:d]/1000)
         @l    = json[:l]
         @su   = json[:su]
         @fr   = json[:fr]
-        @autoSendTime = json[:autoSendTime]
-        @mid  = json[:mid]
-        @idnt = json[:idnt]
-        @has_attachment = json[:f].to_s.include?('a')
 
         json[:e].each do |e|
           recipient = Recipient.new(e[:t], e[:a], e[:p])
           @recipients.add(recipient)
         end
-
-        init_part_from_json(json[:mp])
-      end
-
-      def init_part_from_json(json)
-        return if json.nil?
-
-        # puts json
-        json = [json] unless json.is_a?(Array)
-
-        json.each do |json_part|
-          if ['text/plain', 'text/html'].include?(json_part[:ct])
-            init_body_from_json(json_part)
-          elsif json_part[:cd] == 'attachment'
-            init_attachment_from_json(json_part)
-          else
-            init_part_from_json(json_part[:mp])
-          end
-        end
-      end
-
-      def init_body_from_json(json)
-        # puts "\ninit_body_from_json #{json}\n"
-        body.text = json[:content] if json[:ct] == 'text/plain'
-        body.html = json[:content] if json[:ct] == 'text/html'
-      end
-
-      def init_attachment_from_json(json)
-        # puts "\ninit_attachment_from_json #{json}\n"
-        pj = Zm::Client::Message::Attachment.new(self)
-        # pj.part = json[:part],
-        pj.mid  = json[:mid]
-        pj.aid  = json[:aid]
-        pj.ct   = json[:ct]
-        pj.s    = json[:s]
-        pj.filename = json[:filename]
-        pj.ci   = json[:ci]
-        pj.cd   = json[:cd]
-        pj.part = json[:part]
-        attachments.add(pj)
       end
 
       def msg_action(action_name, options = {})
@@ -168,18 +113,18 @@ module Zm
         attr_accessor :text, :html
 
         def text_jsns
-          @text.nil? ? nil : { ct: 'text/plain', content: { _content: @text } }
+          { ct: 'text/plain', content: { _content: @text } }
         end
 
         def html_jsns
-          @html.nil? ? nil : { ct: 'text/html', content: { _content: @html } }
+          { ct: 'text/html', content: { _content: @html } }
         end
 
         def to_jsns
           [
             {
               ct: 'multipart/alternative',
-              mp: [text_jsns, html_jsns].compact
+              mp: [text_jsns, html_jsns]
             }
           ]
         end
@@ -187,64 +132,35 @@ module Zm
 
       # collection attachments
       class Attachments
-        attr_reader :all
-
         def initialize
-          @all = []
+          @attachments = []
         end
 
         def add(attachment)
           return unless attachment.is_a?(Attachment)
 
-          @all.push(attachment)
+          @attachments.push(attachment)
         end
 
         def to_jsns
-          @all.map(&:to_jsns)
+          @attachments.map(&:to_jsns)
         end
       end
 
       # class attachment for email
       class Attachment
-        attr_accessor :aid, :part, :mid, :ct, :s, :filename, :ci, :cd
+        attr_accessor :aid, :part, :mid
 
-        def initialize(parent)
-          @parent = parent
+        def initialize
           yield(self) if block_given?
-        end
-
-        def download(dest_file_path)
-          h = {
-            id: @parent.id,
-            part: part,
-            auth: 'qp',
-            zauthtoken: account.token,
-            disp: 'a'
-          }
-
-          url = account.home_url
-
-          url << '?' << Utils.format_url_params(h)
-
-          uploader = Upload.new(@parent, RestAccountConnector.new)
-          uploader.download_file_with_url(url, dest_file_path)
         end
 
         def to_jsns
           {
-            part: part,
-            mid: mid,
-            aid: aid,
-            ct: ct,
-            s: s,
-            filename: filename,
-            ci: ci,
-            cd: cd
+            part: @part,
+            mid: @mid,
+            aid: @aid
           }.reject { |_, v| v.nil? }
-        end
-
-        def account
-          @parent.parent
         end
       end
 
@@ -294,10 +210,6 @@ module Zm
           @email = email
           @field = field.to_sym
           @display_name = display_name
-        end
-
-        def to_s
-          "#{@email} (#{@display_name})"
         end
 
         def to_jsns

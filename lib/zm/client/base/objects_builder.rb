@@ -10,7 +10,6 @@ module Zm
           @json = json
         end
 
-        # todo : supprimer cette méthode
         def make
           return [] if json_items.nil?
 
@@ -21,16 +20,7 @@ module Zm
           end
         end
 
-        # todo : remplacer root par json_items
-        def ids
-          root.map { |s| s[:id] }
-        end
-
         private
-
-        def json_items
-          @json_items ||= @json[:Body][json_key][@json_item_key]
-        end
 
         def json_key
           @json_key ||= @json[:Body].keys.first

@@ -15,10 +15,10 @@ module Zm
         share
       end
 
-      def where(owner_name: nil)
-        @owner_name = owner_name
-        self
-      end
+        def where(owner_name: nil)
+          @owner_name = owner_name
+          self
+        end
 
       private
 

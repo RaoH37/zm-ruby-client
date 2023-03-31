@@ -3,26 +3,29 @@
 module Zm
   module Client
     # Collection coses
-    class CosesCollection < Base::AdminObjectsCollection
+    class CosesCollection < Base::ObjectsCollection
       def initialize(parent)
         @child_class = Cos
-        @builder_class = CosesBuilder
-        @search_type = SearchType::COS
-        super(parent)
+        @parent = parent
+        reset_query_params
       end
 
-      def find_by!(hash)
-        rep = sac.get_cos(hash.values.first, hash.keys.first, attrs_comma)
+      def find_by(hash, *attrs)
+        rep = sac.get_cos(hash.values.first, hash.keys.first, attrs.join(COMMA))
         entry = rep[:Body][:GetCosResponse][:cos].first
 
-        reset_query_params
-        CosJsnsInitializer.create(@parent, entry)
+        build_from_entry(entry)
       end
 
       private
 
+      def build_response
+        CosesBuilder.new(@parent, make_query).make
+      end
+
       def reset_query_params
         super
+        @search_type = SearchType::COS
         @attrs = SearchType::Attributes::COS.dup
       end
     end

@@ -9,20 +9,19 @@ module Zm
       ADD      = '+'
       DEL      = '-'
 
-      # todo: voir s'il y a possibilité d'utiliser ces méthodes autrement (pas obligé)
-      # class << self
-      #   def find_type_by_value(value)
-      #     return INTERNAL if !value.to_i.zero? || Zm::Client::Regex::SHARED_CONTACT.match(value)
-      #     return LDAP if Zm::Client::Regex::BASEDN_REGEX.match(value)
-      #
-      #     FREE
-      #   end
-      #
-      #   def init_by_value(value)
-      #     type_v = find_type_by_value(value)
-      #     new(type_v, value)
-      #   end
-      # end
+      class << self
+        def find_type_by_value(value)
+          return INTERNAL if !value.to_i.zero? || Zm::Client::Regex::SHARED_CONTACT.match(value)
+          return LDAP if Zm::Client::Regex::BASEDN_REGEX.match(value)
+
+          FREE
+        end
+
+        def init_by_value(value)
+          type_v = find_type_by_value(value)
+          new(type_v, value)
+        end
+      end
 
       attr_reader :type, :value, :op
 
@@ -30,6 +29,14 @@ module Zm
         @op = op
         @type = type
         @value = value
+      end
+
+      def concat
+        [@value, @type, @op]
+      end
+
+      def to_s
+        concat.join(' :: ')
       end
 
       def internal?
@@ -48,16 +55,18 @@ module Zm
         @type == LDAP
       end
 
-      def current?
-        @op.nil?
-      end
-
       def add!
         @op = ADD
       end
 
       def remove!
         @op = DEL
+      end
+
+      def construct_soap_node
+        node = { type: @type, value: @value }
+        node[:op] = @op unless @op.nil?
+        node
       end
     end
   end

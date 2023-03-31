@@ -5,11 +5,15 @@ module Zm
     # class factory [MtaQueue]
     class MtaQueuesBuilder < Base::ObjectsBuilder
       def make
-        return [] if json_items.nil?
+        records = []
+        return records if json_items.nil?
 
-        json_items.map do |entry|
-          MtaQueueJsnsInitializer.create(@parent, entry)
+        json_items.each do |entry|
+          mta_queue = MtaQueue.new(@parent)
+          mta_queue.init_from_json(entry)
+          records << mta_queue
         end
+        records
       end
 
       private

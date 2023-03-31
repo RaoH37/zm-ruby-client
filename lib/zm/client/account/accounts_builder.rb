@@ -7,15 +7,12 @@ module Zm
       def initialize(parent, json)
         super(parent, json)
         @child_class = Account
-        @json_item_key = :account
       end
 
-      def make
-        return [] if json_items.nil?
+      private
 
-        json_items.map do |entry|
-          AccountJsnsInitializer.create(@parent, entry)
-        end
+      def json_items
+        @json_items ||= @json[:Body][json_key][:account]
       end
     end
   end

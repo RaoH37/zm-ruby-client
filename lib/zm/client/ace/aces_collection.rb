@@ -3,47 +3,33 @@
 module Zm
   module Client
     # collection account aces
-    class AcesCollection < Base::AccountObjectsCollection
-      attr_reader :rights
-
+    class AcesCollection < Base::ObjectsCollection
       def initialize(parent)
-        super(parent)
-        @child_class = Ace
-        @builder_class = AcesBuilder
-        @jsns_builder = AceJsnsBuilder.new(self)
+        @parent = parent
         reset_query_params
       end
 
-      # def new
-      #   ace = Ace.new(self)
-      #   yield(ace) if block_given?
-      #   ace
-      # end
+      def new
+        ace = Ace.new(@parent)
+        yield(ace) if block_given?
+        ace
+      end
 
-      def where(*rights)
-        @rights += rights
-        @rights.uniq!
+      def rights(*rights)
+        @rights = rights
         self
       end
 
-      # def soap_account_connector
-      #   @parent.soap_account_connector
-      # end
-      #
-      # alias sacc soap_account_connector
-
       private
 
-      def make_query
-        @parent.sacc.get_rights(@parent.token, @jsns_builder.to_find)
+      def build_response
+        rep = @parent.sacc.get_rights(@parent.token, @rights)
+        ab = AcesBuilder.new @parent, rep
+        ab.make
       end
 
-      # def build_response
-      #   @builder_class.new(self, make_query).make
-      # end
-
       def reset_query_params
-        @rights = []
+        @rights = %i[sendAs sendOnBehalfOf]
       end
     end
   end

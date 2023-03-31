@@ -4,17 +4,19 @@ module Zm
   module Client
     # class factory [contacts]
     class ContactBuilder < Base::ObjectsBuilder
+
       def initialize(parent, json)
-        super(parent, json)
-        @child_class = Contact
-        @json_item_key = :cn
+        @parent = parent
+        @json = json
       end
 
       def make
-        return [] if json_items.nil?
+        root = @json[:Body][:GetContactsResponse][:cn]
+        return [] if root.nil?
 
-        json_items.map do |entry|
-          ContactJsnsInitializer.create(@parent, entry)
+        root = [root] unless root.is_a?(Array)
+        root.map do |s|
+          Contact.new(@parent, s)
         end
       end
     end

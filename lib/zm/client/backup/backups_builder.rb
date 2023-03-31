@@ -5,11 +5,15 @@ module Zm
     # class factory [Backup]
     class BackupsBuilder < Base::ObjectsBuilder
       def make
-        return [] if json_items.nil?
+        records = []
+        return records if json_items.nil?
 
-        json_items.map do |entry|
-          BackupJsnsInitializer.create(@parent, entry)
+        json_items.each do |entry|
+          backup = Backup.new(@parent)
+          backup.init_from_json(entry)
+          records << backup
         end
+        records
       end
 
       private

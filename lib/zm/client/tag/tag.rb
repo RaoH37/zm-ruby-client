@@ -4,31 +4,41 @@ module Zm
   module Client
     # class account tag
     class Tag < Base::AccountObject
-      include Zm::Model::AttributeChangeObserver
 
-      attr_accessor :id
+      INSTANCE_VARIABLE_KEYS = %i[id name color rgb u n d rev md ms]
 
-      define_changed_attributes :name, :color, :rgb
+      attr_accessor *INSTANCE_VARIABLE_KEYS
+
+      def concat
+        INSTANCE_VARIABLE_KEYS.map { |key| instance_variable_get(arrow_name(key)) }
+      end
+
+      def init_from_json(json)
+        INSTANCE_VARIABLE_KEYS.each do |key|
+          instance_variable_set(arrow_name(key), json[key])
+        end
+      end
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateTagRequest, @parent.token, jsns_builder.to_jsns)
-        json = rep[:Body][:CreateTagResponse][:tag].first
-        TagJsnsInitializer.update(self, json)
-        super
+        rep = @parent.sacc.create_tag(@parent.token, @name, @color, @rgb)
+        init_from_json(rep[:Body][:CreateTagResponse][:tag].first)
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_update) if color_changed? || rgb_changed?
+        @parent.sacc.tag_action(@parent.token, :update, @id, { color: @color, rgb: @rgb })
       end
 
-      private
-
-      def do_update!(hash)
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_patch(hash))
+      def delete!
+        @parent.sacc.tag_action(@parent.token, :delete, @id)
       end
 
-      def jsns_builder
-        @jsns_builder ||= TagJsnsBuilder.new(self)
+      def rename!(new_name)
+        @parent.sacc.tag_action(
+          @parent.token,
+          :rename,
+          @id,
+          name: new_name
+        )
       end
     end
   end
