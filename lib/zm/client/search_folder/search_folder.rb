@@ -6,8 +6,7 @@ module Zm
     class SearchFolder < Base::FolderObject
       include Zm::Model::AttributeChangeObserver
 
-      INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rgb rev ms webOfflineSyncDays
-                                  activesyncdisabled query sortBy types].freeze
+      INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rgb rev ms webOfflineSyncDays activesyncdisabled query sortBy types]
 
       # attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_reader :id, :absFolderPath, :types
@@ -24,13 +23,13 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateSearchFolderRequest, @parent.token, jsns_builder.to_jsns)
+        rep = @parent.sacc.create_search_folder(@parent.token, jsns_builder.to_jsns)
         json = rep[:Body][:CreateSearchFolderResponse][:search].first
         SearchFolderJsnsInitializer.update(self, json)
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ModifySearchFolderRequest, @parent.token, jsns_builder.to_modify)
+        @parent.sacc.modify_search_folder(@parent.token, jsns_builder.to_modify)
         super
       end
 

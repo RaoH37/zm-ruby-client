@@ -30,7 +30,9 @@ module Zm
 
         @root_folder = FolderJsnsInitializer.create(@account, root.first)
 
-        construct_tree(@root_folder, root.first[@key]) if !root.first[@key].nil? && root.first[@key].any?
+        if !root.first[@key].nil? && root.first[@key].any?
+          construct_tree(@root_folder, root.first[@key])
+        end
 
         @root_folder
       end

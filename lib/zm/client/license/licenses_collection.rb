@@ -9,10 +9,20 @@ module Zm
       end
 
       def find
-        req = @parent.soap_admin_connector.jsns_request(:GetLicenseRequest, nil)
+        req = sac.get_license
         entry = req[:Body][:GetLicenseResponse][:license].first
-        LicenseJsnsInitializer.create(@parent, entry)
+        license = License.new(@parent)
+        license.init_from_json(entry)
+        license
       end
+
+      private
+
+      def soap_admin_connector
+        @parent.soap_admin_connector
+      end
+
+      alias sac soap_admin_connector
     end
   end
 end

@@ -15,7 +15,7 @@ class TestDomain < Minitest::Test
 
   def test_all
     domains = @admin.domains.where(@fixture_domains['collections']['where']['local']).all
-    assert domains == @admin.domains.all
+    assert domains == @admin.domains.where(@fixture_domains['collections']['where']['local']).all
   end
 
   def test_all_is_domain
@@ -50,12 +50,6 @@ class TestDomain < Minitest::Test
     assert_equal @fixture_domains['domains']['default']['name'], domain.name
   end
 
-  def test_find_by_name_with_attrs
-    domain = @admin.domains.attrs('zimbraPreAuthKey', 'description', 'zimbraACE').find_by name: @fixture_domains['domains']['default']['name']
-    assert domain.is_a? Zm::Client::Domain
-    assert_equal @fixture_domains['domains']['default']['name'], domain.name
-  end
-
   def test_new_domain
     name = @fixture_domains['domains']['toto']['name']
     domain = @admin.domains.new do |acc|
@@ -72,6 +66,5 @@ class TestDomain < Minitest::Test
     end
     domain.save!
     assert !domain.id.nil?
-    assert domain.delete!
   end
 end

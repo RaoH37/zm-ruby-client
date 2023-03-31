@@ -14,7 +14,7 @@ module Zm
         return [] if json_items.nil?
 
         json_items.map do |entry|
-          SignatureJsnsInitializer.create(@parent, entry)
+          SignatureJsnsInitializer.new(@parent, entry).create
         end
       end
     end

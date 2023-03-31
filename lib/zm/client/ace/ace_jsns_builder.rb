@@ -4,6 +4,7 @@ module Zm
   module Client
     # class for account folder jsns builder
     class AceJsnsBuilder < Base::BaseJsnsBuilder
+
       def to_find
         return nil if @item.rights.empty?
 

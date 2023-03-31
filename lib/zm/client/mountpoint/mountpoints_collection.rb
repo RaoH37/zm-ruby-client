@@ -4,6 +4,7 @@ module Zm
   module Client
     # collection of mountpoints
     class MountPointsCollection < Base::AccountObjectsCollection
+
       attr_reader :root
 
       attr_accessor :view, :tr, :visible, :needGranteeName, :depth
@@ -32,7 +33,7 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetFolderRequest, @parent.token, jsns_builder.to_jsns)
+        @parent.sacc.get_folder(@parent.token, jsns_builder.to_jsns)
       end
 
       def reset_query_params

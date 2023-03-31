@@ -8,10 +8,11 @@ module Zm
         @child_class = DistributionList
         @builder_class = DistributionListsBuilder
         @search_type = SearchType::DL
-        super(parent)
+        @parent = parent
+        reset_query_params
       end
 
-      def find_by!(hash)
+      def find_by(hash)
         rep = sac.get_distribution_list(hash.values.first, hash.keys.first, attrs_comma)
         entry = rep[:Body][:GetDistributionListResponse][:dl].first
 
@@ -24,6 +25,9 @@ module Zm
       def reset_query_params
         super
         @attrs = SearchType::Attributes::DL.dup
+        @all_servers = 1
+        @refresh = 0
+        @apply_cos = 1
       end
     end
   end

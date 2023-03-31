@@ -4,6 +4,7 @@ module Zm
   module Client
     # class for folder retention policies collection
     class FolderRetentionPoliciesCollection
+
       attr_reader :all
 
       def initialize(parent)
@@ -25,7 +26,7 @@ module Zm
       end
 
       def save!
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.parent.token, jsns_builder.to_retentionpolicy)
+        @parent.sacc.folder_action(@parent.parent.token, jsns_builder.to_retentionpolicy)
         true
       end
 

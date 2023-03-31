@@ -5,8 +5,8 @@ module Zm
     # Collection Accounts from domain
     class DomainAccountsCollection < AccountsCollection
       def initialize(parent)
-        super(parent)
         @domain_name = parent.name
+        super(parent)
       end
     end
   end

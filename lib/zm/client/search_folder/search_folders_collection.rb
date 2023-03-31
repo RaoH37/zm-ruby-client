@@ -13,7 +13,7 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetSearchFolderRequest, @parent.token, nil)
+        @parent.sacc.get_all_search_folders(@parent.token)
       end
     end
   end

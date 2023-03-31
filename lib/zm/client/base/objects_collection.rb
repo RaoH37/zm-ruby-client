@@ -46,8 +46,6 @@ module Zm
           self
         end
 
-        alias limit per_page
-
         def page(offset)
           return self if @offset == offset
 
@@ -55,8 +53,6 @@ module Zm
           @offset = offset
           self
         end
-
-        alias offset page
 
         def order(sort_by, sort_ascending = SoapUtils::ON)
           return self if @sort_by == sort_by && @sort_ascending == sort_ascending
@@ -108,9 +104,9 @@ module Zm
           @sort_by = nil
           @sort_ascending = SoapUtils::ON
           @count_only = SoapUtils::OFF
-          @all_servers = SoapUtils::OFF
-          @refresh = SoapUtils::OFF
-          @apply_cos = SoapUtils::ON
+          @all_servers = 0
+          @refresh = 0
+          @apply_cos = 1
         end
       end
     end

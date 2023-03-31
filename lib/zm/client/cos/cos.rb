@@ -1,47 +1,62 @@
 # frozen_string_literal: true
 
+require 'zm/modules/common/cos_common'
 module Zm
   module Client
     # objectClass: zimbraCos
     class Cos < Base::AdminObject
+      def initialize(parent)
+        extend(CosCommon)
+        super(parent)
+      end
+
+      def init_from_json(json)
+        super(json)
+        @zimbraMailHostPool = [@zimbraMailHostPool] if @zimbraMailHostPool.is_a?(String)
+        @zimbraZimletAvailableZimlets = [@zimbraZimletAvailableZimlets] if @zimbraZimletAvailableZimlets.is_a?(String)
+      end
+
+      # def to_h
+      #   hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+      #   hashmap.delete_if { |_, v| v.nil? }
+      #   hashmap
+      # end
+
+      def all_instance_variable_keys
+        attrs_write
+      end
+
+      def duplicate(attrs = {})
+        # n = clone
+        # attrs.each{|k,v| n.instance_variable_set(k, v) }
+        # n.id = nil
+        # n.zimbraId = nil
+        # n
+      end
+
       def modify!
-        sac.modify_cos(jsns_builder.to_update)
-        true
+        # sac.modify_cos(id, instance_variables_array)
       end
 
       def create!
-        rep = sac.jsns_request(:CreateCosRequest, jsns_builder.to_jsns)
-        @id = rep[:Body][:CreateCosResponse][:cos].first[:id]
+        sac.create_cos(name, instance_variables_array(attrs_write))
       end
 
       def servers
-        @servers ||= CosServersCollection.new(self)
-      end
-
-      def domains
-        return if @id.nil?
-
-        @domains ||= CosDomainsCollection.new(self)
+        @servers ||= read_servers
       end
 
       def accounts
-        return if @id.nil?
-
-        @accounts ||= CosAccountsCollection.new(self)
-      end
-
-      def attrs_write
-        @parent.zimbra_attributes.all_cos_attrs_writable_names
+        # todo sélectionner tous les comptes qui ont zimbraCOSID=self.id
       end
 
       private
 
-      def do_update!(hash)
-        sac.jsns_request(:ModifyCosRequest, jsns_builder.to_patch(hash))
-      end
-
-      def jsns_builder
-        @jsns_builder ||= CosJsnsBuilder.new(self)
+      def read_servers
+        sc = ServersCollection.new self
+        @zimbraMailHostPool.map do |server_id|
+          sc.find_by id: server_id
+        end
       end
     end
   end

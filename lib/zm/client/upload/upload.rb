@@ -5,9 +5,9 @@ module Zm
     # class for upload account file
     class Upload
       FMT_TYPES_H = {
-        'ics' => ['appointment'],
-        'vcard' => ['contact']
-      }.freeze
+          'ics' => ['appointment'],
+          'vcard' => ['contact']
+      }
 
       def initialize(parent, rac = nil)
         @parent = parent
@@ -40,7 +40,11 @@ module Zm
           disp: 'a'
         }
 
-        url_folder_path << '?' << Utils.format_url_params(h)
+        uri = Addressable::URI.new
+        uri.query_values = h
+        url_folder_path << '?' << uri.query
+
+        # puts url_folder_path
 
         url_folder_path
       end
@@ -62,7 +66,11 @@ module Zm
 
         h.reject! { |_, v| is_blank?(v) }
 
-        url_folder_path << '?' << Utils.format_url_params(h)
+        uri = Addressable::URI.new
+        uri.query_values = h
+        url_folder_path << '?' << uri.query
+
+        # puts url_folder_path
 
         url_folder_path
       end
@@ -85,7 +93,10 @@ module Zm
 
         h.reject! { |_, v| is_blank?(v) }
 
-        url_folder_path << '?' << Utils.format_url_params(h)
+        uri = Addressable::URI.new
+        uri.query_values = h
+
+        url_folder_path << '?' << uri.query
         url_folder_path
       end
 
@@ -100,20 +111,18 @@ module Zm
 
       def upload_attachment_url
         @rac.cookie("ZM_AUTH_TOKEN=#{@parent.token}")
-
-        h = {
+        uri = Addressable::URI.new
+        uri.query_values = {
           fmt: 'extended,raw'
         }
-
-        File.join(@parent.public_url, 'service/upload') << '?' << Utils.format_url_params(h)
+        File.join(@parent.public_url, 'service/upload') << '?' << uri.query
       end
 
       def query_ids(ids)
         return {} if ids.nil?
         return { id: ids } unless ids.is_a?(Array)
         return { id: ids.first } if ids.length == 1
-
-        { list: ids.join(',') }
+        return { list: ids.join(',') }
       end
 
       def query_value_types(types, fmt)

@@ -9,14 +9,6 @@ module Zm
         @child_class = DistributionList
         @json_item_key = :dl
       end
-
-      def make
-        return [] if json_items.nil?
-
-        json_items.map do |entry|
-          DistributionListJsnsInitializer.create(@parent, entry)
-        end
-      end
     end
   end
 end

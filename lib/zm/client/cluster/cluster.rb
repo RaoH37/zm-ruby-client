@@ -5,9 +5,9 @@ require 'zm/client/connector/soap_account'
 require 'zm/client/common'
 # require 'zm/client/data_source'
 require 'zm/client/account'
+require 'zm/client/domain'
 require 'zm/client/resource'
 require 'zm/client/distributionlist'
-require 'zm/client/domain'
 require 'zm/client/server'
 require 'zm/client/cos'
 require 'zm/client/license'
@@ -16,8 +16,10 @@ module Zm
   module Client
     # class admin connection
     class Cluster
-      attr_reader :soap_admin_connector, :config, :zimbra_attributes, :type, :version, :release, :buildDate, :host,
-                  :majorversion, :minorversion, :microversion
+
+      attr_reader :soap_admin_connector, :config, :zimbra_attributes
+
+      attr_reader :type, :version, :release, :buildDate, :host, :majorversion, :minorversion, :microversion
 
       def initialize(config)
         extend(ZmLogger)
@@ -43,7 +45,7 @@ module Zm
       def login
         raise ClusterConfigError, 'admin credentials are missing' unless @config.has_admin_credentials?
 
-        logger.info 'Get Admin session token'
+        logger.info "Get Admin session token"
         @soap_admin_connector.auth(
           @config.zimbra_admin_login,
           @config.zimbra_admin_password
@@ -55,7 +57,7 @@ module Zm
       end
 
       def alive?
-        @soap_admin_connector.jsns_request(:NoOpRequest, nil)
+        @soap_admin_connector.noop
         true
       rescue Zm::Client::SoapError => e
         logger.error "Admin session token alive ? #{e.message}"
@@ -120,24 +122,19 @@ module Zm
       def count_object(type)
         raise ZmError, 'Unknown object type' unless Zm::Client::CountTypes::ALL.include?(type)
 
-        resp = soap_admin_connector.jsns_request(:CountObjectsRequest, { type: type })
+        resp = soap_admin_connector.count_object(type)
         resp[:Body][:CountObjectsResponse][:num]
       end
 
       def email_exist?(email)
-        jsns = {
-          query: "(mail=#{email})",
-          types: 'accounts,distributionlists,aliases,resources',
-          countOnly: SoapUtils::ON
-        }
-
-        resp = soap_admin_connector.jsns_request(:SearchDirectoryRequest, jsns)
+        filter = "(mail=#{email})"
+        resp = soap_admin_connector.search_directory(filter, nil, nil, nil, nil, nil, nil, nil, 'accounts,distributionlists,aliases,resources',nil, 1)
         num = resp[:Body][:SearchDirectoryResponse][:num]
         !num.zero?
       end
 
       def infos!
-        rep = soap_admin_connector.jsns_request(:GetVersionInfoRequest, nil)
+        rep = soap_admin_connector.get_version_info
         json = rep[:Body][:GetVersionInfoResponse][:info].first
 
         instance_variable_set(:@type, json[:type])

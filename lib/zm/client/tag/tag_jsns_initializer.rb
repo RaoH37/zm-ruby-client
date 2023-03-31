@@ -12,6 +12,7 @@ module Zm
         end
 
         def update(item, json)
+
           item.instance_variable_set(:@id, json[:id])
           item.instance_variable_set(:@name, json[:name])
           item.instance_variable_set(:@color, json[:color].to_i)

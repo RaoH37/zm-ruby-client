@@ -9,11 +9,11 @@ module Zm
       end
 
       def add(filter)
-        new_filter = stringify_filter(filter)
-        return false if new_filter.nil? || @parts.include?(new_filter)
-
-        @parts << new_filter
-        true
+        if filter.is_a?(String) && !filter.empty?
+          @parts << filter
+        elsif filter.is_a?(Hash)
+          @parts += filter.map { |k, v| "(#{k}=#{v})" }
+        end
       end
 
       def clear
@@ -27,19 +27,6 @@ module Zm
         return arr.first if arr.length <= 1
 
         "(&#{arr.join})"
-      end
-
-      private
-
-      def stringify_filter(filter)
-        return nil if !filter.is_a?(String) && !filter.is_a?(Hash)
-
-        return filter.map { |k, v| "(#{k}=#{v})" }.join if filter.is_a?(Hash)
-
-        new_filter = filter.strip
-        return nil if new_filter.empty?
-
-        new_filter
       end
     end
   end

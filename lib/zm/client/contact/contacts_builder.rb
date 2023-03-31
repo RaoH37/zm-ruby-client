@@ -9,14 +9,6 @@ module Zm
         @child_class = Contact
         @json_item_key = :cn
       end
-
-      def make
-        return [] if json_items.nil?
-
-        json_items.map do |entry|
-          ContactJsnsInitializer.create(@parent, entry)
-        end
-      end
     end
   end
 end

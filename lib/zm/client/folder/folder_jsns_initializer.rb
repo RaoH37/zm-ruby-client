@@ -13,18 +13,18 @@ module Zm
 
           update(item, json)
         end
-
+  
         def update(item, json)
           item.all_instance_variable_keys.reject { |key| json[key].nil? }.each do |key|
             item.instance_variable_set(arrow_name(key), json[key])
           end
-
+  
           if !json[:acl].nil? && json[:acl][:grant].is_a?(Array)
             json[:acl][:grant].each do |json|
               item.grants.create(json[:zid], json[:gt], json[:perm], json[:d])
             end
           end
-
+  
           if json[:retentionPolicy].is_a?(Array)
             json[:retentionPolicy].first.map do |policy, v|
               next if v.first[:policy].nil?
@@ -34,7 +34,7 @@ module Zm
               item.retention_policies.create(policy, lifetime, type)
             end
           end
-
+  
           item
         end
 

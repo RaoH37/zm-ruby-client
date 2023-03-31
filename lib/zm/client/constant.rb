@@ -6,9 +6,9 @@ module Zm
     DOUBLEPOINT = ' :: '
 
     module Regex
-      UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/.freeze
-      BASEDN_REGEX = /^uid=/.freeze
-      SHARED_CONTACT = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}:[0-9]+/.freeze
+      UUID_REGEX = %r{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}}
+      BASEDN_REGEX = %r{^uid=}
+      SHARED_CONTACT = %r{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}:[0-9]+}
     end
 
     module FolderDefault
@@ -186,7 +186,7 @@ module Zm
       CORRUPT = 'corrupt'
       ACTIVE = 'active'
       HOLD = 'hold'
-      ALL = [INCOMING, DEFERRED, CORRUPT, ACTIVE, HOLD].freeze
+      ALL = [INCOMING, DEFERRED, CORRUPT, ACTIVE, HOLD]
     end
 
     module MtaQueueAction
@@ -211,7 +211,7 @@ module Zm
       SERVER = 'server'
       RESOURCE = 'calresource'
       INTERNAL_USER_ACCOUNT = 'internalUserAccount'
-      ALL = [USER_ACCOUNT, ACCOUNT, ALIAS, DL, DOMAIN, COS, SERVER, RESOURCE, INTERNAL_USER_ACCOUNT].freeze
+      ALL = [USER_ACCOUNT, ACCOUNT, ALIAS, DL, DOMAIN, COS, SERVER, RESOURCE, INTERNAL_USER_ACCOUNT]
     end
   end
 end

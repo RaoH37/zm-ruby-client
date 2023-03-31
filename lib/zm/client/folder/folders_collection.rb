@@ -4,6 +4,7 @@ module Zm
   module Client
     # collection of folders
     class FoldersCollection < Base::AccountObjectsCollection
+
       attr_reader :root
 
       attr_accessor :view, :tr, :visible, :needGranteeName, :depth
@@ -22,10 +23,6 @@ module Zm
         end
         folder.reload!
         folder
-      end
-
-      def root
-        find(1)
       end
 
       def where(view: nil, tr: nil)
@@ -81,7 +78,7 @@ module Zm
       end
 
       def make_query
-        @parent.sacc.jsns_request(:GetFolderRequest, @parent.token, jsns_builder.to_jsns)
+        @parent.sacc.get_folder(@parent.token, jsns_builder.to_jsns)
       end
 
       def reset_query_params

@@ -4,9 +4,12 @@ module Zm
   module Client
     # class for account appointment
     class Appointment < Base::AccountObject
-      attr_accessor :id, :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
-                    :calItemId, :apptId, :invId, :rev, :fb, :transp
+
+      INSTANCE_VARIABLE_KEYS = %i[id uid name l desc start_at dur end_at tn allDay organizer timezone calItemId apptId invId rev fb transp]
+
+      attr_accessor *INSTANCE_VARIABLE_KEYS
       attr_writer :folder
+      attr_reader :json
       attr_reader :recipients, :attendees, :body
 
       alias description desc
@@ -19,19 +22,21 @@ module Zm
         @attendees = Attendees.new
         @allDay = false
         @timezone = 'Europe/Berlin'
-
         yield(self) if block_given?
       end
 
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
+      end
+
+      def folder
+        @folder ||= @parent.folders.all.find { |folder| folder.id == l }
+      end
+
       def download(dest_file_path, fmt = 'ics')
+        # @parent.uploader.download_file(folder.absFolderPath, 'ics', ['appointment'], [id], dest_file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(
-          Zm::Client::FolderDefault::ROOT[:path],
-          fmt,
-          [Zm::Client::FolderView::APPOINTMENT],
-          [@id],
-          dest_file_path
-        )
+        uploader.download_file(folder.absFolderPath, fmt, ['appointment'], [id], dest_file_path)
       end
 
       def create!
@@ -53,6 +58,11 @@ module Zm
         aji = AppointmentJsnsInitializer.new(@parent, entry)
         aji.appointment = self
         aji.create
+      end
+
+      def delete!
+        @parent.sacc.cancel_appointment(@parent.token, jsns_builder.to_delete)
+        super
       end
 
       def free!
@@ -101,10 +111,9 @@ module Zm
         end
 
         def del(attendee)
-          case attendee
-          when Attendee
+          if attendee.is_a?(Attendee)
             @attendees.delete(attendee)
-          when String
+          elsif attendee.is_a?(String)
             @attendees.delete_if { |at| at.email == attendee }
           end
         end

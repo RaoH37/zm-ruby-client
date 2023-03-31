@@ -4,8 +4,10 @@ module Zm
   module Client
     # class message for account
     class Message < Base::AccountObject
-      INSTANCE_VARIABLE_KEYS = %i[id date l su fr autoSendTime mid idnt].freeze
-      attr_accessor(*INSTANCE_VARIABLE_KEYS, :subject)
+      INSTANCE_VARIABLE_KEYS = %i[id date l su fr autoSendTime mid idnt]
+      attr_accessor *INSTANCE_VARIABLE_KEYS
+
+      attr_accessor :subject
       attr_reader :recipients, :attachments, :body, :folder
 
       def initialize(parent, json = nil)
@@ -103,11 +105,11 @@ module Zm
       def init_from_json(json)
         # puts json
         @id   = json[:id]
-        @date = Time.at(json[:d] / 1000)
+        @date = Time.at(json[:d]/1000)
         @l    = json[:l]
         @su   = json[:su]
         @fr   = json[:fr]
-        @autoSendTime = json[:autoSendTime]
+        @autoSendTime   = json[:autoSendTime]
         @mid  = json[:mid]
         @idnt = json[:idnt]
         @has_attachment = json[:f].to_s.include?('a')
@@ -122,7 +124,6 @@ module Zm
 
       def init_part_from_json(json)
         return if json.nil?
-
         # puts json
         json = [json] unless json.is_a?(Array)
 
@@ -188,7 +189,6 @@ module Zm
       # collection attachments
       class Attachments
         attr_reader :all
-
         def initialize
           @all = []
         end
@@ -224,7 +224,9 @@ module Zm
 
           url = account.home_url
 
-          url << '?' << Utils.format_url_params(h)
+          uri = Addressable::URI.new
+          uri.query_values = h
+          url << '?' << uri.query
 
           uploader = Upload.new(@parent, RestAccountConnector.new)
           uploader.download_file_with_url(url, dest_file_path)

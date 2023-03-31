@@ -13,7 +13,7 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetTagRequest, @parent.token, nil)
+        @parent.sacc.get_tag(@parent.token)
       end
     end
   end

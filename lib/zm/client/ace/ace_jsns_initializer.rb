@@ -12,6 +12,7 @@ module Zm
         end
 
         def update(item, json)
+
           item.instance_variable_set(:@zid, json[:zid])
           item.instance_variable_set(:@gt, json[:gt])
           item.instance_variable_set(:@right, json[:right])

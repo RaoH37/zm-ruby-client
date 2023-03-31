@@ -7,20 +7,19 @@ module Zm
   module Client
     module Base
       class ZimbraAttribute < OpenStruct
+
+        # attr_accessor :flags, :id, :immutable, :max, :min, :name, :optionalIn, :order, :requiredIn, :since, :type, :value
+
         def version_start
           return @version_start unless @version_start.nil?
 
-          @version_start = if since.nil?
-                             '0.0.0'
-                           else
-                             VersionSorter.sort(since.split(',')).first
-                           end
+          if since.nil?
+            @version_start = '0.0.0'
+          else
+            @version_start = VersionSorter.sort(since.split(',')).first
+          end
 
           @version_start
-        end
-
-        def immutable?
-          @immutable.to_s == '1'
         end
 
         def objects_scope

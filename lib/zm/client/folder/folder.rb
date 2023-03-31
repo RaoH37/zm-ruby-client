@@ -48,25 +48,36 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateFolderRequest, @parent.token, jsns_builder.to_jsns)
+        rep = @parent.sacc.create_folder(@parent.token, jsns_builder.to_jsns)
         json = rep[:Body][:CreateFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
       end
 
-      def update!(hash)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+      def update!(options)
+        options.delete_if { |k, v| v.nil? || !respond_to?(k) }
+        return false if options.empty?
 
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_patch(hash))
+        @parent.sacc.folder_action(@parent.token, jsns_builder.to_patch(options))
 
-        hash.each do |key, value|
-          update_attribute(key, value)
+        options.each do |k, v|
+          instance_variable_set("@#{k}", v)
         end
 
         true
       end
 
+      # def add_retention_policy!(retention_policies)
+      #   options = if retention_policies.is_a?(Hash)
+      #               retention_policies
+      #             else
+      #               retention_policies.map(&:to_h).reduce({}, :merge)
+      #             end
+      #
+      #   @parent.sacc.folder_action(@parent.token, 'retentionPolicy', @id, retentionPolicy: options)
+      # end
+
       def reload!
-        rep = @parent.sacc.jsns_request(:GetFolderRequest, @parent.token, jsns_builder.to_find)
+        rep = @parent.sacc.get_folder(@parent.token, jsns_builder.to_find)
         json = rep[:Body][:GetFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
         true
@@ -77,8 +88,7 @@ module Zm
       end
 
       def empty!
-        return false if empty?
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_empty)
+        @parent.sacc.folder_action(@parent.token, jsns_builder.to_empty) unless @n.zero?
         @n = 0
       end
       alias clear empty!
@@ -87,11 +97,6 @@ module Zm
         return false if is_immutable?
 
         super
-      end
-
-      def remove_flag!(pattern)
-        flags = f.tr(pattern, '')
-        update!(f: flags)
       end
 
       def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
@@ -117,10 +122,11 @@ module Zm
           emptyname: 'Vide',
           charset: 'UTF-8',
           auth: 'qp',
-          zauthtoken: @parent.token
+          zauthtoken: @parent.token,
+          query: to_query
         }
 
-        url_query = "#{absFolderPath}?#{Utils.format_url_params(h)}"
+        url_query = absFolderPath + '?' + h.map { |k, v| [k, v].join('=') }.join('&')
 
         @parent.uploader.download_file_with_url(url_query, dest_file_path)
       end

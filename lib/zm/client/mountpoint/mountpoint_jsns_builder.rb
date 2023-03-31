@@ -4,6 +4,7 @@ module Zm
   module Client
     # class for account folder
     class MountpointJsnsBuilder < Base::BaseJsnsBuilder
+
       def to_find
         { link: { l: @item.id } }
       end
@@ -16,6 +17,7 @@ module Zm
           color: @item.color,
           rgb: @item.rgb,
           url: @item.url,
+          fb: @item.fb,
           view: @item.view,
           zid: @item.zid,
           rid: @item.rid
@@ -36,6 +38,7 @@ module Zm
           color: @item.color,
           rgb: @item.rgb,
           url: @item.url,
+          fb: @item.fb,
           view: @item.view
         }.delete_if { |_, v| v.nil? }
 

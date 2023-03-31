@@ -7,34 +7,25 @@ module Zm
       class << self
         def create(parent, json)
           item = MountPoint.new(parent)
+
+          item.instance_variable_set(:@id, json[:id])
+          item.instance_variable_set(:@name, json[:name])
+
           update(item, json)
         end
 
         def update(item, json)
-          item.id = json[:id].to_i
-          item.name = json[:name]
-          item.owner = json[:owner]
-          item.rev = json[:rev]
-          item.reminder = json[:reminder]
-          item.ms = json[:ms]
-          item.deletable = json[:deletable]
-          item.rid = json[:rid].to_i
-          item.uuid = json[:uuid]
-          item.url = json[:url]
-          item.f = json[:f]
-          item.broken = json[:broken]
-          item.luuid = json[:luuid]
-          item.ruuid = json[:ruuid]
-          item.activesyncdisabled = json[:activesyncdisabled]
-          item.absFolderPath = json[:absFolderPath]
-          item.view = json[:view]
-          item.zid = json[:zid]
-          item.webOfflineSyncDays = json[:webOfflineSyncDays]
-          item.l = json[:l].to_i
-          item.color = json[:color].to_i
-          item.rgb = json[:rgb].to_i
+          item.all_instance_variable_keys.reject { |key| json[key].nil? }.each do |key|
+            item.instance_variable_set(arrow_name(key), json[key])
+          end
 
           item
+        end
+
+        def arrow_name(name)
+          return name if name.to_s.start_with?('@')
+
+          "@#{name}"
         end
       end
     end

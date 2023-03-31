@@ -11,19 +11,19 @@ module Zm
         super(parent)
       end
 
-      def find_by!(hash)
+      def find_by(hash)
         rep = sac.get_account(hash.values.first, hash.keys.first, attrs_comma, @apply_cos)
         entry = rep[:Body][:GetAccountResponse][:account].first
+        # puts entry
 
         reset_query_params
-        AccountJsnsInitializer.create(@parent, entry)
+        build_from_entry(entry)
       end
 
       def quotas
         return nil if @domain_name.nil? && @target_server_id.nil?
 
-        json = sac.get_quota_usage(@domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh,
-                                   @target_server_id)
+        json = sac.get_quota_usage(@domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh, @target_server_id)
         reset_query_params
         @builder_class.new(@parent, json).make
       end

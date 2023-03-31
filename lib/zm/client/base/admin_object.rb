@@ -7,6 +7,7 @@ module Zm
     module Base
       # Abstract Class Provisionning AdminObject
       class AdminObject < Object
+
         def soap_admin_connector
           @parent.soap_admin_connector
         end
@@ -19,7 +20,14 @@ module Zm
 
         alias sacc soap_account_connector
 
+        def to_h
+          hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
+          hashmap.delete_if { |_, v| v.nil? }
+          hashmap
+        end
+
         def init_from_json(json)
+          # TODO : know in advance the typing of variables
           super(json)
           return unless json[:a].is_a? Array
 
@@ -27,28 +35,15 @@ module Zm
           json[:a].reject! { |n| n[:n].nil? }
           json_map = json[:a].map { |n| ["@#{n[:n]}", n[:_content]] }.freeze
 
-          json_hash = json_map.each_with_object({}) do |(k, v), h|
-                        (h[k] ||= [])
-                        h[k].push(v)
-                      end.transform_values do |v|
-            v.length == 1 ? v.first : v
-          end
+          json_hash = json_map.reduce({}) { |h, (k, v)| (h[k] ||= []); h[k].push(v); h }.inject({}) { |h, (k, v)| v.length == 1 ? h[k] = v.first : h[k] = v; h }
 
           json_hash.each do |k, v|
             instance_variable_set(k, convert_json_string_value(v))
           end
-        end
 
-        def update!(hash)
-          return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-          do_update!(hash)
-
-          hash.each do |key, value|
-            update_attribute(key, value)
-          end
-
-          true
+          # Hash[json_map].each do |k, v|
+          #   instance_variable_set(k, convert_json_string_value(v))
+          # end
         end
       end
     end

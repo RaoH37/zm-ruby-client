@@ -6,26 +6,43 @@ module Zm
     class Tag < Base::AccountObject
       include Zm::Model::AttributeChangeObserver
 
+      INSTANCE_VARIABLE_KEYS = %i[id name color rgb]
+
       attr_accessor :id
 
       define_changed_attributes :name, :color, :rgb
 
+      def all_instance_variable_keys
+        INSTANCE_VARIABLE_KEYS
+      end
+
       def create!
-        rep = @parent.sacc.jsns_request(:CreateTagRequest, @parent.token, jsns_builder.to_jsns)
+        rep = @parent.sacc.create_tag(@parent.token, jsns_builder.to_jsns)
         json = rep[:Body][:CreateTagResponse][:tag].first
         TagJsnsInitializer.update(self, json)
         super
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_update) if color_changed? || rgb_changed?
+        @parent.sacc.tag_action(@parent.token, jsns_builder.to_update) if color_changed? || rgb_changed?
+        super
+      end
+
+      def update!(hash)
+        # todo
+      end
+
+      def delete!
+        @parent.sacc.tag_action(@parent.token, jsns_builder.to_delete)
+        super
+      end
+
+      def rename!
+        @parent.sacc.tag_action(@parent.token, jsns_builder.to_rename) if name_changed?
+        super
       end
 
       private
-
-      def do_update!(hash)
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_patch(hash))
-      end
 
       def jsns_builder
         @jsns_builder ||= TagJsnsBuilder.new(self)

@@ -32,18 +32,13 @@ module Zm
           self
         end
 
-        def folders(*folders)
-          folders.select! { |folder| folder.is_a?(Zm::Client::Folder) }
-          return self if folders.empty?
-
+        def folders(folders)
           @folders = folders
-          folder_ids(*@folders.map(&:id))
+          @folder_ids = @folders.map(&:id)
+          self
         end
 
-        def folder_ids(*folder_ids)
-          folder_ids.uniq!
-          return self if @folder_ids == folder_ids
-
+        def folder_ids(folder_ids)
           @folder_ids = folder_ids
           self
         end
@@ -101,7 +96,7 @@ module Zm
 
           return nil if @folder_ids.empty?
 
-          @folder_ids.map { |id| %(inid:"#{id}") }.join(' OR ')
+          @folder_ids.map { |id| %Q{inid:"#{id}"} }.join(' OR ')
         end
 
         def build_options
@@ -111,7 +106,7 @@ module Zm
           {
             resultMode: @resultMode,
             calExpandInstStart: start_at_ts,
-            calExpandInstEnd: end_at_ts
+            calExpandInstEnd: end_at_ts,
           }.delete_if { |_, v| v.nil? }
         end
 
