@@ -208,7 +208,7 @@ module Zm
           new_password ||= @password
           return false if new_password.nil?
 
-          sac.set_password(@id, new_password)
+          sac.jsns_request(:SetPasswordRequest, { id: @id, newPassword: new_password })
           @password = new_password
         end
 

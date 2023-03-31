@@ -55,7 +55,7 @@ module Zm
       end
 
       def alive?
-        @soap_admin_connector.noop
+        @soap_admin_connector.jsns_request(:NoOpRequest, nil)
         true
       rescue Zm::Client::SoapError => e
         logger.error "Admin session token alive ? #{e.message}"
@@ -120,7 +120,7 @@ module Zm
       def count_object(type)
         raise ZmError, 'Unknown object type' unless Zm::Client::CountTypes::ALL.include?(type)
 
-        resp = soap_admin_connector.count_object(type)
+        resp = soap_admin_connector.jsns_request(:CountObjectsRequest, { type: type })
         resp[:Body][:CountObjectsResponse][:num]
       end
 
@@ -131,13 +131,13 @@ module Zm
           countOnly: SoapUtils::ON
         }
 
-        resp = soap_admin_connector.search_directory(jsns)
+        resp = soap_admin_connector.jsns_request(:SearchDirectoryRequest, jsns)
         num = resp[:Body][:SearchDirectoryResponse][:num]
         !num.zero?
       end
 
       def infos!
-        rep = soap_admin_connector.get_version_info
+        rep = soap_admin_connector.jsns_request(:GetVersionInfoRequest, nil)
         json = rep[:Body][:GetVersionInfoResponse][:info].first
 
         instance_variable_set(:@type, json[:type])

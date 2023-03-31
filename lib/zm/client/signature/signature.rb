@@ -9,20 +9,13 @@ module Zm
       TYPE_TXT = 'text/plain'
       TYPE_HTML = 'text/html'
 
-      INSTANCE_VARIABLE_KEYS = %i[id name txt html].freeze
-
-      attr_reader :id
+      attr_accessor :id, :name, :txt, :html
 
       define_changed_attributes :name, :txt, :html
-
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
-      end
 
       def create!
         rep = @parent.sacc.create_signature(@parent.token, as_jsns)
         @id = rep[:Body][:CreateSignatureResponse][:signature].first[:id]
-        super
       end
 
       def modify!
@@ -31,8 +24,9 @@ module Zm
       end
 
       def delete!
+        return false if @id.nil?
         @parent.sacc.delete_signature(@parent.token, jsns_builder.to_delete)
-        super
+        @id = nil
       end
 
       def type

@@ -4,7 +4,7 @@ module Zm
   module Client
     # Collection MtaQueues
     class MtaQueueItemsCollection < Base::ObjectsCollection
-      METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
+      attr_reader :offset, :limit, :fields
 
       def initialize(parent)
         @parent = parent
@@ -17,14 +17,6 @@ module Zm
 
       def server
         mta_queue.parent
-      end
-
-      def all
-        @all ||= all!
-      end
-
-      def all!
-        build_response
       end
 
       def where(fields)
@@ -46,42 +38,10 @@ module Zm
         all.map(&:id)
       end
 
-      def do_action(action_name)
-        sac.mail_queue_action(server.name, mta_queue.name, action_name, ids)
-      end
-
-      def hold!
-        do_action(Zm::Client::MtaQueueAction::HOLD)
-      end
-
-      def release!
-        do_action(Zm::Client::MtaQueueAction::RELEASE)
-      end
-
-      def delete!
-        do_action(Zm::Client::MtaQueueAction::DELETE)
-      end
-
-      def requeue!
-        do_action(Zm::Client::MtaQueueAction::REQUEUE)
-      end
-
-      def method_missing(method, *args, &block)
-        if METHODS_MISSING_LIST.include?(method)
-          build_response.send(method, *args, &block)
-        else
-          super
-        end
-      end
-
-      def respond_to_missing?(method, *)
-        METHODS_MISSING_LIST.include?(method) || super
-      end
-
       private
 
       def make_query
-        json = sac.get_mail_queue(@parent.parent.name, @parent.name, @offset, @limit, @fields)
+        json = sac.jsns_request(:GetMailQueueRequest, jsns_builder.to_list)
         reset_query_params
         json
       end
@@ -93,6 +53,10 @@ module Zm
       def reset_query_params
         super
         @fields = {}
+      end
+
+      def jsns_builder
+        @jsns_builder ||= MtaQueueJsnsBuilder.new(self)
       end
     end
   end

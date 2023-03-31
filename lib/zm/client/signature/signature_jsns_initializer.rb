@@ -3,23 +3,26 @@
 module Zm
   module Client
     # class for initialize account signature
-    class SignatureJsnsInitializer < Base::BaseJsnsInitializer
-      def initialize(parent, json)
-        super(parent, json)
-        @child_class = Signature
-      end
-
-      def create
-        super
-
-        if @json[:content].is_a?(Array)
-          @json[:content].each do |c|
-            @item.instance_variable_set(:@txt, c[:_content]) if c[:type] == Signature::TYPE_TXT
-            @item.instance_variable_set(:@html, c[:_content]) if c[:type] == Signature::TYPE_HTML
-          end
+    class SignatureJsnsInitializer
+      class << self
+        def create(parent, json)
+          item = Signature.new(parent)
+          update(item, json)
         end
 
-        @item
+        def update(item, json)
+          item.id = json[:id]
+          item.name = json[:name]
+
+          content = json[:content].is_a?(Array) ? json[:content] : [json[:content]]
+
+          content.each do |c|
+            item.txt = c[:_content] if c[:type] == Signature::TYPE_TXT
+            item.html = c[:_content] if c[:type] == Signature::TYPE_HTML
+          end
+
+          item
+        end
       end
     end
   end

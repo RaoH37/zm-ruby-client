@@ -27,7 +27,7 @@ module Zm
           value = json[:_attrs][key]
           next if value.nil?
 
-          instance_variable_set(arrow_name(key), value)
+          instance_variable_set(Utils.arrow_name(key), value)
         end
       end
 

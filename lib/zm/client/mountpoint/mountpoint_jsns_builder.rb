@@ -16,7 +16,6 @@ module Zm
           color: @item.color,
           rgb: @item.rgb,
           url: @item.url,
-          fb: @item.fb,
           view: @item.view,
           zid: @item.zid,
           rid: @item.rid
@@ -37,7 +36,6 @@ module Zm
           color: @item.color,
           rgb: @item.rgb,
           url: @item.url,
-          fb: @item.fb,
           view: @item.view
         }.delete_if { |_, v| v.nil? }
 

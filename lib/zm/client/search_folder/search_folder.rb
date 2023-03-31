@@ -24,13 +24,13 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.create_search_folder(@parent.token, jsns_builder.to_jsns)
+        rep = @parent.sacc.jsns_request(:CreateSearchFolderRequest, @parent.token, jsns_builder.to_jsns)
         json = rep[:Body][:CreateSearchFolderResponse][:search].first
         SearchFolderJsnsInitializer.update(self, json)
       end
 
       def modify!
-        @parent.sacc.modify_search_folder(@parent.token, jsns_builder.to_modify)
+        @parent.sacc.jsns_request(:ModifySearchFolderRequest, @parent.token, jsns_builder.to_modify)
         super
       end
 

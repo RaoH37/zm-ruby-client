@@ -28,7 +28,7 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.create_contact(@parent.token, jsns_builder.to_jsns)
+        rep = @parent.sacc.jsns_request(:CreateContactRequest, @parent.token, jsns_builder.to_jsns)
         ContactJsnsInitializer.update(self, rep[:Body][:CreateContactResponse][:cn].first)
         super
       end
@@ -37,12 +37,12 @@ module Zm
         hash.delete_if { |k, v| v.nil? || !respond_to?(k) }
         return false if hash.empty?
 
-        @parent.sacc.modify_contact(@parent.token, jsns_builder.to_patch(hash))
+        @parent.sacc.jsns_request(:ModifyContactRequest, @parent.token, jsns_builder.to_patch(hash))
         hash.each { |k, v| send(Utils.equals_name(k), v) }
       end
 
       def modify!
-        @parent.sacc.modify_contact(@parent.token, jsns_builder.to_update)
+        @parent.sacc.jsns_request(:ModifyContactRequest, @parent.token, jsns_builder.to_update)
       end
 
       private

@@ -24,6 +24,10 @@ module Zm
         folder
       end
 
+      def root
+        find(1)
+      end
+
       def where(view: nil, tr: nil)
         @view = view
         @tr = tr
@@ -77,7 +81,7 @@ module Zm
       end
 
       def make_query
-        @parent.sacc.get_folder(@parent.token, jsns_builder.to_jsns)
+        @parent.sacc.jsns_request(:GetFolderRequest, @parent.token, jsns_builder.to_jsns)
       end
 
       def reset_query_params

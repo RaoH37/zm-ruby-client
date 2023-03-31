@@ -70,7 +70,7 @@ module Zm
         private
 
         def make_query
-          sac.search_directory(jsns)
+          sac.jsns_request(:SearchDirectoryRequest, jsns)
         end
 
         def ldap_filter

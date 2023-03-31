@@ -18,14 +18,6 @@ module Zm
           @name  = json[:name]
         end
 
-        def concat
-          instance_variables.map { |variable| instance_variable_get(variable) }
-        end
-
-        def to_s
-          concat.join(DOUBLEPOINT)
-        end
-
         def convert_json_string_value(value)
           return value unless value.is_a?(String)
           return 0 if value == '0'
@@ -43,7 +35,7 @@ module Zm
         end
 
         def instance_variables_array(zcs_attrs)
-          selected_attrs = zcs_attrs.map { |a| arrow_name(a).to_sym }
+          selected_attrs = zcs_attrs.map { |a| Utils.arrow_name_sym(a) }
           attrs_only_set = instance_variables & selected_attrs
 
           arr = attrs_only_set.map do |name|
@@ -60,12 +52,6 @@ module Zm
 
         def instance_variables_hash(zcs_attrs)
           Hash[instance_variables_array(zcs_attrs)]
-        end
-
-        def arrow_name(name)
-          return name if name.to_s.start_with?('@')
-
-          "@#{name}"
         end
 
         def clone
@@ -87,6 +73,25 @@ module Zm
           else
             instance_variable_set(arrow_attr_sym, value)
           end
+        end
+
+        def to_s
+          inspect
+        end
+
+        def to_h
+          Hash[instance_variables_map]
+        end
+
+        def inspect
+          keys_str = to_h.map { |k, v| "#{k}: #{v}" }.join(', ')
+          "#{self.class}:#{"0x00%x" % (object_id << 1)} #{keys_str}"
+        end
+
+        def instance_variables_map
+          keys = instance_variables.dup
+          keys.delete(:@parent)
+          keys.map { |key| [key, instance_variable_get(key)] }
         end
       end
     end

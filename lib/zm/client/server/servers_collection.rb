@@ -27,7 +27,8 @@ module Zm
       private
 
       def make_query
-        sac.get_all_servers(@service)
+        jsns = @service.nil? ? nil : { service: @service }
+        sac.jsns_request(:GetAllServersRequest, jsns)
       end
     end
   end

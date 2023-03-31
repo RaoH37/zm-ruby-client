@@ -8,11 +8,13 @@ module Zm
         @item = item
       end
 
-      def to_tag(tag_name)
+      def to_tag(tag_name = nil)
+        tag_name ||= @item.tn
         { action: { op: :tag, id: @item.id, tn: tag_name } }
       end
 
-      def to_move(new_folder_id)
+      def to_move(new_folder_id = nil)
+        new_folder_id ||= @item.l
         { action: { op: :move, id: @item.id, l: new_folder_id } }
       end
 
@@ -36,7 +38,9 @@ module Zm
         { action: action }
       end
 
-      def to_rename(new_name)
+      def to_rename(new_name = nil)
+        new_name ||= @item.name
+
         action = {
          op: :rename,
          id: @item.id,

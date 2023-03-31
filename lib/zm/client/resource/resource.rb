@@ -5,28 +5,17 @@ module Zm
     # objectClass: zimbraCalendarResource
     class Resource < Base::MailboxObject
       def delete!
-        sac.delete_resource(@id)
-      end
-
-      def update!(hash)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-        sac.modify_resource(jsns_builder.to_patch(hash))
-
-        hash.each do |key, value|
-          update_attribute(key, value)
-        end
-
-        true
+        sac.jsns_request(:DeleteCalendarResourceRequest, { id: @id })
+        @id = nil
       end
 
       def modify!
-        sac.modify_resource(jsns_builder.to_update)
+        sac.jsns_request(:ModifyCalendarResourceRequest, jsns_builder.to_update)
         true
       end
 
       def create!
-        rep = sac.create_resource(jsns_builder.to_jsns)
+        rep = sac.jsns_request(:CreateCalendarResourceRequest, jsns_builder.to_jsns)
         @id = rep[:Body][:CreateCalendarResourceResponse][:calresource].first[:id]
       end
 
@@ -35,6 +24,10 @@ module Zm
       end
 
       private
+
+      def do_update!(hash)
+        sac.jsns_request(:ModifyCalendarResourceRequest, jsns_builder.to_patch(hash))
+      end
 
       def jsns_builder
         @jsns_builder ||= ResourceJsnsBuilder.new(self)

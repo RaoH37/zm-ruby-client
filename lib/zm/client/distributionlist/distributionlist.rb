@@ -35,24 +35,12 @@ module Zm
       end
 
       def create!
-        rep = sac.create_distribution_list(jsns_builder.to_jsns)
+        rep = sac.jsns_request(:CreateDistributionListRequest, jsns_builder.to_jsns)
         @id = rep[:Body][:CreateDistributionListResponse][:dl].first[:id]
       end
 
       def modify!
-        sac.modify_distribution_list(jsns_builder.to_update)
-        true
-      end
-
-      def update!(hash)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-        sac.modify_distribution_list(jsns_builder.to_patch(hash))
-
-        hash.each do |key, value|
-          update_attribute(key, value)
-        end
-
+        sac.jsns_request(:ModifyDistributionListRequest, jsns_builder.to_update)
         true
       end
 
@@ -62,8 +50,8 @@ module Zm
       end
 
       def delete!
-        sac.delete_distribution_list(@id)
-        true
+        sac.jsns_request(:DeleteDistributionListRequest, { id: @id })
+        @id = nil
       end
 
       def local_transport
@@ -105,6 +93,10 @@ module Zm
       end
 
       private
+
+      def do_update!(hash)
+        sac.jsns_request(:ModifyDistributionListRequest, jsns_builder.to_patch(hash))
+      end
 
       def jsns_builder
         @jsns_builder ||= DistributionListJsnsBuilder.new(self)

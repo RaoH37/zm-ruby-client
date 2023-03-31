@@ -28,7 +28,7 @@ module Zm
 
       def make_query
         jsns = @folder_id.nil? ? nil : { l: @folder_id }
-        @parent.sacc.get_all_contacts(@parent.token, jsns)
+        @parent.sacc.jsns_request(:GetContactsRequest, @parent.token, jsns)
       end
     end
   end

@@ -4,6 +4,13 @@ module Zm
   module Client
     # class for account folder
     class FolderGrant
+      GT_USER = 'usr'
+      GT_GROUP = 'dom'
+      GT_DOMAIN = 'grp'
+      GT_PUB = 'pub'
+      GT_GUEST = 'guest'
+      GT_KEY = 'key'
+
       attr_reader :parent, :folder_id
       attr_accessor :zid, :gt, :perm, :d, :expiry, :key
 
@@ -29,36 +36,55 @@ module Zm
       end
 
       def is_account?
-        gt == 'usr'
+        gt == GT_USER
       end
 
       def is_dom?
-        gt == 'dom'
+        gt == GT_DOMAIN
       end
 
       def is_dl?
-        gt == 'grp'
+        gt == GT_GROUP
       end
 
       def is_public?
-        gt == 'pub'
+        gt == GT_PUBLIC
       end
 
       def is_external?
-        gt == 'guest'
+        gt == GT_GUEST
       end
 
       def is_key?
-        gt == 'key'
+        gt == GT_KEY
       end
 
       def save!
-        @parent.sacc.folder_action(get_token, jsns_builder.to_create)
+        @parent.sacc.jsns_request(:FolderActionRequest, get_token, jsns_builder.to_create)
       end
 
       def delete!
-        @parent.sacc.folder_action(get_token, jsns_builder.to_delete)
+        @parent.sacc.jsns_request(:FolderActionRequest, get_token, jsns_builder.to_delete)
         @parent.all.delete(self)
+      end
+
+      def to_s
+        inspect
+      end
+
+      def to_h
+        Hash[instance_variables_map]
+      end
+
+      def inspect
+        keys_str = to_h.map { |k, v| "#{k}: #{v}" }.join(', ')
+        "#{self.class}:#{"0x00%x" % (object_id << 1)} #{keys_str}"
+      end
+
+      def instance_variables_map
+        keys = instance_variables.dup
+        keys.delete(:@parent)
+        keys.map { |key| [key, instance_variable_get(key)] }
       end
 
       private

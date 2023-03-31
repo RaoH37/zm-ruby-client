@@ -78,44 +78,6 @@ module Zm
         curl_request(body)
       end
 
-      # def cancel_appointment(token, jsns)
-      #   soap_name = :CancelAppointmentRequest
-      #   body = init_hash_request(token, soap_name)
-      #   body[:Body][soap_name].merge!(jsns)
-      #   curl_request(body)
-      # end
-
-      # -------------------------------
-      # CONTACT
-
-      def get_all_contacts(token, jsns)
-        body = init_hash_request(token, :GetContactsRequest)
-        body[:Body][:GetContactsRequest].merge!(jsns) unless jsns.nil?
-
-        curl_request(body)
-      end
-
-      def create_contact(token, jsns)
-        soap_name = :CreateContactRequest
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
-
-      def modify_contact(token, jsns)
-        soap_name = :ModifyContactRequest
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
-
-      # def contact_action(token, jsns)
-      #   soap_name = :ContactActionRequest
-      #   body = init_hash_request(token, soap_name)
-      #   body[:Body][soap_name].merge!(jsns)
-      #   curl_request(body)
-      # end
-
       # -------------------------------
       # DOCUMENT
 
@@ -128,66 +90,8 @@ module Zm
         curl_request(body)
       end
 
-      def item_action(token, jsns)
-        jsns_request(:ItemActionRequest, token, jsns)
-      end
-
-      # -------------------------------
-      # FOLDER
-
-      def get_folder(token, jsns)
-        jsns_request(:GetFolderRequest, token, jsns)
-      end
-
-      def create_folder(token, jsns)
-        jsns_request(:CreateFolderRequest, token, jsns)
-      end
-
-      def folder_action(token, jsns)
-        jsns_request(:FolderActionRequest, token, jsns)
-      end
-
-      def get_all_search_folders(token)
-        soap_name = :GetSearchFolderRequest
-        body = init_hash_request(token, soap_name)
-        curl_request(body)
-      end
-
-      # -------------------------------
-      # SEARCH FOLDER
-
-      def create_search_folder(token, jsns)
-        jsns_request(:CreateSearchFolderRequest, token, jsns)
-      end
-
-      def modify_search_folder(token, jsns)
-        jsns_request(:ModifySearchFolderRequest, token, jsns)
-      end
-
-      # -------------------------------
-      # TASK
-
-      def create_task(token, folder_id, name, description = nil, options = {})
-        comp = { name: name }
-        comp.merge!(options) if !options.nil? && !options.empty?
-
-        task = { su: name, l: folder_id, inv: { comp: [comp] } }
-
-        task[:mp] = { ct: 'text/plain', content: description } unless description.nil?
-
-        req = { m: task }
-
-        body = init_hash_request(token, :CreateTaskRequest)
-        body[:Body][:CreateTaskRequest].merge!(req)
-        curl_request(body)
-      end
-
       # -------------------------------
       # SHARE
-
-      def create_mountpoint(token, jsns)
-        jsns_request(:CreateMountpointRequest, token, jsns)
-      end
 
       def get_share_info(token, options = {})
         soap_name = :GetShareInfoRequest
@@ -253,27 +157,10 @@ module Zm
       end
 
       # -------------------------------
-      # TAG
-
-      def get_tag(token)
-        body = init_hash_request(token, :GetTagRequest)
-        curl_request(body)
-      end
-
-      def create_tag(token, jsns)
-        jsns_request(:CreateTagRequest, token, jsns)
-      end
-
-      def tag_action(token, jsns)
-        jsns_request(:TagActionRequest, token, jsns)
-      end
-
-      # -------------------------------
       # IDENTITY
 
       def get_all_identities(token)
-        body = init_hash_request(token, :GetIdentitiesRequest, ACCOUNTSPACE)
-        curl_request(body)
+        jsns_request(:GetIdentitiesRequest, token, nil, ACCOUNTSPACE)
       end
 
       def create_identity(token, _name, attrs = [])
@@ -351,9 +238,7 @@ module Zm
       end
 
       def get_filter_rules(token)
-        soap_name = :GetFilterRulesRequest
-        body = init_hash_request(token, soap_name)
-        curl_request(body)
+        jsns_request(:GetFilterRulesRequest, token, nil)
       end
 
       def modify_filter_rules(token, rules)
@@ -365,9 +250,7 @@ module Zm
       end
 
       def get_signatures(token)
-        soap_name = :GetSignaturesRequest
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        curl_request(body)
+        jsns_request(:GetSignaturesRequest, token, nil, ACCOUNTSPACE)
       end
 
       def create_signature(token, jsns)

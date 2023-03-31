@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account folder jsns builder
-    class FolderJsnsBuilder < Base::BaseJsnsBuilder
+    class FolderJsnsBuilder < BaseAccountJsnsBuilder
       def to_find
         { folder: { l: @item.id } }
       end

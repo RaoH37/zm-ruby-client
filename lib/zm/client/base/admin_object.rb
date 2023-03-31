@@ -19,12 +19,6 @@ module Zm
 
         alias sacc soap_account_connector
 
-        def to_h
-          hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
-          hashmap.delete_if { |_, v| v.nil? }
-          hashmap
-        end
-
         def init_from_json(json)
           super(json)
           return unless json[:a].is_a? Array
@@ -43,10 +37,18 @@ module Zm
           json_hash.each do |k, v|
             instance_variable_set(k, convert_json_string_value(v))
           end
+        end
 
-          # Hash[json_map].each do |k, v|
-          #   instance_variable_set(k, convert_json_string_value(v))
-          # end
+        def update!(hash)
+          return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+          do_update!(hash)
+
+          hash.each do |key, value|
+            update_attribute(key, value)
+          end
+
+          true
         end
       end
     end

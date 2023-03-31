@@ -16,7 +16,7 @@ module Zm
           types: SearchType::DL
         }
 
-        @parent.sac.search_directory(jsns)
+        @parent.sac.jsns_request(:SearchDirectoryRequest, jsns)
       end
 
       def build_response

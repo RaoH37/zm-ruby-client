@@ -4,19 +4,10 @@ module Zm
   module Client
     # Collection MtaQueues
     class MtaQueuesCollection < Base::ObjectsCollection
-      METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
 
       def initialize(parent)
         @parent = parent
         reset_query_params
-      end
-
-      def all
-        @all ||= all!
-      end
-
-      def all!
-        build_response
       end
 
       def defaults
@@ -24,15 +15,13 @@ module Zm
       end
 
       def defaults!
-        # queues = []
         Zm::Client::MtaQueueName::ALL.each do |queue_name|
           queue = MtaQueue.new(@parent)
           queue.name = queue_name
           set_dynamic_queue_method(queue)
           @queues_h[queue_name] = queue
-          # queues << queue
         end
-        # @all = queues
+
         @all = @queues_h.values
       end
 
@@ -41,18 +30,6 @@ module Zm
 
         all! if @queues_h.empty?
         @queues_h[queue_name]
-      end
-
-      def method_missing(method, *args, &block)
-        if METHODS_MISSING_LIST.include?(method)
-          build_response.send(method, *args, &block)
-        else
-          super
-        end
-      end
-
-      def respond_to_missing?(method, *)
-        METHODS_MISSING_LIST.include?(method) || super
       end
 
       private
@@ -73,7 +50,8 @@ module Zm
       end
 
       def set_dynamic_queue_method(queue)
-        s_name = "@#{queue.name}"
+        s_name = Utils.arrow_name(queue.name)
+
         instance_variable_set(s_name, queue)
         self.class.attr_reader queue.name
         @dynamic_methods << s_name

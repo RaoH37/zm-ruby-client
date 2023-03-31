@@ -11,28 +11,23 @@ module Zm
         end
 
         def color!
-          @parent.sacc.folder_action(@parent.token, jsns_builder.to_color) if color_changed? || rgb_changed?
+          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_color) if color_changed? || rgb_changed?
           true
         end
 
         def delete!
-          @parent.sacc.folder_action(@parent.token, jsns_builder.to_delete)
+          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_delete)
           super
         end
 
         def modify!
-          @parent.sacc.folder_action(@parent.token, jsns_builder.to_update)
+          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_update)
           true
         end
 
         def move!
-          @parent.sacc.folder_action(@parent.token, jsns_builder.to_move) if l_changed?
+          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_move) if l_changed?
           true
-        end
-
-        def rename!
-          @parent.sacc.folder_action(@parent.token, jsns_builder.to_rename) if name_changed?
-          super
         end
       end
     end
