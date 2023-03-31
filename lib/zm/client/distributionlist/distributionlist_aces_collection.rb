@@ -6,13 +6,13 @@ module Zm
 
     # Collection Account Aliases
     class DistributionListAcesCollection
+      include MissingMethodStaticCollection
+
       def initialize(parent)
         @parent = parent
         @all = []
         build_aces
       end
-
-      attr_reader :all
 
       private
 

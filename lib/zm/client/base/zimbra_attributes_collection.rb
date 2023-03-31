@@ -6,9 +6,11 @@ module Zm
   module Client
     module Base
       class ZimbraAttributesCollection
+        include MissingMethodStaticCollection
+
         ZIMBRA_ATTRS_PATH = "#{File.dirname(__FILE__)}../../../modules/common/zimbra-attrs.json"
 
-        attr_reader :all, :all_versioned
+        attr_reader :all_versioned
 
         def initialize(parent)
           @parent = parent

@@ -187,7 +187,7 @@ module Zm
 
       # collection attachments
       class Attachments
-        attr_reader :all
+        include MissingMethodStaticCollection
 
         def initialize
           @all = []

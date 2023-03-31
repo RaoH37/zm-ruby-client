@@ -4,7 +4,7 @@ module Zm
   module Client
     # class for folder retention policies collection
     class FolderRetentionPoliciesCollection
-      attr_reader :all
+      include MissingMethodStaticCollection
 
       def initialize(parent)
         @parent = parent

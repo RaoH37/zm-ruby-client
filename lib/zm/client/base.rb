@@ -4,8 +4,7 @@ require 'curb'
 require 'logger'
 require 'openssl'
 
-require 'zm/modules/zm_logger'
-require 'zm/modules/zm_model'
+require 'zm/modules/base'
 
 require 'zm/client/base/zimbra_attributes_collection'
 require 'zm/client/base/object'

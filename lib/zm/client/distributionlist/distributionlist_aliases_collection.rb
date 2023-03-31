@@ -4,13 +4,13 @@ module Zm
   module Client
     # Collection Account Aliases
     class DistributionListAliasesCollection
+      include MissingMethodStaticCollection
+
       def initialize(parent)
         @parent = parent
         @all = []
         build_aliases
       end
-
-      attr_reader :all
 
       def add!(email)
         return false if @all.include?(Utils.format_email(email))

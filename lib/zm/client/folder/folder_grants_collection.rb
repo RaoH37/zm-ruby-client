@@ -4,7 +4,9 @@ module Zm
   module Client
     # class for folder retention policies collection
     class FolderGrantsCollection
-      attr_reader :parent, :all
+      include MissingMethodStaticCollection
+
+      attr_reader :parent
 
       def initialize(parent)
         @parent = parent
@@ -61,14 +63,6 @@ module Zm
 
       def to_s
         @all.map(&:to_s)
-      end
-
-      def method_missing(method, *args, &block)
-        if @all.respond_to?(method)
-          @all.send(method, *args, &block)
-        else
-          super
-        end
       end
     end
   end
