@@ -16,7 +16,7 @@ module Zm
         entry = rep[:Body][:GetDistributionListResponse][:dl].first
 
         reset_query_params
-        build_from_entry(entry)
+        DistributionListJsnsInitializer.create(@parent, entry)
       end
 
       private

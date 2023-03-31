@@ -9,11 +9,6 @@ module Zm
   module Client
     # objectClass: zimbraDistributionList
     class DistributionList < Base::AdminObject
-      def initialize(parent)
-        super(parent)
-        @grantee_type = 'grp'
-      end
-
       def aliases
         @aliases ||= DistributionListAliasesCollection.new(self)
       end

@@ -6,7 +6,6 @@ module Zm
       # Abstract Class Provisionning Object
       class Object
         attr_accessor :parent, :token, :name, :id
-        attr_reader :grantee_type
 
         def initialize(parent)
           @parent = parent

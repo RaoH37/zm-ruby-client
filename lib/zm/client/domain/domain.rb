@@ -4,11 +4,6 @@ module Zm
   module Client
     # objectClass: zimbraDomain
     class Domain < Base::AdminObject
-      def initialize(parent)
-        super(parent)
-        @grantee_type = 'dom'
-      end
-
       def create!
         rep = sac.jsns_request(:CreateDomainRequest, jsns_builder.to_jsns)
         @id = rep[:Body][:CreateDomainResponse][:domain].first[:id]

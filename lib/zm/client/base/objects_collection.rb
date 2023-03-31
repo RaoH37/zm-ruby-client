@@ -19,12 +19,6 @@ module Zm
           find_by(id: id)
         end
 
-        def build_from_entry(entry)
-          child = @child_class.new(@parent)
-          child.init_from_json(entry)
-          child
-        end
-
         def first
           @limit = 1
           build_response.first

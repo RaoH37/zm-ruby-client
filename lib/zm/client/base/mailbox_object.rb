@@ -24,11 +24,6 @@ module Zm
         attr_accessor :home_url, :password, :carLicense
         attr_writer :used, :domain_key
 
-        def initialize(parent)
-          super(parent)
-          @grantee_type = 'usr'
-        end
-
         def rest_account_connector
           @rest_account_connector ||= RestAccountConnector.new
         end
