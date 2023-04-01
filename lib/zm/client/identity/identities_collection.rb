@@ -13,7 +13,7 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.get_all_identities(@parent.token)
+        @parent.sacc.jsns_request(:GetIdentitiesRequest, @parent.token, nil, SoapAccountConnector::ACCOUNTSPACE)
       end
     end
   end

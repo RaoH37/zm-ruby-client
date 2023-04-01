@@ -4,42 +4,22 @@ module Zm
   module Client
     # class account identity
     class Identity < Base::AccountObject
-      INSTANCE_VARIABLE_KEYS = %i[id name zimbraPrefIdentityName zimbraPrefFromDisplay zimbraPrefFromAddress
-                                  zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
-                                  zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
-                                  zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses].freeze
-
-      ATTRS_WRITE = %i[zimbraPrefIdentityName zimbraPrefFromDisplay zimbraPrefFromAddress
-                       zimbraPrefFromAddressType zimbraPrefReplyToEnabled zimbraPrefReplyToDisplay zimbraPrefReplyToAddress
-                       zimbraPrefDefaultSignatureId zimbraPrefForwardReplySignatureId zimbraPrefWhenSentToEnabled
-                       zimbraPrefWhenInFoldersEnabled zimbraPrefWhenSentToAddresses].freeze
-
-      attr_accessor(*INSTANCE_VARIABLE_KEYS)
-
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
-      end
-
-      def init_from_json(json)
-        @id    = json[:id]
-        @name  = json[:name]
-        all_instance_variable_keys.each do |key|
-          value = json[:_attrs][key]
-          next if value.nil?
-
-          instance_variable_set(Utils.arrow_name(key), value)
-        end
-      end
+      attr_accessor :id, :name, :zimbraPrefIdentityName, :zimbraPrefFromDisplay, :zimbraPrefFromAddress,
+                    :zimbraPrefFromAddressType, :zimbraPrefReplyToEnabled, :zimbraPrefReplyToDisplay,
+                    :zimbraPrefReplyToAddress, :zimbraPrefDefaultSignatureId, :zimbraPrefForwardReplySignatureId,
+                    :zimbraPrefWhenSentToEnabled, :zimbraPrefWhenInFoldersEnabled, :zimbraPrefWhenSentToAddresses
 
       def create!
-        rep = @parent.sacc.create_identity(@parent.token, name, instance_variables_array(ATTRS_WRITE))
+        rep = @parent.sacc.jsns_request(:CreateIdentityRequest, @parent.token, jsns_builder.to_jsns,
+                                        SoapAccountConnector::ACCOUNTSPACE)
         init_from_json(rep[:Body][:CreateIdentityResponse][:identity].first)
       end
 
       def update!(hash)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
-        @parent.sacc.modify_identity(@parent.token, id, hash)
+        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_patch(hash),
+                                  SoapAccountConnector::ACCOUNTSPACE)
 
         hash.each do |key, value|
           update_attribute(key, value)
@@ -49,12 +29,14 @@ module Zm
       end
 
       def modify!
-        @parent.sacc.modify_identity(@parent.token, id, instance_variables_array(ATTRS_WRITE))
+        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_jsns,
+                                  SoapAccountConnector::ACCOUNTSPACE)
       end
 
       def delete!
-        @parent.sacc.delete_identity(@parent.token, @id)
-        super
+        @parent.sacc.jsns_request(:DeleteIdentityRequest, @parent.token, jsns_builder.to_delete,
+                                  SoapAccountConnector::ACCOUNTSPACE)
+        @id = nil
       end
 
       def rename!(new_name); end
@@ -67,6 +49,12 @@ module Zm
         end
         yield(new_identity) if block_given?
         new_identity
+      end
+
+      private
+
+      def jsns_builder
+        @jsns_builder ||= IdentityJsnsBuilder.new(self)
       end
     end
   end

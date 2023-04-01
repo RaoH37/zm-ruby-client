@@ -157,49 +157,6 @@ module Zm
       end
 
       # -------------------------------
-      # IDENTITY
-
-      def get_all_identities(token)
-        jsns_request(:GetIdentitiesRequest, token, nil, ACCOUNTSPACE)
-      end
-
-      def create_identity(token, _name, attrs = [])
-        soap_name = :CreateIdentityRequest
-        req = {
-          identity: {
-            id: id,
-            _attrs: attrs
-          }
-        }
-
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
-
-      def modify_identity(token, id, attrs = [])
-        soap_name = :ModifyIdentityRequest
-        req = {
-          identity: {
-            id: id,
-            _attrs: attrs
-          }
-        }
-
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
-
-      def delete_identity(token, id)
-        soap_name = :DeleteIdentityRequest
-        req = { identity: { id: id } }
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
-
-      # -------------------------------
       # PREFERENCES
 
       def get_prefs(token, *names)
