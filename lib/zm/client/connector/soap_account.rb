@@ -249,31 +249,6 @@ module Zm
         curl_request(body)
       end
 
-      def get_signatures(token)
-        jsns_request(:GetSignaturesRequest, token, nil, ACCOUNTSPACE)
-      end
-
-      def create_signature(token, jsns)
-        soap_name = :CreateSignatureRequest
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
-
-      def modify_signature(token, jsns)
-        soap_name = :ModifySignatureRequest
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
-
-      def delete_signature(token, jsns)
-        soap_name = :DeleteSignatureRequest
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
-
       # -------------------------------
       # GENERIC
 

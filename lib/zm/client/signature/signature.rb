@@ -14,19 +14,21 @@ module Zm
       define_changed_attributes :name, :txt, :html
 
       def create!
-        rep = @parent.sacc.create_signature(@parent.token, as_jsns)
+        rep = @parent.sacc.jsns_request(:CreateSignatureRequest, @parent.token, jsns_builder.to_jsns,
+                                        SoapAccountConnector::ACCOUNTSPACE)
         @id = rep[:Body][:CreateSignatureResponse][:signature].first[:id]
       end
 
       def modify!
-        @parent.sacc.modify_signature(@parent.token, as_jsns)
-        super
+        @parent.sacc.jsns_request(:ModifySignatureRequest, @parent.token, jsns_builder.to_jsns,
+                                  SoapAccountConnector::ACCOUNTSPACE)
       end
 
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.delete_signature(@parent.token, jsns_builder.to_delete)
+        @parent.sacc.jsns_request(:DeleteSignatureRequest, @parent.token, jsns_builder.to_delete,
+                                  SoapAccountConnector::ACCOUNTSPACE)
         @id = nil
       end
 
@@ -52,10 +54,6 @@ module Zm
 
       def jsns_builder
         @jsns_builder ||= SignatureJsnsBuilder.new(self)
-      end
-
-      def as_jsns
-        jsns_builder.to_jsns
       end
     end
   end
