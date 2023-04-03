@@ -9,12 +9,6 @@ module Zm
         reset_query_params
       end
 
-      def new(json)
-        share = Share.new(@parent, json)
-        yield(share) if block_given?
-        share
-      end
-
       def where(owner_name: nil)
         @owner_name = owner_name
         self
@@ -27,7 +21,8 @@ module Zm
       end
 
       def share_response
-        @parent.sacc.get_share_info @parent.token, build_options
+        @parent.sacc.jsns_request(:GetShareInfoRequest, @parent.token, build_options,
+                                  SoapAccountConnector::ACCOUNTSPACE)
       end
 
       def share_builder
@@ -35,9 +30,11 @@ module Zm
       end
 
       def build_options
-        return {} if @owner_name.nil?
+        jsns = { includeSelf: 0 }
+        return jsns if @owner_name.nil?
 
-        { owner: { by: :name, _content: @owner_name } }
+        jsns.merge!({ owner: { by: :name, _content: @owner_name } })
+        jsns
       end
 
       def reset_query_params

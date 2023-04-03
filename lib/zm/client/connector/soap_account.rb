@@ -6,7 +6,6 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapAccountConnector < SoapBaseConnector
-      # SOAP_PATH = '/service/soap/'
       MAILSPACE = 'urn:zimbraMail'
       ACCOUNTSPACE = 'urn:zimbraAccount'
       A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
@@ -64,20 +63,6 @@ module Zm
         curl_request(body)
       end
 
-      def create_appointment(token, jsns)
-        soap_name = :CreateAppointmentRequest
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
-
-      def modify_appointment(token, jsns)
-        soap_name = :ModifyAppointmentRequest
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(jsns)
-        curl_request(body)
-      end
-
       # -------------------------------
       # DOCUMENT
 
@@ -88,29 +73,6 @@ module Zm
         req[:doc].merge!(options)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
-      end
-
-      # -------------------------------
-      # SHARE
-
-      def get_share_info(token, options = {})
-        soap_name = :GetShareInfoRequest
-        req = { includeSelf: 0 }.merge!(options)
-        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
-
-      def get_rights(token, jsns)
-        jsns_request(:GetRightsRequest, token, jsns, ACCOUNTSPACE)
-      end
-
-      def grant_rights(token, jsns)
-        jsns_request(:GrantRightsRequest, token, jsns, ACCOUNTSPACE)
-      end
-
-      def revoke_rights(token, jsns)
-        jsns_request(:RevokeRightsRequest, token, jsns, ACCOUNTSPACE)
       end
 
       # -------------------------------

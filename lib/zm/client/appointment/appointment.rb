@@ -10,7 +10,7 @@ module Zm
       attr_reader :recipients, :attendees, :body
 
       alias description desc
-      alias parent_id l
+      alias folder_id l
 
       def initialize(parent)
         @parent = parent
@@ -35,7 +35,7 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.create_appointment(@parent.token, jsns_builder.to_jsns)
+        rep = @parent.sacc.jsns_request(:CreateAppointmentRequest, @parent.token, jsns_builder.to_jsns)
         rep_h = rep[:Body][:CreateAppointmentResponse]
 
         aji = AppointmentJsnsInitializer.new(@parent, rep_h)
@@ -44,7 +44,7 @@ module Zm
       end
 
       def modify!
-        @parent.sacc.modify_appointment(@parent.token, jsns_builder.to_update)
+        @parent.sacc.jsns_request(:ModifyAppointmentRequest, @parent.token, jsns_builder.to_update)
       end
 
       def reload!
