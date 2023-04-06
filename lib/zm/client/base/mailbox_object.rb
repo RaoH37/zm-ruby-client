@@ -15,6 +15,7 @@ require 'zm/client/document'
 require 'zm/client/message'
 require 'zm/client/identity'
 require 'zm/client/upload'
+require 'zm/client/filter_rule'
 
 module Zm
   module Client
@@ -193,6 +194,14 @@ module Zm
 
         def dls_owner
           @dls_owner ||= AccountDlsOwnerCollection.new(self)
+        end
+
+        def filter_rules
+          @filter_rules ||= FilterRulesCollection.new(self)
+        end
+
+        def outgoing_filter_rules
+          @outgoing_filter_rules ||= OutgoingFilterRulesCollection.new(self)
         end
 
         # #################################################################

@@ -156,17 +156,13 @@ module Zm
         curl_request(body)
       end
 
-      def get_filter_rules(token)
-        jsns_request(:GetFilterRulesRequest, token, nil)
-      end
-
-      def modify_filter_rules(token, rules)
-        soap_name = :ModifyFilterRulesRequest
-        req = { filterRules: [{ filterRule: rules }] }
-        body = init_hash_request(token, soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def modify_filter_rules(token, rules)
+      #   soap_name = :ModifyFilterRulesRequest
+      #   req = { filterRules: [{ filterRule: rules }] }
+      #   body = init_hash_request(token, soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       # -------------------------------
       # GENERIC
