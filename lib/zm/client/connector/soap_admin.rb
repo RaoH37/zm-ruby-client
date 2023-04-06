@@ -2,12 +2,10 @@
 
 require_relative 'soap_base'
 require_relative 'soap_error'
-require_relative 'soap_xml_builder'
 
 module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
-      # SOAP_PATH = '/service/admin/soap/'
       ADMINSPACE = 'urn:zimbraAdmin'
       A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
 
@@ -234,14 +232,6 @@ module Zm
           id: id,
           a: attrs.map(&A_NODE_PROC)
         }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
-
-      def set_password(id, new_password)
-        soap_name = :SetPasswordRequest
-        req = { id: id, newPassword: new_password }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
