@@ -39,7 +39,8 @@ module Zm
       end
 
       def create!
-        sac.create_cos(name, instance_variables_array(attrs_write))
+        rep = sac.create_cos(name, instance_variables_array(attrs_write))
+        @id = rep[:Body][:CreateCosResponse][:cos].first[:id]
       end
 
       def servers
@@ -47,7 +48,7 @@ module Zm
       end
 
       def accounts
-        # todo sélectionner tous les comptes qui ont zimbraCOSID=self.id
+        # TODO: sélectionner tous les comptes qui ont zimbraCOSID=self.id
       end
 
       private

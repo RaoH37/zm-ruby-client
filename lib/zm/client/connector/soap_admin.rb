@@ -7,10 +7,9 @@ require_relative 'soap_xml_builder'
 module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
-
       # SOAP_PATH = '/service/admin/soap/'
       ADMINSPACE = 'urn:zimbraAdmin'
-      A_NODE_PROC = lambda { |n| { n: n.first, _content: n.last } }
+      A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
 
       attr_accessor :token
 
@@ -45,7 +44,7 @@ module Zm
       def count_object(type)
         soap_name = :CountObjectsRequest
         body = init_hash_request(soap_name)
-        req = { type: type}
+        req = { type: type }
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
@@ -88,7 +87,7 @@ module Zm
         curl_request(body)
       end
 
-      def create_data_source(name, account_id, type, attrs = { })
+      def create_data_source(name, account_id, type, attrs = {})
         req = {
           id: account_id,
           dataSource: {
@@ -139,22 +138,28 @@ module Zm
         curl_request(body)
       end
 
-      def create_cos(name, attrs = nil)
-        req = { name: name }
+      def create_cos(name, attrs = [])
+        req = { name: { _content: name } }
+        req[:a] = attrs.map do |i|
+          if i.last.is_a?(Array)
+            i.last.map do |j|
+              [i.first, j]
+            end
+          else
+            [i]
+          end
+        end.flatten(1).map(&A_NODE_PROC)
+
         body = init_hash_request(:CreateCosRequest)
         body[:Body][:CreateCosRequest].merge!(req)
-        # a: attrs.to_a.map(&A_NODE_PROC)
-        # a: attrs.to_a.map { |n| { n: n.first, _content: n.last } }
-        # puts SoapXmlBuilder.new(body).to_xml
-        # todo ne fonctionne pas !
-        curl_xml(SoapXmlBuilder.new(body).to_xml)
+        curl_request(body)
       end
 
-      def modify_cos(id, attrs = nil)
+      def modify_cos(id, _attrs = nil)
         # req = { _jsns: ADMINSPACE, id: id, a: attrs.to_a.map{ |n| { n: n.first, _content: n.last } } }
         req = { _jsns: ADMINSPACE, id: id }
         body = { Body: { ModifyCosRequest: req } }.merge(hash_header(@token))
-        # todo ne fonctionne pas !
+        # TODO: ne fonctionne pas !
         # peut-être seul la version xml fonctionne. Il faudrait créer une fonction qui converti le json en xml
         curl_request(body)
       end
@@ -162,7 +167,15 @@ module Zm
       def create_account(name, password = nil, attrs = [])
         soap_name = :CreateAccountRequest
         req = { name: name, password: password }.reject { |_, v| v.nil? }
-        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
+        req[:a] = attrs.map do |i|
+          if i.last.is_a?(Array)
+            i.last.map do |j|
+              [i.first, j]
+            end
+          else
+            [i]
+          end
+        end.flatten(1).map(&A_NODE_PROC)
         # req[:a] = attrs.map{|i|i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i]}.flatten(1).map { |n| { n: n.first, _content: n.last } }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
@@ -173,7 +186,15 @@ module Zm
         soap_name = :CreateCalendarResourceRequest
         req = { name: name, password: password }
         req.reject! { |_, v| v.nil? }
-        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
+        req[:a] = attrs.map do |i|
+          if i.last.is_a?(Array)
+            i.last.map do |j|
+              [i.first, j]
+            end
+          else
+            [i]
+          end
+        end.flatten(1).map(&A_NODE_PROC)
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
@@ -182,7 +203,15 @@ module Zm
       def create_distribution_list(name, attrs = [])
         soap_name = :CreateDistributionListRequest
         req = { name: name }
-        req[:a] = attrs.map { |i| i.last.is_a?(Array) ? i.last.map{|j|[i.first, j]} : [i] }.flatten(1).map(&A_NODE_PROC)
+        req[:a] = attrs.map do |i|
+          if i.last.is_a?(Array)
+            i.last.map do |j|
+              [i.first, j]
+            end
+          else
+            [i]
+          end
+        end.flatten(1).map(&A_NODE_PROC)
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
@@ -226,7 +255,6 @@ module Zm
         generic_alias(:RemoveAccountAliasRequest, id, email)
       end
 
-
       def rename_account(id, email)
         generic_rename(:RenameAccountRequest, id, email)
       end
@@ -240,7 +268,7 @@ module Zm
       end
 
       def generic_members(soap_name, id, emails)
-        req = { id: id, dlm: emails.map { |email| {_content: email} } }
+        req = { id: id, dlm: emails.map { |email| { _content: email } } }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
         curl_request(body)
@@ -371,8 +399,8 @@ module Zm
         curl_request(body)
       end
 
-      def search_directory(query = nil, maxResults = nil, limit = nil, offset = nil, domain = nil, applyCos = nil, applyConfig = nil, sortBy = nil, types = nil, sortAscending = nil, countOnly = nil, attrs = nil)
-
+      def search_directory(query = nil, maxResults = nil, limit = nil, offset = nil, domain = nil, applyCos = nil,
+                           applyConfig = nil, sortBy = nil, types = nil, sortAscending = nil, countOnly = nil, attrs = nil)
         # Désactivé car moins performant !
         # req = Hash[method(__method__).parameters.map{ |p|[p.last, (eval p.last.to_s)] }].select!{ |k,v|!v.nil? }
 
@@ -400,7 +428,8 @@ module Zm
         curl_request(body)
       end
 
-      def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil, refresh = nil, target_server_id = nil)
+      def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil,
+                          refresh = nil, target_server_id = nil)
         soap_name = :GetQuotaUsageRequest
         req = {
           domain: domain,
@@ -421,9 +450,9 @@ module Zm
       def get_mailbox(id)
         soap_name = :GetMailboxRequest
         req = {
-            mbox: {
-                id: id
-            }
+          mbox: {
+            id: id
+          }
         }
         body = init_hash_request(soap_name)
         body[:Body][soap_name].merge!(req)
@@ -504,7 +533,8 @@ module Zm
         soap_name = :MailQueueActionRequest
         value = [value] unless value.is_a?(Array)
         body = init_hash_request(soap_name)
-        req = { server: { name: server_name, queue: { name: queue_name, action: { op: op, by: by, _content: value.join(',') } } } }
+        req = { server: { name: server_name,
+                          queue: { name: queue_name, action: { op: op, by: by, _content: value.join(',') } } } }
         body[:Body][soap_name].merge!(req)
         curl_request(body)
       end
@@ -515,7 +545,6 @@ module Zm
         req = { query: {} }
         body[:Body][soap_name].merge!(req)
         curl_request(body)
-        # curl_xml(SoapXmlBuilder.new(body).to_xml)
       end
 
       def set_password(id, new_password)

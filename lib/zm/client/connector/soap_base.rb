@@ -54,18 +54,10 @@ module Zm
         soapbody
       end
 
-      def curl_xml(xml, error_handler = SoapError)
-        logger.debug xml
-        @curl.http_post(xml)
-
-        soapbody = JSON.parse(@curl.body_str, symbolize_names: true)
-        raise(error_handler, soapbody) if @curl.status.to_i >= 400
-
-        soapbody
-      end
-
       def hash_header(token, target_server = nil)
-        context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if { |_, v| v.nil? }
+        context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
+          v.nil?
+        end
         { Header: { context: context, _jsns: BASESPACE } }
       end
     end
