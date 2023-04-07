@@ -14,7 +14,12 @@ module Zm
         def update(item, json)
           item = super(item, json)
 
-          item.zimbraMailHostPool = [item.zimbraMailHostPool] if item.zimbraMailHostPool.is_a?(String)
+          case item.zimbraMailHostPool
+          when String
+            item.zimbraMailHostPool = [item.zimbraMailHostPool]
+          when NilClass
+            item.zimbraMailHostPool = []
+          end
 
           item
         end
