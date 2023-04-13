@@ -14,12 +14,11 @@ module Zm
         end
 
         def find(id)
-          rep = @parent.sacc.get_msg(@parent.token, id, { html: 1 })
+          jsns = { m: { id: id, html: 1 } }
+          rep = @parent.sacc.jsns_request(:GetMsgRequest, @parent.token, jsns)
           entry = rep[:Body][:GetMsgResponse][:m].first
 
-          msg = @child_class.new(@parent)
-          msg.init_from_json(entry)
-          msg
+          MessageJsnsInitializer.create(@parent, entry)
         end
 
         def start_at(start_at)
@@ -73,7 +72,20 @@ module Zm
         private
 
         def make_query
-          @parent.sacc.search(@parent.token, @type, @offset, @limit, @sort_by, query, build_options)
+          jsns = {
+            types: @type,
+            offset: @offset,
+            limit: @limit,
+            sortBy: @sort_by,
+            query: query,
+            header: @headers
+          }
+
+          jsns.merge!(build_options)
+
+          jsns.reject! { |_, v| v.nil? }
+
+          @parent.sacc.jsns_request(:SearchRequest, @parent.token, jsns)
         end
 
         def search_builder
@@ -123,6 +135,7 @@ module Zm
           @query = nil
           @folder_ids = []
           @folders = []
+          @headers = [{ n: 'messageIdHeader' }]
         end
       end
     end

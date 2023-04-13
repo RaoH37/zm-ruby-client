@@ -20,9 +20,9 @@ require 'zm/client/filter_rule'
 module Zm
   module Client
     module Base
-      # Abstract Class Provisionning AdminObject
+      # Abstract Class for Account and Resource
       class MailboxObject < AdminObject
-        attr_accessor :home_url, :password, :carLicense
+        attr_accessor :home_url, :public_url, :password, :carLicense
         attr_writer :used, :domain_key
 
         def rest_account_connector
@@ -36,31 +36,15 @@ module Zm
         end
 
         def infos
-          @infos || read_infos
+          @infos ||= MailboxInfosCollection.new(self)
         end
 
-        def read_infos
-          @infos = sacc.get_info(@token)[:Body][:GetInfoResponse]
-          @id = @infos[:id]
-          @used = @infos[:used]
-          @public_url = @infos[:publicURL]
-          @zimbraCOSId = @infos[:cos][:id]
-          @home_url = @infos[:rest]
-          @infos
+        def prefs
+          @prefs ||= MailboxPrefsCollection.new(self)
         end
 
         def used
           @used ||= sac.get_mailbox(id)[:Body][:GetMailboxResponse][:mbox].first[:s]
-        end
-
-        def public_url
-          infos if @infos.nil?
-          @public_url
-        end
-
-        def home_url
-          infos if @infos.nil?
-          @home_url
         end
 
         # #################################################################

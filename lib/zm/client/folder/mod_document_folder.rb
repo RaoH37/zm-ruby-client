@@ -11,8 +11,10 @@ module DocumentFolder
 
     raise Zm::Client::RestError, 'failed to extract uuid' if uuid.nil?
 
-    upload_options = { upload: { id: uuid } }
-    rep = @parent.sacc.save_document(@parent.token, id, upload_options)
+    # upload_options = { upload: { id: uuid } }
+    # rep = @parent.sacc.save_document(@parent.token, id, upload_options)
+    jsns = { doc: { l: l, pload: { id: uuid } } }
+    rep = @parent.sacc.jsns_request(:SaveDocumentRequest, @parent.token, jsns)
 
     Zm::Client::Document.new(@parent, rep[:Body][:SaveDocumentResponse][:doc].first)
   end

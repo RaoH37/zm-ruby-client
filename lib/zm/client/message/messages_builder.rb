@@ -4,14 +4,15 @@ module Zm
   module Client
     # class factory [messages]
     class MessagesBuilder < Base::ObjectsBuilder
-      def initialize(account, json)
-        @account = account
+      def initialize(parent, json)
+        @parent = parent
         @json = json
+        # puts json
       end
 
       def make
-        root.map do |s|
-          Message.new(@account, s)
+        root.map do |entry|
+          MessageJsnsInitializer.create(@parent, entry)
         end
       end
 

@@ -13,8 +13,10 @@ module Zm
       end
 
       def find(id)
-        rep = @parent.sacc.get_msg(@parent.token, id)
+        jsns = { m: { id: id, html: 1 } }
+        rep = @parent.sacc.jsns_request(:GetMsgRequest, @parent.token, jsns)
         entry = rep[:Body][:GetMsgResponse][:m].first
+
         AppointmentJsnsInitializer.new(@parent, entry).create
       end
 

@@ -213,5 +213,11 @@ module Zm
       INTERNAL_USER_ACCOUNT = 'internalUserAccount'
       ALL = [USER_ACCOUNT, ACCOUNT, ALIAS, DL, DOMAIN, COS, SERVER, RESOURCE, INTERNAL_USER_ACCOUNT].freeze
     end
+
+    module ContentType
+      TEXT = 'text/plain'
+      HTML = 'text/html'
+      ALL = [TEXT, HTML].freeze
+    end
   end
 end

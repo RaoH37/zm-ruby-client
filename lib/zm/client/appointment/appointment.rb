@@ -48,8 +48,10 @@ module Zm
       end
 
       def reload!
-        rep = @parent.sacc.get_msg(@parent.token, @id)
+        jsns = { m: { id: id, html: 1 } }
+        rep = @parent.sacc.jsns_request(:GetMsgRequest, @parent.token, jsns)
         entry = rep[:Body][:GetMsgResponse][:m].first
+
         aji = AppointmentJsnsInitializer.new(@parent, entry)
         aji.appointment = self
         aji.create

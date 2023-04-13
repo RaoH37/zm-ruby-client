@@ -106,6 +106,20 @@ module Zm
         uploader.send_file(absFolderPath, 'tgz', nil, 'skip', file_path)
       end
 
+      def add_message(eml, d = nil, f = nil, tn = nil)
+        m = {
+          l: id,
+          d: d,
+          f: f,
+          tn: tn,
+          content: { _content: eml }
+        }.reject { |_, v| v.nil? }
+
+        jsns = { m: m }
+
+        @parent.sacc.jsns_request(:AddMsgRequest, @parent.token, jsns)
+      end
+
       def download(dest_file_path, fmt = 'tgz')
         uploader = Upload.new(@parent, RestAccountConnector.new)
         # uploader.download_file(absFolderPath, fmt, [view], nil, dest_file_path)

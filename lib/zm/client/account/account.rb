@@ -56,10 +56,6 @@ module Zm
         resp[:Body][:QueryMailboxMoveResponse][:account].nil?
       end
 
-      def ranking(op, email = nil)
-        sacc.ranking_action(@token, op, email)
-      end
-
       def attrs_write
         @parent.zimbra_attributes.all_account_attrs_writable_names
       end
