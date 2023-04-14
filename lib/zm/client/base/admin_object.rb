@@ -13,16 +13,6 @@ module Zm
 
         alias sac soap_admin_connector
 
-        def soap_account_connector
-          @soap_account_connector || soap_account_connector!
-        end
-
-        def soap_account_connector!
-          @soap_account_connector = SoapAccountConnector.create(@parent)
-        end
-
-        alias sacc soap_account_connector
-
         def init_from_json(json)
           super(json)
           return unless json[:a].is_a? Array

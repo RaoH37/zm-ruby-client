@@ -25,6 +25,16 @@ module Zm
         attr_accessor :home_url, :public_url, :password, :carLicense
         attr_writer :used, :domain_key
 
+        def soap_account_connector
+          @soap_account_connector || soap_account_connector!
+        end
+
+        def soap_account_connector!
+          @soap_account_connector = SoapAccountConnector.create(@parent)
+        end
+
+        alias sacc soap_account_connector
+
         def rest_account_connector
           @rest_account_connector ||= RestAccountConnector.new
         end
