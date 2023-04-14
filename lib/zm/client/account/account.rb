@@ -31,7 +31,7 @@ module Zm
       attr_accessor :name, :id, :token, :home_url, :password, :domainkey, :carLicense
 
       def initialize(parent)
-        # extend(AccountCommon)
+        extend(AccountCommon)
         super(parent)
         @grantee_type = 'usr'.freeze
       end
