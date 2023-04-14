@@ -17,6 +17,12 @@ module Zm
           find_by!(hash)
         end
 
+        def find_by_or_nil(hash, error_handler = SoapError)
+          find_by(hash)
+        rescue error_handler => _e
+          nil
+        end
+
         def ldap
           @all = nil
           @apply_cos = SoapUtils::OFF

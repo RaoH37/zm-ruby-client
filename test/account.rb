@@ -74,6 +74,11 @@ class TestAccount < Minitest::Test
     assert_equal @fixture_accounts['accounts']['maxime']['email'], account.name
   end
 
+  def test_find_by_name_or_nil
+    account = @admin.accounts.find_by_or_nil name: @fixture_accounts['accounts']['fake']['email']
+    assert account.nil?
+  end
+
   def test_zcs_attributes
     account = @admin.accounts.attrs(@zm_account_attrs).find_by name: @fixture_accounts['accounts']['maxime']['email']
     @zm_account_attrs.each do |attr|
