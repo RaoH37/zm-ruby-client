@@ -5,6 +5,7 @@ module Zm
     # class account tag
     class Contact < Base::AccountObject
       include BelongsToFolder
+      include BelongsToTag
 
       GROUP_PATTERN = 'group'
 

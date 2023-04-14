@@ -5,6 +5,7 @@ module Zm
     # class for account document
     class Document < Base::AccountObject
       include BelongsToFolder
+      include BelongsToTag
 
       attr_accessor :id, :uuid, :name, :s, :d, :l, :luuid, :ms, :mdver, :md, :rev, :f, :t, :meta, :ct,
                     :descEnabled, :ver, :leb, :cr, :cd, :acl, :loid, :sf, :tn
