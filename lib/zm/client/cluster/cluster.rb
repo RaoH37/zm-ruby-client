@@ -61,18 +61,6 @@ module Zm
         false
       end
 
-      def soap_account_connector
-        return @soap_account_connector unless @soap_account_connector.nil?
-
-        @soap_account_connector = SoapAccountConnector.new(
-          @config.zimbra_public_scheme,
-          @config.zimbra_public_host,
-          @config.zimbra_public_port
-        )
-        @soap_account_connector.logger = logger
-        @soap_account_connector
-      end
-
       def token_metadata
         @token_metadata ||= TokenMetaData.new(@soap_admin_connector.token)
       end

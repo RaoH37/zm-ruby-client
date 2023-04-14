@@ -8,7 +8,18 @@ module Zm
     class SoapAccountConnector < SoapBaseConnector
       MAILSPACE = 'urn:zimbraMail'
       ACCOUNTSPACE = 'urn:zimbraAccount'
-      # A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
+
+      class << self
+        def create(cluster)
+          trans = new(
+            cluster.config.zimbra_public_scheme,
+            cluster.config.zimbra_public_host,
+            cluster.config.zimbra_public_port
+          )
+          trans.logger = cluster.logger
+          trans
+        end
+      end
 
       def initialize(scheme, host, port)
         super(scheme, host, port, '/service/soap/')
@@ -55,7 +66,6 @@ module Zm
       def jsns_request(soap_name, token, jsns, namespace = MAILSPACE, error_handler = SoapError)
         body = init_hash_request(token, soap_name, namespace)
         body[:Body][soap_name].merge!(jsns) if jsns.is_a?(Hash)
-        puts body
         curl_request(body, error_handler)
       end
 
