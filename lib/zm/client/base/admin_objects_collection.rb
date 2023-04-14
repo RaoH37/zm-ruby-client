@@ -18,8 +18,6 @@ module Zm
         end
 
         def ldap
-          return self if @apply_cos == SoapUtils::ON
-
           @all = nil
           @apply_cos = SoapUtils::OFF
           self
@@ -54,11 +52,11 @@ module Zm
           self
         end
 
-        def find_each
+        def find_each(step = 1_000)
           total = count
           @all = []
           @offset = 0
-          @limit = 1_000
+          @limit = step
           while @offset < total
             @all += build_response
             @offset += @limit

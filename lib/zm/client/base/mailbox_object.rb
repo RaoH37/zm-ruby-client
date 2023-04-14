@@ -75,16 +75,24 @@ module Zm
           end
         end
 
-        def account_login_preauth
+        def account_login_preauth(expires = 0)
           raise ZmError, 'domain key is required to login !' if domain_key.nil?
 
-          @token = sacc.auth_preauth(@name, domain_key)
+          content, by = account_content_by
+
+          @token = sacc.auth_preauth(content, by, expires, domain_key)
         end
 
         def account_login_password
           raise ZmError, 'password is required to login !' if password.nil?
 
-          @token = sacc.auth_password(@name, @password)
+          content, by = account_content_by
+
+          @token = sacc.auth_password(content, by, @password)
+        end
+
+        def account_content_by
+          @id ? [@id, :id] : [@name, :name]
         end
 
         def admin_login
