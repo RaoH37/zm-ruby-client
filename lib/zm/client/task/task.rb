@@ -4,14 +4,16 @@ module Zm
   module Client
     # class for account task
     class Task < Base::AccountObject
+      include BelongsToFolder
+
       attr_accessor :uid, :priority, :ptst, :percentComplete, :name, :loc, :alarm, :isOrg, :id, :invId, :compNum, :l,
                     :status, :class, :allDay, :f, :tn, :t, :rev, :s, :d, :md, :ms, :cm, :sf
 
-      alias folder_id l
+      # alias folder_id l
 
-      def folder
-        @folder ||= @parent.folders.all.find { |folder| folder.id == l }
-      end
+      # def folder
+      #   @folder ||= @parent.folders.all.find { |folder| folder.id == l }
+      # end
 
       def download(dest_file_path, fmt = 'ics')
         # @parent.uploader.download_file(folder.absFolderPath, 'ics', ['task'], [id], dest_file_path)

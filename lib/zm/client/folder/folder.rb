@@ -4,6 +4,7 @@ module Zm
   module Client
     # class for account folder
     class Folder < Base::FolderObject
+      include BelongsToFolder
       include Zm::Model::AttributeChangeObserver
 
       INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l url luuid f
@@ -23,7 +24,7 @@ module Zm
 
       alias nb_messages n
       alias nb_items n
-      alias parent_id l
+      # alias parent_id l
       alias size s
 
       def initialize(parent)

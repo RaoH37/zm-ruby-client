@@ -88,15 +88,11 @@ class TestSearchFolder < Minitest::Test
 
   def test_move
     folder = @account.folders.all.find { |f| !f.is_immutable? && f.l.to_i != 2 }
-    folder.l = 2
+    current_l = folder.l
+    folder.move!(2)
 
-    begin
-      is_modified = folder.move!
-    rescue StandardError => _
-      is_modified = false
-    end
-
-    assert is_modified
+    assert folder.l != current_l
+    assert folder.l == 2
   end
 
   def test_empty

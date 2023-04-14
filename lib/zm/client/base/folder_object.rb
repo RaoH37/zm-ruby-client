@@ -28,10 +28,10 @@ module Zm
           true
         end
 
-        def move!
-          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_move) if l_changed?
-          true
-        end
+        # def move!
+        #   @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_move) if l_changed?
+        #   true
+        # end
       end
     end
   end

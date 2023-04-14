@@ -4,6 +4,7 @@ module Zm
   module Client
     # class for account mountpoint
     class MountPoint < Base::FolderObject
+      include BelongsToFolder
       include Zm::Model::AttributeChangeObserver
 
       attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid,
@@ -11,7 +12,7 @@ module Zm
 
       define_changed_attributes :name, :color, :rgb, :l
 
-      alias folder_id l
+      # alias folder_id l
 
       def create!
         rep = @parent.sacc.jsns_request(:CreateMountpointRequest, @parent.token, jsns_builder.to_jsns)

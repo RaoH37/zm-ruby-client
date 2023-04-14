@@ -4,6 +4,8 @@ module Zm
   module Client
     # class message for account
     class Message < Base::AccountObject
+      include BelongsToFolder
+
       attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
       attr_reader :recipients, :attachments, :body
 
@@ -30,31 +32,31 @@ module Zm
         @flags ||= FlagsCollection.new(self)
       end
 
-      def folder=(folder)
-        @folder = folder
-        @l = folder.id
-      end
+      # def folder=(folder)
+      #   @folder = folder
+      #   @l = folder.id
+      # end
 
       def delete!
-        jsns = { action: { op: :delete, id: @parent.id } }
+        jsns = { action: { op: :delete, id: @id } }
         @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
       end
 
-      def move!(new_folder_id)
-        new_folder_id = new_folder_id.id if new_folder_id.is_a?(Zm::Client::Folder)
-        jsns = { action: { op: :move, id: @item.id, l: new_folder_id } }
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
-        @l = new_folder_id
-        folder!
-      end
+      # def move!(new_folder_id)
+      #   new_folder_id = new_folder_id.id if new_folder_id.is_a?(Zm::Client::Folder)
+      #   jsns = { action: { op: :move, id: @id, l: new_folder_id } }
+      #   @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
+      #   @l = new_folder_id
+      #   folder!
+      # end
 
-      def folder
-        @folder || folder!
-      end
-
-      def folder!
-        @folder = @parent.folders.all.find { |folder| folder.id == @l }
-      end
+      # def folder
+      #   @folder || folder!
+      # end
+      #
+      # def folder!
+      #   @folder = @parent.folders.all.find { |folder| folder.id == @l }
+      # end
 
       def unspam!
         jsns = { action: { op: '!spam', id: @parent.id } }
@@ -66,10 +68,10 @@ module Zm
         @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
       end
 
-      def trash!
-        jsns = { action: { op: :trash, id: @parent.id } }
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
-      end
+      # def trash!
+      #   jsns = { action: { op: :trash, id: @parent.id } }
+      #   @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
+      # end
 
       def send!
         # @parent.sacc.send_msg(@parent.token, jsns_builder.to_jsns)

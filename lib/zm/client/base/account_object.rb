@@ -57,22 +57,22 @@ module Zm
           @id = nil
         end
 
-        def move!(new_folder_id)
-          new_folder_id = new_folder_id.id if new_folder_id.is_a?(Zm::Client::Folder)
-          @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_move(new_folder_id))
-          @l = new_folder_id
-          folder!
-        end
+        # def move!(new_folder_id)
+        #   new_folder_id = new_folder_id.id if new_folder_id.is_a?(Zm::Client::Folder)
+        #   @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_move(new_folder_id))
+        #   @l = new_folder_id
+        #   folder!
+        # end
 
-        def folder
-          @folder || folder!
-        end
+        # def folder
+        #   @folder || folder!
+        # end
 
-        private
-
-        def folder!
-          @folder = @parent.folders.all.find { |folder| folder.id == @l }
-        end
+        # private
+        #
+        # def folder!
+        #   @folder = @parent.folders.all.find { |folder| folder.id == @l }
+        # end
       end
     end
   end

@@ -4,13 +4,15 @@ module Zm
   module Client
     # class for account appointment
     class Appointment < Base::AccountObject
+      include BelongsToFolder
+
       attr_accessor :id, :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
                     :calItemId, :apptId, :invId, :rev, :fb, :transp
-      attr_writer :folder
+      # attr_writer :folder
       attr_reader :recipients, :attendees, :body
 
       alias description desc
-      alias folder_id l
+      # alias folder_id l
 
       def initialize(parent)
         @parent = parent

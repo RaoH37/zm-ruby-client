@@ -4,6 +4,8 @@ module Zm
   module Client
     # class account tag
     class Contact < Base::AccountObject
+      include BelongsToFolder
+
       GROUP_PATTERN = 'group'
 
       attr_accessor :anniversary, :assistantPhone, :birthday, :callbackPhone, :carPhone, :company, :companyPhone,
