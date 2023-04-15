@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account task
-    class Task < Base::AccountObject
+    class Task < Base::Object
       include BelongsToFolder
       include BelongsToTag
 
@@ -16,6 +16,18 @@ module Zm
       end
 
       def create!
+        raise NotImplementedError
+      end
+
+      def modify!
+        raise NotImplementedError
+      end
+
+      def update!(*args)
+        raise NotImplementedError
+      end
+
+      def rename!(*args)
         raise NotImplementedError
       end
 

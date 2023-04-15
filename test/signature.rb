@@ -34,15 +34,16 @@ class TestSignature < Minitest::Test
   def test_modify
     signature = @account.signatures.first
     signature.txt = "ceci est un test de modification"
-    assert signature.txt_changed?
 
-    begin
-      is_modified = signature.modify!
-    rescue StandardError => _
-      is_modified = false
-    end
+    assert signature.modify!
+  end
 
-    assert is_modified
+  def test_rename
+    signature = @account.signatures.first
+    new_name = signature.name + "1"
+    signature.rename!(new_name)
+
+    assert @account.signatures.all!.find { |sig| sig.name == new_name }
   end
 
   def test_delete

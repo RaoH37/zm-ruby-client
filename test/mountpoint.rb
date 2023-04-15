@@ -38,8 +38,7 @@ class TestMountPoint < Minitest::Test
   def test_rename
     mountpoint = @account.mountpoints.all.sample
     new_name = "Test #{Time.now.to_i}"
-    mountpoint.name = new_name
-    mountpoint.rename!
+    mountpoint.rename!(new_name)
 
     mountpoints = @account.mountpoints.all!
     mountpoint2 = mountpoints.find { |f| f.name == new_name }

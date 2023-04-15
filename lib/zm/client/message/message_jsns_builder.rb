@@ -57,7 +57,7 @@ module Zm
 
         [
           {
-            ct: 'multipart/alternative',
+            ct: ContentPart::ALTERNATIVE,
             mp: [text_jsns, html_jsns].compact
           }
         ]

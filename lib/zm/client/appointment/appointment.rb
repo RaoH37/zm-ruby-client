@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account appointment
-    class Appointment < Base::AccountObject
+    class Appointment < Base::Object
       include BelongsToFolder
       include BelongsToTag
 
@@ -42,10 +42,27 @@ module Zm
         aji = AppointmentJsnsInitializer.new(@parent, rep_h)
         aji.appointment = self
         aji.update
+        @id
       end
 
       def modify!
         @parent.sacc.jsns_request(:ModifyAppointmentRequest, @parent.token, jsns_builder.to_update)
+        true
+      end
+
+      def update!(*args)
+        raise NotImplementedError
+      end
+
+      def rename!(*args)
+        raise NotImplementedError
+      end
+
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @id = nil
       end
 
       def reload!

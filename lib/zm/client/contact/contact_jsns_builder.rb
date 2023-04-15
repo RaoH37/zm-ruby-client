@@ -6,25 +6,19 @@ module Zm
     class ContactJsnsBuilder < BaseAccountJsnsBuilder
       EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[@id @name @parent @l @type @tn @jsns_builder].freeze
 
-      # def initialize(item)
-      #   @item = item
-      # end
-
       def to_jsns
         {
           cn: {
-            a: instance_variables_array(all_instance_variables).map(&Utils::A_ARRAY_PROC).map(&Utils::A_NODE_PROC),
+            a: instance_variables_array(all_instance_variables).map(&Utils::A_NODE_PROC),
             l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS[:id]
           }
         }
       end
 
-      # alias to_create to_jsns
-
       def to_update
         {
           cn: {
-            a: instance_variables_array(all_instance_variables).map(&Utils::A_ARRAY_PROC).map(&Utils::A_NODE_PROC),
+            a: instance_variables_array(all_instance_variables).map(&Utils::A_NODE_PROC),
             id: @item.id
           }
         }
@@ -38,14 +32,6 @@ module Zm
           }
         }
       end
-
-      # def to_delete
-      #   { action: { op: :delete, id: @item.id } }
-      # end
-      #
-      # def to_move(new_folder_id)
-      #   { action: { op: :move, id: @item.id, l: new_folder_id } }
-      # end
 
       def instance_variables_array(zcs_attrs)
         arr = zcs_attrs.map do |name|

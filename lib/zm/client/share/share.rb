@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account share
-    class Share < Base::AccountObject
+    class Share < Base::Object
       attr_accessor :ownerId, :ownerEmail, :ownerName, :folderId, :folderUuid, :folderPath, :view, :rights,
                     :granteeType, :granteeId, :granteeName, :mid
 

@@ -219,5 +219,9 @@ module Zm
       HTML = 'text/html'
       ALL = [TEXT, HTML].freeze
     end
+
+    module ContentPart
+      ALTERNATIVE = 'multipart/alternative'
+    end
   end
 end

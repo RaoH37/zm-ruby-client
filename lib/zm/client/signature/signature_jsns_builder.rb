@@ -24,6 +24,15 @@ module Zm
         jsns
       end
 
+      def to_rename(new_name)
+        {
+          signature: {
+            id: @signature.id,
+            name: new_name
+          }
+        }
+      end
+
       def to_delete
         { signature: { id: @signature.id } }
       end

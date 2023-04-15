@@ -8,8 +8,6 @@ require 'zm/modules/base'
 
 require 'zm/client/base/zimbra_attributes_collection'
 require 'zm/client/base/object'
-require 'zm/client/base/account_object'
-require 'zm/client/base/folder_object'
 require 'zm/client/base/base_account_jsns_builder'
 require 'zm/client/base/base_jsns_builder'
 require 'zm/client/base/base_jsns_initializer'

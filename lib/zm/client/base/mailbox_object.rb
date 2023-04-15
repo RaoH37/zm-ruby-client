@@ -170,26 +170,6 @@ module Zm
           @documents ||= DocumentsCollection.new(self)
         end
 
-        def message_folders
-          @message_folders ||= folders.all.select { |f| f.view == Zm::Client::FolderView::MESSAGE.to_s }
-        end
-
-        def contact_folders
-          @contact_folders ||= folders.all.select { |f| f.view == Zm::Client::FolderView::CONTACT.to_s }
-        end
-
-        def calendar_folders
-          @calendar_folders ||= folders.all.select { |f| f.view == Zm::Client::FolderView::APPOINTMENT.to_s }
-        end
-
-        def task_folders
-          @task_folders ||= folders.all.select { |f| f.view == Zm::Client::FolderView::TASK.to_s }
-        end
-
-        def document_folders
-          @document_folders ||= folders.all.select { |f| f.view == Zm::Client::FolderView::DOCUMENT.to_s }
-        end
-
         def memberships
           @memberships ||= AccountDlsMembershipCollection.new(self)
         end

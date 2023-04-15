@@ -3,35 +3,55 @@
 module Zm
   module Client
     # class account SearchFolder
-    class SearchFolder < Base::FolderObject
+    class SearchFolder < Base::Object
       include Zm::Model::AttributeChangeObserver
 
-      INSTANCE_VARIABLE_KEYS = %i[id uuid deletable name absFolderPath l luuid color rgb rev ms webOfflineSyncDays
-                                  activesyncdisabled query sortBy types].freeze
-
-      # attr_accessor *INSTANCE_VARIABLE_KEYS
-      attr_reader :id, :absFolderPath, :types
+      attr_accessor :id, :uuid, :deletable, :name, :absFolderPath, :l, :luuid, :color, :rgb, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types
 
       define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
 
       def initialize(parent)
-        super(parent)
+        @l = FolderDefault::ROOT[:id]
         @types = 'messages'
-      end
-
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
+        super(parent)
       end
 
       def create!
         rep = @parent.sacc.jsns_request(:CreateSearchFolderRequest, @parent.token, jsns_builder.to_jsns)
         json = rep[:Body][:CreateSearchFolderResponse][:search].first
         SearchFolderJsnsInitializer.update(self, json)
+        @id
       end
 
       def modify!
         @parent.sacc.jsns_request(:ModifySearchFolderRequest, @parent.token, jsns_builder.to_modify)
-        super
+        true
+      end
+
+      def update!(*args)
+        raise NotImplementedError
+      end
+
+      def rename!(new_name)
+        return false if new_name == @name
+
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_rename(new_name))
+        @name = new_name
+      end
+
+      def color!
+        if color_changed? || rgb_changed?
+          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_color)
+        end
+
+        true
+      end
+
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_delete)
+        @id = nil
       end
 
       private

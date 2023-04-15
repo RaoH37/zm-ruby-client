@@ -7,25 +7,29 @@ module Zm
       class << self
         def create(parent, json)
           item = SearchFolder.new(parent)
-
-          item.instance_variable_set(:@id, json[:id])
-          item.instance_variable_set(:@name, json[:name])
-
           update(item, json)
         end
 
         def update(item, json)
-          item.all_instance_variable_keys.reject { |key| json[key].nil? }.each do |key|
-            item.instance_variable_set(arrow_name(key), json[key])
-          end
+          item.id = json[:id].to_i
+          item.name = json[:name]
+
+          item.uuid = json[:uuid]
+          item.deletable = json[:deletable]
+          item.absFolderPath = json[:absFolderPath]
+          item.l = json[:l].to_i
+          item.luuid = json[:luuid]
+          item.color = json[:color]
+          item.rgb = json[:rgb]
+          item.rev = json[:rev]
+          item.ms = json[:ms]
+          item.webOfflineSyncDays = json[:webOfflineSyncDays]
+          item.activesyncdisabled = json[:activesyncdisabled]
+          item.query = json[:query]
+          item.sortBy = json[:sortBy]
+          item.types = json[:types]
 
           item
-        end
-
-        def arrow_name(name)
-          return name if name.to_s.start_with?('@')
-
-          "@#{name}"
         end
       end
     end

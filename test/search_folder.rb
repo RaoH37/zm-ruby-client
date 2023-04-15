@@ -33,10 +33,8 @@ class TestSearchFolder < Minitest::Test
 
   def test_modify
     search_folder = @account.search_folders.first
-    search_folder.color = (1..5).to_a.sample
+    search_folder.color = rand(1..5)
     search_folder.query = 'is:unread in:inbox'
-    # assert search_folder.color_changed?
-    # assert search_folder.query_changed?
 
     begin
       is_modified = search_folder.modify!
@@ -55,9 +53,8 @@ class TestSearchFolder < Minitest::Test
 
   def test_rename
     search_folder = @account.search_folders.first
-    new_name = "Not read #{Time.now.to_i}"
-    search_folder.name = new_name
-    search_folder.rename!
+    new_name = "Not read renamed #{Time.now.to_i}"
+    search_folder.rename!(new_name)
 
     sfs = @account.search_folders.all!
     sf2 = sfs.find { |t| t.name == new_name }

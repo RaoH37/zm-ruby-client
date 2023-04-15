@@ -56,11 +56,11 @@ module Zm
         { action: action }
       end
 
-      def to_rename
+      def to_rename(new_name)
         action = {
           op: :rename,
           id: @item.id,
-          name: @item.name
+          name: new_name
         }
 
         { action: action }

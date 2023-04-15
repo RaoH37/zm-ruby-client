@@ -41,18 +41,18 @@ module Zm
       def body_to_jsns
         [
           {
-            ct: 'multipart/alternative',
+            ct: ContentPart::ALTERNATIVE,
             mp: [body_text_jsns, body_html_jsns]
           }
         ]
       end
 
       def body_text_jsns
-        { ct: 'text/plain', content: { _content: @item.body.text } }
+        { ct: ContentType::TEXT, content: { _content: @item.body.text } }
       end
 
       def body_html_jsns
-        { ct: 'text/html', content: { _content: @item.body.html } }
+        { ct: ContentType::HTML, content: { _content: @item.body.html } }
       end
 
       def comp_to_jsns

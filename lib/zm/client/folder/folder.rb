@@ -3,33 +3,26 @@
 module Zm
   module Client
     # class for account folder
-    class Folder < Base::FolderObject
+    class Folder < Base::Object
       include BelongsToFolder
       include Zm::Model::AttributeChangeObserver
 
-      INSTANCE_VARIABLE_KEYS = %i[type id uuid name absFolderPath l url luuid f
-                                  view rev ms webOfflineSyncDays activesyncdisabled n s i4ms i4next zid rid
-                                  ruuid owner reminder acl itemCount broken deletable color rgb fb].freeze
-
-      attr_reader :type, :id, :uuid, :absFolderPath, :luuid, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled, :n,
-                  :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner, :reminder, :acl, :itemCount, :broken, :deletable, :fb
+      attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
+                    :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner,
+                    :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb
 
       attr_accessor :folders, :grants, :retention_policies
 
       define_changed_attributes :name, :color, :rgb, :l, :url, :f, :view
 
-      def all_instance_variable_keys
-        INSTANCE_VARIABLE_KEYS
-      end
-
       alias nb_messages n
       alias nb_items n
-      # alias parent_id l
       alias size s
 
       def initialize(parent)
         super(parent)
 
+        @l = FolderDefault::ROOT[:id]
         @type = :folder
         @folders = []
         @grants = FolderGrantsCollection.new(self)
@@ -37,7 +30,7 @@ module Zm
 
         yield(self) if block_given?
 
-        extend(DocumentFolder) if view == 'document'
+        extend(DocumentFolder) if view == Zm::Client::FolderView::DOCUMENT
       end
 
       def is_immutable?
@@ -52,18 +45,38 @@ module Zm
         rep = @parent.sacc.jsns_request(:CreateFolderRequest, @parent.token, jsns_builder.to_jsns)
         json = rep[:Body][:CreateFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
+        @id
+      end
+
+      def modify!
+        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_update)
+        true
       end
 
       def update!(hash)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_patch(hash))
+        do_update!(hash)
 
         hash.each do |key, value|
           update_attribute(key, value)
         end
 
         true
+      end
+
+      def color!
+        if color_changed? || rgb_changed?
+          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_color)
+        end
+        true
+      end
+
+      def rename!(new_name)
+        return false if new_name == @name
+
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_rename(new_name))
+        @name = new_name
       end
 
       def reload!
@@ -86,9 +99,10 @@ module Zm
       alias clear empty!
 
       def delete!
-        return false if is_immutable?
+        return false if is_immutable? || @id.nil?
 
-        super
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @id = nil
       end
 
       def remove_flag!(pattern)
@@ -123,7 +137,6 @@ module Zm
 
       def download(dest_file_path, fmt = 'tgz')
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        # uploader.download_file(absFolderPath, fmt, [view], nil, dest_file_path)
         uploader.download_folder(@id, fmt, dest_file_path)
       end
 
@@ -142,6 +155,10 @@ module Zm
       end
 
       private
+
+      def do_update!(hash)
+        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_patch(hash))
+      end
 
       def jsns_builder
         @jsns_builder ||= FolderJsnsBuilder.new(self)

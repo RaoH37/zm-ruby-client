@@ -3,15 +3,8 @@
 module Zm
   module Client
     # class account signature
-    class Signature < Base::AccountObject
-      include Zm::Model::AttributeChangeObserver
-
-      TYPE_TXT = 'text/plain'
-      TYPE_HTML = 'text/html'
-
+    class Signature < Base::Object
       attr_accessor :id, :name, :txt, :html
-
-      define_changed_attributes :name, :txt, :html
 
       def create!
         rep = @parent.sacc.jsns_request(:CreateSignatureRequest, @parent.token, jsns_builder.to_jsns,
@@ -22,6 +15,18 @@ module Zm
       def modify!
         @parent.sacc.jsns_request(:ModifySignatureRequest, @parent.token, jsns_builder.to_jsns,
                                   SoapAccountConnector::ACCOUNTSPACE)
+        true
+      end
+
+      def update!(*args)
+        raise NotImplementedError
+      end
+
+      def rename!(new_name)
+        return if new_name == @name
+
+        @parent.sacc.jsns_request(:ModifySignatureRequest, @parent.token, jsns_builder.to_rename(new_name), SoapAccountConnector::ACCOUNTSPACE)
+        @name = new_name
       end
 
       def delete!
@@ -33,17 +38,17 @@ module Zm
       end
 
       def type
-        return TYPE_HTML unless html.nil?
+        return ContentType::HTML unless html.nil?
 
-        TYPE_TXT
+        ContentType::TEXT
       end
 
       def html?
-        type == TYPE_HTML
+        type == ContentType::HTML
       end
 
       def txt?
-        type == TYPE_TXT
+        type == ContentType::TEXT
       end
 
       def content

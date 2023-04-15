@@ -30,7 +30,7 @@ class TestSearchFolder < Minitest::Test
   def test_create
     folder = @account.folders.new do |f|
       f.name = "Test #{Time.now.to_i}"
-      f.color = 5
+      f.color = rand(1..5)
     end
     folder.create!
     assert !folder.id.nil?
@@ -40,13 +40,7 @@ class TestSearchFolder < Minitest::Test
     folder = @account.folders.first
     folder.color = (1..5).to_a.sample
 
-    begin
-      is_modified = folder.modify!
-    rescue StandardError => _
-      is_modified = false
-    end
-
-    assert is_modified
+    assert folder.modify!
   end
 
   def test_update
@@ -110,8 +104,7 @@ class TestSearchFolder < Minitest::Test
   def test_rename
     folder = @account.folders.all.find { |f| !f.is_immutable? }
     new_name = "Test #{Time.now.to_i}"
-    folder.name = new_name
-    folder.rename!
+    folder.rename!(new_name)
 
     folders = @account.folders.all!
     folder2 = folders.find { |f| f.name == new_name }

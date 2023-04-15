@@ -16,6 +16,7 @@ module DocumentFolder
     jsns = { doc: { l: l, pload: { id: uuid } } }
     rep = @parent.sacc.jsns_request(:SaveDocumentRequest, @parent.token, jsns)
 
-    Zm::Client::Document.new(@parent, rep[:Body][:SaveDocumentResponse][:doc].first)
+    # Zm::Client::Document.new(@parent, rep[:Body][:SaveDocumentResponse][:doc].first)
+    DocumentJsnsInitializer.create(@parent, rep[:Body][:SaveDocumentResponse][:doc].first)
   end
 end

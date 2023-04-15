@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account mountpoint
-    class MountPoint < Base::FolderObject
+    class MountPoint < Base::Object
       include BelongsToFolder
       include Zm::Model::AttributeChangeObserver
 
@@ -12,12 +12,50 @@ module Zm
 
       define_changed_attributes :name, :color, :rgb, :l
 
-      # alias folder_id l
+      def initialize(parent)
+        @l = FolderDefault::ROOT[:id]
+        super(parent)
+      end
 
       def create!
         rep = @parent.sacc.jsns_request(:CreateMountpointRequest, @parent.token, jsns_builder.to_jsns)
         json = rep[:Body][:CreateMountpointResponse][:link].first
         MountpointJsnsInitializer.update(self, json)
+        @id
+      end
+
+      def modify!
+        raise NotImplementedError
+      end
+
+      def update!(*args)
+        raise NotImplementedError
+      end
+
+      def color!
+        if color_changed? || rgb_changed?
+          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token,
+                                    jsns_builder.to_color)
+        end
+        true
+      end
+
+      def rename!(new_name)
+        return false if new_name == @name
+
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_rename(new_name))
+        @name = new_name
+      end
+
+      def reload!
+        raise NotImplementedError
+      end
+
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @id = nil
       end
 
       private

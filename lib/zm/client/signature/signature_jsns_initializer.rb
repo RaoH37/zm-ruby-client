@@ -17,8 +17,8 @@ module Zm
           content = json[:content].is_a?(Array) ? json[:content] : [json[:content]]
 
           content.each do |c|
-            item.txt = c[:_content] if c[:type] == Signature::TYPE_TXT
-            item.html = c[:_content] if c[:type] == Signature::TYPE_HTML
+            item.txt = c[:_content] if c[:type] == ContentType::TEXT
+            item.html = c[:_content] if c[:type] == ContentType::HTML
           end
 
           item

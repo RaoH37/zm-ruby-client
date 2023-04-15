@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class message for account
-    class Message < Base::AccountObject
+    class Message < Base::Object
       include BelongsToFolder
       include BelongsToTag
 
@@ -27,6 +27,22 @@ module Zm
 
       def flags
         @flags ||= FlagsCollection.new(self)
+      end
+
+      def create!(*args)
+        raise NotImplementedError
+      end
+
+      def modify!(*args)
+        raise NotImplementedError
+      end
+
+      def update!(*args)
+        raise NotImplementedError
+      end
+
+      def rename!(*args)
+        raise NotImplementedError
       end
 
       def delete!

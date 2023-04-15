@@ -3,23 +3,27 @@
 module Zm
   module Client
     # class account identity
-    class Identity < Base::AccountObject
+    class Identity < Base::Object
       attr_accessor :id, :name, :zimbraPrefIdentityName, :zimbraPrefFromDisplay, :zimbraPrefFromAddress,
                     :zimbraPrefFromAddressType, :zimbraPrefReplyToEnabled, :zimbraPrefReplyToDisplay,
                     :zimbraPrefReplyToAddress, :zimbraPrefDefaultSignatureId, :zimbraPrefForwardReplySignatureId,
                     :zimbraPrefWhenSentToEnabled, :zimbraPrefWhenInFoldersEnabled, :zimbraPrefWhenSentToAddresses
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateIdentityRequest, @parent.token, jsns_builder.to_jsns,
-                                        SoapAccountConnector::ACCOUNTSPACE)
-        init_from_json(rep[:Body][:CreateIdentityResponse][:identity].first)
+        rep = @parent.sacc.jsns_request(:CreateIdentityRequest, @parent.token, jsns_builder.to_jsns, SoapAccountConnector::ACCOUNTSPACE)
+        IdentityJsnsInitializer.update(self, rep[:Body][:CreateIdentityResponse][:identity].first)
+        @id
+      end
+
+      def modify!
+        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_jsns, SoapAccountConnector::ACCOUNTSPACE)
+        true
       end
 
       def update!(hash)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
-        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_patch(hash),
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        do_update!(hash)
 
         hash.each do |key, value|
           update_attribute(key, value)
@@ -28,18 +32,17 @@ module Zm
         true
       end
 
-      def modify!
-        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_jsns,
-                                  SoapAccountConnector::ACCOUNTSPACE)
+      def rename!(new_name)
+        raise NotImplementedError
       end
 
       def delete!
+        return if @id.nil?
+
         @parent.sacc.jsns_request(:DeleteIdentityRequest, @parent.token, jsns_builder.to_delete,
                                   SoapAccountConnector::ACCOUNTSPACE)
         @id = nil
       end
-
-      def rename!(new_name); end
 
       def clone
         new_identity = super do |obj|
@@ -52,6 +55,11 @@ module Zm
       end
 
       private
+
+      def do_update!(hash)
+        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_patch(hash),
+                                  SoapAccountConnector::ACCOUNTSPACE)
+      end
 
       def jsns_builder
         @jsns_builder ||= IdentityJsnsBuilder.new(self)

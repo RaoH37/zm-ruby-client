@@ -53,9 +53,7 @@ class TestTAg < Minitest::Test
   def test_rename
     tag = @account.tags.first
     new_name = "test rename #{Time.now.to_i}"
-    tag.name = new_name
-    assert tag.name_changed?
-    tag.save!
+    tag.rename!(new_name)
 
     tags = @account.tags.all!
     tag2 = tags.find { |t| t.name == new_name }

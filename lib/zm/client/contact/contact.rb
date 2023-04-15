@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class account tag
-    class Contact < Base::AccountObject
+    class Contact < Base::Object
       include BelongsToFolder
       include BelongsToTag
 
@@ -17,6 +17,10 @@ module Zm
                     :otherCountry, :otherFax, :otherPhone, :otherPostalCode, :otherState, :otherStreet, :otherURL,
                     :pager, :workCity, :workCountry, :workFax, :workPhone, :workPostalCode, :workState, :workStreet,
                     :workURL, :image, :id, :name, :l, :type, :tn
+      def initialize(parent)
+        @l = FolderDefault::CONTACTS[:id]
+        super(parent)
+      end
 
       def group?
         @type == GROUP_PATTERN
@@ -33,22 +37,46 @@ module Zm
       def create!
         rep = @parent.sacc.jsns_request(:CreateContactRequest, @parent.token, jsns_builder.to_jsns)
         ContactJsnsInitializer.update(self, rep[:Body][:CreateContactResponse][:cn].first)
-        super
-      end
-
-      def update!(hash)
-        hash.delete_if { |k, v| v.nil? || !respond_to?(k) }
-        return false if hash.empty?
-
-        @parent.sacc.jsns_request(:ModifyContactRequest, @parent.token, jsns_builder.to_patch(hash))
-        hash.each { |k, v| send(Utils.equals_name(k), v) }
+        @id
       end
 
       def modify!
         @parent.sacc.jsns_request(:ModifyContactRequest, @parent.token, jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
+        true
+      end
+
+      def rename!(*args)
+        raise NotImplementedError
+      end
+
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @id = nil
+      end
+
+      def reload!
+        raise NotImplementedError
       end
 
       private
+
+      def do_update!(hash)
+        @parent.sacc.jsns_request(:ModifyContactRequest, @parent.token, jsns_builder.to_patch(hash))
+      end
 
       def jsns_builder
         @jsns_builder ||= ContactJsnsBuilder.new(self)
