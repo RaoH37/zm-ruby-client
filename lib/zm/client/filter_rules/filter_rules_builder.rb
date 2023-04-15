@@ -6,7 +6,6 @@ module Zm
     class FilterRulesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = FilterRule
         @json_item_key = :filterRules
       end
 

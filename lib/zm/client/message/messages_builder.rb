@@ -5,27 +5,16 @@ module Zm
     # class factory [messages]
     class MessagesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        @parent = parent
-        @json = json
-        # puts json
+        super(parent, json)
+        @json_item_key = :m
       end
 
       def make
-        root.map do |entry|
+        return [] if json_items.nil?
+
+        json_items.map do |entry|
           MessageJsnsInitializer.create(@parent, entry)
         end
-      end
-
-      def ids
-        @json[:Body][:SearchResponse][:hit].map { |s| s[:id] }
-      end
-
-      def root
-        root = @json[:Body][:SearchResponse][:m]
-        return [] if root.nil?
-
-        root = [root] unless root.is_a?(Array)
-        root
       end
     end
   end

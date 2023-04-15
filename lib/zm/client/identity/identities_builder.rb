@@ -6,7 +6,6 @@ module Zm
     class IdentitiesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Identity
         @json_item_key = :identity
       end
 

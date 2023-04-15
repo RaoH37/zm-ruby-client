@@ -13,26 +13,6 @@ module Zm
 
         alias sac soap_admin_connector
 
-        def init_from_json(json)
-          super(json)
-          return unless json[:a].is_a? Array
-
-          # fix car le tableau peut contenir des {} vide !
-          json[:a].reject! { |n| n[:n].nil? }
-          json_map = json[:a].map { |n| ["@#{n[:n]}", n[:_content]] }.freeze
-
-          json_hash = json_map.each_with_object({}) do |(k, v), h|
-                        (h[k] ||= [])
-                        h[k].push(v)
-                      end.transform_values do |v|
-            v.length == 1 ? v.first : v
-          end
-
-          json_hash.each do |k, v|
-            instance_variable_set(k, convert_json_string_value(v))
-          end
-        end
-
         def update!(hash)
           return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 

@@ -6,7 +6,6 @@ module Zm
     class DistributionListsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = DistributionList
         @json_item_key = :dl
       end
 

@@ -6,7 +6,6 @@ module Zm
     class SignaturesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Signature
         @json_item_key = :signature
       end
 

@@ -5,26 +5,16 @@ module Zm
     # class factory [appointments]
     class AppointmentsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        @parent = parent
-        @json = json
+        super(parent, json)
+        @json_item_key = :appt
       end
 
       def make
-        root.map do |s|
-          AppointmentJsnsInitializer.new(@parent, s).create
+        return [] if json_items.nil?
+
+        json_items.map do |entry|
+          AppointmentJsnsInitializer.new(@parent, entry).create
         end
-      end
-
-      def ids
-        root.map { |s| s[:id] }
-      end
-
-      def root
-        root = @json[:Body][:SearchResponse][:appt]
-        return [] if root.nil?
-
-        root = [root] unless root.is_a?(Array)
-        root
       end
     end
   end

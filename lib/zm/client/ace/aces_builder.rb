@@ -6,7 +6,6 @@ module Zm
     class AcesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Ace
         @json_item_key = :ace
       end
 

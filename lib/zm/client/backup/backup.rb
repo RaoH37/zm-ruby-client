@@ -30,18 +30,6 @@ module Zm
       def incremental?
         @type == Zm::Client::BackupTypes::INCREMENTAL
       end
-
-      # def init_from_json(json)
-      #   @label = json[:label]
-      #   @type = json[:type]
-      #   @aborted = json[:aborted]
-      #   @start = json[:start].to_i
-      #   @end = json[:end].to_i
-      #   @minRedoSeq = json[:minRedoSeq]
-      #   @maxRedoSeq = json[:maxRedoSeq]
-      #   @live = json[:live]
-      #   @accounts = json[:accounts]
-      # end
     end
   end
 end

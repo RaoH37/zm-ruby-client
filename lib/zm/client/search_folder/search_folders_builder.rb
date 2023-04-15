@@ -6,7 +6,6 @@ module Zm
     class SearchFoldersBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = SearchFolder
         @json_item_key = :search
       end
 

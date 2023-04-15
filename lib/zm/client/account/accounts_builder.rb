@@ -6,7 +6,6 @@ module Zm
     class AccountsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Account
         @json_item_key = :account
       end
 

@@ -10,20 +10,8 @@ module Zm
           @json = json
         end
 
-        # TODO: supprimer cette méthode
-        def make
-          return [] if json_items.nil?
-
-          json_items.map do |entry|
-            child = @child_class.new(@parent)
-            child.init_from_json(entry)
-            child
-          end
-        end
-
-        # TODO: remplacer root par json_items
         def ids
-          root.map { |s| s[:id] }
+          @json[:Body][json_key][:hit]&.map { |s| s[:id] } || []
         end
 
         private

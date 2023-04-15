@@ -4,9 +4,8 @@ module Zm
   module Client
     # class factory [mountpoints]
     class MountPointsBuilder < Base::ObjectsBuilder
-      def initialize(account, json)
-        @account = account
-        @json = json
+      def initialize(parent, json)
+        super(parent, json)
         @key_link = :link
         @key_folder = :folder
         @list = []
@@ -24,7 +23,7 @@ module Zm
         json_folders.each do |json_folder|
           if json_folder[@key_link].is_a?(Array)
             @list += json_folder[@key_link].map do |json_link|
-              MountpointJsnsInitializer.create(@account, json_link)
+              MountpointJsnsInitializer.create(@parent, json_link)
             end
           end
 

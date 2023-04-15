@@ -6,7 +6,6 @@ module Zm
     class ServersBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Server
         @json_item_key = :server
       end
 

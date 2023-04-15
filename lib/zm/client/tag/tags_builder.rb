@@ -6,7 +6,6 @@ module Zm
     class TagBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Tag
         @json_item_key = :tag
       end
 

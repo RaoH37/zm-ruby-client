@@ -6,7 +6,6 @@ module Zm
     class ResourcesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Resource
         @json_item_key = :calresource
       end
 

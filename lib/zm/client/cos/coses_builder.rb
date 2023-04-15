@@ -6,7 +6,6 @@ module Zm
     class CosesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super(parent, json)
-        @child_class = Cos
         @json_item_key = :cos
       end
 
