@@ -10,7 +10,6 @@ module Zm
         def soap_admin_connector
           @parent.soap_admin_connector
         end
-
         alias sac soap_admin_connector
 
         def update!(hash)

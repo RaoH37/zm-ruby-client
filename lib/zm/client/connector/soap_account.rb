@@ -10,13 +10,13 @@ module Zm
       ACCOUNTSPACE = 'urn:zimbraAccount'
 
       class << self
-        def create(cluster)
+        def create(config)
           trans = new(
-            cluster.config.zimbra_public_scheme,
-            cluster.config.zimbra_public_host,
-            cluster.config.zimbra_public_port
+            config.zimbra_public_scheme,
+            config.zimbra_public_host,
+            config.zimbra_public_port
           )
-          trans.logger = cluster.logger
+          trans.logger = config.logger
           trans
         end
       end

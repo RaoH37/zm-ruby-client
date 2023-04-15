@@ -9,6 +9,18 @@ module Zm
       ADMINSPACE = 'urn:zimbraAdmin'
       A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
 
+      class << self
+        def create(config)
+          trans = new(
+            config.zimbra_admin_scheme,
+            config.zimbra_admin_host,
+            config.zimbra_admin_port
+          )
+          trans.logger = config.logger
+          trans
+        end
+      end
+
       attr_accessor :token
 
       def initialize(scheme, host, port)

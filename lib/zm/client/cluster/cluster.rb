@@ -19,7 +19,7 @@ module Zm
                   :majorversion, :minorversion, :microversion
 
       def initialize(config)
-        extend(ZmLogger)
+        # extend(ZmLogger)
 
         @config = config
         @version = config.zimbra_version
@@ -27,12 +27,7 @@ module Zm
         @zimbra_attributes = Base::ZimbraAttributesCollection.new(self)
         @zimbra_attributes.set_methods
 
-        @soap_admin_connector = SoapAdminConnector.new(
-          @config.zimbra_admin_scheme,
-          @config.zimbra_admin_host,
-          @config.zimbra_admin_port
-        )
-        @soap_admin_connector.logger = logger
+        @soap_admin_connector = SoapAdminConnector.create(@config)
       end
 
       def has_admin_credentials?
@@ -141,6 +136,10 @@ module Zm
 
       def find_domain_key(domain_name)
         domains.attrs('zimbraPreAuthKey').find_by(name: domain_name).zimbraPreAuthKey
+      end
+
+      def logger
+        @config.logger
       end
     end
   end

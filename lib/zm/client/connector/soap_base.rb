@@ -10,13 +10,14 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapBaseConnector
+      include ZmLogger
+
       BASESPACE = 'urn:zimbra'
       HTTP_HEADERS = {
         'Content-Type' => 'application/json; charset=utf-8'
       }.freeze
 
       def initialize(scheme, host, port, soap_path)
-        extend(ZmLogger)
         @verbose = false
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, soap_path, nil, nil, nil)
         init_curl_client

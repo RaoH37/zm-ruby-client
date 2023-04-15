@@ -26,13 +26,8 @@ module Zm
         attr_writer :used, :domain_key
 
         def soap_account_connector
-          @soap_account_connector || soap_account_connector!
+          @soap_account_connector ||= SoapAccountConnector.create(@parent.config)
         end
-
-        def soap_account_connector!
-          @soap_account_connector = SoapAccountConnector.create(@parent)
-        end
-
         alias sacc soap_account_connector
 
         def rest_account_connector

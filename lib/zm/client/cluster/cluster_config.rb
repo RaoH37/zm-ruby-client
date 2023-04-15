@@ -6,11 +6,11 @@ module Zm
   module Client
     # class config for cluster connection
     class ClusterConfig
+      include ZmLogger
+
       attr_reader :to_h
-      attr_accessor :zimbra_admin_host, :zimbra_admin_scheme,
-                    :zimbra_admin_port, :zimbra_admin_login,
-                    :zimbra_admin_password, :zimbra_public_host,
-                    :zimbra_public_scheme, :zimbra_public_port,
+      attr_accessor :zimbra_admin_host, :zimbra_admin_scheme, :zimbra_admin_port, :zimbra_admin_login,
+                    :zimbra_admin_password, :zimbra_public_host, :zimbra_public_scheme, :zimbra_public_port,
                     :domains, :zimbra_version
 
       def initialize(parameters = nil)
@@ -51,7 +51,7 @@ module Zm
         @zimbra_public_host = @to_h.fetch(:zimbra_public_host, nil)
         @zimbra_public_scheme = @to_h.fetch(:zimbra_public_scheme, 'https')
         @zimbra_public_port = @to_h.fetch(:zimbra_public_port, 443)
-        @zimbra_version = @to_h.fetch(:zimbra_version, '8.8.15')
+        @zimbra_version = @to_h.fetch(:zimbra_version, @zimbra_version)
       end
 
       def init_from_yml(file_config_path)
