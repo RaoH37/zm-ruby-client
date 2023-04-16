@@ -3,9 +3,23 @@
 module Zm
   module Client
     # objectClass: zimbraCos
-    class Cos < Base::AdminObject
+    class Cos < Base::Object
+      include HasSoapAdminConnector
+
       def modify!
         sac.modify_cos(jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
         true
       end
 

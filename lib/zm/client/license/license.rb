@@ -3,7 +3,7 @@
 module Zm
   module Client
     # objectClass: License
-    class License < Base::AdminObject
+    class License < Base::Object
       attr_accessor :AccountsLimit, :ArchivingAccountsLimit, :AttachmentConversionEnabled,
                     :AttachmentIndexingAccountsLimit, :BackupEnabled, :CrossMailboxSearchEnabled, :EwsAccountsLimit,
                     :HierarchicalStorageManagementEnabled, :ISyncAccountsLimit, :InstallType, :IssuedOn,

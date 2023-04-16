@@ -8,7 +8,9 @@ require 'zm/client/distributionlist/distributionlist_aces_collection'
 module Zm
   module Client
     # objectClass: zimbraDistributionList
-    class DistributionList < Base::AdminObject
+    class DistributionList < Base::Object
+      include HasSoapAdminConnector
+
       def aliases
         @aliases ||= DistributionListAliasesCollection.new(self)
       end
@@ -36,6 +38,18 @@ module Zm
 
       def modify!
         sac.jsns_request(:ModifyDistributionListRequest, jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
         true
       end
 

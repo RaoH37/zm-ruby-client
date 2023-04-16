@@ -2,7 +2,7 @@
 
 module Zm
   module Client
-    class Backup < Base::AdminObject
+    class Backup < Base::Object
       attr_accessor :label, :type, :aborted, :start, :end, :minRedoSeq, :maxRedoSeq, :live, :accounts
 
       alias name label

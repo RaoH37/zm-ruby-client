@@ -6,7 +6,9 @@ require 'zm/client/mta_queue'
 module Zm
   module Client
     # objectClass: zimbraServer
-    class Server < Base::AdminObject
+    class Server < Base::Object
+      include HasSoapAdminConnector
+
       def mta_queues
         @mta_queues ||= MtaQueuesCollection.new(self)
       end
@@ -17,6 +19,18 @@ module Zm
 
       def accounts
         @accounts ||= ServerAccountsCollection.new(self)
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
+        true
       end
     end
   end

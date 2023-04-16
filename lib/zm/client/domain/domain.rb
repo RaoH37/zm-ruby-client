@@ -3,7 +3,9 @@
 module Zm
   module Client
     # objectClass: zimbraDomain
-    class Domain < Base::AdminObject
+    class Domain < Base::Object
+      include HasSoapAdminConnector
+
       def create!
         rep = sac.jsns_request(:CreateDomainRequest, jsns_builder.to_jsns)
         @id = rep[:Body][:CreateDomainResponse][:domain].first[:id]
@@ -11,6 +13,18 @@ module Zm
 
       def modify!
         sac.jsns_request(:ModifyDomainRequest, jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
         true
       end
 

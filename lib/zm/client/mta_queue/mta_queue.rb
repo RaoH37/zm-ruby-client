@@ -4,7 +4,9 @@ require 'zm/client/mta_queue_item'
 
 module Zm
   module Client
-    class MtaQueue < Base::AdminObject
+    class MtaQueue < Base::Object
+      include HasSoapAdminConnector
+
       attr_accessor :name, :n
 
       alias nb_items n

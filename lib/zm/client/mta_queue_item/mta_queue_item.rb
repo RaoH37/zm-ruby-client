@@ -2,7 +2,7 @@
 
 module Zm
   module Client
-    class MtaQueueItem < Base::AdminObject
+    class MtaQueueItem < Base::Object
       attr_accessor :name, :n, :size, :fromdomain, :id, :reason, :time, :to, :addr, :filter, :host, :from, :todomain,
                     :received
 

@@ -21,7 +21,9 @@ module Zm
   module Client
     module Base
       # Abstract Class for Account and Resource
-      class MailboxObject < AdminObject
+      class MailboxObject < Object
+        include HasSoapAdminConnector
+
         attr_accessor :home_url, :public_url, :password, :carLicense
         attr_writer :used, :domain_key
 
@@ -196,6 +198,18 @@ module Zm
         def rename!(email)
           sac.rename_account(@id, email)
           @name = email
+        end
+
+        def update!(hash)
+          return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+          do_update!(hash)
+
+          hash.each do |key, value|
+            update_attribute(key, value)
+          end
+
+          true
         end
 
         def local_transport
