@@ -17,15 +17,24 @@ module Zm
         'Content-Type' => 'application/json; charset=utf-8'
       }.freeze
 
+      attr_reader :context
+
       def initialize(scheme, host, port, soap_path)
         @verbose = false
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, soap_path, nil, nil, nil)
+        @context = SoapContext.new
         init_curl_client
       end
 
       def verbose!
         @verbose = true
         @curl.verbose = @verbose
+      end
+
+      def invoke(soap_element, error_handler = SoapError)
+        # body = envelope(soap_element)
+        # puts body
+        curl_request(envelope(soap_element), error_handler)[:Body]
       end
 
       private
@@ -53,11 +62,18 @@ module Zm
         soapbody
       end
 
+      def envelope(soap_element)
+        {
+          Body: soap_element.to_hash,
+          Header: { context: context.to_hash, _jsns: BASESPACE }
+        }
+      end
+
       def hash_header(token, target_server = nil)
-        context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
+        h_context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
           v.nil?
         end
-        { Header: { context: context, _jsns: BASESPACE } }
+        { Header: { context: h_context, _jsns: BASESPACE } }
       end
     end
   end

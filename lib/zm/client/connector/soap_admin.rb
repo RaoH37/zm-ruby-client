@@ -21,16 +21,20 @@ module Zm
         end
       end
 
-      attr_accessor :token
+      # attr_accessor :token
+      def token
+        context.to_hash[:authToken]
+      end
 
       def initialize(scheme, host, port)
-        super(scheme, host, port, '/service/admin/soap/')
+        super(scheme, host, port, SoapAdminConstants::ADMIN_SERVICE_URI)
       end
 
       def auth(mail, password)
         body = { Body: { AuthRequest: { _jsns: ADMINSPACE, name: mail, password: password } } }
         res = curl_request(body, AuthError)
-        @token = res[:Body][:AuthResponse][:authToken][0][:_content]
+        # @token = res[:Body][:AuthResponse][:authToken][0][:_content]
+        context.token(res[:Body][:AuthResponse][:authToken][0][:_content])
       end
 
       def delegate_auth(name, by = :name, duration = nil)
