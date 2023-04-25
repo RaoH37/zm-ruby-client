@@ -26,6 +26,10 @@ module Zm
         context.to_hash[:authToken]
       end
 
+      def token=(value)
+        context.token(value)
+      end
+
       def initialize(scheme, host, port)
         super(scheme, host, port, SoapAdminConstants::ADMIN_SERVICE_URI)
       end

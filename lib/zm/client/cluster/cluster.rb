@@ -38,10 +38,16 @@ module Zm
         raise ClusterConfigError, 'admin credentials are missing' unless @config.has_admin_credentials?
 
         logger.info 'Get Admin session token'
-        @soap_admin_connector.auth(
-          @config.zimbra_admin_login,
-          @config.zimbra_admin_password
-        )
+
+        soap_request = SoapElement.new(SoapAdminConstants::AUTH_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
+        soap_resp = @soap_admin_connector.invoke(soap_request, Zm::Client::AuthError)
+        @soap_admin_connector.context.token(soap_resp[:AuthResponse][:authToken].first[:_content])
+
+        # @soap_admin_connector.auth(
+        #   @config.zimbra_admin_login,
+        #   @config.zimbra_admin_password
+        # )
       end
 
       def logged?
@@ -49,7 +55,9 @@ module Zm
       end
 
       def alive?
-        @soap_admin_connector.jsns_request(:NoOpRequest, nil)
+        soap_request = SoapElement.new(SoapAdminConstants::NO_OP_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        @soap_admin_connector.invoke(soap_request)
+        # @soap_admin_connector.jsns_request(:NoOpRequest, nil)
         true
       rescue Zm::Client::SoapError => e
         logger.error "Admin session token alive ? #{e.message}"
@@ -119,8 +127,11 @@ module Zm
       end
 
       def infos!
-        rep = soap_admin_connector.jsns_request(:GetVersionInfoRequest, nil)
-        json = rep[:Body][:GetVersionInfoResponse][:info].first
+        soap_request = SoapElement.new(SoapAdminConstants::GET_VERSION_INFO_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_response = @soap_admin_connector.invoke(soap_request)
+
+        # rep = soap_admin_connector.jsns_request(:GetVersionInfoRequest, nil)
+        json = soap_response[:GetVersionInfoResponse][:info].first
 
         instance_variable_set(:@type, json[:type])
         instance_variable_set(:@version, json[:version])
