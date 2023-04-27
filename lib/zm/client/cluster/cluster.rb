@@ -110,8 +110,13 @@ module Zm
       def count_object(type)
         raise ZmError, 'Unknown object type' unless Zm::Client::CountTypes::ALL.include?(type)
 
-        resp = soap_admin_connector.jsns_request(:CountObjectsRequest, { type: type })
-        resp[:Body][:CountObjectsResponse][:num]
+        # resp = soap_admin_connector.jsns_request(:CountObjectsRequest, { type: type })
+        # resp[:Body][:CountObjectsResponse][:num]
+
+        soap_request = SoapElement.new(SoapAdminConstants::COUNT_OBJECTS_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request.add_attribute('type', type)
+        soap_resp = @soap_admin_connector.invoke(soap_request)
+        soap_resp[:CountObjectsResponse][:num]
       end
 
       def email_exist?(email)
@@ -121,9 +126,14 @@ module Zm
           countOnly: SoapUtils::ON
         }
 
-        resp = soap_admin_connector.jsns_request(:SearchDirectoryRequest, jsns)
-        num = resp[:Body][:SearchDirectoryResponse][:num]
-        !num.zero?
+        # resp = soap_admin_connector.jsns_request(:SearchDirectoryRequest, jsns)
+        # num = resp[:Body][:SearchDirectoryResponse][:num]
+        # !num.zero?
+
+        soap_request = SoapElement.new(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request.add_attributes(jsns)
+        soap_resp = @soap_admin_connector.invoke(soap_request)
+        !soap_resp[:SearchDirectoryResponse][:num].zero?
       end
 
       def infos!

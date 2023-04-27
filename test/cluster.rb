@@ -14,6 +14,10 @@ class TestCluster < Minitest::Test
     @admin.login
   end
 
+  def count_objects
+    assert @admin.count_object('account').is_a?(Integer)
+  end
+
   def email_exist?
     assert @admin.email_exist?(@fixture_accounts['accounts']['maxime']['email'])
   end
