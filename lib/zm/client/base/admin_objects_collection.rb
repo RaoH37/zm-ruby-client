@@ -48,7 +48,7 @@ module Zm
           @count_only = SoapUtils::ON
           json = make_query
           @count_only = SoapUtils::OFF
-          json[:Body][:SearchDirectoryResponse][:num]
+          json[:SearchDirectoryResponse][:num]
         end
 
         def clear
@@ -74,7 +74,10 @@ module Zm
         private
 
         def make_query
-          sac.jsns_request(:SearchDirectoryRequest, jsns)
+          # sac.jsns_request(:SearchDirectoryRequest, jsns)
+          soap_request = SoapElement.new(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+          soap_request.add_attributes(jsns)
+          sac.invoke(soap_request)
         end
 
         def ldap_filter

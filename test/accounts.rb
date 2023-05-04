@@ -1,5 +1,4 @@
 require 'minitest/autorun'
-require 'yaml'
 
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
@@ -8,10 +7,11 @@ require './lib/zm/client'
 class TestAccount < Minitest::Test
 
   def setup
-    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
-    @admin.login
-
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
     @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
+
+    @admin = Zm::Client::Cluster.new(@config)
+    @admin.login
   end
 
   def test_all
@@ -46,7 +46,7 @@ class TestAccount < Minitest::Test
   end
 
   def test_find_by_name
-    account = @admin.accounts.find_by name: @fixture_accounts['accounts']['maxime']['email']
+    account = @admin.accounts.attrs('zimbraMailQuota').find_by name: @fixture_accounts['accounts']['maxime']['email']
     assert account.is_a? Zm::Client::Account
     assert_equal @fixture_accounts['accounts']['maxime']['email'], account.name
   end
@@ -72,5 +72,11 @@ class TestAccount < Minitest::Test
     accounts.each do |account|
       assert account.zimbraMailQuota.is_a?(Integer)
     end
+  end
+
+  def test_quota
+    email = @fixture_accounts['accounts']['maxime']['email']
+    all = @admin.accounts.quotas(domain_name: email.split('@').last)
+    assert all.is_a?(Array)
   end
 end

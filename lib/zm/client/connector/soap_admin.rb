@@ -34,12 +34,12 @@ module Zm
         super(scheme, host, port, SoapAdminConstants::ADMIN_SERVICE_URI)
       end
 
-      def auth(mail, password)
-        body = { Body: { AuthRequest: { _jsns: ADMINSPACE, name: mail, password: password } } }
-        res = curl_request(body, AuthError)
-        # @token = res[:Body][:AuthResponse][:authToken][0][:_content]
-        context.token(res[:Body][:AuthResponse][:authToken][0][:_content])
-      end
+      # def auth(mail, password)
+      #   body = { Body: { AuthRequest: { _jsns: ADMINSPACE, name: mail, password: password } } }
+      #   res = curl_request(body, AuthError)
+      #   # @token = res[:Body][:AuthResponse][:authToken][0][:_content]
+      #   context.token(res[:Body][:AuthResponse][:authToken][0][:_content])
+      # end
 
       def delegate_auth(name, by = :name, duration = nil)
         req = { duration: duration, account: { by: by, _content: name } }.reject { |_, v| v.nil? }
@@ -49,20 +49,20 @@ module Zm
         res[:Body][:DelegateAuthResponse][:authToken][0][:_content]
       end
 
-      def get_server(name, by = :name, attrs = nil)
-        req = { server: { by: by, _content: name }, attrs: attrs }
-        body = init_hash_request(:GetServerRequest)
-        body[:Body][:GetServerRequest].merge!(req)
-        curl_request(body)
-      end
+      # def get_server(name, by = :name, attrs = nil)
+      #   req = { server: { by: by, _content: name }, attrs: attrs }
+      #   body = init_hash_request(:GetServerRequest)
+      #   body[:Body][:GetServerRequest].merge!(req)
+      #   curl_request(body)
+      # end
 
-      def get_cos(name, by = :name, attrs = nil)
-        req = { cos: { by: by, _content: name } }
-        req[:attrs] = attrs unless attrs.nil? || attrs.empty?
-        body = init_hash_request(:GetCosRequest)
-        body[:Body][:GetCosRequest].merge!(req)
-        curl_request(body)
-      end
+      # def get_cos(name, by = :name, attrs = nil)
+      #   req = { cos: { by: by, _content: name } }
+      #   req[:attrs] = attrs unless attrs.nil? || attrs.empty?
+      #   body = init_hash_request(:GetCosRequest)
+      #   body[:Body][:GetCosRequest].merge!(req)
+      #   curl_request(body)
+      # end
 
       def jsns_request(soap_name, jsns)
         body = init_hash_request(soap_name)
@@ -195,23 +195,23 @@ module Zm
         curl_request(body)
       end
 
-      def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil,
-                          refresh = nil, target_server_id = nil)
-        soap_name = :GetQuotaUsageRequest
-        req = {
-          domain: domain,
-          allServers: allServers,
-          limit: limit,
-          offset: offset,
-          sortBy: sortBy,
-          sortAscending: sortAscending,
-          refresh: refresh
-        }.reject { |_, v| v.nil? }
-
-        body = init_hash_request(soap_name, target_server_id)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def get_quota_usage(domain = nil, allServers = nil, limit = nil, offset = nil, sortBy = nil, sortAscending = nil,
+      #                     refresh = nil, target_server_id = nil)
+      #   soap_name = :GetQuotaUsageRequest
+      #   req = {
+      #     domain: domain,
+      #     allServers: allServers,
+      #     limit: limit,
+      #     offset: offset,
+      #     sortBy: sortBy,
+      #     sortAscending: sortAscending,
+      #     refresh: refresh
+      #   }.reject { |_, v| v.nil? }
+      #
+      #   body = init_hash_request(soap_name, target_server_id)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       def get_mailbox(id)
         soap_name = :GetMailboxRequest
@@ -279,7 +279,7 @@ module Zm
           Body: {
             soap_name => { _jsns: ADMINSPACE }
           }
-        }.merge(hash_header(@token, target_server))
+        }.merge(hash_header(token, target_server))
       end
     end
   end

@@ -5,7 +5,7 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require './lib/zm/client'
 
-class TestAccount < Minitest::Test
+class TestCoses < Minitest::Test
 
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
@@ -15,7 +15,7 @@ class TestAccount < Minitest::Test
   end
 
   def test_count
-    assert @admin.coses.all.count.is_a? Integer
+    assert @admin.coses.count.is_a? Integer
   end
 
   def test_find

@@ -32,8 +32,8 @@ module Zm
       end
 
       def invoke(soap_element, error_handler = SoapError)
-        # body = envelope(soap_element)
-        # puts body
+        body = envelope(soap_element)
+        puts body
         curl_request(envelope(soap_element), error_handler)[:Body]
       end
 

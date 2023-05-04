@@ -17,11 +17,11 @@ module Zm
         private
 
         def json_items
-          @json_items ||= @json[:Body][json_key][@json_item_key]
+          @json_items ||= @json[json_key][@json_item_key]
         end
 
         def json_key
-          @json_key ||= @json[:Body].keys.first
+          @json_key ||= @json.keys.first
         end
       end
     end
