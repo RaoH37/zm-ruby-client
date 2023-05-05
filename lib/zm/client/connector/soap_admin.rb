@@ -158,14 +158,14 @@ module Zm
         curl_request(body)
       end
 
-      def get_resource(name, by = :name, attrs = nil)
-        soap_name = :GetCalendarResourceRequest
-        req = { calresource: { by: by, _content: name } }
-        req[:attrs] = attrs unless attrs.nil?
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def get_resource(name, by = :name, attrs = nil)
+      #   soap_name = :GetCalendarResourceRequest
+      #   req = { calresource: { by: by, _content: name } }
+      #   req[:attrs] = attrs unless attrs.nil?
+      #   body = init_hash_request(soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       def get_distribution_list(name, by = :name, attrs = nil)
         soap_name = :GetDistributionListRequest
