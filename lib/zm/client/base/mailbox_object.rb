@@ -103,7 +103,19 @@ module Zm
         end
 
         def admin_login
-          @token = sac.delegate_auth(@name)
+          # @token = sac.delegate_auth(@name)
+
+          soap_request = SoapElement.new(SoapAdminConstants::DELEGATE_AUTH_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+          node_account = SoapElement.new('account', nil)
+
+          if recorded?
+            node_account.add_attribute('by', 'id').add_content(@id)
+          else
+            node_account.add_attribute('by', 'name').add_content(@name)
+          end
+
+          soap_request.add_node(node_account)
+          @token = sac.invoke(soap_request)[:DelegateAuthResponse][:authToken].first[:_content]
         end
 
         # #################################################################

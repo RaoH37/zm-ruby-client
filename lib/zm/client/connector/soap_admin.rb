@@ -41,13 +41,13 @@ module Zm
       #   context.token(res[:Body][:AuthResponse][:authToken][0][:_content])
       # end
 
-      def delegate_auth(name, by = :name, duration = nil)
-        req = { duration: duration, account: { by: by, _content: name } }.reject { |_, v| v.nil? }
-        body = init_hash_request(:DelegateAuthRequest)
-        body[:Body][:DelegateAuthRequest].merge!(req)
-        res = curl_request(body)
-        res[:Body][:DelegateAuthResponse][:authToken][0][:_content]
-      end
+      # def delegate_auth(name, by = :name, duration = nil)
+      #   req = { duration: duration, account: { by: by, _content: name } }.reject { |_, v| v.nil? }
+      #   body = init_hash_request(:DelegateAuthRequest)
+      #   body[:Body][:DelegateAuthRequest].merge!(req)
+      #   res = curl_request(body)
+      #   res[:Body][:DelegateAuthResponse][:authToken][0][:_content]
+      # end
 
       # def get_server(name, by = :name, attrs = nil)
       #   req = { server: { by: by, _content: name }, attrs: attrs }
