@@ -51,7 +51,26 @@ module Zm
         end
 
         def used
-          @used ||= sac.get_mailbox(id)[:Body][:GetMailboxResponse][:mbox].first[:s]
+          @used || used!
+        end
+
+        def used!
+          @used = mailbox_infos[:s]
+        end
+
+        def mbxid
+          @mbxid || mbxid!
+        end
+
+        def mbxid!
+          @mbxid = mailbox_infos[:mbxid]
+        end
+
+        def mailbox_infos
+          soap_request = SoapElement.new(SoapAdminConstants::GET_MAILBOX_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+          node_mbox = SoapElement.new('mbox', nil).add_attribute('id', @id)
+          soap_request.add_node(node_mbox)
+          sac.invoke(soap_request)[:GetMailboxResponse][:mbox].first
         end
 
         # #################################################################

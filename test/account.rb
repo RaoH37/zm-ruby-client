@@ -154,4 +154,14 @@ class TestAccount < Minitest::Test
 
     assert !account.token.nil?
   end
+
+  def test_used
+    account = @admin.accounts.attrs('description').find_by name: @fixture_accounts['accounts']['maxime']['email']
+    assert account.used.is_a?(Integer)
+  end
+
+  def test_mbxid
+    account = @admin.accounts.attrs('description').find_by name: @fixture_accounts['accounts']['maxime']['email']
+    assert account.mbxid.is_a?(Integer)
+  end
 end

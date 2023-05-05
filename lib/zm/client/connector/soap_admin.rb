@@ -167,14 +167,14 @@ module Zm
       #   curl_request(body)
       # end
 
-      def get_distribution_list(name, by = :name, attrs = nil)
-        soap_name = :GetDistributionListRequest
-        req = { dl: { by: by, _content: name } }
-        req[:attrs] = attrs unless attrs.nil?
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def get_distribution_list(name, by = :name, attrs = nil)
+      #   soap_name = :GetDistributionListRequest
+      #   req = { dl: { by: by, _content: name } }
+      #   req[:attrs] = attrs unless attrs.nil?
+      #   body = init_hash_request(soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       def get_distribution_list_membership(by_key, by = 'name', limit = nil, offset = nil)
         soap_name = :GetDistributionListMembershipRequest
@@ -213,17 +213,17 @@ module Zm
       #   curl_request(body)
       # end
 
-      def get_mailbox(id)
-        soap_name = :GetMailboxRequest
-        req = {
-          mbox: {
-            id: id
-          }
-        }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def get_mailbox(id)
+      #   soap_name = :GetMailboxRequest
+      #   req = {
+      #     mbox: {
+      #       id: id
+      #     }
+      #   }
+      #   body = init_hash_request(soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       def flush_cache(type, all_servers, id = nil, target_server_id = nil)
         soap_name = :FlushCacheRequest
