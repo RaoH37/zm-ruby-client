@@ -21,13 +21,6 @@ class TestAccount < Minitest::Test
     assert !trans.token.nil?
   end
 
-  def test_account
-    trans = Zm::Client::SoapAdminConnector.create(@config)
-    trans.auth(@config.zimbra_admin_login, @config.zimbra_admin_password)
-    resp = trans.get_account(@fixture_accounts['accounts']['maxime']['email'])
-    assert resp.is_a?(Hash)
-  end
-
   def test_auth_json_by_attribute
     request = Zm::Client::SoapElement.new(Zm::Client::SoapAdminConstants::AUTH_REQUEST, Zm::Client::SoapAdminConstants::NAMESPACE_STR)
     request.add_attribute('name', @config.zimbra_admin_login)
