@@ -67,8 +67,8 @@ module Zm
         end
 
         def mailbox_infos
-          soap_request = SoapElement.new(SoapAdminConstants::GET_MAILBOX_REQUEST, SoapAdminConstants::NAMESPACE_STR)
-          node_mbox = SoapElement.new('mbox', nil).add_attribute('id', @id)
+          soap_request = SoapElement.admin(SoapAdminConstants::GET_MAILBOX_REQUEST)
+          node_mbox = SoapElement.create('mbox').add_attribute('id', @id)
           soap_request.add_node(node_mbox)
           sac.invoke(soap_request)[:GetMailboxResponse][:mbox].first
         end
@@ -124,8 +124,8 @@ module Zm
         def admin_login
           # @token = sac.delegate_auth(@name)
 
-          soap_request = SoapElement.new(SoapAdminConstants::DELEGATE_AUTH_REQUEST, SoapAdminConstants::NAMESPACE_STR)
-          node_account = SoapElement.new('account', nil)
+          soap_request = SoapElement.admin(SoapAdminConstants::DELEGATE_AUTH_REQUEST)
+          node_account = SoapElement.create('account')
 
           if recorded?
             node_account.add_attribute('by', 'id').add_content(@id)

@@ -75,7 +75,7 @@ module Zm
 
         def make_query
           # sac.jsns_request(:SearchDirectoryRequest, jsns)
-          soap_request = SoapElement.new(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+          soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
           soap_request.add_attributes(jsns)
           sac.invoke(soap_request)
         end

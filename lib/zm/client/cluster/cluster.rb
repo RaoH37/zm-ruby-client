@@ -39,15 +39,10 @@ module Zm
 
         logger.info 'Get Admin session token'
 
-        soap_request = SoapElement.new(SoapAdminConstants::AUTH_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request = SoapElement.admin(SoapAdminConstants::AUTH_REQUEST)
         soap_request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
         soap_resp = @soap_admin_connector.invoke(soap_request, Zm::Client::AuthError)
         @soap_admin_connector.context.token(soap_resp[:AuthResponse][:authToken].first[:_content])
-
-        # @soap_admin_connector.auth(
-        #   @config.zimbra_admin_login,
-        #   @config.zimbra_admin_password
-        # )
       end
 
       def logged?
@@ -55,9 +50,8 @@ module Zm
       end
 
       def alive?
-        soap_request = SoapElement.new(SoapAdminConstants::NO_OP_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request = SoapElement.admin(SoapAdminConstants::NO_OP_REQUEST)
         @soap_admin_connector.invoke(soap_request)
-        # @soap_admin_connector.jsns_request(:NoOpRequest, nil)
         true
       rescue Zm::Client::SoapError => e
         logger.error "Admin session token alive ? #{e.message}"
@@ -110,10 +104,7 @@ module Zm
       def count_object(type)
         raise ZmError, 'Unknown object type' unless Zm::Client::CountTypes::ALL.include?(type)
 
-        # resp = soap_admin_connector.jsns_request(:CountObjectsRequest, { type: type })
-        # resp[:Body][:CountObjectsResponse][:num]
-
-        soap_request = SoapElement.new(SoapAdminConstants::COUNT_OBJECTS_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request = SoapElement.admin(SoapAdminConstants::COUNT_OBJECTS_REQUEST)
         soap_request.add_attribute('type', type)
         soap_resp = @soap_admin_connector.invoke(soap_request)
         soap_resp[:CountObjectsResponse][:num]
@@ -126,21 +117,16 @@ module Zm
           countOnly: SoapUtils::ON
         }
 
-        # resp = soap_admin_connector.jsns_request(:SearchDirectoryRequest, jsns)
-        # num = resp[:Body][:SearchDirectoryResponse][:num]
-        # !num.zero?
-
-        soap_request = SoapElement.new(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
         soap_request.add_attributes(jsns)
         soap_resp = @soap_admin_connector.invoke(soap_request)
         !soap_resp[:SearchDirectoryResponse][:num].zero?
       end
 
       def infos!
-        soap_request = SoapElement.new(SoapAdminConstants::GET_VERSION_INFO_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request = SoapElement.admin(SoapAdminConstants::GET_VERSION_INFO_REQUEST)
         soap_response = @soap_admin_connector.invoke(soap_request)
 
-        # rep = soap_admin_connector.jsns_request(:GetVersionInfoRequest, nil)
         json = soap_response[:GetVersionInfoResponse][:info].first
 
         instance_variable_set(:@type, json[:type])

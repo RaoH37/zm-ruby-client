@@ -16,8 +16,8 @@ module Zm
         # rep = sac.get_server(hash.values.first, hash.keys.first)
         # entry = rep[:Body][:GetServerResponse][:server].first
 
-        soap_request = SoapElement.new(SoapAdminConstants::GET_SERVER_REQUEST, SoapAdminConstants::NAMESPACE_STR)
-        node_server = SoapElement.new('server', nil).add_attribute('by', hash.keys.first).add_content(hash.values.first)
+        soap_request = SoapElement.admin(SoapAdminConstants::GET_SERVER_REQUEST)
+        node_server = SoapElement.create('server').add_attribute('by', hash.keys.first).add_content(hash.values.first)
         soap_request.add_node(node_server)
         soap_request.add_attribute('attrs', attrs_comma) unless @attrs.nil?
         entry = sac.invoke(soap_request)[:GetServerResponse][:server].first

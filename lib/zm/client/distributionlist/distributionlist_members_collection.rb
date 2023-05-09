@@ -16,11 +16,9 @@ module Zm
         emails.delete_if { |email| @all.include?(email) }
         return false if emails.empty?
 
-        # @parent.sac.add_distribution_list_members(@parent.id, emails)
-
         soap_request = SoapElement.admin(SoapAdminConstants::ADD_DISTRIBUTION_LIST_MEMBER_REQUEST)
         soap_request.add_attribute('id', @parent.id)
-        node_dlm = SoapElement.new('dlm', nil)
+        node_dlm = SoapElement.create('dlm')
         node_dlm.add_content(emails)
         soap_request.add_node(node_dlm)
         @parent.sac.invoke(soap_request)
@@ -36,11 +34,9 @@ module Zm
         emails.delete_if { |email| !@all.include?(email) }
         return false if emails.empty?
 
-        # @parent.sac.remove_distribution_list_members(@parent.id, emails)
-
         soap_request = SoapElement.admin(SoapAdminConstants::REMOVE_DISTRIBUTION_LIST_MEMBER_REQUEST)
         soap_request.add_attribute('id', @parent.id)
-        node_dlm = SoapElement.new('dlm', nil)
+        node_dlm = SoapElement.create('dlm')
         node_dlm.add_content(emails)
         soap_request.add_node(node_dlm)
         @parent.sac.invoke(soap_request)

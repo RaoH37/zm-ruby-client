@@ -17,7 +17,7 @@ module Zm
 
         # @parent.sac.add_distribution_list_alias(@parent.id, email)
 
-        soap_request = SoapElement.new(SoapAdminConstants::ADD_DISTRIBUTION_LIST_ALIAS_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request = SoapElement.admin(SoapAdminConstants::ADD_DISTRIBUTION_LIST_ALIAS_REQUEST)
         soap_request.add_attributes({ id: @parent.id, alias: email })
         @parent.sac.invoke(soap_request)
 
@@ -28,9 +28,7 @@ module Zm
       def remove!(email)
         return false unless @all.include?(Utils.format_email(email))
 
-        # @parent.sac.remove_distribution_list_alias(@parent.id, email)
-
-        soap_request = SoapElement.new(SoapAdminConstants::REMOVE_DISTRIBUTION_LIST_ALIAS_REQUEST, SoapAdminConstants::NAMESPACE_STR)
+        soap_request = SoapElement.admin(SoapAdminConstants::REMOVE_DISTRIBUTION_LIST_ALIAS_REQUEST)
         soap_request.add_attributes({ id: @parent.id, alias: email })
         @parent.sac.invoke(soap_request)
 
