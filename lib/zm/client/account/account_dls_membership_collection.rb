@@ -11,7 +11,12 @@ module Zm
       private
 
       def make_query
-        @parent.sac.get_account_membership(@parent.id, :id)
+        # @parent.sac.get_account_membership(@parent.id, :id)
+
+        soap_request = SoapElement.admin(SoapAdminConstants::GET_ACCOUNT_MEMBERSHIP_REQUEST)
+        node_account = SoapElement.new('account', nil).add_attribute('by', 'id').add_content(@parent.id)
+        soap_request.add_node(node_account)
+        sac.invoke(soap_request)
       end
 
       def build_response

@@ -178,4 +178,9 @@ class TestAccount < Minitest::Test
       assert account.aliases.remove!(email)
     end
   end
+
+  def test_memberships
+    account = @admin.accounts.attrs('zimbraMailAlias').find_by name: @fixture_accounts['accounts']['maxime']['email']
+    assert account.memberships.all.is_a?(Array)
+  end
 end
