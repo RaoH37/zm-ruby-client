@@ -164,4 +164,18 @@ class TestAccount < Minitest::Test
     account = @admin.accounts.attrs('description').find_by name: @fixture_accounts['accounts']['maxime']['email']
     assert account.mbxid.is_a?(Integer)
   end
+
+  def test_add_alias
+    account = @admin.accounts.attrs('description').find_by name: @fixture_accounts['accounts']['maxime']['email']
+    uid, domain_name = account.name.split('@')
+    new_alias = "#{uid}_#{Time.now.to_i}@#{domain_name}"
+    assert account.aliases.add!(new_alias)
+  end
+
+  def test_remove_alias
+    account = @admin.accounts.attrs('zimbraMailAlias').find_by name: @fixture_accounts['accounts']['maxime']['email']
+    account.aliases.all.each do |email|
+      assert account.aliases.remove!(email)
+    end
+  end
 end
