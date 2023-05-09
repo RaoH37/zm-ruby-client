@@ -107,13 +107,13 @@ module Zm
         curl_request(body)
       end
 
-      def add_distribution_list_alias(id, email)
-        generic_alias(:AddDistributionListAliasRequest, id, email)
-      end
-
-      def remove_distribution_list_alias(id, email)
-        generic_alias(:RemoveDistributionListAliasRequest, id, email)
-      end
+      # def add_distribution_list_alias(id, email)
+      #   generic_alias(:AddDistributionListAliasRequest, id, email)
+      # end
+      #
+      # def remove_distribution_list_alias(id, email)
+      #   generic_alias(:RemoveDistributionListAliasRequest, id, email)
+      # end
 
       def generic_alias(soap_name, id, email)
         req = { id: id, alias: email }

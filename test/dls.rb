@@ -66,4 +66,18 @@ class TestDistributionList < Minitest::Test
     distribution_list = @admin.distribution_lists.attrs(*attrs_clause).find_by name: @fixture_distribution_lists['dls']['unittest']['email']
     assert distribution_list.respond_to?(:zimbraMailHost)
   end
+
+  def test_add_alias
+    distribution_list = @admin.distribution_lists.attrs('description').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    uid, domain_name = distribution_list.name.split('@')
+    new_alias = "#{uid}_#{Time.now.to_i}@#{domain_name}"
+    assert distribution_list.aliases.add!(new_alias)
+  end
+
+  def test_remove_alias
+    distribution_list = @admin.distribution_lists.attrs('zimbraMailAlias').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    distribution_list.aliases.all.each do |email|
+      assert distribution_list.aliases.remove!(email)
+    end
+  end
 end
