@@ -176,15 +176,15 @@ module Zm
       #   curl_request(body)
       # end
 
-      def get_distribution_list_membership(by_key, by = 'name', limit = nil, offset = nil)
-        soap_name = :GetDistributionListMembershipRequest
-        req = { dl: { by: by, _content: by_key }, limit: limit, offset: offset }
-        req.reject! { |_, v| v.nil? }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-
-        curl_request(body)
-      end
+      # def get_distribution_list_membership(by_key, by = 'name', limit = nil, offset = nil)
+      #   soap_name = :GetDistributionListMembershipRequest
+      #   req = { dl: { by: by, _content: by_key }, limit: limit, offset: offset }
+      #   req.reject! { |_, v| v.nil? }
+      #   body = init_hash_request(soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #
+      #   curl_request(body)
+      # end
 
       def distribution_list_action(name, by = :name, action = {})
         soap_name = :DistributionListActionRequest
