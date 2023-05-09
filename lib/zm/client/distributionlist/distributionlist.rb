@@ -54,7 +54,12 @@ module Zm
       end
 
       def rename!(email)
-        sac.rename_distribution_list(@id, email)
+        # sac.rename_distribution_list(@id, email)
+
+        soap_request = SoapElement.admin(SoapAdminConstants::RENAME_DISTRIBUTION_LIST_REQUEST)
+        soap_request.add_attributes({ id: @id, newName: email })
+        sac.invoke(soap_request)
+
         @name = email
       end
 

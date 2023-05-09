@@ -88,9 +88,9 @@ module Zm
       #   generic_alias(:RemoveAccountAliasRequest, id, email)
       # end
 
-      def rename_account(id, email)
-        generic_rename(:RenameAccountRequest, id, email)
-      end
+      # def rename_account(id, email)
+      #   generic_rename(:RenameAccountRequest, id, email)
+      # end
 
       # def add_distribution_list_members(id, emails)
       #   generic_members(:AddDistributionListMemberRequest, id, emails)
@@ -122,16 +122,16 @@ module Zm
       #   curl_request(body)
       # end
 
-      def rename_distribution_list(id, email)
-        generic_rename(:RenameDistributionListRequest, id, email)
-      end
+      # def rename_distribution_list(id, email)
+      #   generic_rename(:RenameDistributionListRequest, id, email)
+      # end
 
-      def generic_rename(soap_name, id, email)
-        req = { id: id, newName: email }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def generic_rename(soap_name, id, email)
+      #   req = { id: id, newName: email }
+      #   body = init_hash_request(soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       # def get_domain(name, by = :name, attrs = nil)
       #   req = { domain: { by: by, _content: name } }
