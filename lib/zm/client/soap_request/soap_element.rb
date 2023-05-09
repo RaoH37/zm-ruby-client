@@ -2,6 +2,10 @@ module Zm
   module Client
     class SoapElement
       class << self
+        def create(name)
+          new(name, nil)
+        end
+
         def admin(name)
           new(name, SoapAdminConstants::NAMESPACE_STR)
         end

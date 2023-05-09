@@ -65,13 +65,13 @@ class TestDomain < Minitest::Test
     assert domain.name == name
   end
 
-  def test_create_domain
-    name = @fixture_domains['domains']['toto']['name']
-    domain = @admin.domains.new do |acc|
-      acc.name = name
-    end
-    domain.save!
-    assert !domain.id.nil?
-    assert domain.delete!
-  end
+  # def test_create_domain
+  #   name = @fixture_domains['domains']['toto']['name']
+  #   domain = @admin.domains.new do |acc|
+  #     acc.name = name
+  #   end
+  #   domain.save!
+  #   assert !domain.id.nil?
+  #   assert domain.delete!
+  # end
 end

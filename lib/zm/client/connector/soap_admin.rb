@@ -115,12 +115,12 @@ module Zm
       #   generic_alias(:RemoveDistributionListAliasRequest, id, email)
       # end
 
-      def generic_alias(soap_name, id, email)
-        req = { id: id, alias: email }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def generic_alias(soap_name, id, email)
+      #   req = { id: id, alias: email }
+      #   body = init_hash_request(soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       def rename_distribution_list(id, email)
         generic_rename(:RenameDistributionListRequest, id, email)
@@ -133,13 +133,13 @@ module Zm
         curl_request(body)
       end
 
-      def get_domain(name, by = :name, attrs = nil)
-        req = { domain: { by: by, _content: name } }
-        req[:attrs] = attrs unless attrs.nil?
-        body = init_hash_request(:GetDomainRequest)
-        body[:Body][:GetDomainRequest].merge!(req)
-        curl_request(body)
-      end
+      # def get_domain(name, by = :name, attrs = nil)
+      #   req = { domain: { by: by, _content: name } }
+      #   req[:attrs] = attrs unless attrs.nil?
+      #   body = init_hash_request(:GetDomainRequest)
+      #   body[:Body][:GetDomainRequest].merge!(req)
+      #   curl_request(body)
+      # end
 
       # def get_account(name, by = :name, attrs = nil, applyCos = 1)
       #   soap_name = :GetAccountRequest

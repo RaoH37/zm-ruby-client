@@ -12,8 +12,11 @@ module Zm
       end
 
       def find_by!(hash)
-        rep = sac.get_domain(hash.values.first, hash.keys.first, attrs_comma)
-        entry = rep[:Body][:GetDomainResponse][:domain].first
+        soap_request = SoapElement.admin(SoapAdminConstants::GET_DOMAIN_REQUEST)
+        node_domain = SoapElement.create('domain').add_attribute('by', hash.keys.first).add_content(hash.values.first)
+        soap_request.add_node(node_domain)
+        soap_request.add_attribute('attrs', attrs_comma)
+        entry = sac.invoke(soap_request)[:GetDomainResponse][:domain].first
 
         reset_query_params
         DomainJsnsInitializer.create(@parent, entry)
