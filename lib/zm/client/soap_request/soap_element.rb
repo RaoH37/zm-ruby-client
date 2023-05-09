@@ -1,6 +1,12 @@
 module Zm
   module Client
     class SoapElement
+      class << self
+        def admin(name)
+          new(name, SoapAdminConstants::NAMESPACE_STR)
+        end
+      end
+
       def initialize(name, namespace)
         @name = name
         @namespace = namespace
@@ -43,6 +49,8 @@ module Zm
       end
 
       def properties
+        return @content.map { |content| { _content: content } } if @content.is_a?(Array)
+
         hash = @namespace.nil? ? {} : { _jsns: @namespace }
         hash.merge!(@attributes) unless @attributes.empty?
         hash.merge!({ _content: @content }) unless @content.nil?

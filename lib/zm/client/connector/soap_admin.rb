@@ -92,20 +92,20 @@ module Zm
         generic_rename(:RenameAccountRequest, id, email)
       end
 
-      def add_distribution_list_members(id, emails)
-        generic_members(:AddDistributionListMemberRequest, id, emails)
-      end
+      # def add_distribution_list_members(id, emails)
+      #   generic_members(:AddDistributionListMemberRequest, id, emails)
+      # end
+      #
+      # def remove_distribution_list_members(id, emails)
+      #   generic_members(:RemoveDistributionListMemberRequest, id, emails)
+      # end
 
-      def remove_distribution_list_members(id, emails)
-        generic_members(:RemoveDistributionListMemberRequest, id, emails)
-      end
-
-      def generic_members(soap_name, id, emails)
-        req = { id: id, dlm: emails.map { |email| { _content: email } } }
-        body = init_hash_request(soap_name)
-        body[:Body][soap_name].merge!(req)
-        curl_request(body)
-      end
+      # def generic_members(soap_name, id, emails)
+      #   req = { id: id, dlm: emails.map { |email| { _content: email } } }
+      #   body = init_hash_request(soap_name)
+      #   body[:Body][soap_name].merge!(req)
+      #   curl_request(body)
+      # end
 
       # def add_distribution_list_alias(id, email)
       #   generic_alias(:AddDistributionListAliasRequest, id, email)

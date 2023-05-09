@@ -80,4 +80,14 @@ class TestDistributionList < Minitest::Test
       assert distribution_list.aliases.remove!(email)
     end
   end
+
+  def test_add_members
+    distribution_list = @admin.distribution_lists.attrs('description').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    assert distribution_list.members.add!(@fixture_distribution_lists['dls']['unittest']['members'])
+  end
+
+  def test_remove_members
+    distribution_list = @admin.distribution_lists.attrs('description').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    assert distribution_list.members.remove!(@fixture_distribution_lists['dls']['unittest']['members'])
+  end
 end
