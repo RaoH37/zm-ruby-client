@@ -16,8 +16,8 @@ module Zm
         emails.delete_if { |email| @all.include?(email) }
         return false if emails.empty?
 
-        jsns = { op: 'addOwners', owner: jsns_owners(emails) }
-        @parent.sac.distribution_list_action(@parent.id, :id, jsns)
+        @parent.sac.invoke(jsns('addOwners', emails))
+
         @all += emails
         true
       end
@@ -27,13 +27,22 @@ module Zm
         emails.delete_if { |email| !@all.include?(email) }
         return false if emails.empty?
 
-        jsns = { op: 'removeOwners', owner: jsns_owners(emails) }
-        @parent.sac.distribution_list_action(@parent.id, :id, jsns)
+        @parent.sac.invoke(jsns('removeOwners', emails))
+
         @all -= emails
         true
       end
 
       private
+
+      def jsns(op, emails)
+        soap_request = SoapElement.account(SoapAccountConstants::DISTRIBUTION_LIST_ACTION_REQUEST)
+        node_dl = SoapElement.create('dl').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@parent.id)
+        soap_request.add_node(node_dl)
+        node_action = SoapElement.create('action').add_attributes({ op: op, owner: jsns_owners(emails) })
+        soap_request.add_node(node_action)
+        soap_request
+      end
 
       def jsns_owners(emails)
         emails.map { |email| { by: :name, type: :usr, _content: email } }

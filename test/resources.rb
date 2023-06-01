@@ -7,7 +7,7 @@ require './lib/zm/client'
 class TestResource < Minitest::Test
 
   def setup
-    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config2.yml')
     @fixture_resources = YAML.load(File.read('./test/fixtures/resources.yml'))
 
     @admin = Zm::Client::Cluster.new(@config)
@@ -65,18 +65,13 @@ class TestResource < Minitest::Test
     assert resource.respond_to?(:displayName)
   end
 
-  # def test_has_quota
-  #   resources = @admin.resources.where('(zimbraMailQuota=*)').per_page(10).attrs('zimbraMailQuota').all
-  #   assert resources.any?
-  #
-  #   resources.each do |resource|
-  #     assert resource.zimbraMailQuota.is_a?(Integer)
-  #   end
-  # end
-  #
-  # def test_quota
-  #   email = @fixture_resources['resources']['unittest']['email']
-  #   all = @admin.resources.quotas(domain_name: email.split('@').last)
-  #   assert all.is_a?(Array)
-  # end
+  def test_create
+    domain_name = @fixture_resources['resources']['toto']['email'].split('@').last
+    resource = @admin.resources.new do |acc|
+      acc.name = "test.res.#{Time.now.to_i}@#{domain_name}"
+      acc.displayName = "Unit Test"
+      acc.zimbraCalResType = Zm::Client::Resource::TYPES.sample
+    end
+    assert resource.save!
+  end
 end

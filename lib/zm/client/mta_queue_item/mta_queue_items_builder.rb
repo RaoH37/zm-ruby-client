@@ -15,7 +15,7 @@ module Zm
       private
 
       def json_items
-        @json_items ||= @json[:Body][json_key][:server].first[:queue].first[:qi]
+        @json_items ||= @json[:GetMailQueueResponse][:server].first[:queue].first[:qi]
       end
     end
   end

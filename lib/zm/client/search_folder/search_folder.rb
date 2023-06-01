@@ -6,7 +6,8 @@ module Zm
     class SearchFolder < Base::Object
       include Zm::Model::AttributeChangeObserver
 
-      attr_accessor :id, :uuid, :deletable, :name, :absFolderPath, :l, :luuid, :color, :rgb, :rev, :ms, :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types
+      attr_accessor :id, :uuid, :deletable, :name, :absFolderPath, :l, :luuid, :color, :rgb, :rev, :ms,
+                    :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types
 
       define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
 

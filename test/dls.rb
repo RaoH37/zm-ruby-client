@@ -7,7 +7,7 @@ require './lib/zm/client'
 class TestDistributionList < Minitest::Test
 
   def setup
-    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config2.yml')
     @fixture_distribution_lists = YAML.load(File.read('./test/fixtures/dls.yml'))
 
     @admin = Zm::Client::Cluster.new(@config)
@@ -89,5 +89,44 @@ class TestDistributionList < Minitest::Test
   def test_remove_members
     distribution_list = @admin.distribution_lists.attrs('description').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
     assert distribution_list.members.remove!(@fixture_distribution_lists['dls']['unittest']['members'])
+  end
+
+  def test_create
+    name = @fixture_distribution_lists['dls']['toto']['email']
+    dl = find_dl_or_nil(name)
+    return unless dl.nil?
+
+    dl = @admin.distribution_lists.new do |acc|
+      acc.name = name
+      acc.description = "Unit test 123"
+    end
+
+    dl.zimbraMailStatus = Zm::Client::SoapConstants::DISABLED
+
+    assert dl.save!
+  end
+
+  def test_delete
+    name = @fixture_distribution_lists['dls']['toto']['email']
+    dl = find_dl_or_nil(name)
+    return if dl.nil?
+
+    assert dl.delete!.nil?
+  end
+
+  def test_modify
+    name = @fixture_distribution_lists['dls']['toto']['email']
+    dl = find_dl_or_nil(name)
+    return if dl.nil?
+
+    dl.description = "Unit test #{Time.now.to_i}"
+
+    assert dl.save!
+  end
+
+  def find_dl_or_nil(name)
+    @admin.distribution_lists.find_by name: name
+  rescue StandardError
+    nil
   end
 end

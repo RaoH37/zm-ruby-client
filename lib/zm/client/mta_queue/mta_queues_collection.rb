@@ -34,7 +34,10 @@ module Zm
       private
 
       def make_query
-        sac.get_mail_queue_info(@parent.name)
+        soap_request = SoapElement.admin(SoapAdminConstants::GET_MAIL_QUEUE_INFO_REQUEST)
+        node_server = SoapElement.create('server').add_attribute(SoapConstants::NAME, @parent.name)
+        soap_request.add_node(node_server)
+        sac.invoke(soap_request)
       end
 
       def build_response

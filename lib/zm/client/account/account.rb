@@ -23,18 +23,18 @@ module Zm
       # #################################################################
 
       def delete!
-        sac.jsns_request(:DeleteAccountRequest, { id: @id })
+        sac.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
       def modify!
-        sac.jsns_request(:ModifyAccountRequest, jsns_builder.to_update)
+        sac.invoke(jsns_builder.to_update)
         true
       end
 
       def create!
-        rep = sac.jsns_request(:CreateAccountRequest, jsns_builder.to_jsns)
-        @id = rep[:Body][:CreateAccountResponse][:account].first[:id]
+        resp = sac.invoke(jsns_builder.to_create)
+        @id = resp[:CreateAccountResponse][:account].first[:id]
       end
 
       def created_at
@@ -42,18 +42,13 @@ module Zm
       end
 
       def flush_cache!
-        sac.flush_cache('account', 1, @id)
-      end
-
-      def move_mailbox(server)
-        raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
-
-        sac.move_mailbox(@name, zimbraMailHost, server.name, server.id)
-      end
-
-      def is_on_to_move?(server)
-        resp = sac.query_mailbox_move(@name, server.id)
-        resp[:Body][:QueryMailboxMoveResponse][:account].nil?
+        soap_request = SoapElement.admin(SoapAdminConstants::FLUSH_CACHE_REQUEST)
+        node_cache = SoapElement.create('cache').add_attributes({ type: 'account', allServers: 1 })
+        soap_request.add_node(node_cache)
+        node_entry = SoapElement.create('entry').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@id)
+        node_cache.add_node(node_entry)
+        sac.invoke(soap_request)
+        true
       end
 
       def attrs_write
@@ -63,7 +58,7 @@ module Zm
       private
 
       def do_update!(hash)
-        sac.jsns_request(:ModifyAccountRequest, jsns_builder.to_patch(hash))
+        sac.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

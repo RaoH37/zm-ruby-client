@@ -222,13 +222,14 @@ module Zm
           new_password ||= @password
           return false if new_password.nil?
 
-          sac.jsns_request(:SetPasswordRequest, { id: @id, newPassword: new_password })
+          soap_request = SoapElement.admin(SoapAdminConstants::SET_PASSWORD_REQUEST)
+          soap_request.add_attributes({ id: @id, newPassword: new_password })
+          sac.invoke(soap_request)
+
           @password = new_password
         end
 
         def rename!(email)
-          # sac.rename_account(@id, email)
-
           soap_request = SoapElement.admin(SoapAdminConstants::RENAME_ACCOUNT_REQUEST)
           soap_request.add_attributes({ id: @id, newName: email })
           sac.invoke(soap_request)

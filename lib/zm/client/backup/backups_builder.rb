@@ -8,6 +8,7 @@ module Zm
         super(parent, json)
         @json_item_key = :backup
       end
+
       def make
         return [] if json_items.nil?
 

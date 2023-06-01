@@ -11,7 +11,8 @@ module Zm
       private
 
       def make_query
-        sac.backup_query(@parent.id)
+        soap_request = SoapElement.admin(SoapAdminConstants::BACKUP_QUERY_REQUEST).add_attribute('query', {})
+        sac.target_invoke(soap_request, @parent.id)
       end
 
       def build_response

@@ -74,19 +74,23 @@ module Zm
         # actions
 
         def unread!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token, { action: { op: '!read', id: @parent.id } })
+          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
+                                           { action: { op: '!read', id: @parent.id } })
         end
 
         def read!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token, { action: { op: 'read', id: @parent.id } })
+          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
+                                           { action: { op: 'read', id: @parent.id } })
         end
 
         def unflag!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token, { action: { op: '!flag', id: @parent.id } })
+          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
+                                           { action: { op: '!flag', id: @parent.id } })
         end
 
         def flag!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token, { action: { op: 'flag', id: @parent.id } })
+          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
+                                           { action: { op: 'flag', id: @parent.id } })
         end
       end
     end

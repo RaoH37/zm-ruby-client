@@ -23,8 +23,6 @@ module Zm
         soap_request.add_node(node_dlm)
         @parent.sac.invoke(soap_request)
 
-
-
         @all += emails
         true
       end

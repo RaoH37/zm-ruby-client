@@ -16,7 +16,8 @@ module Zm
         # entry = rep[:Body][:GetCalendarResourceResponse][:calresource].first
 
         soap_request = SoapElement.admin(SoapAdminConstants::GET_CALENDAR_RESOURCE_REQUEST)
-        node_res = SoapElement.create('calresource', nil).add_attribute('by', hash.keys.first).add_content(hash.values.first)
+        node_res = SoapElement.create('calresource', nil).add_attribute('by',
+                                                                        hash.keys.first).add_content(hash.values.first)
         soap_request.add_node(node_res)
         soap_request.add_attribute('attrs', attrs_comma)
         soap_request.add_attribute('applyCos', @apply_cos)

@@ -7,7 +7,7 @@ require './lib/zm/client'
 
 class TestDomain < Minitest::Test
   def setup
-    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
+    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config2.yml'))
     @admin.login
 
     @fixture_domains = YAML.load(File.read('./test/fixtures/domains.yml'))
@@ -65,13 +65,39 @@ class TestDomain < Minitest::Test
     assert domain.name == name
   end
 
-  # def test_create_domain
-  #   name = @fixture_domains['domains']['toto']['name']
-  #   domain = @admin.domains.new do |acc|
-  #     acc.name = name
-  #   end
-  #   domain.save!
-  #   assert !domain.id.nil?
-  #   assert domain.delete!
-  # end
+  def test_create
+    name = @fixture_domains['domains']['toto']['name']
+    domain = find_domain_or_nil(name)
+    return unless domain.nil?
+
+    domain = @admin.domains.new do |acc|
+      acc.name = name
+    end
+
+    domain.save!
+
+    assert !domain.id.nil?
+  end
+
+  def test_delete
+    domain = find_domain_or_nil(@fixture_domains['domains']['toto']['name'])
+    return if domain.nil?
+
+    assert domain.delete!.nil?
+  end
+
+  def test_modify
+    domain = find_domain_or_nil(@fixture_domains['domains']['toto']['name'])
+    return if domain.nil?
+
+    domain.zimbraGalMaxResults = rand(100..1000)
+
+    assert domain.modify!
+  end
+
+  def find_domain_or_nil(name)
+    @admin.domains.find_by name: name
+  rescue StandardError => e
+    nil
+  end
 end

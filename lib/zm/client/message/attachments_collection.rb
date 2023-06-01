@@ -35,11 +35,11 @@ module Zm
 
         def download(dest_file_path)
           h = {
-           id: @parent.id,
-           part: part,
-           auth: 'qp',
-           zauthtoken: account.token,
-           disp: 'a'
+            id: @parent.id,
+            part: part,
+            auth: 'qp',
+            zauthtoken: account.token,
+            disp: 'a'
           }
 
           url = account.home_url

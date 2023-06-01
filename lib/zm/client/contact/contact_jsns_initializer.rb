@@ -11,7 +11,6 @@ module Zm
         end
 
         def update(item, json)
-          # puts json
           item.id   = json[:id]
           item.name = json[:fileAsStr]
           item.l    = json[:l]

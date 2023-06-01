@@ -11,8 +11,8 @@ module Zm
         end
 
         def update(item, json)
-          item.id   = json[:id]
-          item.d   = json[:d]
+          item.id = json[:id]
+          item.d = json[:d]
           item.l    = json[:l]
           item.su   = json[:su]
           item.fr   = json[:fr]
@@ -21,7 +21,6 @@ module Zm
           item.idnt = json[:idnt]
           item.f = json[:f]
           item.tn = json[:tn].to_s.split(',')
-          # @has_attachment = json[:f].to_s.include?('a')
 
           json[:e].each do |e|
             recipient = Recipient.new(e[:t], e[:a], e[:p])
@@ -55,9 +54,7 @@ module Zm
         end
 
         def update_attachment(item, json)
-          # puts "\ninit_attachment_from_json #{json}\n"
           pj = Zm::Client::Message::Attachment.new(self)
-          # pj.part = json[:part],
           pj.mid  = json[:mid]
           pj.aid  = json[:aid]
           pj.ct   = json[:ct]

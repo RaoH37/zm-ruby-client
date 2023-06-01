@@ -183,4 +183,9 @@ class TestAccount < Minitest::Test
     account = @admin.accounts.attrs('zimbraMailAlias').find_by name: @fixture_accounts['accounts']['maxime']['email']
     assert account.memberships.all.is_a?(Array)
   end
+
+  def test_flush_cache
+    account = @admin.accounts.attrs('zimbraMailAlias').find_by name: @fixture_accounts['accounts']['maxime']['email']
+    assert account.flush_cache!
+  end
 end

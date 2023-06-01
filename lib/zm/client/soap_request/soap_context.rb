@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
     class SoapContext
@@ -26,9 +28,9 @@ module Zm
 
       def to_hash
         {
-         authToken: @token,
-         userAgent: { name: @user_agent },
-         targetServer: @target_server
+          authToken: @token,
+          userAgent: { name: @user_agent },
+          targetServer: @target_server
         }.delete_if { |_, v| v.nil? }
       end
     end

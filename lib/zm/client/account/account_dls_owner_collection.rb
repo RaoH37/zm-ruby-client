@@ -16,7 +16,9 @@ module Zm
           types: SearchType::DL
         }
 
-        @parent.sac.jsns_request(:SearchDirectoryRequest, jsns)
+        soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
+        soap_request.add_attributes(jsns)
+        @parent.sac.invoke(soap_request)
       end
 
       def build_response

@@ -25,7 +25,8 @@ module Zm
       def rename!(new_name)
         return if new_name == @name
 
-        @parent.sacc.jsns_request(:ModifySignatureRequest, @parent.token, jsns_builder.to_rename(new_name), SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.jsns_request(:ModifySignatureRequest, @parent.token, jsns_builder.to_rename(new_name),
+                                  SoapAccountConnector::ACCOUNTSPACE)
         @name = new_name
       end
 

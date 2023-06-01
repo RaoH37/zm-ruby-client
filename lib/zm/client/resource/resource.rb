@@ -4,29 +4,41 @@ module Zm
   module Client
     # objectClass: zimbraCalendarResource
     class Resource < Base::MailboxObject
+      LOCATION = 'Location'
+      EQUIPMENT = 'Equipment'
+      TYPES = [LOCATION, EQUIPMENT].freeze
+
       def delete!
-        sac.jsns_request(:DeleteCalendarResourceRequest, { id: @id })
+        sac.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
       def modify!
-        sac.jsns_request(:ModifyCalendarResourceRequest, jsns_builder.to_update)
+        sac.invoke(jsns_builder.to_update)
         true
       end
 
       def create!
-        rep = sac.jsns_request(:CreateCalendarResourceRequest, jsns_builder.to_jsns)
-        @id = rep[:Body][:CreateCalendarResourceResponse][:calresource].first[:id]
+        resp = sac.invoke(jsns_builder.to_create)
+        @id = resp[:CreateCalendarResourceResponse][:calresource].first[:id]
       end
 
       def attrs_write
         @parent.zimbra_attributes.all_resource_attrs_writable_names
       end
 
+      def location?
+        zimbraCalResType == LOCATION
+      end
+
+      def equipment?
+        zimbraCalResType == EQUIPMENT
+      end
+
       private
 
       def do_update!(hash)
-        sac.jsns_request(:ModifyCalendarResourceRequest, jsns_builder.to_patch(hash))
+        sac.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

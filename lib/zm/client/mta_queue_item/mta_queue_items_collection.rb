@@ -41,7 +41,8 @@ module Zm
       private
 
       def make_query
-        json = sac.jsns_request(:GetMailQueueRequest, jsns_builder.to_list)
+        json = sac.invoke(jsns_builder.to_list)
+
         reset_query_params
         json
       end

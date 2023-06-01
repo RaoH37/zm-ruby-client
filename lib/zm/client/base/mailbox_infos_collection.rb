@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Zm
   module Client
     class MailboxInfosCollection
@@ -53,8 +55,6 @@ module Zm
       end
 
       def jsns
-        # sections = 'mbox,prefs,attrs,zimlets,props,idents,sigs,dsrcs,children'
-        # rights = nil
         { rights: @rights.join(','), sections: @sections.join(',') }.reject { |_, v| v.empty? }
       end
 

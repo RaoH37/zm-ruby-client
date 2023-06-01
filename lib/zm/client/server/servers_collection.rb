@@ -13,9 +13,6 @@ module Zm
       end
 
       def find_by!(hash)
-        # rep = sac.get_server(hash.values.first, hash.keys.first)
-        # entry = rep[:Body][:GetServerResponse][:server].first
-
         soap_request = SoapElement.admin(SoapAdminConstants::GET_SERVER_REQUEST)
         node_server = SoapElement.create('server').add_attribute('by', hash.keys.first).add_content(hash.values.first)
         soap_request.add_node(node_server)
@@ -34,8 +31,9 @@ module Zm
       private
 
       def make_query
-        jsns = @service.nil? ? nil : { service: @service }
-        sac.jsns_request(:GetAllServersRequest, jsns)
+        soap_request = SoapElement.admin(SoapAdminConstants::GET_ALL_SERVERS_REQUEST)
+        soap_request.add_attribute('service', @service) unless @service.nil?
+        sac.invoke(soap_request)
       end
     end
   end

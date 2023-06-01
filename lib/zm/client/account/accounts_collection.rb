@@ -12,9 +12,6 @@ module Zm
       end
 
       def find_by!(hash)
-        # rep = sac.get_account(hash.values.first, hash.keys.first, attrs_comma, @apply_cos)
-        # entry = rep[:Body][:GetAccountResponse][:account].first
-
         soap_request = SoapElement.admin(SoapAdminConstants::GET_ACCOUNT_REQUEST)
         node_account = SoapElement.create('account').add_attribute('by', hash.keys.first).add_content(hash.values.first)
         soap_request.add_node(node_account)
@@ -29,8 +26,6 @@ module Zm
       def quotas(domain_name: @domain_name, target_server_id: @target_server_id)
         return nil if domain_name.nil? && target_server_id.nil?
 
-        # json = sac.get_quota_usage(@domain_name, @all_servers, @limit, @offset, @sort_by, @sort_ascending, @refresh,
-        #                            @target_server_id)
         if target_server_id.nil?
           @all_servers = SoapUtils::ON
         else
@@ -52,8 +47,6 @@ module Zm
         json = sac.invoke(soap_request)
 
         sac.context.target_server(nil) unless target_server_id.nil?
-
-        puts json
 
         reset_query_params
         @builder_class.new(@parent, json).make

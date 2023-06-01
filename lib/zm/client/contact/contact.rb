@@ -17,6 +17,7 @@ module Zm
                     :otherCountry, :otherFax, :otherPhone, :otherPostalCode, :otherState, :otherStreet, :otherURL,
                     :pager, :workCity, :workCountry, :workFax, :workPhone, :workPostalCode, :workState, :workStreet,
                     :workURL, :image, :id, :name, :l, :type, :tn
+
       def initialize(parent)
         @l = FolderDefault::CONTACTS[:id]
         super(parent)

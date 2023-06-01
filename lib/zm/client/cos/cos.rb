@@ -7,7 +7,7 @@ module Zm
       include HasSoapAdminConnector
 
       def modify!
-        sac.modify_cos(jsns_builder.to_update)
+        sac.invoke(jsns_builder.to_update)
         true
       end
 
@@ -24,8 +24,9 @@ module Zm
       end
 
       def create!
-        rep = sac.jsns_request(:CreateCosRequest, jsns_builder.to_jsns)
-        @id = rep[:Body][:CreateCosResponse][:cos].first[:id]
+        resp = sac.invoke(jsns_builder.to_create)
+
+        @id = resp[:CreateCosResponse][:cos].first[:id]
       end
 
       def servers
@@ -51,7 +52,7 @@ module Zm
       private
 
       def do_update!(hash)
-        sac.jsns_request(:ModifyCosRequest, jsns_builder.to_patch(hash))
+        sac.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

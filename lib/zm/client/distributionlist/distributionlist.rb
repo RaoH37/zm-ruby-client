@@ -32,12 +32,12 @@ module Zm
       end
 
       def create!
-        rep = sac.jsns_request(:CreateDistributionListRequest, jsns_builder.to_jsns)
-        @id = rep[:Body][:CreateDistributionListResponse][:dl].first[:id]
+        resp = sac.invoke(jsns_builder.to_create)
+        @id = resp[:CreateDistributionListResponse][:dl].first[:id]
       end
 
       def modify!
-        sac.jsns_request(:ModifyDistributionListRequest, jsns_builder.to_update)
+        sac.invoke(jsns_builder.to_update)
         true
       end
 
@@ -53,18 +53,13 @@ module Zm
         true
       end
 
-      def rename!(email)
-        # sac.rename_distribution_list(@id, email)
-
-        soap_request = SoapElement.admin(SoapAdminConstants::RENAME_DISTRIBUTION_LIST_REQUEST)
-        soap_request.add_attributes({ id: @id, newName: email })
-        sac.invoke(soap_request)
-
-        @name = email
+      def rename!(new_name)
+        sac.invoke(jsns_builder.to_rename(new_name))
+        @name = new_name
       end
 
       def delete!
-        sac.jsns_request(:DeleteDistributionListRequest, { id: @id })
+        sac.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
@@ -91,15 +86,15 @@ module Zm
       end
 
       def hide_in_gal?
-        zimbraHideInGal == 'TRUE'
+        zimbraHideInGal == SoapConstants::TRUE
       end
 
       def group?
-        zimbraMailStatus == 'disabled'
+        zimbraMailStatus == SoapConstants::DISABLED
       end
 
       def mailing_list?
-        zimbraMailStatus == 'enabled'
+        zimbraMailStatus == SoapConstants::ENABLED
       end
 
       def attrs_write
@@ -109,7 +104,7 @@ module Zm
       private
 
       def do_update!(hash)
-        sac.jsns_request(:ModifyDistributionListRequest, jsns_builder.to_patch(hash))
+        sac.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

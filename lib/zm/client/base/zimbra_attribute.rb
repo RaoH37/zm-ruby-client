@@ -20,7 +20,8 @@ module Zm
         end
 
         def immutable?
-          @immutable.to_s == '1'
+          # @immutable.to_s == '1'
+          immutable == '1'
         end
 
         def objects_scope
