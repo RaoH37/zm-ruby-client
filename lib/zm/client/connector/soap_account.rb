@@ -29,35 +29,26 @@ module Zm
         ts = (Time.now.to_i * 1000)
         preauth = compute_preauth(content, by, ts, expires, domainkey)
 
-        jsns = {
-          account: {
-            _content: content,
-            by: by
-          },
-          preauth: {
-            _content: preauth,
-            timestamp: ts
-          }
-        }
+        soap_request = SoapElement.account(SoapAccountConstants::AUTH_REQUEST)
+        node_account = SoapElement.create('account').add_attribute('by', by).add_content(content)
+        soap_request.add_node(node_account)
+        node_preauth = SoapElement.create('preauth').add_attribute('timestamp', ts).add_content(preauth)
+        soap_request.add_node(node_preauth)
 
-        do_auth(jsns)
+        do_login(soap_request)
       end
 
       def auth_password(content, by, password)
-        jsns = {
-          account: {
-            _content: content,
-            by: by
-          },
-          password: password
-        }
-
-        do_auth(jsns)
+        soap_request = SoapElement.account(SoapAccountConstants::AUTH_REQUEST)
+        node_account = SoapElement.create('account').add_attribute('by', by).add_content(content)
+        soap_request.add_node(node_account)
+        soap_request.add_attribute('password', password)
+        
+        do_login(soap_request)
       end
 
-      def do_auth(jsns)
-        res = jsns_request(:AuthRequest, nil, jsns, ACCOUNTSPACE, AuthError)
-        res[:Body][:AuthResponse][:authToken].first[:_content]
+      def do_login(soap_request)
+        invoke(soap_request)[:AuthResponse][:authToken].first[:_content]
       end
 
       # -------------------------------
