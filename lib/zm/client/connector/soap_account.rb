@@ -21,6 +21,14 @@ module Zm
         end
       end
 
+      def token
+        context.to_hash[:authToken]
+      end
+
+      def token=(value)
+        context.token(value)
+      end
+
       def initialize(scheme, host, port)
         super(scheme, host, port, '/service/soap/')
       end
@@ -43,7 +51,7 @@ module Zm
         node_account = SoapElement.create('account').add_attribute('by', by).add_content(content)
         soap_request.add_node(node_account)
         soap_request.add_attribute('password', password)
-        
+
         do_login(soap_request)
       end
 

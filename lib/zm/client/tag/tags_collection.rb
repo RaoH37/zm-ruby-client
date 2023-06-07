@@ -13,7 +13,8 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetTagRequest, @parent.token, nil)
+        soap_request = SoapElement.mail(SoapMailConstants::GET_TAG_REQUEST)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end

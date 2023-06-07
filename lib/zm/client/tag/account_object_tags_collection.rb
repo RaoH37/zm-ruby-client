@@ -21,8 +21,14 @@ module Zm
           return false if new_tags.delete_if { |tag_name| all.include?(tag_name) }.empty?
 
           new_tags.each do |tag_name|
-            jsns = { action: { op: :tag, id: @parent.id, tn: tag_name } }
-            @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token, jsns)
+
+            attrs = {
+             op: :tag,
+             id: @parent.id,
+             tn: tag_name
+            }
+
+            do_action(attrs)
           end
 
           @parent.tn += new_tags
@@ -34,12 +40,27 @@ module Zm
           return false if tag_names.delete_if { |tag_name| !all.include?(tag_name) }.empty?
 
           tag_names.each do |tag_name|
-            jsns = { action: { op: '!tag', id: @parent.id, tn: tag_name } }
-            @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token, jsns)
+
+            attrs = {
+             op: '!tag',
+             id: @parent.id,
+             tn: tag_name
+            }
+
+            do_action(attrs)
           end
 
           @parent.tn -= tag_names
           all!
+        end
+
+        def do_action(attrs)
+          soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+          node_action = SoapElement.create('action').add_attributes(attrs)
+          soap_request.add_node(node_action)
+          soap_request
+
+          @parent.parent.sacc.invoke(soap_request)
         end
       end
     end

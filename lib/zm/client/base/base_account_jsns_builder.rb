@@ -10,44 +10,65 @@ module Zm
 
       def to_tag(tag_name = nil)
         tag_name ||= @item.tn
-        { action: { op: :tag, id: @item.id, tn: tag_name } }
+
+        attrs = {
+         op: :tag,
+         id: @item.id,
+         tn: tag_name
+        }
+
+        build(attrs)
       end
 
       def to_move(new_folder_id = nil)
         new_folder_id ||= @item.l
-        { action: { op: :move, id: @item.id, l: new_folder_id } }
+
+        attrs = {
+         op: :move,
+         id: @item.id,
+         l: new_folder_id
+        }
+
+        build(attrs)
       end
 
       def to_patch(hash)
-        action = {
+        attrs = {
           op: :update,
           id: @item.id
         }.merge(hash)
 
-        action.reject! { |_, v| v.nil? }
+        attrs.reject! { |_, v| v.nil? }
 
-        { action: action }
+        build(attrs)
       end
 
       def to_delete
-        action = {
+        attrs = {
           op: :delete,
           id: @item.id
         }
 
-        { action: action }
+        build(attrs)
       end
 
       def to_rename(new_name = nil)
         new_name ||= @item.name
 
-        action = {
+        attrs = {
           op: :rename,
           id: @item.id,
           name: new_name
         }
 
-        { action: action }
+        build(attrs)
+      end
+
+      def build(attrs)
+        soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+        node_action = SoapElement.create('action').add_attributes(attrs)
+        soap_request.add_node(node_action)
+        soap_request
       end
     end
   end

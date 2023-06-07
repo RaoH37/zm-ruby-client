@@ -107,6 +107,7 @@ module Zm
           content, by = account_content_by
 
           @token = sacc.auth_preauth(content, by, expires, domain_key)
+          sacc.context.token(@token)
         end
 
         def account_login_password
@@ -114,18 +115,9 @@ module Zm
 
           content, by = account_content_by
 
-          # soap_request = SoapElement.account(SoapAccountConstants::AUTH_REQUEST)
-          # node_account = SoapElement.create('account').add_attribute('by', by).add_content(content)
-          # soap_request.add_node(node_account)
-          # soap_request.add_attribute('password', @password)
-          # do_login(soap_request)
           @token = sacc.auth_password(content, by, @password)
+          sacc.context.token(@token)
         end
-
-        # def do_login(soap_request)
-        #   resp = sacc.invoke(soap_request)
-        #   @token = resp[:AuthResponse][:authToken].first[:_content]
-        # end
 
         def account_content_by
           @id ? [@id, :id] : [@name, :name]
@@ -145,6 +137,7 @@ module Zm
 
           soap_request.add_node(node_account)
           @token = sac.invoke(soap_request)[:DelegateAuthResponse][:authToken].first[:_content]
+          sacc.context.token(@token)
         end
 
         # #################################################################

@@ -5,26 +5,29 @@ module Zm
     # class for account tag jsns builder
     class TagJsnsBuilder < BaseAccountJsnsBuilder
       def to_jsns
-        tag = {
+        attrs = {
           name: @item.name,
           color: @item.color,
           rgb: @item.rgb
         }.delete_if { |_, v| v.nil? }
 
-        { tag: tag }
+        soap_request = SoapElement.mail(SoapMailConstants::CREATE_TAG_REQUEST)
+        node_tag = SoapElement.create('tag').add_attributes(attrs)
+        soap_request.add_node(node_tag)
+        soap_request
       end
 
       alias to_create to_jsns
 
       def to_update
-        action = {
+        attrs = {
           op: :update,
           id: @item.id,
           color: @item.color,
           rgb: @item.rgb
         }.reject { |_, v| v.nil? }
 
-        { action: action }
+        build(attrs)
       end
     end
   end
