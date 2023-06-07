@@ -7,14 +7,12 @@ module Zm
       attr_accessor :id, :name, :txt, :html
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateSignatureRequest, @parent.token, jsns_builder.to_jsns,
-                                        SoapAccountConnector::ACCOUNTSPACE)
-        @id = rep[:Body][:CreateSignatureResponse][:signature].first[:id]
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        @id = rep[:CreateSignatureResponse][:signature].first[:id]
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ModifySignatureRequest, @parent.token, jsns_builder.to_jsns,
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.invoke(jsns_builder.to_update)
         true
       end
 
@@ -25,16 +23,14 @@ module Zm
       def rename!(new_name)
         return if new_name == @name
 
-        @parent.sacc.jsns_request(:ModifySignatureRequest, @parent.token, jsns_builder.to_rename(new_name),
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
         @name = new_name
       end
 
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.jsns_request(:DeleteSignatureRequest, @parent.token, jsns_builder.to_delete,
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 

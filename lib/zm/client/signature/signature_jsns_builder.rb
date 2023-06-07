@@ -9,32 +9,40 @@ module Zm
       end
 
       def to_jsns
-        jsns = {
-          signature: {
-            name: @signature.name,
-            content: {
-              type: @signature.type,
-              _content: @signature.content
-            }
-          }
-        }
+        soap_request = SoapElement.account(SoapAccountConstants::CREATE_SIGNATURE_REQUEST)
+        node_signature = SoapElement.create('signature').add_attributes({ name: @signature.name })
+        soap_request.add_node(node_signature)
+        node_content = SoapElement.create('content').add_attribute('type', @signature.type).add_content(@signature.content)
+        node_signature.add_node(node_content)
+        soap_request
+      end
 
-        jsns[:signature][:id] = @signature.id unless @signature.id.nil?
-
-        jsns
+      def to_update
+        soap_request = SoapElement.account(SoapAccountConstants::MODIFY_SIGNATURE_REQUEST)
+        node_signature = SoapElement.create('signature').add_attributes({ name: @signature.name, id: @signature.id })
+        soap_request.add_node(node_signature)
+        node_content = SoapElement.create('content').add_attribute('type', @signature.type).add_content(@signature.content)
+        node_signature.add_node(node_content)
+        soap_request
       end
 
       def to_rename(new_name)
-        {
-          signature: {
-            id: @signature.id,
-            name: new_name
-          }
+        attrs = {
+          id: @signature.id,
+          name: new_name
         }
+
+        soap_request = SoapElement.account(SoapAccountConstants::MODIFY_SIGNATURE_REQUEST)
+        node_signature = SoapElement.create('signature').add_attributes(attrs)
+        soap_request.add_node(node_signature)
+        soap_request
       end
 
       def to_delete
-        { signature: { id: @signature.id } }
+        soap_request = SoapElement.account(SoapAccountConstants::DELETE_SIGNATURE_REQUEST)
+        node_signature = SoapElement.create('signature').add_attribute('id', @signature.id)
+        soap_request.add_node(node_signature)
+        soap_request
       end
     end
   end

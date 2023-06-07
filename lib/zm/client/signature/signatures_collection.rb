@@ -13,7 +13,8 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetSignaturesRequest, @parent.token, nil, SoapAccountConnector::ACCOUNTSPACE)
+        soap_request = SoapElement.account(SoapAccountConstants::GET_SIGNATURES_REQUEST)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end
