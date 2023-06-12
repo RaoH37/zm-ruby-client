@@ -147,9 +147,18 @@ class TestAccount < Minitest::Test
     assert !account.token.nil?
   end
 
-  def test_preauth_login
+  def test_preauth_login_by_name
     account = @admin.accounts.new
     account.name = @fixture_accounts['accounts']['maxime']['email']
+    account.account_login_preauth
+
+    assert !account.token.nil?
+  end
+
+  def test_preauth_login_by_id
+    account = @admin.accounts.new
+    account.id = @fixture_accounts['accounts']['maxime']['id']
+    account.domain_key = @fixture_accounts['accounts']['maxime']['domain_key']
     account.account_login_preauth
 
     assert !account.token.nil?
