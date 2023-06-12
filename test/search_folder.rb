@@ -20,6 +20,7 @@ class TestSearchFolder < Minitest::Test
   def test_all
     search_folders = @account.search_folders.all
     assert search_folders.is_a?(Array)
+    assert search_folders.any?
   end
 
   def test_create
@@ -43,6 +44,12 @@ class TestSearchFolder < Minitest::Test
     end
 
     assert is_modified
+  end
+
+  def test_color
+    search_folder = @account.search_folders.first
+    search_folder.color = rand(1..5)
+    assert search_folder.color!
   end
 
   def test_delete

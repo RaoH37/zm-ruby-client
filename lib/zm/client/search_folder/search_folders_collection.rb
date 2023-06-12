@@ -13,7 +13,8 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetSearchFolderRequest, @parent.token, nil)
+        soap_request = SoapElement.mail(SoapMailConstants::GET_SEARCH_FOLDER_REQUEST)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end

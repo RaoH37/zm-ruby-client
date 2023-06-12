@@ -12,6 +12,9 @@ module Zm
       FALSE = 'FALSE'
       DISABLED = 'disabled'
       ENABLED = 'enabled'
+
+      SEARCH = 'search'
+      ACTION = 'action'
     end
   end
 end
