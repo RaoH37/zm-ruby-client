@@ -15,6 +15,7 @@ module Zm
 
       SEARCH = 'search'
       ACTION = 'action'
+      IDENTITY = 'identity'
     end
   end
 end

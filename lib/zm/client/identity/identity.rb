@@ -10,15 +10,13 @@ module Zm
                     :zimbraPrefWhenSentToEnabled, :zimbraPrefWhenInFoldersEnabled, :zimbraPrefWhenSentToAddresses
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateIdentityRequest, @parent.token, jsns_builder.to_jsns,
-                                        SoapAccountConnector::ACCOUNTSPACE)
-        IdentityJsnsInitializer.update(self, rep[:Body][:CreateIdentityResponse][:identity].first)
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        IdentityJsnsInitializer.update(self, rep[:CreateIdentityResponse][:identity].first)
         @id
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_jsns,
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.invoke(jsns_builder.to_update)
         true
       end
 
@@ -41,8 +39,7 @@ module Zm
       def delete!
         return if @id.nil?
 
-        @parent.sacc.jsns_request(:DeleteIdentityRequest, @parent.token, jsns_builder.to_delete,
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
@@ -59,8 +56,7 @@ module Zm
       private
 
       def do_update!(hash)
-        @parent.sacc.jsns_request(:ModifyIdentityRequest, @parent.token, jsns_builder.to_patch(hash),
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder
