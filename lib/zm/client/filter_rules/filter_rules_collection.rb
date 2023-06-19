@@ -13,7 +13,8 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetFilterRulesRequest, @parent.token, nil)
+        soap_request = SoapElement.mail(SoapMailConstants::GET_FILTER_RULES_REQUEST)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end
