@@ -29,7 +29,7 @@ class TestSearchFolder < Minitest::Test
 
   def test_create
     ace = @account.aces.new do |a|
-      a.d = @fixture_accounts['accounts']['maxime2']['email']
+      a.d = @fixture_accounts['accounts']['maxime']['email']
       a.right = 'sendAs'
       a.gt = 'usr'
     end

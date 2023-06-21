@@ -23,8 +23,7 @@ module Zm
       private
 
       def make_query
-        @parent.sacc.jsns_request(:GetRightsRequest, @parent.token, @jsns_builder.to_find,
-                                  SoapAccountConnector::ACCOUNTSPACE)
+        @parent.sacc.invoke(@jsns_builder.to_find)
       end
 
       def reset_query_params

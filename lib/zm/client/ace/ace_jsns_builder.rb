@@ -2,35 +2,37 @@
 
 module Zm
   module Client
-    # class for account folder jsns builder
+    # class for account ace jsns builder
     class AceJsnsBuilder < Base::BaseJsnsBuilder
       def to_find
-        return nil if @item.rights.empty?
+        soap_request = SoapElement.account(SoapAccountConstants::GET_RIGHTS_REQUEST)
 
-        ace = @item.rights.map { |r| { right: r } }
-        { ace: ace }
+        unless @item.rights.empty?
+          soap_request.add_attribute(SoapConstants::ACE, @item.rights.map { |r| { right: r } })
+        end
+
+        soap_request
       end
 
       def to_jsns
-        ace = {
-          zid: @item.zid,
-          gt: @item.gt,
-          right: @item.right,
-          d: @item.d
-        }.reject { |_, v| v.nil? }
-
-        { ace: ace }
+        soap_request = SoapElement.account(SoapAccountConstants::GRANT_RIGHTS_REQUEST)
+        soap_request.add_attribute(SoapConstants::ACE, attrs)
+        soap_request
       end
 
       def to_delete
-        ace = {
+        soap_request = SoapElement.account(SoapAccountConstants::REVOKE_RIGHTS_REQUEST)
+        soap_request.add_attribute(SoapConstants::ACE, attrs)
+        soap_request
+      end
+
+      def attrs
+        {
           zid: @item.zid,
           gt: @item.gt,
           right: @item.right,
           d: @item.d
         }.reject { |_, v| v.nil? }
-
-        { ace: ace }
       end
     end
   end

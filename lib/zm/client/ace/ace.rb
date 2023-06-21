@@ -7,18 +7,15 @@ module Zm
       attr_accessor :zid, :gt, :right, :d
 
       def create!
-        rep = @parent.sacc.jsns_request(:GrantRightsRequest, @arent.token, jsns_builder.to_jsns,
-                                        SoapAccountConnector::ACCOUNTSPACE)
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
 
-        json = rep[:Body][:GrantRightsResponse][:ace].first if rep[:Body][:GrantRightsResponse][:ace].is_a?(Array)
+        json = rep[:GrantRightsResponse][:ace].first if rep[:GrantRightsResponse][:ace].is_a?(Array)
         AceJsnsInitializer.update(self, json) unless json.nil?
         true
       end
 
       def delete!
-        @parent.sacc.jsns_request(:RevokeRightsRequest, @arent.token, jsns_builder.to_delete,
-                                  SoapAccountConnector::ACCOUNTSPACE)
-        @parent.all.delete(self)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         true
       end
 
