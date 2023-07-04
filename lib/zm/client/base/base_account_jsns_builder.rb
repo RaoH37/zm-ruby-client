@@ -64,6 +64,28 @@ module Zm
         build(attrs)
       end
 
+      def to_color
+        attrs = {
+          op: :color,
+          id: @item.id
+        }
+
+        attrs[:rgb] = @item.rgb if @item.rgb_changed?
+        attrs[:color] = @item.color if @item.color_changed?
+
+        build(attrs)
+      end
+
+      def to_empty
+        attrs = {
+          op: :empty,
+          id: @item.id,
+          recursive: false
+        }
+
+        build(attrs)
+      end
+
       def build(attrs)
         soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
         node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)

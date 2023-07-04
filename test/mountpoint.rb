@@ -20,6 +20,16 @@ class TestMountPoint < Minitest::Test
   def test_all
     mountpoints = @account.mountpoints.all
     assert mountpoints.is_a?(Array)
+    assert mountpoints.any?
+  end
+
+  def test_clone
+    mountpoint = @account.mountpoints.all.sample
+    new_mountpoint = mountpoint.clone
+    new_mountpoint.name = "Test clone #{Time.now.to_i}"
+    new_mountpoint.save!
+
+    assert !new_mountpoint.id.nil?
   end
 
   def test_color

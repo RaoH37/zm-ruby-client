@@ -9,13 +9,15 @@ module Zm
       end
 
       def to_jsns
-        {
+        attrs = {
           visible: @item.visible,
           needGranteeName: @item.needGranteeName,
           view: @item.view,
           depth: @item.depth,
           tr: @item.tr
         }.delete_if { |_, v| v.nil? }
+
+        SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST).add_attributes(attrs)
       end
     end
   end

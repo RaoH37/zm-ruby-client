@@ -18,8 +18,9 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateMountpointRequest, @parent.token, jsns_builder.to_jsns)
-        json = rep[:Body][:CreateMountpointResponse][:link].first
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        json = rep[:CreateMountpointResponse][:link].first
+
         MountpointJsnsInitializer.update(self, json)
         @id
       end
@@ -34,16 +35,16 @@ module Zm
 
       def color!
         if color_changed? || rgb_changed?
-          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token,
-                                    jsns_builder.to_color)
+          @parent.sacc.invoke(jsns_builder.to_color)
         end
+
         true
       end
 
       def rename!(new_name)
         return false if new_name == @name
 
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_rename(new_name))
+        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
         @name = new_name
       end
 
@@ -54,7 +55,7 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 

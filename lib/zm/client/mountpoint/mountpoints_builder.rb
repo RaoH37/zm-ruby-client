@@ -12,7 +12,7 @@ module Zm
       end
 
       def make
-        root = @json[:Body][:GetFolderResponse][@key_folder]
+        root = @json[:GetFolderResponse][@key_folder]
 
         construct_tree(root)
 
