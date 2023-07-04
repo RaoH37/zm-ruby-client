@@ -46,17 +46,19 @@ module Zm
           _attrs: hash
         }
 
-        @parent.sacc.jsns_request(:ModifyPrefsRequest, @parent.token, req, SoapAccountConnector::ACCOUNTSPACE)
+        soap_request = SoapElement.account(SoapAccountConstants::MODIFY_PREFS_REQUEST).add_attributes(req)
+        @parent.sacc.invoke(soap_request)
       end
 
       private
 
       def build_response
-        @all = make_query.dig(:Body, :GetPrefsResponse, :_attrs)
+        @all = make_query.dig(:GetPrefsResponse, :_attrs)
       end
 
       def make_query
-        @parent.sacc.jsns_request(:GetPrefsRequest, @parent.token, jsns, SoapAccountConnector::ACCOUNTSPACE)
+        soap_request = SoapElement.account(SoapAccountConstants::GET_PREFS_REQUEST).add_attributes(jsns)
+        @parent.sacc.invoke(soap_request)
       end
 
       def jsns

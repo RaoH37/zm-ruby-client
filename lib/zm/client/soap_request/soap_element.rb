@@ -37,6 +37,8 @@ module Zm
       end
 
       def add_attributes(hash)
+        return self if hash.nil?
+
         hash.transform_keys!(&:to_sym)
         @attributes.merge!(hash)
         self
