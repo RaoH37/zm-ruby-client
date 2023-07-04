@@ -86,6 +86,15 @@ module Zm
         build(attrs)
       end
 
+      def to_trash
+        attrs = {
+          op: :trash,
+          id: @item.id
+        }
+
+        build(attrs)
+      end
+
       def build(attrs)
         soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
         node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)

@@ -24,15 +24,13 @@ module Zm
 
       def move!(new_folder_id)
         new_folder_id = new_folder_id.id if new_folder_id.is_a?(Zm::Client::Folder)
-        jsns = { action: { op: :move, id: @id, l: new_folder_id } }
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
+        @parent.sacc.invoke(jsns_builder.to_move(new_folder_id))
         @l = new_folder_id
         folder!
       end
 
       def trash!
-        jsns = { action: { op: :trash, id: @id } }
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
+        @parent.sacc.invoke(jsns_builder.to_trash)
       end
     end
   end
