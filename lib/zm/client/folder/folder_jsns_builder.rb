@@ -66,13 +66,15 @@ module Zm
       def to_retentionpolicy
         retentionpolicy = @item.retention_policies.all.map { |rp| retentionpolicy_jsns(rp) }.reduce({}, :merge)
 
-        {
+        attrs = {
           action: {
             op: :retentionpolicy,
             id: @item.id,
             retentionPolicy: retentionpolicy
           }
         }
+
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
       end
 
       private

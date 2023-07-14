@@ -25,7 +25,7 @@ module Zm
       end
 
       def save!
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.parent.token, jsns_builder.to_retentionpolicy)
+        @parent.sacc.invoke(jsns_builder.to_retentionpolicy)
         true
       end
 
