@@ -13,6 +13,10 @@ module Zm
       DISABLED = 'disabled'
       ENABLED = 'enabled'
 
+      ACCOUNT = 'account'
+      TIMESTAMP = 'timestamp'
+      PREAUTH = 'preauth'
+
       SEARCH = 'search'
       ACTION = 'action'
       IDENTITY = 'identity'

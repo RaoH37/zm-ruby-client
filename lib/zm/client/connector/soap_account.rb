@@ -6,9 +6,6 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapAccountConnector < SoapBaseConnector
-      MAILSPACE = 'urn:zimbraMail'
-      ACCOUNTSPACE = 'urn:zimbraAccount'
-
       class << self
         def create(config)
           trans = new(
@@ -30,7 +27,7 @@ module Zm
       end
 
       def initialize(scheme, host, port)
-        super(scheme, host, port, '/service/soap/')
+        super(scheme, host, port, SoapAccountConstants::ACCOUNT_SERVICE_URI)
       end
 
       def auth_preauth(content, by, expires, domainkey)
@@ -38,9 +35,9 @@ module Zm
         preauth = compute_preauth(content, by, ts, expires, domainkey)
 
         soap_request = SoapElement.account(SoapAccountConstants::AUTH_REQUEST)
-        node_account = SoapElement.create('account').add_attribute('by', by).add_content(content)
+        node_account = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, by).add_content(content)
         soap_request.add_node(node_account)
-        node_preauth = SoapElement.create('preauth').add_attribute('timestamp', ts).add_content(preauth)
+        node_preauth = SoapElement.create(SoapConstants::PREAUTH).add_attribute(SoapConstants::TIMESTAMP, ts).add_content(preauth)
         soap_request.add_node(node_preauth)
 
         do_login(soap_request)
@@ -48,7 +45,7 @@ module Zm
 
       def auth_password(content, by, password)
         soap_request = SoapElement.account(SoapAccountConstants::AUTH_REQUEST)
-        node_account = SoapElement.create('account').add_attribute('by', by).add_content(content)
+        node_account = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, by).add_content(content)
         soap_request.add_node(node_account)
         soap_request.add_attribute('password', password)
 
@@ -59,16 +56,6 @@ module Zm
         invoke(soap_request)[:AuthResponse][:authToken].first[:_content]
       end
 
-      # -------------------------------
-      # GENERIC
-
-      def jsns_request(soap_name, token, jsns, namespace = MAILSPACE, error_handler = SoapError)
-        puts jsns
-        body = init_hash_request(token, soap_name, namespace)
-        body[:Body][soap_name].merge!(jsns) if jsns.is_a?(Hash)
-        curl_request(body, error_handler)
-      end
-
       private
 
       def compute_preauth(content, by, ts, expires, domain_key)
@@ -76,14 +63,6 @@ module Zm
         digest = OpenSSL::Digest.new('sha1')
         hmac = OpenSSL::HMAC.hexdigest(digest, domain_key, data)
         hmac.to_s
-      end
-
-      def init_hash_request(token, soap_name, namespace = MAILSPACE)
-        {
-          Body: {
-            soap_name => { _jsns: namespace }
-          }
-        }.merge(hash_header(token))
       end
     end
   end
