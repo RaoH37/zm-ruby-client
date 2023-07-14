@@ -5,7 +5,8 @@ module Zm
     # class for account folder jsns builder
     class FolderJsnsBuilder < BaseAccountJsnsBuilder
       def to_find
-        { folder: { l: @item.id } }
+        attrs = { folder: { l: @item.id } }
+        SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST).add_attributes(attrs)
       end
 
       def to_jsns
@@ -20,7 +21,9 @@ module Zm
           view: @item.view
         }.delete_if { |_, v| v.nil? }
 
-        { folder: folder }
+        attrs = { folder: folder }
+
+        SoapElement.mail(SoapMailConstants::CREATE_FOLDER_REQUEST).add_attributes(attrs)
       end
 
       alias to_create to_jsns
@@ -44,7 +47,9 @@ module Zm
           action.delete(:l)
         end
 
-        { action: action }
+        attrs = { action: action }
+
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
       end
 
       def to_patch(options)
@@ -53,53 +58,9 @@ module Zm
           id: @item.id
         }.merge(options)
 
-        { action: action }
-      end
+        attrs = { action: action }
 
-      def to_rename(new_name)
-        action = {
-          op: :rename,
-          id: @item.id,
-          name: new_name
-        }
-
-        { action: action }
-      end
-
-      def to_move
-        action = {
-          op: :move,
-          id: @item.id,
-          l: @item.l
-        }
-
-        { action: action }
-      end
-
-      def to_color
-        action = {
-          op: :color,
-          id: @item.id
-        }
-
-        action[:rgb] = @item.rgb if @item.rgb_changed?
-        action[:color] = @item.color if @item.color_changed?
-
-        { action: action }
-      end
-
-      def to_empty
-        action = {
-          op: :empty,
-          id: @item.id,
-          recursive: false
-        }
-
-        { action: action }
-      end
-
-      def to_delete
-        { action: { op: :delete, id: @item.id } }
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
       end
 
       def to_retentionpolicy

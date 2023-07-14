@@ -42,14 +42,14 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateFolderRequest, @parent.token, jsns_builder.to_jsns)
-        json = rep[:Body][:CreateFolderResponse][:folder].first
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        json = rep[:CreateFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
         @id
       end
 
       def modify!
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_update)
+        @parent.sacc.invoke(jsns_builder.to_update)
         true
       end
 
@@ -67,21 +67,22 @@ module Zm
 
       def color!
         if color_changed? || rgb_changed?
-          @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_color)
+          @parent.sacc.invoke(jsns_builder.to_color)
         end
+
         true
       end
 
       def rename!(new_name)
         return false if new_name == @name
 
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_rename(new_name))
+        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
         @name = new_name
       end
 
       def reload!
-        rep = @parent.sacc.jsns_request(:GetFolderRequest, @parent.token, jsns_builder.to_find)
-        json = rep[:Body][:GetFolderResponse][:folder].first
+        rep = @parent.sacc.invoke(jsns_builder.to_find)
+        json = rep[:GetFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
         true
       end
@@ -93,7 +94,7 @@ module Zm
       def empty!
         return false if empty?
 
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_empty)
+        @parent.sacc.invoke(jsns_builder.to_empty)
         @n = 0
       end
       alias clear empty!
@@ -101,7 +102,7 @@ module Zm
       def delete!
         return false if is_immutable? || @id.nil?
 
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
@@ -130,9 +131,10 @@ module Zm
           content: { _content: eml }
         }.reject { |_, v| v.nil? }
 
-        jsns = { m: m }
+        attrs = { m: m }
 
-        @parent.sacc.jsns_request(:AddMsgRequest, @parent.token, jsns)
+        soap_request = SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST).add_attributes(attrs)
+        @parent.sacc.invoke(soap_request)
       end
 
       def download(dest_file_path, fmt = 'tgz')
@@ -157,7 +159,7 @@ module Zm
       private
 
       def do_update!(hash)
-        @parent.sacc.jsns_request(:FolderActionRequest, @parent.token, jsns_builder.to_patch(hash))
+        @parent.sacc.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

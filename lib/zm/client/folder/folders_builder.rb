@@ -12,7 +12,7 @@ module Zm
       end
 
       def ids
-        root = @json[:Body][:GetFolderResponse][@key]
+        root = @json[:GetFolderResponse][@key]
         construct_tree_ids(root.first[@key])
         @list
       end
@@ -25,7 +25,7 @@ module Zm
       end
 
       def make
-        root = @json[:Body][:GetFolderResponse][@key]
+        root = @json[:GetFolderResponse][@key]
 
         @root_folder = FolderJsnsInitializer.create(@parent, root.first)
 
