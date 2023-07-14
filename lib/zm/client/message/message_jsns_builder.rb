@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account message jsns builder
-    class MessageJsnsBuilder
+    class MessageJsnsBuilder < BaseAccountJsnsBuilder
       def initialize(item)
         @item = item
       end
@@ -61,6 +61,24 @@ module Zm
             mp: [text_jsns, html_jsns].compact
           }
         ]
+      end
+
+      def to_spam
+        attrs = {
+          op: :spam,
+          id: @item.id
+        }
+
+        build(attrs)
+      end
+
+      def to_unspam
+        attrs = {
+          op: '!spam',
+          id: @item.id
+        }
+
+        build(attrs)
       end
     end
   end

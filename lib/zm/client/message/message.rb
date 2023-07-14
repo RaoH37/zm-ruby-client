@@ -46,22 +46,23 @@ module Zm
       end
 
       def delete!
-        jsns = { action: { op: :delete, id: @id } }
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
+        return false if @id.nil?
+
+        @parent.sacc.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       def unspam!
-        jsns = { action: { op: '!spam', id: @parent.id } }
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
+        @parent.sacc.invoke(jsns_builder.to_unspam)
       end
 
       def spam!
-        jsns = { action: { op: :spam, id: @parent.id } }
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns)
+        @parent.sacc.invoke(jsns_builder.to_spam)
       end
 
       def send!
-        @parent.sacc.jsns_request(:SendMsgRequest, @parent.token, jsns_builder.to_jsns)
+        soap_request = SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST).add_attributes(jsns_builder.to_jsns)
+        @parent.sacc.invoke(soap_request)
       end
 
       # content fo an email
