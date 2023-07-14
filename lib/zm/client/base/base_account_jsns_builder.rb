@@ -12,9 +12,9 @@ module Zm
         tag_name ||= @item.tn
 
         attrs = {
-         op: :tag,
-         id: @item.id,
-         tn: tag_name
+          op: :tag,
+          id: @item.id,
+          tn: tag_name
         }
 
         build(attrs)
@@ -24,9 +24,9 @@ module Zm
         new_folder_id ||= @item.l
 
         attrs = {
-         op: :move,
-         id: @item.id,
-         l: new_folder_id
+          op: :move,
+          id: @item.id,
+          l: new_folder_id
         }
 
         build(attrs)

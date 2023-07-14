@@ -12,7 +12,8 @@ module Zm
         soap_request = SoapElement.account(SoapAccountConstants::CREATE_SIGNATURE_REQUEST)
         node_signature = SoapElement.create('signature').add_attributes({ name: @signature.name })
         soap_request.add_node(node_signature)
-        node_content = SoapElement.create('content').add_attribute('type', @signature.type).add_content(@signature.content)
+        node_content = SoapElement.create('content').add_attribute('type',
+                                                                   @signature.type).add_content(@signature.content)
         node_signature.add_node(node_content)
         soap_request
       end
@@ -21,7 +22,8 @@ module Zm
         soap_request = SoapElement.account(SoapAccountConstants::MODIFY_SIGNATURE_REQUEST)
         node_signature = SoapElement.create('signature').add_attributes({ name: @signature.name, id: @signature.id })
         soap_request.add_node(node_signature)
-        node_content = SoapElement.create('content').add_attribute('type', @signature.type).add_content(@signature.content)
+        node_content = SoapElement.create('content').add_attribute('type',
+                                                                   @signature.type).add_content(@signature.content)
         node_signature.add_node(node_content)
         soap_request
       end

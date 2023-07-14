@@ -22,7 +22,7 @@ module Zm
 
       def metadatas
         @metadatas ||= Hash[decoded.split('').map do |v|
-          key, len, str = v.split(/[:=]/)
+          key, _, str = v.split(/[:=]/)
           [key, str]
         end].freeze
       end

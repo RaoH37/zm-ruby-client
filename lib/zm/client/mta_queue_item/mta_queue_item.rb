@@ -16,7 +16,7 @@ module Zm
 
       def sent_at
         @sent_at ||= Time.at(@time / 1000)
-      rescue StandardError => e
+      rescue StandardError
         nil
       end
     end

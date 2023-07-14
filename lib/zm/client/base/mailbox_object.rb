@@ -157,7 +157,7 @@ module Zm
         end
 
         def mountpoints
-          @mountpointss ||= MountPointsCollection.new(self)
+          @mountpoints ||= MountPointsCollection.new(self)
         end
 
         def search_folders

@@ -8,10 +8,7 @@ module Zm
       include Zm::Model::AttributeChangeObserver
 
       attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
-                    :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner,
-                    :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb
-
-      attr_accessor :folders, :grants, :retention_policies
+                    :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders, :grants, :retention_policies
 
       define_changed_attributes :name, :color, :rgb, :l, :url, :f, :view
 
@@ -66,9 +63,7 @@ module Zm
       end
 
       def color!
-        if color_changed? || rgb_changed?
-          @parent.sacc.invoke(jsns_builder.to_color)
-        end
+        @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
 
         true
       end

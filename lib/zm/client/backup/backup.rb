@@ -13,13 +13,13 @@ module Zm
 
       def start_at
         @start_at ||= Time.at(@start / 1000)
-      rescue StandardError => e
+      rescue StandardError
         nil
       end
 
       def end_at
         @end_at ||= Time.at(@end / 1000)
-      rescue StandardError => e
+      rescue StandardError
         nil
       end
 

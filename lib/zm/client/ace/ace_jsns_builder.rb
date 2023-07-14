@@ -7,9 +7,7 @@ module Zm
       def to_find
         soap_request = SoapElement.account(SoapAccountConstants::GET_RIGHTS_REQUEST)
 
-        unless @item.rights.empty?
-          soap_request.add_attribute(SoapConstants::ACE, @item.rights.map { |r| { right: r } })
-        end
+        soap_request.add_attribute(SoapConstants::ACE, @item.rights.map { |r| { right: r } }) unless @item.rights.empty?
 
         soap_request
       end

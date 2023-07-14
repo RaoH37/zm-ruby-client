@@ -47,7 +47,7 @@ module Zm
       private
 
       def build_response
-        @all = make_query.dig(:GetInfoResponse)
+        @all = make_query[:GetInfoResponse]
       end
 
       def make_query

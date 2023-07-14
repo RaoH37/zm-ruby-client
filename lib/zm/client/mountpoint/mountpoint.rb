@@ -34,9 +34,7 @@ module Zm
       end
 
       def color!
-        if color_changed? || rgb_changed?
-          @parent.sacc.invoke(jsns_builder.to_color)
-        end
+        @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
 
         true
       end

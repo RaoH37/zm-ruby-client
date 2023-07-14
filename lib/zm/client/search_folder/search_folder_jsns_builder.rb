@@ -73,8 +73,8 @@ module Zm
 
       def to_color
         attrs = {
-         op: :color,
-         id: @item.id
+          op: :color,
+          id: @item.id
         }
 
         attrs[:rgb] = @item.rgb if @item.rgb_changed?
@@ -85,8 +85,8 @@ module Zm
 
       def to_delete
         attrs = {
-         op: :delete,
-         id: @item.id
+          op: :delete,
+          id: @item.id
         }
 
         build(attrs)
