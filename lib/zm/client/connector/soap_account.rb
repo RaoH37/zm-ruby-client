@@ -63,6 +63,7 @@ module Zm
       # GENERIC
 
       def jsns_request(soap_name, token, jsns, namespace = MAILSPACE, error_handler = SoapError)
+        puts jsns
         body = init_hash_request(token, soap_name, namespace)
         body[:Body][soap_name].merge!(jsns) if jsns.is_a?(Hash)
         curl_request(body, error_handler)

@@ -47,11 +47,12 @@ module Zm
       private
 
       def build_response
-        @all = make_query.dig(:Body, :GetInfoResponse)
+        @all = make_query.dig(:GetInfoResponse)
       end
 
       def make_query
-        @parent.sacc.jsns_request(:GetInfoRequest, @parent.token, jsns, SoapAccountConnector::ACCOUNTSPACE)
+        soap_request = SoapElement.account(SoapAccountConstants::GET_INFO_REQUEST).add_attributes(jsns)
+        @parent.sacc.invoke(soap_request)
       end
 
       def jsns

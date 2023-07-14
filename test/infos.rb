@@ -5,7 +5,7 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require './lib/zm/client'
 
-class TestPrefs < Minitest::Test
+class TestInfos < Minitest::Test
 
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
@@ -17,7 +17,7 @@ class TestPrefs < Minitest::Test
   end
 
   def test_all
-    prefs = @account.prefs.all
-    assert prefs.is_a?(Hash)
+    infos = @account.infos.all
+    assert infos.is_a?(Hash)
   end
 end

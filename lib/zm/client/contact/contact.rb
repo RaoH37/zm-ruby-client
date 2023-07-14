@@ -36,13 +36,14 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateContactRequest, @parent.token, jsns_builder.to_jsns)
-        ContactJsnsInitializer.update(self, rep[:Body][:CreateContactResponse][:cn].first)
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        ContactJsnsInitializer.update(self, rep[:CreateContactResponse][:cn].first)
+
         @id
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ModifyContactRequest, @parent.token, jsns_builder.to_update)
+        @parent.sacc.invoke(jsns_builder.to_update)
         true
       end
 
@@ -65,7 +66,7 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
@@ -76,7 +77,7 @@ module Zm
       private
 
       def do_update!(hash)
-        @parent.sacc.jsns_request(:ModifyContactRequest, @parent.token, jsns_builder.to_patch(hash))
+        @parent.sacc.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

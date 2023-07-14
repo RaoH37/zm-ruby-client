@@ -14,8 +14,10 @@ module Zm
 
       def find(id)
         jsns = { m: { id: id, html: 1 } }
-        rep = @parent.sacc.jsns_request(:GetMsgRequest, @parent.token, jsns)
-        entry = rep[:Body][:GetMsgResponse][:m].first
+
+        soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes(jsns)
+        rep = @parent.sacc.invoke(soap_request)
+        entry = rep[:GetMsgResponse][:m].first
 
         AppointmentJsnsInitializer.new(@parent, entry).create
       end

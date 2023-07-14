@@ -7,30 +7,36 @@ module Zm
       EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[@id @name @parent @l @type @tn @jsns_builder].freeze
 
       def to_jsns
-        {
+        jsns = {
           cn: {
             a: instance_variables_array(all_instance_variables).map(&Utils::A_NODE_PROC),
             l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS[:id]
           }
         }
+
+        SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_update
-        {
+        jsns = {
           cn: {
             a: instance_variables_array(all_instance_variables).map(&Utils::A_NODE_PROC),
             id: @item.id
           }
         }
+
+        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_patch(hash)
-        {
+        jsns = {
           cn: {
             id: @item.id,
             a: hash.map(&Utils::A_ARRAY_PROC).flatten(1).map(&Utils::A_NODE_PROC)
           }
         }
+
+        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def instance_variables_array(zcs_attrs)

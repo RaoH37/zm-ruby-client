@@ -28,7 +28,8 @@ module Zm
 
       def make_query
         jsns = @folder_id.nil? ? nil : { l: @folder_id }
-        @parent.sacc.jsns_request(:GetContactsRequest, @parent.token, jsns)
+        soap_request = SoapElement.mail(SoapMailConstants::GET_CONTACTS_REQUEST).add_attributes(jsns)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end

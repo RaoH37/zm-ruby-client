@@ -15,8 +15,10 @@ module Zm
 
         def find(id)
           jsns = { m: { id: id, html: 1 } }
-          rep = @parent.sacc.jsns_request(:GetMsgRequest, @parent.token, jsns)
-          entry = rep[:Body][:GetMsgResponse][:m].first
+
+          soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes(jsns)
+          rep = @parent.sacc.invoke(soap_request)
+          entry = rep[:GetMsgResponse][:m].first
 
           MessageJsnsInitializer.create(@parent, entry)
         end
@@ -85,7 +87,8 @@ module Zm
 
           jsns.reject! { |_, v| v.nil? }
 
-          @parent.sacc.jsns_request(:SearchRequest, @parent.token, jsns)
+          soap_request = SoapElement.mail(SoapMailConstants::SEARCH_REQUEST).add_attributes(jsns)
+          @parent.sacc.invoke(soap_request)
         end
 
         def search_builder
@@ -94,7 +97,7 @@ module Zm
 
         def search_response
           rep = make_query
-          @more = rep[:Body][:SearchResponse][:more]
+          @more = rep[:SearchResponse][:more]
           rep
         end
 
