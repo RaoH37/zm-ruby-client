@@ -29,7 +29,7 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 

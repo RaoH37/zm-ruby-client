@@ -5,13 +5,13 @@ module Zm
     # class for account document
     class DocumentJsnsBuilder < BaseAccountJsnsBuilder
       def to_delete
-        action = {
+        attrs = {
           op: :delete,
           comp: 0,
           id: @item.id
         }
 
-        { action: action }
+        build(attrs)
       end
     end
   end
