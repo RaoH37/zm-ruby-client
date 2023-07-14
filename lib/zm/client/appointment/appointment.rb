@@ -36,17 +36,18 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.jsns_request(:CreateAppointmentRequest, @parent.token, jsns_builder.to_jsns)
-        rep_h = rep[:Body][:CreateAppointmentResponse]
+        soap_request = SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_jsns)
+        rep = @parent.sacc.invoke(soap_request)
 
-        aji = AppointmentJsnsInitializer.new(@parent, rep_h)
+        aji = AppointmentJsnsInitializer.new(@parent, rep[:CreateAppointmentResponse])
         aji.appointment = self
         aji.update
         @id
       end
 
       def modify!
-        @parent.sacc.jsns_request(:ModifyAppointmentRequest, @parent.token, jsns_builder.to_update)
+        soap_request = SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_update)
+        @parent.sacc.invoke(soap_request)
         true
       end
 
@@ -61,14 +62,16 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.jsns_request(:ItemActionRequest, @parent.token, jsns_builder.to_delete)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
       def reload!
-        jsns = { m: { id: id, html: 1 } }
-        rep = @parent.sacc.jsns_request(:GetMsgRequest, @parent.token, jsns)
-        entry = rep[:Body][:GetMsgResponse][:m].first
+        jsns = { m: { id: @id, html: 1 } }
+
+        soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes(jsns)
+        rep = @parent.sacc.invoke(soap_request)
+        entry = rep[:GetMsgResponse][:m].first
 
         aji = AppointmentJsnsInitializer.new(@parent, entry)
         aji.appointment = self
