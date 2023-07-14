@@ -74,23 +74,32 @@ module Zm
         # actions
 
         def unread!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
-                                           { action: { op: '!read', id: @parent.id } })
+          attrs = { op: '!read', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
         end
 
         def read!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
-                                           { action: { op: 'read', id: @parent.id } })
+          attrs = { op: 'read', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
         end
 
         def unflag!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
-                                           { action: { op: '!flag', id: @parent.id } })
+          attrs = { op: '!flag', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
         end
 
         def flag!
-          @parent.parent.sacc.jsns_request(:ItemActionRequest, @parent.parent.token,
-                                           { action: { op: 'flag', id: @parent.id } })
+          attrs = { op: 'flag', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
+        end
+
+        private
+
+        def build(attrs)
+          soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+          node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
+          soap_request.add_node(node_action)
+          soap_request
         end
       end
     end
