@@ -14,19 +14,21 @@ module Zm
           key: @item.key
         }.delete_if { |_, v| v.nil? }
 
-        {
+        attrs = {
           action: {
             op: :grant,
             id: @item.folder_id,
             grant: grant
           }
         }
+
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
       end
 
       alias to_create to_jsns
 
       def to_delete
-        {
+        attrs = {
           action: {
             op: '!grant',
             id: @item.folder_id,
@@ -36,6 +38,8 @@ module Zm
             d: @item.d
           }
         }
+
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
       end
     end
   end

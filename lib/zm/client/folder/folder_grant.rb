@@ -29,12 +29,6 @@ module Zm
         @folder_id = parent.parent.id
       end
 
-      def to_h
-        h = Hash[instance_variables.reject { |iv| iv == :@parent }.map { |iv| [iv, instance_variable_get(iv)] }]
-        h.merge!({ :@parent => @parent.class })
-        h
-      end
-
       def is_account?
         gt == GT_USER
       end
@@ -60,11 +54,11 @@ module Zm
       end
 
       def save!
-        @parent.sacc.jsns_request(:FolderActionRequest, get_token, jsns_builder.to_create)
+        @parent.sacc.invoke(jsns_builder.to_create)
       end
 
       def delete!
-        @parent.sacc.jsns_request(:FolderActionRequest, get_token, jsns_builder.to_delete)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @parent.all.delete(self)
       end
 
