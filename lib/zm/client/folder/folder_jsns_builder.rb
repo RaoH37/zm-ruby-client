@@ -77,6 +77,18 @@ module Zm
         SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
       end
 
+      def to_empty
+        action = {
+          op: :empty,
+          id: @item.id,
+          recursive: false
+        }
+
+        attrs = { action: action }
+
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
+      end
+
       private
 
       def retentionpolicy_jsns(rp)

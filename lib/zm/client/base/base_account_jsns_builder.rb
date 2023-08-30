@@ -76,16 +76,6 @@ module Zm
         build(attrs)
       end
 
-      def to_empty
-        attrs = {
-          op: :empty,
-          id: @item.id,
-          recursive: false
-        }
-
-        build(attrs)
-      end
-
       def to_trash
         attrs = {
           op: :trash,
