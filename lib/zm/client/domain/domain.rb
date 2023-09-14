@@ -6,7 +6,8 @@ module Zm
     class Domain < Base::AdminObject
       INSTANCE_VARIABLE_KEYS = %i[name description zimbraDomainName zimbraDomainStatus zimbraId zimbraDomainType
         zimbraDomainDefaultCOSId zimbraGalAccountId zimbraPreAuthKey zimbraGalLdapBindDn zimbraGalLdapBindPassword
-        zimbraGalLdapFilter zimbraGalLdapSearchBase zimbraGalLdapURL zimbraGalMode zimbraMailTransport]
+        zimbraGalLdapFilter zimbraGalLdapSearchBase zimbraGalLdapURL zimbraGalMode zimbraMailTransport
+        zimbraPublicServiceHostname zimbraPublicServiceProtocol]
 
       attr_accessor *INSTANCE_VARIABLE_KEYS
 
@@ -52,6 +53,10 @@ module Zm
 
       def accounts
         @accounts ||= DomainAccountsCollection.new(self)
+      end
+
+      def delete!
+        sac.generic_delete(:DeleteDomainRequest, id)
       end
 
       # def account_quotas(server_id)

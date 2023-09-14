@@ -33,6 +33,10 @@ module Zm
         # todo
       end
 
+      def fb
+        nil
+      end
+
       private
 
       def jsns_builder

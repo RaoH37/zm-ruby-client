@@ -35,7 +35,11 @@ module Zm
       end
 
       def modify!
-        # sac.modify_cos(id, instance_variables_array)
+        sac.modify_cos(id, instance_variables_array(attrs_write))
+      end
+
+      def delete!
+        sac.delete_cos(id)
       end
 
       def create!

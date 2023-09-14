@@ -153,12 +153,15 @@ module Zm
         curl_request(body)
       end
 
-      def modify_cos(id, _attrs = nil)
-        # req = { _jsns: ADMINSPACE, id: id, a: attrs.to_a.map{ |n| { n: n.first, _content: n.last } } }
-        req = { _jsns: ADMINSPACE, id: id }
+      def modify_cos(id, attrs = nil)
+        req = { _jsns: ADMINSPACE, id: [{ _content: id }], a: attrs.to_a.map{ |n| { n: n.first, _content: n.last } } }
         body = { Body: { ModifyCosRequest: req } }.merge(hash_header(@token))
-        # TODO: ne fonctionne pas !
-        # peut-être seul la version xml fonctionne. Il faudrait créer une fonction qui converti le json en xml
+        curl_request(body)
+      end
+
+      def delete_cos(id)
+        req = { _jsns: ADMINSPACE, id: [{ _content: id }] }
+        body = { Body: { DeleteCosRequest: req } }.merge(hash_header(@token))
         curl_request(body)
       end
 

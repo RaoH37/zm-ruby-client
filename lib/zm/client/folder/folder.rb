@@ -14,6 +14,7 @@ module Zm
                   :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner, :reminder, :acl, :itemCount, :broken, :deletable, :fb
 
       attr_accessor :folders, :grants, :retention_policies
+      attr_writer :absFolderPath
 
       define_changed_attributes :name, :color, :rgb, :l, :url, :f, :view
 
