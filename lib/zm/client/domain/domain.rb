@@ -48,6 +48,12 @@ module Zm
         @resources ||= DomainResourcesCollection.new(self)
       end
 
+      def cos
+        return nil if self.zimbraDomainDefaultCOSId.nil?
+
+        @cos ||= @parent.coses.find_by id: self.zimbraDomainDefaultCOSId
+      end
+
       def attrs_write
         @parent.zimbra_attributes.all_domain_attrs_writable_names
       end
