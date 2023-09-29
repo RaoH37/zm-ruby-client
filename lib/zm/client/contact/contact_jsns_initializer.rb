@@ -13,7 +13,7 @@ module Zm
         def update(item, json)
           item.id   = json[:id]
           item.name = json[:fileAsStr]
-          item.l    = json[:l]
+          item.l    = json[:l].to_i
           item.tn   = json[:tn]
 
           if json[:_attrs].is_a?(Hash)
