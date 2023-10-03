@@ -68,7 +68,7 @@ module Zm
 
         def mailbox_infos
           soap_request = SoapElement.admin(SoapAdminConstants::GET_MAILBOX_REQUEST)
-          node_mbox = SoapElement.create('mbox').add_attribute('id', @id)
+          node_mbox = SoapElement.create(SoapConstants::MBOX).add_attribute(SoapConstants::ID, @id)
           soap_request.add_node(node_mbox)
           sac.invoke(soap_request)[:GetMailboxResponse][:mbox].first
         end
@@ -127,12 +127,12 @@ module Zm
           # @token = sac.delegate_auth(@name)
 
           soap_request = SoapElement.admin(SoapAdminConstants::DELEGATE_AUTH_REQUEST)
-          node_account = SoapElement.create('account')
+          node_account = SoapElement.create(SoapConstants::ACCOUNT)
 
           if recorded?
-            node_account.add_attribute('by', 'id').add_content(@id)
+            node_account.add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@id)
           else
-            node_account.add_attribute('by', 'name').add_content(@name)
+            node_account.add_attribute(SoapConstants::BY, SoapConstants::NAME).add_content(@name)
           end
 
           soap_request.add_node(node_account)
@@ -265,13 +265,13 @@ module Zm
         def is_local_transport?
           return nil unless zimbraMailTransport
 
-          zimbraMailTransport.start_with?('lmtp')
+          zimbraMailTransport.start_with?(SoapConstants::LMTP)
         end
 
         def is_external_transport?
           return nil unless zimbraMailTransport
 
-          zimbraMailTransport.start_with?('smtp')
+          zimbraMailTransport.start_with?(SoapConstants::SMTP)
         end
 
         def last_logon

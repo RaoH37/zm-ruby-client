@@ -6,9 +6,6 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapAdminConnector < SoapBaseConnector
-      # ADMINSPACE = 'urn:zimbraAdmin'
-      # A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
-
       class << self
         def create(config)
           trans = new(
@@ -32,14 +29,6 @@ module Zm
       def initialize(scheme, host, port)
         super(scheme, host, port, SoapAdminConstants::ADMIN_SERVICE_URI)
       end
-
-      # def init_hash_request(soap_name, target_server = nil)
-      #   {
-      #     Body: {
-      #       soap_name => { _jsns: ADMINSPACE }
-      #     }
-      #   }.merge(hash_header(token, target_server))
-      # end
     end
   end
 end

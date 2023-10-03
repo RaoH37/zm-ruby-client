@@ -12,13 +12,10 @@ module Zm
       end
 
       def find_by!(hash)
-        # rep = sac.get_cos(hash.values.first, hash.keys.first, attrs_comma)
-        # entry = rep[:Body][:GetCosResponse][:cos].first
-
         soap_request = SoapElement.admin(SoapAdminConstants::GET_COS_REQUEST)
-        node_cos = SoapElement.create('cos').add_attribute('by', hash.keys.first).add_content(hash.values.first)
+        node_cos = SoapElement.create(SoapConstants::COS).add_attribute(SoapConstants::BY, hash.keys.first).add_content(hash.values.first)
         soap_request.add_node(node_cos)
-        soap_request.add_attribute('attrs', attrs_comma)
+        soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma)
         entry = sac.invoke(soap_request)[:GetCosResponse][:cos].first
 
         reset_query_params

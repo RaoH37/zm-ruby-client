@@ -11,10 +11,6 @@ module Zm
           @all = []
         end
 
-        # def to_jsns
-        #   @all.map(&:to_jsns)
-        # end
-
         def add(recipient)
           return unless recipient.is_a?(Zm::Client::Recipient)
 
@@ -57,14 +53,6 @@ module Zm
         def display_name
           @display_name || "#{@email} (#{@display_name})"
         end
-
-        # def to_jsns
-        #   {
-        #    t: @field,
-        #    a: @email,
-        #    p: display_name
-        #   }.reject { |_, v| v.nil? }
-        # end
       end
     end
   end

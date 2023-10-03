@@ -13,7 +13,7 @@ module Zm
 
       def make_query
         soap_request = SoapElement.admin(SoapAdminConstants::GET_DISTRIBUTION_LIST_MEMBERSHIP_REQUEST)
-        node_account = SoapElement.create('account').add_attribute('by', 'id').add_content(@parent.id)
+        node_account = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@parent.id)
         soap_request.add_node(node_account)
         sac.invoke(soap_request)
       end

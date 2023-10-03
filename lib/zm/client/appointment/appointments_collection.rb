@@ -8,8 +8,8 @@ module Zm
         super(parent)
         @child_class = Appointment
         @builder_class = AppointmentsBuilder
-        @type = 'appointment'
-        @sort_by = 'dateAsc'
+        @type = SoapConstants::APPOINTMENT
+        @sort_by = SoapConstants::DATE_ASC
       end
 
       def find(id)

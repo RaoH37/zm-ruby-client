@@ -32,7 +32,7 @@ module Zm
           action: {
             op: '!grant',
             id: @item.folder_id,
-            zid: @item.zid,
+            zid: delete_zid,
             gt: @item.gt,
             perm: @item.perm,
             d: @item.d
@@ -40,6 +40,14 @@ module Zm
         }
 
         SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
+      end
+
+      def delete_zid
+        return @item.zid unless @item.zid.nil?
+
+        return '99999999-9999-9999-9999-999999999999' if @item.gt == 'pub'
+
+        '00000000-0000-0000-0000-000000000000'
       end
     end
   end

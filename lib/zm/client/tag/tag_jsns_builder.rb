@@ -12,7 +12,7 @@ module Zm
         }.delete_if { |_, v| v.nil? }
 
         soap_request = SoapElement.mail(SoapMailConstants::CREATE_TAG_REQUEST)
-        node_tag = SoapElement.create('tag').add_attributes(attrs)
+        node_tag = SoapElement.create(SoapConstants::TAG).add_attributes(attrs)
         soap_request.add_node(node_tag)
         soap_request
       end

@@ -13,10 +13,10 @@ module Zm
 
       def find_by!(hash)
         soap_request = SoapElement.admin(SoapAdminConstants::GET_ACCOUNT_REQUEST)
-        node_account = SoapElement.create('account').add_attribute('by', hash.keys.first).add_content(hash.values.first)
+        node_account = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, hash.keys.first).add_content(hash.values.first)
         soap_request.add_node(node_account)
-        soap_request.add_attribute('attrs', attrs_comma)
-        soap_request.add_attribute('applyCos', @apply_cos)
+        soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma)
+        soap_request.add_attribute(SoapConstants::APPLY_COS, @apply_cos)
         entry = sac.invoke(soap_request)[:GetAccountResponse][:account].first
 
         reset_query_params

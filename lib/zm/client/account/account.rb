@@ -43,7 +43,7 @@ module Zm
 
       def flush_cache!
         soap_request = SoapElement.admin(SoapAdminConstants::FLUSH_CACHE_REQUEST)
-        node_cache = SoapElement.create('cache').add_attributes({ type: 'account', allServers: 1 })
+        node_cache = SoapElement.create('cache').add_attributes({ type: SoapConstants::ACCOUNT, allServers: 1 })
         soap_request.add_node(node_cache)
         node_entry = SoapElement.create('entry').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@id)
         node_cache.add_node(node_entry)

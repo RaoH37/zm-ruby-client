@@ -10,8 +10,8 @@ module Zm
         super(parent)
         @child_class = Document
         @builder_class = DocumentsBuilder
-        @type = 'document'
-        @sort_by = 'dateAsc'
+        @type = SoapConstants::DOCUMENT
+        @sort_by = SoapConstants::DATE_ASC
       end
 
       private

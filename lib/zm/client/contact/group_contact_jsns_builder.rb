@@ -6,10 +6,6 @@ module Zm
     class GroupContactJsnsBuilder < BaseAccountJsnsBuilder
       EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[@id @name @parent @l @type @tn @jsns_builder].freeze
 
-      # def initialize(item)
-      #   @item = item
-      # end
-
       def to_jsns
         {
           cn: {
@@ -38,14 +34,6 @@ module Zm
           }
         }
       end
-
-      # def to_delete
-      #   { action: { op: :delete, id: @item.id } }
-      # end
-      #
-      # def to_move
-      #   { action: { op: :move, l: @item.l } }
-      # end
 
       alias to_create to_jsns
 

@@ -8,8 +8,8 @@ module Zm
         super(parent)
         @child_class = Message
         @builder_class = MessagesBuilder
-        @type = 'message'
-        @sort_by = 'dateDesc'
+        @type = SoapConstants::MESSAGE
+        @sort_by = SoapConstants::DATE_DESC
       end
 
       private

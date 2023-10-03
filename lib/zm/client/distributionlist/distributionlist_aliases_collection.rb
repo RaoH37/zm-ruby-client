@@ -15,8 +15,6 @@ module Zm
       def add!(email)
         return false if @all.include?(Utils.format_email(email))
 
-        # @parent.sac.add_distribution_list_alias(@parent.id, email)
-
         soap_request = SoapElement.admin(SoapAdminConstants::ADD_DISTRIBUTION_LIST_ALIAS_REQUEST)
         soap_request.add_attributes({ id: @parent.id, alias: email })
         @parent.sac.invoke(soap_request)

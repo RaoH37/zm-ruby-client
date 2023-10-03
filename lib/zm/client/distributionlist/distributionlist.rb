@@ -76,13 +76,13 @@ module Zm
       def local_transport?
         return nil unless zimbraMailTransport
 
-        zimbraMailTransport.start_with?('lmtp')
+        zimbraMailTransport.start_with?(SoapConstants::LMTP)
       end
 
       def external_transport?
         return nil unless zimbraMailTransport
 
-        zimbraMailTransport.start_with?('smtp')
+        zimbraMailTransport.start_with?(SoapConstants::SMTP)
       end
 
       def hide_in_gal?

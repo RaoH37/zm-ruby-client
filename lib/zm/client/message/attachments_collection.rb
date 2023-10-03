@@ -18,10 +18,6 @@ module Zm
 
           @all.push(attachment)
         end
-
-        # def to_jsns
-        #   @all.map(&:to_jsns)
-        # end
       end
 
       # class attachment for email
@@ -49,19 +45,6 @@ module Zm
           uploader = Upload.new(@parent, RestAccountConnector.new)
           uploader.download_file_with_url(url, dest_file_path)
         end
-
-        # def to_jsns
-        #   {
-        #    part: part,
-        #    mid: mid,
-        #    aid: aid,
-        #    ct: ct,
-        #    s: s,
-        #    filename: filename,
-        #    ci: ci,
-        #    cd: cd
-        #   }.reject { |_, v| v.nil? }
-        # end
 
         def account
           @parent.parent

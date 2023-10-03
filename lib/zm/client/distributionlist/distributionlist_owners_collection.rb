@@ -39,7 +39,7 @@ module Zm
         soap_request = SoapElement.account(SoapAccountConstants::DISTRIBUTION_LIST_ACTION_REQUEST)
         node_dl = SoapElement.create('dl').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@parent.id)
         soap_request.add_node(node_dl)
-        node_action = SoapElement.create('action').add_attributes({ op: op, owner: jsns_owners(emails) })
+        node_action = SoapElement.create(SoapConstants::ACTION).add_attributes({ op: op, owner: jsns_owners(emails) })
         soap_request.add_node(node_action)
         soap_request
       end
