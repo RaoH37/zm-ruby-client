@@ -57,7 +57,7 @@ module Zm
         end
 
         def ids
-          @options = { resultMode: 1 }
+          @resultMode = 'IDS'
           search_builder.ids
         end
 

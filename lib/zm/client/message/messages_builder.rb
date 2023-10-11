@@ -16,7 +16,8 @@ module Zm
       end
 
       def ids
-        @json[:Body][:SearchResponse][:hit].map { |s| s[:id] }
+        hits = @json.dig(:Body, :SearchResponse, :hit) || []
+        hits.map { |s| s[:id] }
       end
 
       def root
