@@ -364,6 +364,19 @@ module Zm
         curl_request(body)
       end
 
+      def modify_prefs(token, hash)
+        soap_name = :ModifyPrefsRequest
+        body = init_hash_request(token, soap_name, ACCOUNTSPACE)
+
+        req = {
+          _attrs: hash
+        }
+
+        body[:Body][soap_name].merge!(req)
+
+        curl_request(body)
+      end
+
       def get_signatures(token)
         soap_name = :GetSignaturesRequest
         body = init_hash_request(token, soap_name, ACCOUNTSPACE)
