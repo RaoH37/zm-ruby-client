@@ -48,6 +48,8 @@ module Zm
 
       LMTP = 'lmtp'
       SMTP = 'smtp'
+
+      TEXT_CALENDAR = 'text/calendar'
     end
   end
 end

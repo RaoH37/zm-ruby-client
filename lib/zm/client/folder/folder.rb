@@ -132,6 +132,14 @@ module Zm
         @parent.sacc.invoke(soap_request)
       end
 
+      def add_appointments(ics)
+        attrs = { l: id, ct: SoapConstants::TEXT_CALENDAR }
+        soap_request = SoapElement.mail(SoapMailConstants::IMPORT_APPOINTMENTS_REQUEST).add_attributes(attrs)
+        node_content = SoapElement.create(SoapConstants::CONTENT).add_content(ics)
+        soap_request.add_node(node_content)
+        @parent.sacc.invoke(soap_request).dig(:ImportAppointmentsResponse, :appt)
+      end
+
       def download(dest_file_path, fmt = 'tgz')
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_folder(@id, fmt, dest_file_path)
