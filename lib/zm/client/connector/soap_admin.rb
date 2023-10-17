@@ -201,6 +201,10 @@ module Zm
         curl_request(body)
       end
 
+      def rename_resource(id, email)
+        generic_rename(:RenameCalendarResourceRequest, id, email)
+      end
+
       def create_distribution_list(name, attrs = [])
         soap_name = :CreateDistributionListRequest
         req = { name: name }

@@ -51,7 +51,7 @@ module Zm
       end
 
       def modify!
-        @parent.sacc.modify_identity(@parent.token, id, instance_variables_array(ATTRS_WRITE))
+        @parent.sacc.modify_identity(@parent.token, id, Hash[instance_variables_array(ATTRS_WRITE)])
       end
 
       def delete!

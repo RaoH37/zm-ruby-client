@@ -17,11 +17,9 @@ module Zm
         @grantee_type = 'grp'.freeze
       end
 
-      # def to_h
-      #   hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
-      #   hashmap.delete_if { |_, v| v.nil? }
-      #   hashmap
-      # end
+      def domain_name
+        @domain_name ||= @name.split('@').last
+      end
 
       def all_instance_variable_keys
         DistributionListCommon::ALL_ATTRS
@@ -102,13 +100,33 @@ module Zm
       end
 
       def add_owners!(*emails)
-        # todo à tester
-        sac.distribution_list_action(@id, :id, { op: 'addOwners', owner: { by: :name, type: :usr, _content: emails } })
+        sac.distribution_list_action(
+          @id,
+          :id,
+          {
+            op: 'addOwners',
+            owner: emails.map do |email|
+              { by: :name, type: :usr, _content: email }
+            end
+          }
+        )
+
+        @owners += emails
       end
 
       def remove_owners!(*emails)
-        # todo à tester
-        sac.distribution_list_action(@id, :id, { op: 'removeOwners', owner: { by: :name, type: :usr, _content: emails } })
+        sac.distribution_list_action(
+          @id,
+          :id,
+          {
+            op: 'removeOwners',
+            owner: emails.map do |email|
+              { by: :name, type: :usr, _content: email }
+            end
+          }
+        )
+
+        @owners -= emails
       end
 
       def local_transport
