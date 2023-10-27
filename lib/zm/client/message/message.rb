@@ -70,6 +70,10 @@ module Zm
         attr_accessor :text, :html
       end
 
+      def sacc
+        @parent.sacc
+      end
+
       def jsns_builder
         @jsns_builder ||= MessageJsnsBuilder.new(self)
       end
