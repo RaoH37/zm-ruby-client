@@ -82,7 +82,10 @@ module Zm
         end
 
         def domain_key
-          @domain_key ||= @parent.domain_key(domain_name) if @parent.logged?
+          return @domain_key if @domain_key
+          return @parent.domain_key(domain_name) if @parent.logged?
+
+          nil
         end
 
         def login
