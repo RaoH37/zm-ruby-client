@@ -82,7 +82,7 @@ module Zm
         end
 
         def domain_key
-          @domain_key ||= @parent.domain_key(domain_name)
+          @domain_key ||= @parent.domain_key(domain_name) if @parent.logged?
         end
 
         def login
