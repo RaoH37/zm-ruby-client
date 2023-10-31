@@ -97,6 +97,8 @@ module Zm
         end
 
         def account_login
+          sacc.token = nil
+
           if password
             account_login_password
           else
