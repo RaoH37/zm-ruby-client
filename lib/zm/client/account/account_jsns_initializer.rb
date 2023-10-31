@@ -13,7 +13,7 @@ module Zm
 
         def update(item, json)
 
-          attr_types_h = item.parent.zimbra_attributes.all_account_attr_types_h
+          # attr_types_h = item.parent.zimbra_attributes.all_account_attr_types_h
 
           # puts attr_types_h
 
@@ -21,7 +21,7 @@ module Zm
           item.name  = json[:name]
 
           json[:a].reject! { |n| n[:n].nil? }
-          json_map = Hash[json[:a].map { |n| [n[:n], n[:_content]] }].freeze
+          # json_map = Hash[json[:a].map { |n| [n[:n], n[:_content]] }].freeze
 
           # puts json_map
 
