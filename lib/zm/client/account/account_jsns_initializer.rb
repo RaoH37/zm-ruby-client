@@ -20,7 +20,7 @@ module Zm
           item.id    = json[:id]
           item.name  = json[:name]
 
-          json[:a].reject! { |n| n[:n].nil? }
+          json[:a]&.reject! { |n| n[:n].nil? }
           # json_map = Hash[json[:a].map { |n| [n[:n], n[:_content]] }].freeze
 
           # puts json_map
