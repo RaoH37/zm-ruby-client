@@ -64,7 +64,7 @@ module Zm
       end
 
       def local_transport
-        raise Zm::Client::SoapError, 'zimbraMailHost is null' if zimbraMailHost.nil?
+        raise Zm::Client::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 
         "lmtp:#{zimbraMailHost}:7025"
       end
