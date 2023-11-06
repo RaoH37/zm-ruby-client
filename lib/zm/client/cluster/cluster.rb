@@ -34,6 +34,14 @@ module Zm
         @config.has_admin_credentials?
       end
 
+      def token
+        @soap_admin_connector.token
+      end
+
+      def token=(value)
+        @soap_admin_connector.token= value
+      end
+
       def login
         raise ClusterConfigError, 'admin credentials are missing' unless @config.has_admin_credentials?
 
