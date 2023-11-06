@@ -15,6 +15,8 @@ module Zm
       end
 
       def download_file_with_url(url, dest_file_path)
+        raise ZmError, 'home_url is not defined' if @parent.home_url.nil?
+
         url = File.join(@parent.home_url, url) unless url.start_with?('http')
         @rac.download(url, dest_file_path)
       end
@@ -28,6 +30,8 @@ module Zm
       end
 
       def download_folder_url(id, fmt)
+        raise ZmError, 'home_url is not defined' if @parent.home_url.nil?
+
         url_folder_path = @parent.home_url
 
         h = {
@@ -46,6 +50,8 @@ module Zm
       end
 
       def download_file_url(folder_path, fmt, types, ids = [])
+        raise ZmError, 'home_url is not defined' if @parent.home_url.nil?
+
         url_folder_path = File.join(@parent.home_url, folder_path.to_s)
 
         h = {
@@ -72,6 +78,8 @@ module Zm
       end
 
       def send_file_url(folder_path, fmt, types, resolve)
+        raise ZmError, 'home_url is not defined' if @parent.home_url.nil?
+
         # resolve=[modfy|replace|reset|skip]
         url_folder_path = File.join(@parent.home_url, folder_path.to_s)
 

@@ -21,7 +21,7 @@ module Zm
       end
 
       def download(url, dest_file_path)
-        @curl.url = URI.escape(url)
+        @curl.url = url
         File.open(dest_file_path, 'wb') do |f|
           @curl.on_body do |data|
             f << data
@@ -32,7 +32,7 @@ module Zm
       end
 
       def upload(url, src_file_path)
-        @curl.url = URI.escape(url)
+        @curl.url = url
         @curl.http_post(Curl::PostField.file('file', src_file_path))
 
         if @curl.status.to_i >= 400
