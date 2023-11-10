@@ -3,6 +3,8 @@
 module Zm
   module Client
     class LdapFilter
+      include Zm::Inspector
+
       def initialize(base_filter = nil)
         @base_filter = base_filter
         @parts = []

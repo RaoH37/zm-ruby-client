@@ -7,6 +7,7 @@ module Zm
       class AdminObjectsCollection < ObjectsCollection
         def initialize(parent)
           @parent = parent
+          @persistent = false
           reset_query_params
         end
 
@@ -36,6 +37,12 @@ module Zm
         end
 
         def attrs(*attrs)
+          attrs.map!(&:to_s)
+          attrs.map!(&:strip)
+          attrs.sort!
+          attrs.uniq!
+          attrs.delete_if { |attr| attr.nil? || attr.empty? }
+
           return self if @attrs == attrs
 
           @all = nil
@@ -59,25 +66,36 @@ module Zm
         end
 
         def find_each(step = 1_000)
+          previous_persistent = @persistent.dup
+          @persistent = true
+
           total = count
+
           @all = []
           @offset = 0
           @limit = step
+
           while @offset < total
             @all += build_response
             @offset += @limit
           end
-          @offset = 0
+
+          ldap_filter.clear
+          reset_query_params
+
+          @persistent = previous_persistent
+
           @all
         end
 
         private
 
         def make_query
-          ldap_filter.clear
           soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
           soap_request.add_attributes(jsns)
-          sac.invoke(soap_request)
+          response = sac.invoke(soap_request)
+          clear unless @persistent
+          response
         end
 
         def ldap_filter

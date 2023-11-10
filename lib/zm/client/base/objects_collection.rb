@@ -6,6 +6,8 @@ module Zm
     module Base
       # Abstract Class Collection
       class ObjectsCollection
+        include Zm::Inspector
+
         METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
         attr_reader :parent
 
@@ -91,7 +93,10 @@ module Zm
         def attrs_comma
           return @attrs unless @attrs.is_a?(Array)
 
-          @attrs.uniq!
+          # @attrs.uniq!
+          # @attrs.compact!
+          return nil if @attrs.empty?
+
           @attrs.join(COMMA)
         end
 

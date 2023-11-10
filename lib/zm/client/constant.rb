@@ -83,7 +83,7 @@ module Zm
       COS = :coses
 
       module Attributes
-        ACCOUNT = %i[
+        ACCOUNT = %w[
           displayName
           zimbraId
           cn
@@ -102,7 +102,7 @@ module Zm
           zimbraIsExternalVirtualAccount
         ].freeze
 
-        DL = %i[
+        DL = %w[
           displayName
           zimbraId
           zimbraMailHost
@@ -112,7 +112,7 @@ module Zm
           zimbraMailAlias
         ].freeze
 
-        ALIAS = %i[
+        ALIAS = %w[
           zimbraAliasTargetId
           zimbraId
           targetName
@@ -126,7 +126,7 @@ module Zm
           zimbraIsExternalVirtualAccount
         ].freeze
 
-        RESOURCE = %i[
+        RESOURCE = %w[
           displayName
           zimbraId
           zimbraMailHost
@@ -141,7 +141,7 @@ module Zm
           zimbraIsExternalVirtualAccount
         ].freeze
 
-        DOMAIN = %i[
+        DOMAIN = %w[
           description
           zimbraDomainName
           zimbraDomainStatus
@@ -150,7 +150,7 @@ module Zm
           zimbraDomainDefaultCOSId
         ].freeze
 
-        COS = %i[
+        COS = %w[
           cn
           description
           zimbraMailHostPool
