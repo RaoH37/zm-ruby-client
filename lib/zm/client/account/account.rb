@@ -25,28 +25,13 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::AdminObject
-      # attr_reader :name, :id, :token
-      # attr_writer :home_url
-      # attr_accessor :password, :domainkey, :company, :zimbraCOSId, :zimbraMailHost, :zimbraMailTransport, :carLicense
-      attr_accessor :name, :id, :token, :home_url, :password, :domainkey, :carLicense
+      attr_accessor :name, :id, :token, :home_url, :public_url, :password, :domainkey, :carLicense
 
       def initialize(parent)
         extend(AccountCommon)
         super(parent)
         @grantee_type = 'usr'.freeze
       end
-
-      # def init_by_hash(attrs)
-      #   attrs.each do |k, v|
-      #     self.instance_variable_set(arrow_name(k), v)
-      #   end
-      # end
-
-      # def to_h
-      #   hashmap = Hash[all_instance_variable_keys.map { |key| [key, instance_variable_get(arrow_name(key))] }]
-      #   hashmap.delete_if { |_, v| v.nil? }
-      #   hashmap
-      # end
 
       def all_instance_variable_keys
         AccountCommon::ZM_ACCOUNT_ATTRS
