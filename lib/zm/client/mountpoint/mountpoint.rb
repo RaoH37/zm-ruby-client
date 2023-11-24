@@ -12,8 +12,7 @@ module Zm
         webOfflineSyncDays color rgb
       ].freeze
 
-      attr_reader :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid, :activesyncdisabled, :absFolderPath, :zid, :id, :webOfflineSyncDays
-      attr_writer :view, :zid, :rid
+      attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid, :activesyncdisabled, :absFolderPath, :zid, :id, :webOfflineSyncDays, :view, :zid, :rid
 
       define_changed_attributes :name, :color, :rgb, :l
 
