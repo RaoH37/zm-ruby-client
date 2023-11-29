@@ -133,7 +133,7 @@ module Zm
 
         def all_distributionlist_attrs
           @all_distributionlist_attrs ||= @all.select do |attr|
-            attr.is_distributionList_scoped? || attr.is_group_scoped? || attr.is_groupDynamicUnit_scoped?
+            attr.is_distributionList_scoped? || attr.is_group_scoped? || attr.is_groupDynamicUnit_scoped? || attr.is_groupStaticUnit_scoped?
           end.freeze
         end
 

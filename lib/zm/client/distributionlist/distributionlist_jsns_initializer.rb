@@ -22,6 +22,8 @@ module Zm
           item.members.all = json[:dlm].map { |a| a[:_content] }.compact if json[:dlm].is_a?(Array)
           item.owners.all = json[:owners].first[:owner].map { |a| a[:name] }.compact if json[:owners].is_a?(Array)
 
+          # todo: ajouter dans les members les valeurs de zimbraMailForwardingAddress si members.all.empty?
+
           item
         end
       end
