@@ -4,12 +4,13 @@ module Zm
   module Client
     # class account SearchFolder
     class SearchFolder < Base::Object
-      include Zm::Model::AttributeChangeObserver
+      # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :id, :uuid, :deletable, :name, :absFolderPath, :l, :luuid, :color, :rgb, :rev, :ms,
-                    :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types
+                    :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types,
+                    :name, :color, :rgb, :l, :query, :sortBy
 
-      define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
+      # define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
 
       def initialize(parent)
         @l = FolderDefault::ROOT[:id]
@@ -41,7 +42,8 @@ module Zm
       end
 
       def color!
-        @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
+        # @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
+        @parent.sacc.invoke(jsns_builder.to_color)
 
         true
       end

@@ -4,11 +4,11 @@ module Zm
   module Client
     # class account tag
     class Tag < Base::Object
-      include Zm::Model::AttributeChangeObserver
+      # include Zm::Model::AttributeChangeObserver
 
-      attr_accessor :id
+      attr_accessor :id, :name, :color, :rgb
 
-      define_changed_attributes :name, :color, :rgb
+      # define_changed_attributes :name, :color, :rgb
 
       def create!
         rep = @parent.sacc.invoke(jsns_builder.to_jsns)
@@ -18,7 +18,7 @@ module Zm
       end
 
       def modify!
-        return unless color_changed? || rgb_changed?
+        # return unless color_changed? || rgb_changed?
 
         @parent.sacc.invoke(jsns_builder.to_update)
         true

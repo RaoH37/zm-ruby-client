@@ -74,11 +74,13 @@ module Zm
       def to_color
         attrs = {
           op: :color,
-          id: @item.id
+          id: @item.id,
+          rgb: @item.rgb,
+          color: @item.color
         }
 
-        attrs[:rgb] = @item.rgb if @item.rgb_changed?
-        attrs[:color] = @item.color if @item.color_changed?
+        # attrs[:rgb] = @item.rgb if @item.rgb_changed?
+        # attrs[:color] = @item.color if @item.color_changed?
 
         build(attrs)
       end

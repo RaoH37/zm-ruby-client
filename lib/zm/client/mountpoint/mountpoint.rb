@@ -5,12 +5,13 @@ module Zm
     # class for account mountpoint
     class MountPoint < Base::Object
       include BelongsToFolder
-      include Zm::Model::AttributeChangeObserver
+      # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid,
-                    :activesyncdisabled, :absFolderPath, :view, :zid, :id, :webOfflineSyncDays
+                    :activesyncdisabled, :absFolderPath, :view, :zid, :id, :webOfflineSyncDays,
+                    :name, :color, :rgb, :l
 
-      define_changed_attributes :name, :color, :rgb, :l
+      # define_changed_attributes :name, :color, :rgb, :l
 
       def initialize(parent)
         @l = FolderDefault::ROOT[:id]
@@ -34,7 +35,8 @@ module Zm
       end
 
       def color!
-        @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
+        # @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
+        @parent.sacc.invoke(jsns_builder.to_color)
 
         true
       end

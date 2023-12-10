@@ -73,7 +73,9 @@ class TestSearchFolder < Minitest::Test
 
     begin
       is_modified = folder.color!
-    rescue StandardError => _
+    rescue StandardError => e
+      puts e.message
+      # puts e.backtrace.join("\n")
       is_modified = false
     end
 

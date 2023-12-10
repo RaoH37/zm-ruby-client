@@ -5,12 +5,15 @@ module Zm
     # class for account folder
     class Folder < Base::Object
       include BelongsToFolder
-      include Zm::Model::AttributeChangeObserver
+      # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
-                    :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid, :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders, :grants, :retention_policies
+                    :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
+                    :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders,
+                    :grants, :retention_policies,
+                    :name, :color, :rgb, :l, :url, :f, :view
 
-      define_changed_attributes :name, :color, :rgb, :l, :url, :f, :view
+      # define_changed_attributes :name, :color, :rgb, :l, :url, :f, :view
 
       alias nb_messages n
       alias nb_items n
@@ -63,7 +66,8 @@ module Zm
       end
 
       def color!
-        @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
+        # @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
+        @parent.sacc.invoke(jsns_builder.to_color)
 
         true
       end
