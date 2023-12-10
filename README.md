@@ -2,10 +2,17 @@
 
 Library to interface with Zimbra simply.
 
+Author: Maxime Désécot <maxime.desecot@gmail.com>
+
 ## Installation
+
+OS: Linux distribution LTS
+
+Language: Ruby2.7+
 
 ```bash
 sudo apt install make gcc curl libcurl4-openssl-dev
+gem install zm-ruby-client
 ```
 
 ## Examples of uses:

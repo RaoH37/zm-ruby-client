@@ -21,11 +21,11 @@ Gem::Specification.new do |s|
   s.email         = 'maxime.desecot@gmail.com'
   s.homepage      = 'https://github.com/RaoH37/zm-ruby-client'
 
-  s.files         = `git ls-files`.split("\n")
+  s.files         = `git ls-files`.split("\n").reject { |path| path.start_with?('test/', 'examples/') }
   s.require_paths = ['lib']
 
-  s.add_dependency('addressable', ['~> 2.6'])
-  s.add_dependency('curb', ['~> 0.9.7'])
+  s.add_dependency('addressable', ['~> 2.8'])
+  s.add_dependency('curb', ['~> 1.0'])
   s.add_dependency('version_sorter', ['~> 2.3'])
 
   s.add_dependency "bundler", ">= 1.15.0"

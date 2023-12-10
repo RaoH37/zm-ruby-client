@@ -1,0 +1,10 @@
+{
+  "zimbra_admin_host":"mail.zimbra.lan",
+  "zimbra_admin_scheme":"https",
+  "zimbra_admin_port":7071,
+  "zimbra_admin_login":"admin@domain.tld",
+  "zimbra_admin_password":"secret",
+  "zimbra_public_host":"mail.zimbra.lan",
+  "zimbra_public_scheme":"https",
+  "zimbra_public_port":443
+}
