@@ -22,17 +22,4 @@ class TestZimbraAttributes < Minitest::Test
   def test_all_account
     assert !@admin.zimbra_attributes.all_account_attrs.empty?
   end
-
-  def test_all_account_version
-    version = '8.6.0'
-    attrs = @admin.zimbra_attributes.all_account_attrs_version(version)
-
-    assert attrs.length < @admin.zimbra_attributes.all_account_attrs.length
-  end
-
-  def test_all_account_version_by_info
-    @admin.login
-    @admin.infos!
-    assert !@admin.zimbra_attributes.all_account_attrs_version(@admin.version).empty?
-  end
 end

@@ -15,10 +15,8 @@ module Zm
         def initialize(parent)
           @parent = parent
 
-          @all = JSON.parse(File.read(File.expand_path(ZIMBRA_ATTRS_PATH)),
-                            object_class: ZimbraAttribute).select do |attr|
-            attr.version_start == @parent.version || VersionSorter.sort([@parent.version,
-                                                                         attr.version_start]).first != @parent.version
+          @all = JSON.parse(File.read(File.expand_path(ZIMBRA_ATTRS_PATH)), object_class: ZimbraAttribute).select do |attr|
+            attr.version_start == @parent.version || VersionSorter.sort([@parent.version, attr.version_start]).first != @parent.version
           end.freeze
         end
 
