@@ -14,6 +14,21 @@ module Zm
         @sort_by = SoapConstants::DATE_ASC
       end
 
+      def find_each
+        @all = []
+
+        @more = true
+        @offset = 0
+        @limit = 500
+
+        while @more
+          @all += build_response
+          @offset += @limit
+        end
+
+        @all
+      end
+
       private
 
       def query

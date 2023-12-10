@@ -110,17 +110,6 @@ module Zm
         update!(f: flags)
       end
 
-      def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
-        fmt ||= File.extname(file_path)[1..]
-        uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
-      end
-
-      def import(file_path)
-        uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.send_file(absFolderPath, 'tgz', nil, 'skip', file_path)
-      end
-
       def add_message(eml, d = nil, f = nil, tn = nil)
         m = {
           l: id,
@@ -149,18 +138,10 @@ module Zm
         uploader.download_folder(@id, fmt, dest_file_path)
       end
 
-      def export(dest_file_path)
-        h = {
-          fmt: 'tgz',
-          emptyname: 'Vide',
-          charset: 'UTF-8',
-          auth: 'qp',
-          zauthtoken: @parent.token
-        }
-
-        url_query = "#{absFolderPath}?#{Utils.format_url_params(h)}"
-
-        @parent.uploader.download_file_with_url(url_query, dest_file_path)
+      def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
+        fmt ||= File.extname(file_path)[1..]
+        uploader = Upload.new(@parent, RestAccountConnector.new)
+        uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
       end
 
       private

@@ -16,8 +16,8 @@ module Zm
         @curl.verbose = @verbose
       end
 
-      def cookie(cookie)
-        @curl.headers['Cookie'] = cookie
+      def cookies(cookies)
+        @curl.cookies = cookies
       end
 
       def download(url, dest_file_path)
@@ -27,8 +27,18 @@ module Zm
             f << data
             data.size
           end
+
           @curl.perform
         end
+
+        if @curl.status.to_i >= 400
+          File.unlink(dest_file_path) if File.exist?(dest_file_path)
+
+          message = "Download failure: #{@curl.body_str} (status=#{@curl.status})"
+          raise RestError, message
+        end
+
+        dest_file_path
       end
 
       def upload(url, src_file_path)

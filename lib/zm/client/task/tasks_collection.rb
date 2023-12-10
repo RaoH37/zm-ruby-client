@@ -14,6 +14,23 @@ module Zm
         @sort_by = 'taskDueAsc'
       end
 
+      def find_each
+        @all = []
+        (1970..(Time.now.year + 10)).each do |year|
+          @start_at = Time.new(year, 1, 1)
+          @end_at = Time.new(year, 12, 31)
+          @more = true
+          @offset = 0
+          @limit = 500
+
+          while @more
+            @all += build_response
+            @offset += @limit
+          end
+        end
+        @all
+      end
+
       private
 
       def query

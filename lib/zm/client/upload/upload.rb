@@ -12,6 +12,7 @@ module Zm
       def initialize(parent, rac = nil)
         @parent = parent
         @rac = rac || @parent.rac
+        @rac.cookies("ZM_AUTH_TOKEN=#{@parent.token}")
       end
 
       def download_file_with_url(url, dest_file_path)
@@ -32,15 +33,14 @@ module Zm
       def download_folder_url(id, fmt)
         raise ZmError, 'home_url is not defined' if @parent.home_url.nil?
 
-        url_folder_path = @parent.home_url
+        url_folder_path = @parent.home_url.dup
 
         h = {
           fmt: fmt,
           id: id,
-          emptyname: 'Vide',
+          emptyname: 'Empty',
           charset: 'UTF-8',
-          auth: 'qp',
-          zauthtoken: @parent.token,
+          auth: 'co',
           disp: 'a'
         }
 
@@ -57,10 +57,9 @@ module Zm
         h = {
           fmt: fmt,
           types: query_value_types(types, fmt),
-          emptyname: 'Vide',
+          emptyname: 'Empty',
           charset: 'UTF-8',
-          auth: 'qp',
-          zauthtoken: @parent.token,
+          auth: 'co',
           disp: 'a'
         }
 
@@ -87,13 +86,13 @@ module Zm
           fmt: fmt,
           types: query_value_types(types, fmt),
           resolve: resolve,
-          auth: 'qp',
-          zauthtoken: @parent.token
+          auth: 'co'
         }
 
         h.reject! { |_, v| is_blank?(v) }
 
         url_folder_path << '?' << Utils.format_url_params(h)
+
         url_folder_path
       end
 
@@ -107,8 +106,6 @@ module Zm
       end
 
       def upload_attachment_url
-        @rac.cookie("ZM_AUTH_TOKEN=#{@parent.token}")
-
         h = {
           fmt: 'extended,raw'
         }
