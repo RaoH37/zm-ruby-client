@@ -16,6 +16,7 @@ require 'zm/client/message'
 require 'zm/client/identity'
 require 'zm/client/upload'
 require 'zm/client/filter_rule'
+require 'zm/client/datasource'
 
 module Zm
   module Client
@@ -220,6 +221,10 @@ module Zm
 
         def outgoing_filter_rules
           @outgoing_filter_rules ||= OutgoingFilterRulesCollection.new(self)
+        end
+
+        def data_sources
+          @data_sources ||= DataSourcesCollection.new(self)
         end
 
         # #################################################################
