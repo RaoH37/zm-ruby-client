@@ -49,7 +49,7 @@ module Zm
       end
 
       def zimbraMailHost!
-        return if @parent.name.nil? || @parent.id.nil?
+        return if @parent.name.nil? && @parent.id.nil?
 
         soap_request = SoapElement.account(SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
 
@@ -60,6 +60,7 @@ module Zm
         end
 
         soap_request.add_node(node_entry)
+
         @zimbraMailHost = @parent.sacc.invoke(soap_request).dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
       end
 
