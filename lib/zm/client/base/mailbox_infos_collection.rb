@@ -44,6 +44,25 @@ module Zm
         rep
       end
 
+      def zimbraMailHost
+        @zimbraMailHost || zimbraMailHost!
+      end
+
+      def zimbraMailHost!
+        return if @parent.name.nil? || @parent.id.nil?
+
+        soap_request = SoapElement.account(SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
+
+        if @parent.id
+          node_entry = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@parent.id)
+        else
+          node_entry = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, SoapConstants::NAME).add_content(@parent.name)
+        end
+
+        soap_request.add_node(node_entry)
+        @zimbraMailHost = @parent.sacc.invoke(soap_request).dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
+      end
+
       private
 
       def build_response
