@@ -60,8 +60,7 @@ module Zm
       end
 
       def to_rename(new_name)
-        SoapElement.admin(SoapAdminConstants::RENAME_DISTRIBUTION_LIST_REQUEST).add_attributes({ id: @id,
-                                                                                                 newName: new_name })
+        SoapElement.admin(SoapAdminConstants::RENAME_DISTRIBUTION_LIST_REQUEST).add_attributes({ id: @item.id, newName: new_name })
       end
 
       def attrs_only_set_h
