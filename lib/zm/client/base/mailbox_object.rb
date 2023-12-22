@@ -90,7 +90,7 @@ module Zm
         end
 
         def login
-          if @parent.logged?
+          if parent_logged?
             admin_login
           else
             account_login
@@ -301,6 +301,13 @@ module Zm
           return @parent.parent.config if @parent.respond_to?(:parent) && @parent.parent.respond_to?(:config)
 
           nil
+        end
+
+        def parent_logged?
+          return @parent.logged? if @parent.respond_to?(:logged?)
+          return @parent.parent.logged? if @parent.respond_to?(:parent) && @parent.parent.respond_to?(:logged?)
+
+          false
         end
       end
     end
