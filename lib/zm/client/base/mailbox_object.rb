@@ -29,7 +29,7 @@ module Zm
         attr_writer :used, :domain_key
 
         def soap_account_connector
-          @soap_account_connector ||= SoapAccountConnector.create(@parent.config)
+          @soap_account_connector ||= SoapAccountConnector.create(soap_config)
         end
         alias sacc soap_account_connector
 
@@ -292,6 +292,15 @@ module Zm
 
         def uploader
           @uploader ||= Upload.new(self)
+        end
+
+        private
+
+        def soap_config
+          return @parent.config if @parent.respond_to?(:config)
+          return @parent.parent.config if @parent.respond_to?(:parent) && @parent.parent.respond_to?(:config)
+
+          nil
         end
       end
     end
