@@ -47,6 +47,8 @@ module Zm
 
         logger.info 'Get Admin session token'
 
+        @soap_admin_connector.token = nil if logged?
+
         soap_request = SoapElement.admin(SoapAdminConstants::AUTH_REQUEST)
         soap_request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
         soap_resp = @soap_admin_connector.invoke(soap_request, Zm::Client::AuthError)
