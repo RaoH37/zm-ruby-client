@@ -14,16 +14,20 @@ module Zm
             m: members_node
           }
         }
+
+        SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_update
-        {
+        jsns = {
           cn: {
             a: instance_variables_array.map(&Utils::A_NODE_PROC),
             id: @item.id,
             m: members_node
           }
         }
+
+        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_patch(hash)
@@ -33,6 +37,8 @@ module Zm
             a: hash.map(&Utils::A_ARRAY_PROC).flatten(1).map(&Utils::A_NODE_PROC)
           }
         }
+
+        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       alias to_create to_jsns

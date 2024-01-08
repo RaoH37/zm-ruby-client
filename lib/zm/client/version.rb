@@ -10,7 +10,7 @@ module Zm
     module VERSION
       MAJOR = 2
       MINOR = 0
-      TINY  = 4
+      TINY  = 5
 
       STRING = [MAJOR, MINOR, TINY].compact.join('.')
     end
