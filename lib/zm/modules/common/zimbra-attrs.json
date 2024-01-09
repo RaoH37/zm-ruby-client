@@ -30,4 +30,10 @@
 {"id":"MD060","name":"zimbraWebClientMaxInputBufferLength","type":"cstring","cardinality":"single","requiredIn":"domain"},
 {"id":"MD061","name":"zimbraWebClientStaySignedInDisabled","type":"cstring","cardinality":"single","requiredIn":"domain"},
 {"id":"MD062","name":"zimbraWebClientSupportedHelps","type":"cstring","cardinality":"single","requiredIn":"domain"},
-{"id":"MD063","name":"zimbraZimletDataSensitiveInMixedModeDisabled","type":"cstring","cardinality":"single","requiredIn":"domain"}]
+{"id":"MD063","name":"zimbraZimletDataSensitiveInMixedModeDisabled","type":"cstring","cardinality":"single","requiredIn":"domain"},
+{"id":"MD064","name":"DKIMDomain","type":"cstring","cardinality":"single","requiredIn":"domain"},
+{"id":"MD065","name":"DKIMIdentity","type":"cstring","cardinality":"single","requiredIn":"domain"},
+{"id":"MD066","name":"DKIMKey","type":"cstring","cardinality":"single","requiredIn":"domain"},
+{"id":"MD067","name":"DKIMPublicKey","type":"cstring","cardinality":"single","requiredIn":"domain"},
+{"id":"MD068","name":"DKIMSelector","type":"cstring","cardinality":"single","requiredIn":"domain"}
+]

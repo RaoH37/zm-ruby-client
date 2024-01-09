@@ -58,6 +58,22 @@ module Zm
         @parent.zimbra_attributes.all_domain_attrs_writable_names
       end
 
+      def DKIMPublicTxt
+        return if self.DKIMPublicKey.nil?
+        return @DKIMPublicTxt if @DKIMPublicTxt
+
+        txt = self.DKIMPublicKey.each_line.map do |line|
+          line.chomp!
+          line.gsub!('"', '')
+          line.strip!
+        end.join
+
+        matches = txt.scan(/\((.*)\)/)
+        return if matches.first.nil?
+
+        @DKIMPublicTxt = matches.first.first.strip
+      end
+
       private
 
       def do_update!(hash)
