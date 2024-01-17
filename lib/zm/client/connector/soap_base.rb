@@ -23,12 +23,10 @@ module Zm
         @verbose = false
         @uri = URI::HTTP.new(scheme, nil, host, port, nil, soap_path, nil, nil, nil)
         @context = SoapContext.new
-        init_curl_client
       end
 
       def verbose!
         @verbose = true
-        @curl.verbose = @verbose
       end
 
       def invoke(soap_element, error_handler = SoapError)
@@ -45,26 +43,40 @@ module Zm
       private
 
       def init_curl_client
-        @curl = ::Curl::Easy.new(@uri.to_s) do |curl|
+        ::Curl::Easy.new(@uri.to_s) do |curl|
           curl.timeout = 300
           curl.enable_cookies = false
           curl.encoding = ''
           curl.headers = HTTP_HEADERS
           curl.ssl_verify_peer = false
           curl.ssl_verify_host = 0
+          curl.verbose = @verbose
         end
       end
 
       def curl_request(body, error_handler = SoapError)
+        curl = init_curl_client
         logger.debug body.to_json
-        @curl.http_post(body.to_json)
+        curl.http_post(body.to_json)
 
-        logger.debug @curl.body_str
+        logger.debug curl.body_str
 
-        soapbody = JSON.parse(@curl.body_str, symbolize_names: true)
-        raise(error_handler, soapbody) if @curl.status.to_i >= 400
+        soapbody = JSON.parse(curl.body_str, symbolize_names: true)
+
+        if curl.status.to_i >= 400
+          close_curl(curl)
+          raise(error_handler, soapbody)
+        end
+
+        close_curl(curl)
 
         soapbody
+      end
+
+      def close_curl(curl)
+        curl.close
+        # force process to kill socket
+        GC.start
       end
 
       def envelope(soap_element)

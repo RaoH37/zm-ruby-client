@@ -7,34 +7,35 @@ module Zm
 
       def initialize
         @verbose = false
+        @cookies = nil
         @follow_location = true
-        @curl = easy_curl
       end
 
       def verbose!
         @verbose = true
-        @curl.verbose = @verbose
       end
 
       def cookies(cookies)
-        @curl.cookies = cookies
+        @cookies = cookies
       end
 
       def download(url, dest_file_path)
-        @curl.url = url
+        curl = init_curl_client(url)
+
         File.open(dest_file_path, 'wb') do |f|
-          @curl.on_body do |data|
+          curl.on_body do |data|
             f << data
             data.size
           end
 
-          @curl.perform
+          curl.perform
         end
 
-        if @curl.status.to_i >= 400
+        if curl.status.to_i >= 400
           File.unlink(dest_file_path) if File.exist?(dest_file_path)
 
-          message = "Download failure: #{@curl.body_str} (status=#{@curl.status})"
+          message = "Download failure: #{curl.body_str} (status=#{curl.status})"
+          close_curl(curl)
           raise RestError, message
         end
 
@@ -42,24 +43,34 @@ module Zm
       end
 
       def upload(url, src_file_path)
-        @curl.url = url
-        @curl.http_post(Curl::PostField.file('file', src_file_path))
+        curl = init_curl_client(url)
 
-        if @curl.status.to_i >= 400
+        curl.http_post(Curl::PostField.file('file', src_file_path))
+
+        if curl.status.to_i >= 400
           messages = [
             "Upload failure ! #{src_file_path}",
-            extract_title(@curl.body_str)
+            extract_title(curl.body_str)
           ].compact
+          close_curl(curl)
           raise RestError, messages.join("\n")
         end
 
-        @curl.body_str
+        str = curl.body_str
+        close_curl(curl)
+        str
       end
 
       private
 
-      def easy_curl
-        Curl::Easy.new do |curl|
+      def close_curl(curl)
+        curl.close
+        # force process to kill socket
+        GC.start
+      end
+
+      def init_curl_client(url)
+        ::Curl::Easy.new(url) do |curl|
           curl.timeout = 300
           curl.enable_cookies = false
           curl.encoding = ''
@@ -68,6 +79,8 @@ module Zm
           curl.multipart_form_post = true
           curl.verbose = verbose
           curl.follow_location = follow_location
+          curl.verbose = @verbose
+          curl.cookies = @cookies
         end
       end
 
