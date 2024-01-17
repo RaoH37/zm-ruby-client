@@ -92,6 +92,10 @@ module Zm
         @domainkey ||= @parent.domain_key(domain_name)
       end
 
+      def domain_key=(key)
+        @domainkey = key
+      end
+
       def infos
         @infos || read_infos
       end
