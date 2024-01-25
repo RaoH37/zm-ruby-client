@@ -2,7 +2,6 @@
 
 require 'json'
 require 'openssl'
-require 'curb'
 require 'uri'
 
 require_relative 'soap_error'
@@ -14,14 +13,24 @@ module Zm
 
       BASESPACE = 'urn:zimbra'
       HTTP_HEADERS = {
-        'Content-Type' => 'application/json; charset=utf-8'
+        'Content-Type' => 'application/json; charset=utf-8',
+        'User-Agent' => 'ZmRubyClient'
       }.freeze
 
       attr_reader :context
 
       def initialize(scheme, host, port, soap_path)
         @verbose = false
-        @uri = URI::HTTP.new(scheme, nil, host, port, nil, soap_path, nil, nil, nil)
+        @timeout = 300
+
+        @ssl_options = {
+          verify: false,
+          verify_hostname: false,
+          verify_mode: OpenSSL::SSL::VERIFY_NONE
+        }
+
+        @soap_path = soap_path
+        @uri = URI::HTTP.new(scheme, nil, host, port, nil, nil, nil, nil, nil)
         @context = SoapContext.new
       end
 
@@ -30,7 +39,7 @@ module Zm
       end
 
       def invoke(soap_element, error_handler = SoapError)
-        curl_request(envelope(soap_element), error_handler)[:Body]
+        do_request(envelope(soap_element), error_handler)[:Body]
       end
 
       def target_invoke(soap_element, target_id, error_handler = SoapError)
@@ -42,41 +51,30 @@ module Zm
 
       private
 
-      def init_curl_client
-        ::Curl::Easy.new(@uri.to_s) do |curl|
-          curl.timeout = 300
-          curl.enable_cookies = false
-          curl.encoding = ''
-          curl.headers = HTTP_HEADERS
-          curl.ssl_verify_peer = false
-          curl.ssl_verify_host = 0
-          curl.verbose = @verbose
+      def init_http_client
+        Faraday.new(
+          url: @uri.to_s,
+          headers: HTTP_HEADERS,
+          request: {
+            timeout: @timeout
+          },
+          ssl: @ssl_options
+        ) do |faraday|
+          faraday.request :json
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
         end
       end
 
-      def curl_request(body, error_handler = SoapError)
-        curl = init_curl_client
-        logger.debug body.to_json
-        curl.http_post(body.to_json)
+      def do_request(body, error_handler = SoapError)
+        response = init_http_client.post(@soap_path, body)
 
-        logger.debug curl.body_str
+        soapbody = JSON.parse(response.body, symbolize_names: true)
 
-        soapbody = JSON.parse(curl.body_str, symbolize_names: true)
-
-        if curl.status.to_i >= 400
-          close_curl(curl)
+        if response.status >= 400
           raise(error_handler, soapbody)
         end
 
-        close_curl(curl)
-
         soapbody
-      end
-
-      def close_curl(curl)
-        curl.close
-        # force process to kill socket
-        GC.start
       end
 
       def envelope(soap_element)

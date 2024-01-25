@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'faraday/multipart'
+
 module Zm
   module Client
     class RestAccountConnector
@@ -7,8 +9,16 @@ module Zm
 
       def initialize
         @verbose = false
+        @timeout = 300
+
+        @ssl_options = {
+          verify: false,
+          verify_hostname: false,
+          verify_mode: OpenSSL::SSL::VERIFY_NONE
+        }
+
         @cookies = nil
-        @follow_location = true
+        # @follow_location = true
       end
 
       def verbose!
@@ -20,67 +30,76 @@ module Zm
       end
 
       def download(url, dest_file_path)
-        curl = init_curl_client(url)
+        response = nil
 
         File.open(dest_file_path, 'wb') do |f|
-          curl.on_body do |data|
-            f << data
-            data.size
+          response = Faraday.get(url, nil, headers) do |request|
+            request.options.on_data = Proc.new do |chunk, _, _|
+              f.write chunk
+            end
           end
-
-          curl.perform
         end
 
-        if curl.status.to_i >= 400
+        if response.status >= 400
           File.unlink(dest_file_path) if File.exist?(dest_file_path)
-
-          message = "Download failure: #{curl.body_str} (status=#{curl.status})"
-          close_curl(curl)
-          raise RestError, message
+          raise RestError, "Download failure: #{response.body} (status=#{response.status})"
         end
-
-        dest_file_path
       end
 
-      def upload(url, src_file_path)
-        curl = init_curl_client(url)
+      def upload(upload_url, src_file_path)
+        url, path = split_url(upload_url)
 
-        curl.http_post(Curl::PostField.file('file', src_file_path))
+        conn = Faraday.new(
+          url: url,
+          headers: headers,
+          request: {
+            timeout: @timeout
+          },
+          ssl: @ssl_options
+        ) do |faraday|
+          faraday.request :multipart
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+        end
 
-        if curl.status.to_i >= 400
+        payload = { file: Faraday::Multipart::FilePart.new(src_file_path, nil) }
+        response = conn.post(path, payload)
+
+        if response.status >= 400
           messages = [
             "Upload failure ! #{src_file_path}",
-            extract_title(curl.body_str)
+            extract_title(response.body)
           ].compact
-          close_curl(curl)
+
           raise RestError, messages.join("\n")
         end
 
-        str = curl.body_str
-        close_curl(curl)
-        str
+        response.body
       end
 
       private
 
-      def close_curl(curl)
-        curl.close
-        # force process to kill socket
-        GC.start
+      def split_url(url)
+        uri = URI(url)
+        url = "#{uri.scheme}://#{uri.host}:#{uri.port}"
+        path = [uri.path, uri.query].join('?')
+
+        [url, path]
       end
 
-      def init_curl_client(url)
-        ::Curl::Easy.new(url) do |curl|
-          curl.timeout = 300
-          curl.enable_cookies = false
-          curl.encoding = ''
-          curl.ssl_verify_peer = false
-          curl.ssl_verify_host = 0
-          curl.multipart_form_post = true
-          curl.verbose = verbose
-          curl.follow_location = follow_location
-          curl.verbose = @verbose
-          curl.cookies = @cookies
+      def headers
+        { 'Cookie' => @cookies, 'User-Agent' => 'ZmRubyClient' }
+      end
+
+      def init_http_client(url)
+        Faraday.new(
+          url: @uri.to_s,
+          headers: headers,
+          request: {
+            timeout: @timeout
+          },
+          ssl: @ssl_options
+        ) do |faraday|
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
         end
       end
 

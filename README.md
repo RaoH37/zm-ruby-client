@@ -11,7 +11,6 @@ OS: Linux distribution LTS
 Language: Ruby2.7+
 
 ```bash
-sudo apt install make gcc curl libcurl4-openssl-dev
 gem install zm-ruby-client
 ```
 
