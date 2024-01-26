@@ -18,7 +18,6 @@ module Zm
         }
 
         @cookies = nil
-        # @follow_location = true
       end
 
       def verbose!
@@ -29,11 +28,17 @@ module Zm
         @cookies = cookies
       end
 
-      def download(url, dest_file_path)
+      def download(download_url, dest_file_path)
+        url, path = split_url(download_url)
+
+        conn = Faraday.new(**http_options(url)) do |faraday|
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+        end
+
         response = nil
 
         File.open(dest_file_path, 'wb') do |f|
-          response = Faraday.get(url, nil, headers) do |request|
+          response = conn.get(path) do |request|
             request.options.on_data = Proc.new do |chunk, _, _|
               f.write chunk
             end
@@ -49,14 +54,7 @@ module Zm
       def upload(upload_url, src_file_path)
         url, path = split_url(upload_url)
 
-        conn = Faraday.new(
-          url: url,
-          headers: headers,
-          request: {
-            timeout: @timeout
-          },
-          ssl: @ssl_options
-        ) do |faraday|
+        conn = Faraday.new(**http_options(url)) do |faraday|
           faraday.request :multipart
           faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
         end
@@ -90,17 +88,15 @@ module Zm
         { 'Cookie' => @cookies, 'User-Agent' => 'ZmRubyClient' }
       end
 
-      def init_http_client(url)
-        Faraday.new(
-          url: @uri.to_s,
+      def http_options(url)
+        {
+          url: url,
           headers: headers,
           request: {
             timeout: @timeout
           },
           ssl: @ssl_options
-        ) do |faraday|
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
-        end
+        }
       end
 
       def extract_title(str)

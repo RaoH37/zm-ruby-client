@@ -13,8 +13,6 @@ module Zm
                     :grants, :retention_policies,
                     :name, :color, :rgb, :l, :url, :f, :view
 
-      # define_changed_attributes :name, :color, :rgb, :l, :url, :f, :view
-
       alias nb_messages n
       alias nb_items n
       alias size s
@@ -29,8 +27,6 @@ module Zm
         @retention_policies = FolderRetentionPoliciesCollection.new(self)
 
         yield(self) if block_given?
-
-        extend(DocumentFolder) if view == Zm::Client::FolderView::DOCUMENT
       end
 
       def is_immutable?
@@ -66,7 +62,6 @@ module Zm
       end
 
       def color!
-        # @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
         @parent.sacc.invoke(jsns_builder.to_color)
 
         true

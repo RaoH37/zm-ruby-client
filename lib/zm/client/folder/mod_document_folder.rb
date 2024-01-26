@@ -11,11 +11,11 @@ module DocumentFolder
 
     raise Zm::Client::RestError, 'failed to extract uuid' if uuid.nil?
 
-    jsns = { doc: { l: l, pload: { id: uuid } } }
+    jsns = { doc: { l: @id, upload: { id: uuid } } }
 
-    soap_request = SoapElement.mail(SoapMailConstants::SAVE_DOCUMENT_REQUEST).add_attributes(jsns)
+    soap_request = Zm::Client::SoapElement.mail(Zm::Client::SoapMailConstants::SAVE_DOCUMENT_REQUEST).add_attributes(jsns)
     rep = @parent.sacc.invoke(soap_request)
 
-    DocumentJsnsInitializer.create(@parent, rep[:SaveDocumentResponse][:doc].first)
+    Zm::Client::DocumentJsnsInitializer.create(@parent, rep[:SaveDocumentResponse][:doc].first)
   end
 end
