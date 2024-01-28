@@ -49,10 +49,8 @@ module Zm
         resp
       end
 
-      private
-
-      def init_http_client
-        Faraday.new(
+      def http_client!
+        @http_client = Faraday.new(
           url: @uri.to_s,
           headers: HTTP_HEADERS,
           request: {
@@ -65,8 +63,14 @@ module Zm
         end
       end
 
+      private
+
+      def http_client
+        @http_client || http_client!
+      end
+
       def do_request(body, error_handler = SoapError)
-        response = init_http_client.post(@soap_path, body)
+        response = http_client.post(@soap_path, body)
 
         soapbody = JSON.parse(response.body, symbolize_names: true)
 
