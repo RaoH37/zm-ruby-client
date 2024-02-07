@@ -45,7 +45,7 @@ module Zm
         end
 
         def is_calendarResource_scoped?
-          @is_calendarResource_scoped ||= objects_scope.include?('calendarResource')
+          @is_calendarResource_scoped ||= objects_scope.include?('calendarResource') || objects_scope.include?('account')
         end
 
         def is_cos_scoped?
