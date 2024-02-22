@@ -19,10 +19,18 @@ module Zm
             valorise(item, k, v)
           end
 
-          item.members.all = json[:dlm].map { |a| a[:_content] }.compact if json[:dlm].is_a?(Array)
-          item.owners.all = json[:owners].first[:owner].map { |a| a[:name] }.compact if json[:owners].is_a?(Array)
+          unless item.zimbraMailForwardingAddress.is_a?(Array)
+            item.zimbraMailForwardingAddress = [item.zimbraMailForwardingAddress]
+            item.zimbraMailForwardingAddress.compact!
+          end
 
-          # todo: ajouter dans les members les valeurs de zimbraMailForwardingAddress si members.all.empty?
+          if json[:dlm].is_a?(Array)
+            item.members.all = json[:dlm].map { |a| a[:_content] }.compact
+          elsif !item.zimbraMailForwardingAddress.empty?
+            item.members.all = item.zimbraMailForwardingAddress
+          end
+
+          item.owners.all = json[:owners].first[:owner].map { |a| a[:name] }.compact if json[:owners].is_a?(Array)
 
           item
         end
