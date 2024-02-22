@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.7"
   s.required_rubygems_version = ">= 1.8.11"
 
-  s.license       = 'GPL-3.0'
+  s.license       = 'GPL-3.0-only'
 
   s.authors       = ['Maxime Désécot']
   s.email         = 'maxime.desecot@gmail.com'
