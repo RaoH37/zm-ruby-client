@@ -24,10 +24,9 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n").reject { |path| path.start_with?('test/', 'examples/') }
   s.require_paths = ['lib']
 
-  s.add_dependency('addressable', ['~> 2.8'])
-  s.add_dependency('version_sorter', ['~> 2.3'])
-
-  s.add_runtime_dependency 'faraday', '~> 2.8', '>= 2.8.1'
-  s.add_runtime_dependency 'faraday-multipart', '~> 1.0', '>= 1.0.4'
-  s.add_runtime_dependency 'bundler', '~> 1.15', '>= 1.15.0'
+  s.add_dependency 'addressable', '>= 2.8.6'
+  s.add_dependency 'version_sorter', '~> 2.3'
+  s.add_dependency 'faraday', '~> 2.9'
+  s.add_dependency 'faraday-multipart', '>= 1.0.4'
+  s.add_dependency "bundler", ">= 1.15.0"
 end
