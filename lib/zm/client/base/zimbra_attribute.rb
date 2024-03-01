@@ -6,7 +6,24 @@ require 'version_sorter'
 module Zm
   module Client
     module Base
-      class ZimbraAttribute < OpenStruct
+      class ZimbraAttribute
+        attr_reader :name, :optionalIn, :flags, :requiredIn, :cardinality, :callback, :immutable, :type, :value, :max, :min, :since
+
+        def initialize(name: nil, optionalIn: nil, flags: nil, requiredIn: nil, cardinality: nil, callback: nil, immutable: nil, type: nil, value: nil, max: nil, min: nil, since: nil)
+          @name = name
+          @optionalIn = optionalIn.to_s.split(',')
+          @flags = flags
+          @requiredIn = requiredIn.to_s.split(',')
+          @cardinality = cardinality
+          @callback = callback
+          @immutable = immutable
+          @type = type
+          @value = value
+          @max = max
+          @min = min
+          @since = since
+        end
+
         def version_start
           return @version_start unless @version_start.nil?
 
@@ -20,12 +37,11 @@ module Zm
         end
 
         def immutable?
-          # @immutable.to_s == '1'
           immutable == '1'
         end
 
         def objects_scope
-          @objects_scope ||= (optionalIn.to_s.split(',') + requiredIn.to_s.split(',')).freeze
+          @objects_scope ||= (optionalIn + requiredIn).freeze
         end
 
         def is_account_scoped?

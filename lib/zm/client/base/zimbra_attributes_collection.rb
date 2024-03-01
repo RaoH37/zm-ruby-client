@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'zm/client/base/zimbra_attribute'
+require 'csv'
 
 module Zm
   module Client
@@ -8,15 +9,14 @@ module Zm
       class ZimbraAttributesCollection
         include MissingMethodStaticCollection
 
-        ZIMBRA_ATTRS_PATH = "#{File.dirname(__FILE__)}../../../modules/common/zimbra-attrs.json"
-
         attr_reader :all_versioned
 
         def initialize(parent)
           @parent = parent
 
-          @all = JSON.parse(File.read(File.expand_path(ZIMBRA_ATTRS_PATH)), object_class: ZimbraAttribute).select do |attr|
-            attr.version_start == @parent.version || VersionSorter.sort([@parent.version, attr.version_start]).first != @parent.version
+          @all = CSV.open(File.expand_path(@parent.config.zimbra_attributes_path), headers: true, skip_blanks: true, strip: true, header_converters: lambda { |h| h.to_sym }).map do |attr|
+            attr_h = attr.to_h.delete_if { |_, v| v.nil? }
+            ZimbraAttribute.new(**attr_h)
           end.freeze
         end
 

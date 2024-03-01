@@ -22,4 +22,9 @@ class TestZimbraAttributes < Minitest::Test
   def test_all_account
     assert !@admin.zimbra_attributes.all_account_attrs.empty?
   end
+
+  def test_first
+    attr = @admin.zimbra_attributes.all.first
+    assert attr.is_a?(Zm::Client::Base::ZimbraAttribute)
+  end
 end

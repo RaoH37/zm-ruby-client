@@ -84,6 +84,16 @@ module Zm
       def has_admin_credentials?
         !@zimbra_admin_host.nil? && !@zimbra_admin_login.nil? && !@zimbra_admin_password.nil?
       end
+
+      def zimbra_attributes_path
+        @zimbra_attributes_path ||= "#{File.dirname(__FILE__)}../../../modules/common/zimbra-attrs.csv"
+      end
+
+      def zimbra_attributes_path=(path)
+        raise ClusterConfigError, 'no valid attributes file' unless File.exist?(path)
+
+        @zimbra_attributes_path = path
+      end
     end
 
     # class config for connection
