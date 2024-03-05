@@ -69,7 +69,9 @@ module Zm
           previous_persistent = @persistent.dup
           @persistent = true
 
+          _attrs = @attrs
           total = count
+          @attrs = _attrs
 
           @all = []
           @offset = 0
