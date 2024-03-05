@@ -21,14 +21,11 @@ module Zm
       end
 
       def metadatas
-        @metadatas ||= Hash[decoded.split('').map do |v|
-          key, _, str = v.split(/[:=]/)
-          [key, str]
-        end].freeze
+        @metadatas ||= Hash[decoded.split(/;/).map { |part| part.split(/=\d+:/) }].freeze
       end
 
       def zimbra_id
-        metadatas['id']
+        @zimbra_id ||= metadatas['id']
       end
 
       def is_admin?
