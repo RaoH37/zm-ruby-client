@@ -29,6 +29,11 @@ module Zm
         @id = resp[:CreateCosResponse][:cos].first[:id]
       end
 
+      def clone!(new_name)
+        resp = sac.invoke(jsns_builder.to_copy(new_name))
+        resp[:CopyCosResponse][:cos].first[:id]
+      end
+
       def servers
         @servers ||= CosServersCollection.new(self)
       end

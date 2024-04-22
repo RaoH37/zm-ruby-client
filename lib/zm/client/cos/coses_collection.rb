@@ -22,6 +22,11 @@ module Zm
         CosJsnsInitializer.create(@parent, entry)
       end
 
+      def clone!(new_name, &block)
+        cos = Cos.new(parent, &block)
+        cos.clone!(new_name)
+      end
+
       private
 
       def reset_query_params

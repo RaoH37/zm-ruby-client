@@ -54,6 +54,23 @@ module Zm
         soap_request
       end
 
+      def to_copy(new_name)
+        soap_request = SoapElement.admin(SoapAdminConstants::COPY_COS_REQUEST)
+        node_name = SoapElement.create(SoapConstants::NAME).add_content(new_name)
+
+        if @item.id
+          node_cos = SoapElement.create(SoapConstants::COS).add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@item.id)
+        elsif @item.name
+          node_cos = SoapElement.create(SoapConstants::COS).add_attribute(SoapConstants::BY, SoapConstants::NAME).add_content(@item.name)
+        else
+          raise Zm::Client::ZmError, 'id or name attributes are required to clone cos'
+        end
+
+        soap_request.add_node(node_name)
+        soap_request.add_node(node_cos)
+        soap_request
+      end
+
       def attrs_only_set_h
         selected_attrs = @item.attrs_write.map { |a| Utils.arrow_name_sym(a) }
         attrs_only_set = @item.instance_variables & selected_attrs
