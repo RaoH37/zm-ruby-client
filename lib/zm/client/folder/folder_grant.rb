@@ -5,8 +5,8 @@ module Zm
     # class for account folder
     class FolderGrant
       GT_USER = 'usr'
-      GT_GROUP = 'dom'
-      GT_DOMAIN = 'grp'
+      GT_GROUP = 'grp'
+      GT_DOMAIN = 'dom'
       GT_PUB = 'pub'
       GT_GUEST = 'guest'
       GT_KEY = 'key'

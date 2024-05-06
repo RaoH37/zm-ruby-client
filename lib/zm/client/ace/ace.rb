@@ -4,6 +4,12 @@ module Zm
   module Client
     # class account ace
     class Ace < Base::Object
+      GT_USER = 'usr'
+      GT_GROUP = 'grp'
+      GT_DOMAIN = 'dom'
+      GT_PUB = 'pub'
+      GT_KEY = 'key'
+
       attr_accessor :zid, :gt, :right, :d
 
       def create!
