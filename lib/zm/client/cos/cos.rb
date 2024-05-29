@@ -6,6 +6,11 @@ module Zm
     class Cos < Base::Object
       include HasSoapAdminConnector
 
+      def delete!
+        sac.invoke(jsns_builder.to_delete)
+        @id = nil
+      end
+
       def modify!
         sac.invoke(jsns_builder.to_update)
         true

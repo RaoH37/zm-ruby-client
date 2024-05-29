@@ -71,6 +71,12 @@ module Zm
         soap_request
       end
 
+      def to_delete
+        SoapElement.admin(SoapAdminConstants::DELETE_COS_REQUEST).add_node(
+          SoapElement.create(SoapConstants::ID).add_content(@item.id)
+        )
+      end
+
       def attrs_only_set_h
         selected_attrs = @item.attrs_write.map { |a| Utils.arrow_name_sym(a) }
         attrs_only_set = @item.instance_variables & selected_attrs
