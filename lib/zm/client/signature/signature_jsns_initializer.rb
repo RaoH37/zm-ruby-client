@@ -16,7 +16,11 @@ module Zm
 
           content = json[:content].is_a?(Array) ? json[:content] : [json[:content]]
 
+          content.compact!
+
           content.each do |c|
+            next if c[:type].nil?
+
             item.txt = c[:_content] if c[:type] == ContentType::TEXT
             item.html = c[:_content] if c[:type] == ContentType::HTML
           end

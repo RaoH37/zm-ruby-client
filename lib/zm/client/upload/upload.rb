@@ -80,7 +80,7 @@ module Zm
         raise ZmError, 'home_url is not defined' if @parent.home_url.nil?
 
         # resolve=[modfy|replace|reset|skip]
-        url_folder_path = File.join(@parent.home_url, folder_path.to_s)
+        url_folder_path = File.join(@parent.home_url, Utils.format_url_path(folder_path.to_s))
 
         h = {
           fmt: fmt,

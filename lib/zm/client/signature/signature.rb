@@ -49,7 +49,7 @@ module Zm
       end
 
       def content
-        html || txt
+        html || txt || ''
       end
 
       private

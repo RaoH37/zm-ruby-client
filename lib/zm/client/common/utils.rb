@@ -17,6 +17,10 @@ module Zm
           email
         end
 
+        def format_url_path(path)
+          Addressable::URI.escape path
+        end
+
         def format_url_params(hash)
           uri = Addressable::URI.new
           uri.query_values = hash
