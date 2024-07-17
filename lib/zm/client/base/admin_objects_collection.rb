@@ -65,7 +65,7 @@ module Zm
           self
         end
 
-        def find_each(step = 1_000)
+        def find_each(offset: 0, limit: 1_000, &block)
           previous_persistent = @persistent.dup
           @persistent = true
 
@@ -73,12 +73,11 @@ module Zm
           total = count
           @attrs = _attrs
 
-          @all = []
-          @offset = 0
-          @limit = step
+          @offset = offset
+          @limit = limit
 
           while @offset < total
-            @all += build_response
+            build_response.each { |item| block.call(item) }
             @offset += @limit
           end
 
@@ -86,8 +85,6 @@ module Zm
           reset_query_params
 
           @persistent = previous_persistent
-
-          @all
         end
 
         private

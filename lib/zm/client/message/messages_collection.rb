@@ -12,19 +12,15 @@ module Zm
         @sort_by = SoapConstants::DATE_DESC
       end
 
-      def find_each
-        @all = []
-
+      def find_each(offset: 0, limit: 500, &block)
         @more = true
-        @offset = 0
-        @limit = 500
+        @offset = offset
+        @limit = limit
 
         while @more
-          @all += build_response
+          build_response.each { |item| block.call(item) }
           @offset += @limit
         end
-
-        @all
       end
 
       private

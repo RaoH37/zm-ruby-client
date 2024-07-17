@@ -22,21 +22,19 @@ module Zm
         AppointmentJsnsInitializer.new(@parent, entry).create
       end
 
-      def find_each
-        @all = []
+      def find_each(offset: 0, limit: 500, &block)
         (1970..(Time.now.year + 10)).each do |year|
           @start_at = Time.new(year, 1, 1)
           @end_at = Time.new(year, 12, 31)
           @more = true
-          @offset = 0
-          @limit = 500
+          @offset = offset
+          @limit = limit
 
           while @more
-            @all += build_response
+            build_response.each { |item| block.call(item) }
             @offset += @limit
           end
         end
-        @all
       end
     end
   end
