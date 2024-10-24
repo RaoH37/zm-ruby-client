@@ -1,13 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+lib = File.expand_path('../lib/', __dir__)
+$LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
-require './lib/zm-ruby-client'
-
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
+require 'zm-ruby-client'
+puts "Zm::Client.version=#{Zm::Client.version}"
 
 require 'irb'
 IRB.start(__FILE__)

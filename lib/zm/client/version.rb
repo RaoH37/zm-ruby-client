@@ -3,16 +3,11 @@
 module Zm
   # module client Zm::Client
   module Client
-    def self.gem_version
-      Gem::Version.new VERSION::STRING
-    end
-
-    module VERSION
-      MAJOR = 2
-      MINOR = 2
-      TINY  = 2
-
-      STRING = [MAJOR, MINOR, TINY].compact.join('.')
+    class << self
+      def version
+        File.read(File.expand_path('../../../VERSION', __dir__)).strip
+      end
+      alias gem_version version
     end
   end
 end

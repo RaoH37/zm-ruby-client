@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+lib = File.expand_path('./lib/', __dir__)
+$LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
-require './lib/zm-ruby-client'
+require 'zm-ruby-client'
 
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name          = 'zm-ruby-client'
-  s.version       = Zm::Client::gem_version.to_s
+  s.version       = Zm::Client.version
   s.date          = `date '+%Y-%m-%d'`
   s.summary       = 'zm-ruby-client'
   s.description   = 'Zimbra Soap Librairy using SOAP Json interface'
@@ -24,9 +24,9 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n").reject { |path| path.start_with?('test/', 'examples/') }
   s.require_paths = ['lib']
 
-  s.add_dependency 'addressable', '>= 2.8.6'
-  s.add_dependency 'version_sorter', '~> 2.3'
-  s.add_dependency 'faraday', '~> 2.9'
-  s.add_dependency 'faraday-multipart', '>= 1.0.4'
+  s.add_dependency 'addressable', '2.8.7'
+  s.add_dependency 'version_sorter', '2.3.0'
+  s.add_dependency 'faraday', '2.8.1'
+  s.add_dependency 'faraday-multipart', '1.0.4'
   s.add_dependency "bundler", ">= 1.15.0"
 end
