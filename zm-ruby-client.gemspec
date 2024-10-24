@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary       = 'zm-ruby-client'
   s.description   = 'Zimbra Soap Librairy using SOAP Json interface'
 
-  s.required_ruby_version = ">= 2.7"
+  s.required_ruby_version = ">= 3.1"
   s.required_rubygems_version = ">= 1.8.11"
 
   s.license       = 'GPL-3.0-only'
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'addressable', '2.8.7'
   s.add_dependency 'version_sorter', '2.3.0'
-  s.add_dependency 'faraday', '2.8.1'
+  s.add_dependency 'faraday', '>= 2.12'
   s.add_dependency 'faraday-multipart', '1.0.4'
   s.add_dependency "bundler", ">= 1.15.0"
 end
