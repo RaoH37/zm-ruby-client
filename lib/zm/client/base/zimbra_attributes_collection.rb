@@ -19,7 +19,7 @@ module Zm
             headers: true,
             skip_blanks: true,
             strip: true,
-            header_converters: lambda(&:to_sym)
+            header_converters: lambda { |header| header.to_sym }
           ).map do |attr|
             attr_h = attr.to_h.delete_if { |_, v| v.nil? }
             ZimbraAttribute.new(**attr_h)
