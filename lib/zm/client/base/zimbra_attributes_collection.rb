@@ -14,7 +14,13 @@ module Zm
         def initialize(parent)
           @parent = parent
 
-          @all = CSV.open(File.expand_path(@parent.config.zimbra_attributes_path), headers: true, skip_blanks: true, strip: true, header_converters: lambda { |h| h.to_sym }).map do |attr|
+          @all = CSV.open(
+            File.expand_path(@parent.config.zimbra_attributes_path),
+            headers: true,
+            skip_blanks: true,
+            strip: true,
+            header_converters: lambda(&:to_sym)
+          ).map do |attr|
             attr_h = attr.to_h.delete_if { |_, v| v.nil? }
             ZimbraAttribute.new(**attr_h)
           end.freeze

@@ -4,18 +4,18 @@ module Zm
   module Client
     # class account data source
     class DataSource < Base::Object
-      TYPES = %i[cal caldav yab gal imap pop3 rss unknown]
+      TYPES = %i[cal caldav yab gal imap pop3 rss unknown].freeze
 
-      attr_accessor :a, :cconnectionType, :cdefaultSignature, :cemailAddress, :cfailingSince, 
-                    :cforwardReplySignature, :cfromDisplay, :chost, :cid, :cimportClass, :cimportOnly, 
-                    :cisEnabled, :cl, :clientId, :clientSecret, :cname, :connectionType, :cpassword, 
-                    :cpollingInterval, :cport, :crefreshToken, :crefreshTokenUrl, :creplyToAddress, 
-                    :creplyToDisplay, :csmtpAuthRequired, :csmtpConnectionType, :csmtpEnabled, :csmtpHost, 
-                    :csmtpPassword, :csmtpPort, :csmtpUsername, :cuseAddressForForwardReply, :cusername, 
-                    :defaultSignature, :emailAddress, :failingSince, :forwardReplySignature, :fromDisplay, 
-                    :host, :id, :importClass, :importOnly, :isEnabled, :l, :lastError, :leaveOnServer, :name, 
-                    :oauthToken, :password, :pollingInterval, :port, :refreshToken, :refreshTokenUrl, 
-                    :replyToAddress, :replyToDisplay, :smtpAuthRequired, :smtpConnectionType, :smtpEnabled, 
+      attr_accessor :a, :cconnectionType, :cdefaultSignature, :cemailAddress, :cfailingSince,
+                    :cforwardReplySignature, :cfromDisplay, :chost, :cid, :cimportClass, :cimportOnly,
+                    :cisEnabled, :cl, :clientId, :clientSecret, :cname, :connectionType, :cpassword,
+                    :cpollingInterval, :cport, :crefreshToken, :crefreshTokenUrl, :creplyToAddress,
+                    :creplyToDisplay, :csmtpAuthRequired, :csmtpConnectionType, :csmtpEnabled, :csmtpHost,
+                    :csmtpPassword, :csmtpPort, :csmtpUsername, :cuseAddressForForwardReply, :cusername,
+                    :defaultSignature, :emailAddress, :failingSince, :forwardReplySignature, :fromDisplay,
+                    :host, :id, :importClass, :importOnly, :isEnabled, :l, :lastError, :leaveOnServer, :name,
+                    :oauthToken, :password, :pollingInterval, :port, :refreshToken, :refreshTokenUrl,
+                    :replyToAddress, :replyToDisplay, :smtpAuthRequired, :smtpConnectionType, :smtpEnabled,
                     :smtpHost, :smtpPassword, :smtpPort, :smtpUsername, :test, :useAddressForForwardReply, :username,
                     :type
 

@@ -23,7 +23,13 @@ module Zm
 
       def download(dest_file_path, fmt = 'eml')
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file( Zm::Client::FolderDefault::ROOT[:path], fmt, [Zm::Client::FolderView::MESSAGE], [@id], dest_file_path)
+        uploader.download_file(
+          Zm::Client::FolderDefault::ROOT[:path],
+          fmt,
+          [Zm::Client::FolderView::MESSAGE],
+          [@id],
+          dest_file_path
+        )
       end
 
       def date

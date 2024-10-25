@@ -14,7 +14,9 @@ module Zm
 
       def find_by!(hash)
         soap_request = SoapElement.admin(SoapAdminConstants::GET_SERVER_REQUEST)
-        node_server = SoapElement.create(SoapConstants::SERVER).add_attribute(SoapConstants::BY, hash.keys.first).add_content(hash.values.first)
+        node_server = SoapElement.create(SoapConstants::SERVER)
+                                 .add_attribute(SoapConstants::BY, hash.keys.first)
+                                 .add_content(hash.values.first)
         soap_request.add_node(node_server)
         soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma) unless @attrs.nil?
         entry = sac.invoke(soap_request)[:GetServerResponse][:server].first

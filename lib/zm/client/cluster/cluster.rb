@@ -39,7 +39,7 @@ module Zm
       end
 
       def token=(value)
-        @soap_admin_connector.token= value
+        @soap_admin_connector.token = value
       end
 
       def login

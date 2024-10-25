@@ -74,9 +74,7 @@ module Zm
 
         soapbody = JSON.parse(response.body, symbolize_names: true)
 
-        if response.status >= 400
-          raise(error_handler, soapbody)
-        end
+        raise(error_handler, soapbody) if response.status >= 400
 
         soapbody
       end

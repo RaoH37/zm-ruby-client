@@ -7,9 +7,11 @@ module Zm
   module Client
     module Base
       class ZimbraAttribute
-        attr_reader :name, :optionalIn, :flags, :requiredIn, :cardinality, :callback, :immutable, :type, :value, :max, :min, :since
+        attr_reader :name, :optionalIn, :flags, :requiredIn, :cardinality, :callback, :immutable, :type, :value, :max,
+                    :min, :since
 
-        def initialize(name: nil, optionalIn: nil, flags: nil, requiredIn: nil, cardinality: nil, callback: nil, immutable: nil, type: nil, value: nil, max: nil, min: nil, since: nil)
+        def initialize(name: nil, optionalIn: nil, flags: nil, requiredIn: nil, cardinality: nil, callback: nil,
+                       immutable: nil, type: nil, value: nil, max: nil, min: nil, since: nil)
           @name = name
           @optionalIn = optionalIn.to_s.split(',')
           @flags = flags

@@ -54,9 +54,13 @@ module Zm
         soap_request = SoapElement.account(SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
 
         if @parent.id
-          node_entry = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@parent.id)
+          node_entry = SoapElement.create(SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapConstants::BY, SoapConstants::ID)
+                                  .add_content(@parent.id)
         else
-          node_entry = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, SoapConstants::NAME).add_content(@parent.name)
+          node_entry = SoapElement.create(SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapConstants::BY, SoapConstants::NAME)
+                                  .add_content(@parent.name)
         end
 
         soap_request.add_node(node_entry)

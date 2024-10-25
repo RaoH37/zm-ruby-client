@@ -29,8 +29,8 @@ module Zm
       end
 
       def delete!
-        soap_request = SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST).add_attribute(SoapConstants::ID,
-                                                                                                  @id)
+        soap_request = SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST)
+                                  .add_attribute(SoapConstants::ID, @id)
         sac.invoke(soap_request)
         @id = nil
       end
@@ -49,9 +49,9 @@ module Zm
       end
 
       def cos
-        return nil if self.zimbraDomainDefaultCOSId.nil?
+        return nil if zimbraDomainDefaultCOSId.nil?
 
-        @cos ||= @parent.coses.find_by id: self.zimbraDomainDefaultCOSId
+        @cos ||= @parent.coses.find_by id: zimbraDomainDefaultCOSId
       end
 
       def attrs_write
