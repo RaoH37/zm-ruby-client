@@ -116,6 +116,7 @@ module Zm
         end
 
         def account_login_preauth(expires = 0)
+          logger.info 'Get Account session token by preauth access'
           raise ZmError, 'domain key is required to login !' if domain_key.nil?
 
           content, by = account_content_by
@@ -124,6 +125,7 @@ module Zm
         end
 
         def account_login_password
+          logger.info 'Get Account session token by password access'
           raise ZmError, 'password is required to login !' if password.nil?
 
           content, by = account_content_by
@@ -136,6 +138,8 @@ module Zm
         end
 
         def admin_login
+          logger.info 'Get Account session token by Delegate access'
+
           soap_request = SoapElement.admin(SoapAdminConstants::DELEGATE_AUTH_REQUEST)
           node_account = SoapElement.create(SoapConstants::ACCOUNT)
 

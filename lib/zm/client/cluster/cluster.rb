@@ -144,14 +144,14 @@ module Zm
         instance_variable_set(:@microversion, json[:microversion])
       end
 
+      def logger
+        @config.logger
+      end
+
       private
 
       def find_domain_key(domain_name)
         domains.attrs('zimbraPreAuthKey').find_by(name: domain_name).zimbraPreAuthKey
-      end
-
-      def logger
-        @config.logger
       end
     end
   end

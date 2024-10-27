@@ -69,6 +69,7 @@ module Zm
       end
 
       def do_request(body, error_handler = SoapError)
+        @logger.debug body
         response = http_client.post(@soap_path, body)
 
         soapbody = JSON.parse(response.body, symbolize_names: true)
