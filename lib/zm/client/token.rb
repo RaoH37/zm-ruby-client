@@ -2,18 +2,14 @@
 
 module Zm
   module Client
-    class TokenMetaDataError < StandardError; end
+    class Token
+      def initialize(str)
+        @str = str
+        @key_id, @hmac, @encoded = @str.split('_')
+      end
 
-    class TokenMetaData
-      def initialize(token)
-        raise TokenMetaDataError, 'no such token' unless token.is_a?(String)
-
-        parts = token.split('_')
-        raise TokenMetaDataError, 'invalid token' unless parts.length == 3
-
-        @key_id = parts[0]
-        @hmac = parts[1]
-        @encoded = parts[2]
+      def to_s
+        @str
       end
 
       def decoded
@@ -25,11 +21,11 @@ module Zm
       end
 
       def zimbra_id
-        @zimbra_id ||= metadatas['id']
+        metadatas['id']
       end
 
-      def is_admin?
-        @is_admin ||= metadatas['admin'] == '1'
+      def admin?
+        @admin ||= metadatas['admin'] == '1'
       end
 
       def server_version
@@ -38,6 +34,10 @@ module Zm
 
       def expire_at
         @expire_at ||= Time.at(metadatas['exp'].to_f / 1000).freeze
+      end
+
+      def expired?
+        expire_at < Time.now
       end
     end
   end

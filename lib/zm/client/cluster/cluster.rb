@@ -19,8 +19,6 @@ module Zm
                   :majorversion, :minorversion, :microversion
 
       def initialize(config)
-        # extend(ZmLogger)
-
         @config = config
         @version = config.zimbra_version
 
@@ -35,11 +33,11 @@ module Zm
       end
 
       def token
-        @soap_admin_connector.token
+        @token ||= (Token.new(@soap_admin_connector.token) if @soap_admin_connector.token)
       end
 
       def token=(value)
-        @soap_admin_connector.token = value
+        @token = Token.new(@soap_admin_connector.token = value)
       end
 
       def login
@@ -52,11 +50,12 @@ module Zm
         soap_request = SoapElement.admin(SoapAdminConstants::AUTH_REQUEST)
         soap_request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
         soap_resp = @soap_admin_connector.invoke(soap_request, Zm::Client::AuthError)
-        @soap_admin_connector.context.token(soap_resp[:AuthResponse][:authToken].first[:_content])
+        soap_resp_token = soap_resp[:AuthResponse][:authToken].first[:_content]
+        self.token = soap_resp_token
       end
 
       def logged?
-        !@soap_admin_connector.token.nil?
+        !token.nil? && !token.expired?
       end
 
       def alive?
@@ -66,10 +65,6 @@ module Zm
       rescue Zm::Client::SoapError => e
         logger.error "Admin session token alive ? #{e.message}"
         false
-      end
-
-      def token_metadata
-        @token_metadata ||= TokenMetaData.new(@soap_admin_connector.token)
       end
 
       def license

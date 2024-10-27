@@ -78,8 +78,16 @@ module Zm
         # Authentication
         # #################################################################
 
+        def token
+          @token ||= (Token.new(soap_account_connector.token) if soap_account_connector.token)
+        end
+
+        def token=(value)
+          @token = Token.new(soap_account_connector.token = value)
+        end
+
         def logged?
-          !@token.nil?
+          !token.nil? && !token.expired?
         end
 
         def domain_key
@@ -112,8 +120,7 @@ module Zm
 
           content, by = account_content_by
 
-          @token = sacc.auth_preauth(content, by, expires, domain_key)
-          sacc.context.token(@token)
+          self.token = sacc.auth_preauth(content, by, expires, domain_key)
         end
 
         def account_login_password
@@ -121,8 +128,7 @@ module Zm
 
           content, by = account_content_by
 
-          @token = sacc.auth_password(content, by, @password)
-          sacc.context.token(@token)
+          self.token = sacc.auth_password(content, by, @password)
         end
 
         def account_content_by
@@ -130,8 +136,6 @@ module Zm
         end
 
         def admin_login
-          # @token = sac.delegate_auth(@name)
-
           soap_request = SoapElement.admin(SoapAdminConstants::DELEGATE_AUTH_REQUEST)
           node_account = SoapElement.create(SoapConstants::ACCOUNT)
 
@@ -142,17 +146,12 @@ module Zm
           end
 
           soap_request.add_node(node_account)
-          @token = sac.invoke(soap_request)[:DelegateAuthResponse][:authToken].first[:_content]
-          sacc.context.token(@token)
+          self.token = sac.invoke(soap_request)[:DelegateAuthResponse][:authToken].first[:_content]
         end
 
         # #################################################################
         # Associations
         # #################################################################
-
-        def token_metadata
-          @token_metadata ||= TokenMetaData.new(@token)
-        end
 
         def messages
           @messages ||= MessagesCollection.new(self)
