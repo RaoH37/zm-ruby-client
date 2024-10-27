@@ -8,13 +8,13 @@ module Zm
     class SoapAccountConnector < SoapBaseConnector
       class << self
         def create(config)
-          trans = new(
+          new(
             config.zimbra_public_scheme,
             config.zimbra_public_host,
             config.zimbra_public_port
-          )
-          trans.logger = config.logger
-          trans
+          ).tap do |trans|
+            trans.logger = config.logger
+          end
         end
       end
 
@@ -35,11 +35,13 @@ module Zm
         preauth = compute_preauth(content, by, ts, expires, domainkey)
 
         soap_request = SoapElement.account(SoapAccountConstants::AUTH_REQUEST)
-        node_account = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY,
-                                                                                by).add_content(content)
+        node_account = SoapElement.create(SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapConstants::BY, by)
+                                  .add_content(content)
         soap_request.add_node(node_account)
-        node_preauth = SoapElement.create(SoapConstants::PREAUTH).add_attribute(SoapConstants::TIMESTAMP,
-                                                                                ts).add_content(preauth)
+        node_preauth = SoapElement.create(SoapConstants::PREAUTH)
+                                  .add_attribute(SoapConstants::TIMESTAMP, ts)
+                                  .add_content(preauth)
         soap_request.add_node(node_preauth)
 
         do_login(soap_request)
@@ -47,8 +49,9 @@ module Zm
 
       def auth_password(content, by, password)
         soap_request = SoapElement.account(SoapAccountConstants::AUTH_REQUEST)
-        node_account = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY,
-                                                                                by).add_content(content)
+        node_account = SoapElement.create(SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapConstants::BY, by)
+                                  .add_content(content)
         soap_request.add_node(node_account)
         soap_request.add_attribute('password', password)
 

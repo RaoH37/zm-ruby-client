@@ -6,16 +6,16 @@ module Zm
   module Client
     # class config for cluster connection
     class ClusterConfig
-      include ZmLogger
-
       attr_reader :to_h
+      attr_writer :logger
       attr_accessor :zimbra_admin_host, :zimbra_admin_scheme, :zimbra_admin_port, :zimbra_admin_login,
                     :zimbra_admin_password, :zimbra_public_host, :zimbra_public_scheme, :zimbra_public_port,
-                    :domains, :zimbra_version
+                    :domains, :zimbra_version, :log_level
 
       def initialize(parameters = nil)
         @domains = []
         @zimbra_version = '8.8.15'
+        @log_level = Logger::INFO
 
         case parameters
         when String
@@ -93,6 +93,15 @@ module Zm
         raise ClusterConfigError, 'no valid attributes file' unless File.exist?(path)
 
         @zimbra_attributes_path = path
+      end
+
+      def logger
+        @logger ||= Logger.new($stdout).tap do |log|
+          log.level = @log_level
+          log.formatter = proc do |severity, datetime, prog_name, msg|
+            "#{datetime.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{prog_name} - #{msg}\n"
+          end
+        end
       end
     end
 

@@ -9,8 +9,6 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapBaseConnector
-      include ZmLogger
-
       BASESPACE = 'urn:zimbra'
       HTTP_HEADERS = {
         'Content-Type' => 'application/json; charset=utf-8',
@@ -18,6 +16,7 @@ module Zm
       }.freeze
 
       attr_reader :context
+      attr_writer :logger
 
       def initialize(scheme, host, port, soap_path)
         @verbose = false
