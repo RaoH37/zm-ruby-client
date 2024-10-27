@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'faraday'
-require 'logger'
+# require 'logger'
 require 'openssl'
 
 require 'zm/modules/base'

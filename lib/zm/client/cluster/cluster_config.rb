@@ -7,15 +7,17 @@ module Zm
     # class config for cluster connection
     class ClusterConfig
       attr_reader :to_h
-      attr_writer :logger
+      attr_writer :logger, :colorize_logging
       attr_accessor :zimbra_admin_host, :zimbra_admin_scheme, :zimbra_admin_port, :zimbra_admin_login,
                     :zimbra_admin_password, :zimbra_public_host, :zimbra_public_scheme, :zimbra_public_port,
-                    :domains, :zimbra_version, :log_level
+                    :domains, :zimbra_version, :log_path
 
       def initialize(parameters = nil)
         @domains = []
         @zimbra_version = '8.8.15'
+        @log_path = $stdout
         @log_level = Logger::INFO
+        @colorize_logging = true
 
         case parameters
         when String
@@ -96,12 +98,16 @@ module Zm
       end
 
       def logger
-        @logger ||= Logger.new($stdout).tap do |log|
+        @logger ||= ZmLogger.new(@log_path).tap do |log|
           log.level = @log_level
-          log.formatter = proc do |severity, datetime, prog_name, msg|
-            "#{datetime.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{prog_name} - #{msg}\n"
-          end
+          log.colorize! if @colorize_logging
         end
+      end
+
+      def log_level=(level)
+        return if level == @log_level
+
+        logger.level = @log_level = level
       end
     end
 
