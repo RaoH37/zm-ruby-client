@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'zm/modules/inspector'
+require 'zm/support/cache'
 require 'zm/client/zm_logger'
 require 'zm/client/version'
 require 'zm/client/constant'

@@ -34,6 +34,15 @@ module Zm
         yield(self) if block_given?
       end
 
+      def cache_store
+        @cache_store ||= Zm::Support::Cache.registered_storage[:null_store].new
+      end
+
+      def cache_store=(options)
+        key = options.shift
+        @cache_store = Zm::Support::Cache.registered_storage[key].new(**options.last)
+      end
+
       def init_from_file(file_config_path)
         if file_config_path.end_with?('.json')
           init_from_json(file_config_path)
