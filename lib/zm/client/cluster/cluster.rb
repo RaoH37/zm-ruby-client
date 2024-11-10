@@ -67,6 +67,10 @@ module Zm
         false
       end
 
+      def logged_and_alive?
+        logged? && alive?
+      end
+
       def license
         @license ||= LicensesCollection.new(self).find
       rescue Zm::Client::SoapError => e
