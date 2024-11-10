@@ -51,6 +51,7 @@ module Zm
       end
 
       def where(*rights)
+        rights.flatten!
         @rights += rights
         @rights.uniq!
         self

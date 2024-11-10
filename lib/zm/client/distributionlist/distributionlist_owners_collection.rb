@@ -12,6 +12,7 @@ module Zm
       end
 
       def add!(*emails)
+        emails.flatten!
         emails.each { |email| Utils.format_email(email) }
         emails.delete_if { |email| @all.include?(email) }
         return false if emails.empty?
@@ -23,6 +24,7 @@ module Zm
       end
 
       def remove!(*emails)
+        emails.flatten!
         emails.each { |email| Utils.format_email(email) }
         emails.delete_if { |email| !@all.include?(email) }
         return false if emails.empty?

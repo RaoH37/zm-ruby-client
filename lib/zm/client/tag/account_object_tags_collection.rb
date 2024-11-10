@@ -17,6 +17,7 @@ module Zm
         end
 
         def add!(*new_tags)
+          new_tags.flatten!
           Utils.map_format(new_tags, String, :name)
           return false if new_tags.delete_if { |tag_name| all.include?(tag_name) }.empty?
 
@@ -35,6 +36,7 @@ module Zm
         end
 
         def remove!(*tag_names)
+          tag_names.flatten!
           Utils.map_format(tag_names, String, :name)
           return false if tag_names.delete_if { |tag_name| !all.include?(tag_name) }.empty?
 
