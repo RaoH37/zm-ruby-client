@@ -144,7 +144,7 @@ class TestAccount < Minitest::Test
     account.name = @fixture_accounts['accounts']['maxime']['email']
     account.admin_login
 
-    assert !account.token.nil?
+    assert account.logged_and_alive?
   end
 
   def test_preauth_login_by_name
@@ -152,7 +152,7 @@ class TestAccount < Minitest::Test
     account.name = @fixture_accounts['accounts']['maxime']['email']
     account.account_login_preauth
 
-    assert !account.token.nil?
+    assert account.logged_and_alive?
   end
 
   def test_preauth_login_by_id
@@ -161,7 +161,7 @@ class TestAccount < Minitest::Test
     account.domain_key = @fixture_accounts['accounts']['maxime']['domain_key']
     account.account_login_preauth
 
-    assert !account.token.nil?
+    assert account.logged_and_alive?
   end
 
   def test_used

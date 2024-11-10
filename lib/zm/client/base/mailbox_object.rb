@@ -90,6 +90,19 @@ module Zm
           !token.nil? && !token.expired?
         end
 
+        def alive?
+          soap_request = SoapElement.mail(SoapMailConstants::NO_OP_REQUEST)
+          sacc.invoke(soap_request)
+          true
+        rescue Zm::Client::SoapError => e
+          logger.warn "Mailbox session token alive ? #{e.message}"
+          false
+        end
+
+        def logged_and_alive?
+          logged? && alive?
+        end
+
         def domain_key
           return @domain_key if @domain_key
           return @parent.domain_key(domain_name) if @parent.logged?
