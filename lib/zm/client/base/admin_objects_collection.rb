@@ -36,17 +36,17 @@ module Zm
           self
         end
 
-        def attrs(*attrs)
-          attrs.map!(&:to_s)
-          attrs.map!(&:strip)
-          attrs.sort!
-          attrs.uniq!
-          attrs.delete_if { |attr| attr.nil? || attr.empty? }
+        def attrs(*attributes)
+          attributes.flatten!
+          attributes.map! { |attr| attr.to_s.strip }
+          attributes.sort!
+          attributes.uniq!
+          attributes.delete_if { |attr| attr.nil? || attr.empty? }
 
-          return self if @attrs == attrs
+          return self if @attrs == attributes
 
           @all = nil
-          @attrs = attrs
+          @attrs = attributes
           self
         end
 
