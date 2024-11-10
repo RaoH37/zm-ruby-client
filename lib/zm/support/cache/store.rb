@@ -68,10 +68,6 @@ module Zm
           write_entry(key, entry, **options)
         end
 
-        # Deletes an entry in the cache. Returns +true+ if an entry is deleted
-        # and +false+ otherwise.
-        #
-        # Options are passed to the underlying cache implementation.
         def delete(name, options = nil)
           options = merged_options(options)
           key = normalize_key(name, options)
@@ -150,6 +146,7 @@ module Zm
               expires_in = call_options[:expires_in]
               raise ArgumentError.new("expires_in parameter should not be a Time. Did you mean to use expires_at? Got: #{expires_in}")
             end
+
             if call_options[:expires_in]&.negative?
               expires_in = call_options.delete(:expires_in)
               raise ArgumentError, "Cache expiration time is invalid, cannot be negative: #{expires_in}"

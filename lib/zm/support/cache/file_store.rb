@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fileutils'
-# require 'zlib'
 
 module Zm
   module Support
@@ -21,7 +20,8 @@ module Zm
         def clear(options = nil)
           root_dirs = (Dir.children(cache_path) - GITKEEP_FILES)
           FileUtils.rm_r(root_dirs.collect { |f| File.join(cache_path, f) })
-        rescue Errno::ENOENT, Errno::ENOTEMPTY
+        rescue Errno::ENOENT, Errno::ENOTEMPTY => error
+          $stderr.puts "FileStoreError (#{error}): #{error.message}"
         end
 
         def cleanup(options = nil)
@@ -48,7 +48,7 @@ module Zm
         def read_serialized_entry(key, **)
           File.binread(key) if File.exist?(key)
         rescue => error
-          logger.error("FileStoreError (#{error}): #{error.message}") if logger
+          $stderr.puts "FileStoreError (#{error}): #{error.message}"
           nil
         end
 
@@ -94,21 +94,20 @@ module Zm
         end
 
         # Translate a file path into a key.
-        def file_path_key(path)
-          fname = path[cache_path.to_s.size..-1].split(File::SEPARATOR, 4).last.delete(File::SEPARATOR)
-          URI.decode_www_form_component(fname, Encoding::UTF_8)
-        end
+        # def file_path_key(path)
+        #   fname = path[cache_path.to_s.size..-1].split(File::SEPARATOR, 4).last.delete(File::SEPARATOR)
+        #   URI.decode_www_form_component(fname, Encoding::UTF_8)
+        # end
 
-        # Delete empty directories in the cache.
         def delete_empty_directories(dir)
           return if File.realpath(dir) == File.realpath(cache_path)
+
           if Dir.children(dir).empty?
             Dir.delete(dir) rescue nil
             delete_empty_directories(File.dirname(dir))
           end
         end
 
-        # Make sure a file path's directories exist.
         def ensure_cache_path(path)
           FileUtils.makedirs(path) unless File.exist?(path)
         end

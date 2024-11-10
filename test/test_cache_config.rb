@@ -4,7 +4,7 @@ require 'yaml'
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 require 'zm-ruby-client'
 
-class TestCacheCluster < Minitest::Test
+class TestCacheConfig < Minitest::Test
   def setup
 
   end
