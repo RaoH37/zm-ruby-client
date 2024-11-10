@@ -14,6 +14,7 @@ module Zm
             config.zimbra_admin_port
           ).tap do |trans|
             trans.logger = config.logger
+            trans.cache = config.cache
           end
         end
       end

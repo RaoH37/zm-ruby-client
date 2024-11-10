@@ -34,6 +34,38 @@ module Zm
         yield(self) if block_given?
       end
 
+      def cache
+        @cache = Zm::Support::Cache.registered_storage[cache_store_key]
+                                   .new(**cache_store_options)
+                                   .tap do |store|
+                                     store.logger = logger
+                                   end
+      end
+
+      def cache_store_key
+        cache_store.first
+      end
+
+      def cache_store_options
+        cache_store.last
+      end
+
+      def cache_store
+        @cache_store ||= [:null_store, {}]
+      end
+
+      def cache_store=(options)
+        store_key = options.shift
+        store_options = options.last
+        store_class = Zm::Support::Cache.registered_storage[store_key]
+
+        unless store_class || store_class.test_required_options(store_options)
+          raise ClusterConfigError, 'invalid cache_store'
+        end
+
+        @cache_store = [store_key, store_options]
+      end
+
       def init_from_file(file_config_path)
         if file_config_path.end_with?('.json')
           init_from_json(file_config_path)
