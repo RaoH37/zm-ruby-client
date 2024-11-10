@@ -35,6 +35,7 @@ module Zm
         end
 
         def folders(*folders)
+          folders.flatten!
           folders.select! { |folder| folder.is_a?(Zm::Client::Folder) }
           return self if folders.empty?
 
@@ -43,6 +44,7 @@ module Zm
         end
 
         def folder_ids(*folder_ids)
+          folder_ids.flatten!
           folder_ids.uniq!
           return self if @folder_ids == folder_ids
 

@@ -18,6 +18,7 @@ module Zm
       end
 
       def preferences(*entries)
+        entries.flatten!
         @preferences += entries
         self
       end

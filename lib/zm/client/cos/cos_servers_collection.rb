@@ -16,6 +16,7 @@ module Zm
       alias all! all
 
       def add!(*servers)
+        servers.flatten!
         server_ids = server_ids(servers)
         server_ids.delete_if { |id| @parent.zimbraMailHostPool.include?(id) }
         return false if server_ids.empty?
@@ -28,6 +29,7 @@ module Zm
       end
 
       def remove!(*servers)
+        servers.flatten!
         server_ids = server_ids(servers)
         server_ids.delete_if { |id| !@parent.zimbraMailHostPool.include?(id) }
         return false if server_ids.empty?
