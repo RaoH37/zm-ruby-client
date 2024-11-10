@@ -34,13 +34,36 @@ module Zm
         yield(self) if block_given?
       end
 
+      def cache
+        @cache = Zm::Support::Cache.registered_storage[cache_store_key]
+                                   .new(**cache_store_options)
+                                   .tap do |store|
+                                     store.logger = logger
+                                   end
+      end
+
+      def cache_store_key
+        cache_store.first
+      end
+
+      def cache_store_options
+        cache_store.last
+      end
+
       def cache_store
-        @cache_store ||= Zm::Support::Cache.registered_storage[:null_store].new
+        @cache_store ||= [:null_store, {}]
       end
 
       def cache_store=(options)
-        key = options.shift
-        @cache_store = Zm::Support::Cache.registered_storage[key].new(**options.last)
+        store_key = options.shift
+        store_options = options.last
+        store_class = Zm::Support::Cache.registered_storage[store_key]
+
+        unless store_class || store_class.test_required_options(store_options)
+          raise ClusterConfigError, 'invalid cache_store'
+        end
+
+        @cache_store = [store_key, store_options]
       end
 
       def init_from_file(file_config_path)

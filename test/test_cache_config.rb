@@ -13,14 +13,14 @@ class TestCacheConfig < Minitest::Test
     assert !Zm::Support::Cache.registered_storage.empty?
   end
 
-  def test_respond_to_cache_store
+  def test_respond_to_cache
     cluster_config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
-    assert cluster_config.respond_to?(:cache_store)
+    assert cluster_config.respond_to?(:cache)
   end
 
   def test_default_cache_null_store
     cluster_config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
-    assert cluster_config.cache_store.is_a?(Zm::Support::Cache::NullStore)
+    assert cluster_config.cache.is_a?(Zm::Support::Cache::NullStore)
   end
 
   def test_cache_registered_storage
@@ -35,7 +35,7 @@ class TestCacheConfig < Minitest::Test
       cc.cache_store = :file_store, { cache_path: cache_path }
     end
 
-    assert cluster_config.cache_store.is_a?(Zm::Support::Cache::FileStore)
-    assert cluster_config.cache_store.cache_path == cache_path
+    assert cluster_config.cache.is_a?(Zm::Support::Cache::FileStore)
+    assert cluster_config.cache.cache_path == cache_path
   end
 end

@@ -5,11 +5,13 @@ module Zm
     module Cache
       class Store
         attr_reader :options
+        attr_writer :logger
 
         def initialize(options = {})
           @options = options
           @coder = Cache::Entry.factory
           @digest = OpenSSL::Digest.new('sha256')
+          @logger = nil
         end
 
         def fetch(name, options = nil, &block)
@@ -29,6 +31,7 @@ module Zm
             end
 
             if entry
+              @logger&.info "Load from cache"
               entry.value
             else
               save_block_result_to_cache(key, options, &block)
@@ -52,6 +55,7 @@ module Zm
               delete_entry(key, **options)
               nil
             else
+              @logger&.info "Load from cache"
               entry.value
             end
           else

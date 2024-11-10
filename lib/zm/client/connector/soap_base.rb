@@ -86,6 +86,12 @@ module Zm
         end
 
         JSON.parse(json_response, symbolize_names: true)
+
+      # rescue Faraday::ConnectionFailed, SocketError => error
+      #   @logger.error "SoapConnectorError (#{error.class}): #{error.message}"
+      #   # raise error
+      #   {}
+      #   nil
       end
 
       def envelope(soap_element)

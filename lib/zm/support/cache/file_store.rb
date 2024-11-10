@@ -8,6 +8,12 @@ module Zm
       class FileStore < Store
         Cache.register_storage(:file_store, self)
 
+        class << self
+          def test_required_options(options)
+            options.key?(:cache_path)
+          end
+        end
+
         attr_reader :cache_path
 
         GITKEEP_FILES = %w[.gitkeep .keep].freeze
@@ -21,7 +27,7 @@ module Zm
           root_dirs = (Dir.children(cache_path) - GITKEEP_FILES)
           FileUtils.rm_r(root_dirs.collect { |f| File.join(cache_path, f) })
         rescue Errno::ENOENT, Errno::ENOTEMPTY => error
-          $stderr.puts "FileStoreError (#{error}): #{error.message}"
+          @logger&.error "FileStoreError (#{error}): #{error.message}"
         end
 
         def cleanup(options = nil)
