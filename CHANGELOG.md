@@ -8,4 +8,3 @@
 - [Changed] move logger in ClusterConfig class
 - [Added] Add color in logger
 - [Added] Add NoOpRequest for Mailbox object as alive? method
-- [Changed] Remove @all memorisation
