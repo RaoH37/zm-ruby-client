@@ -21,8 +21,8 @@ module Zm
       end
 
       def build_response
-        @all = make_query.dig(:Body, :GetDistributionListMembershipResponse, :dl) || []
-        @all.map { |json| DlMembership.new(json[:name], json[:id], json[:via]) }
+        collection = make_query.dig(:Body, :GetDistributionListMembershipResponse, :dl) || []
+        collection.map { |json| DlMembership.new(json[:name], json[:id], json[:via]) }
       end
     end
   end

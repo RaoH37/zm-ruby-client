@@ -31,7 +31,6 @@ module Zm
       def where(view: nil, tr: nil)
         @view = view
         @tr = tr
-        @all = nil
         self
       end
 
@@ -40,7 +39,6 @@ module Zm
       end
 
       def clear
-        @all = nil
         @root = nil
         reset_query_params
       end
@@ -75,9 +73,9 @@ module Zm
       def build_response
         fb = @builder_class.new(@parent, make_query)
         @root = fb.make
-        @all = fb.flatten
-        @all.select! { |folder| folder.view == @view } unless @view.nil?
-        @all
+        folders = fb.flatten
+        folders.select! { |folder| folder.view == @view } unless @view.nil?
+        folders
       end
 
       def make_query

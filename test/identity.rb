@@ -42,11 +42,16 @@ class TestIdentity < Minitest::Test
 
     identity.create!
 
-    assert identity.id.present?
+    assert !identity.id.nil?
   end
 
   def test_modify
     identity = @account.identities.all.reject { |ident| ident.name == 'DEFAULT' }.last
+
+    if identity.nil?
+      assert false
+      return
+    end
 
     identity.zimbraPrefFromDisplay = "Unit Test Modify #{Time.now.to_i}"
 
@@ -56,11 +61,22 @@ class TestIdentity < Minitest::Test
   def test_patch
     identity = @account.identities.all.reject { |ident| ident.name == 'DEFAULT' }.last
 
+    if identity.nil?
+      assert false
+      return
+    end
+
     assert identity.update!({ zimbraPrefFromDisplay: "Unit Test Patch #{Time.now.to_i}" })
   end
 
   def test_delete
     identity = @account.identities.all.reject { |ident| ident.name == 'DEFAULT' }.last
+
+    if identity.nil?
+      assert false
+      return
+    end
+
     assert identity.delete!.nil?
   end
 end

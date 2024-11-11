@@ -8,7 +8,7 @@ require './lib/zm/client'
 class TestCoses < Minitest::Test
 
   def setup
-    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config2.yml'))
+    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
     @admin.login
 
     @fixture_coses = YAML.load(File.read('./test/fixtures/coses.yml'))

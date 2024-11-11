@@ -19,16 +19,28 @@ class TestDataSources < Minitest::Test
 
   def test_all
     data_sources = @account.data_sources.all
-    assert data_sources.is_a?(Array)
+    assert data_sources.is_a?(Array) && data_sources.any?
   end
 
   def test_update
     ds = @account.data_sources.all.first
+
+    if ds.nil?
+      assert false
+      return
+    end
+
     assert ds.update!(pollingInterval: '24h')
   end
 
   def test_delete
     ds = @account.data_sources.all.first
+
+    if ds.nil?
+      assert false
+      return
+    end
+
     ds.delete!
     assert ds.id.nil?
   end

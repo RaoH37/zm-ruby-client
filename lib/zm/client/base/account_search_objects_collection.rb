@@ -57,7 +57,6 @@ module Zm
         def order(sort_by)
           return self if @sort_by == sort_by
 
-          @all = nil
           @sort_by = sort_by
           self
         end

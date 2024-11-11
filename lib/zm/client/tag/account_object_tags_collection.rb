@@ -9,11 +9,7 @@ module Zm
         end
 
         def all
-          @all || all!
-        end
-
-        def all!
-          @all = @parent.tn
+          @parent.tn
         end
 
         def add!(*new_tags)

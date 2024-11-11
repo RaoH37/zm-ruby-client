@@ -9,7 +9,6 @@ class TestFolderGrant < Minitest::Test
 
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
-    # @admin.logger.debug!
     @admin.login
 
     @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
@@ -42,7 +41,7 @@ class TestFolderGrant < Minitest::Test
 
   def test_create
     folder = @account.folders.all.select { |f| f.grants.all.empty? }.sample
-    grant = folder.grants.new(@fixture_accounts['accounts']['maxime2']['id'], 'usr', 'r', @fixture_accounts['accounts']['maxime2']['email'])
+    grant = folder.grants.new(@fixture_accounts['accounts']['unittest']['id'], 'usr', 'r', @fixture_accounts['accounts']['unittest']['email'])
     grant.save!
 
     folder_ids_with_grants = @account.folders.all!.reject { |f| f.grants.all.empty? }.map(&:id)

@@ -7,7 +7,7 @@ require './lib/zm/client'
 class TestDistributionList < Minitest::Test
 
   def setup
-    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config2.yml')
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
     @fixture_distribution_lists = YAML.load(File.read('./test/fixtures/dls.yml'))
 
     @admin = Zm::Client::Cluster.new(@config)
@@ -16,22 +16,25 @@ class TestDistributionList < Minitest::Test
 
   def test_all
     distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all
-    assert distribution_lists == @admin.distribution_lists.all
+    assert distribution_lists.is_a?(Array) && distribution_lists.any?
   end
 
   def test_all_is_distribution_list
     distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all
-    assert distribution_lists.map(&:class).uniq.first == Zm::Client::DistributionList
+    classes = distribution_lists.map(&:class).uniq
+    assert classes.length == 1
+    assert classes.first == Zm::Client::DistributionList
   end
 
   def test_all_where
     distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all
-    assert distribution_lists != @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['disabled']).all!
+    all_distribution_lists = @admin.distribution_lists.all
+    assert distribution_lists.length < all_distribution_lists.length
   end
 
   def test_all!
-    distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all
-    assert distribution_lists != @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all!
+    distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all!
+    assert distribution_lists.is_a?(Array) && distribution_lists.any?
   end
 
   def test_where

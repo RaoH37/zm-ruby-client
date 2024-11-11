@@ -7,7 +7,7 @@ require './lib/zm/client'
 
 class TestDomain < Minitest::Test
   def setup
-    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config2.yml'))
+    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
     @admin.login
 
     @fixture_domains = YAML.load(File.read('./test/fixtures/domains.yml'))
@@ -15,7 +15,7 @@ class TestDomain < Minitest::Test
 
   def test_all
     domains = @admin.domains.where(@fixture_domains['collections']['where']['local']).all
-    assert domains == @admin.domains.all
+    assert domains.is_a?(Array) && domains.any?
   end
 
   def test_all_is_domain

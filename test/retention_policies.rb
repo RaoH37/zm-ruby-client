@@ -27,6 +27,12 @@ class TestRetentionPolicy < Minitest::Test
   def test_update
     lifetime = "#{(1..300).to_a.sample}d"
     folder = @account.folders.all.reject { |f| f.retention_policies.all.empty? }.sample
+
+    if folder.nil?
+      assert false
+      return
+    end
+
     folder.retention_policies.all.each do |rp|
       rp.lifetime = lifetime
     end

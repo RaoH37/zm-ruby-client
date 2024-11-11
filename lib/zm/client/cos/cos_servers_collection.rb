@@ -9,14 +9,11 @@ module Zm
       end
 
       def all
-        @all || all!
-      end
-
-      def all!
-        @all = @parent.zimbraMailHostPool.map do |server_id|
+        @parent.zimbraMailHostPool.map do |server_id|
           servers_collection.find_by(id: server_id)
         end
       end
+      alias all! all
 
       def add!(*servers)
         server_ids = server_ids(servers)

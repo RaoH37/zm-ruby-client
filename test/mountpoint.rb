@@ -19,8 +19,7 @@ class TestMountPoint < Minitest::Test
 
   def test_all
     mountpoints = @account.mountpoints.all
-    assert mountpoints.is_a?(Array)
-    assert mountpoints.any?
+    assert mountpoints.is_a?(Array) && mountpoints.any?
   end
 
   def test_clone

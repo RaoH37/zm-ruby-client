@@ -9,16 +9,12 @@ module Zm
       end
 
       def all
-        @all || all!
-      end
-
-      def all!
         build_response
       end
+      alias all! all
 
       def clear
         reset_query_params
-        @all.clear
       end
 
       def preferences(*entries)
@@ -53,7 +49,7 @@ module Zm
       private
 
       def build_response
-        @all = make_query.dig(:GetPrefsResponse, :_attrs)
+        make_query.dig(:GetPrefsResponse, :_attrs)
       end
 
       def make_query

@@ -16,12 +16,15 @@ class TestAccount < Minitest::Test
 
   def test_all
     accounts = @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).all
-    assert accounts == @admin.accounts.all
+    assert accounts.is_a?(Array)
+    assert !accounts.empty?
   end
 
   def test_all_is_account
     accounts = @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).all
-    assert accounts.map(&:class).uniq.first == Zm::Client::Account
+    classes = accounts.map(&:class).uniq
+    assert classes.length == 1
+    assert classes.first == Zm::Client::Account
   end
 
   def test_all_where
@@ -30,11 +33,12 @@ class TestAccount < Minitest::Test
   end
 
   def test_all!
-    accounts = @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).all
-    assert accounts != @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).all!
+    accounts = @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).all!
+    assert accounts.is_a?(Array)
+    assert !accounts.empty?
   end
 
-  def test_where
+  def test_count
     assert @admin.accounts.where(@fixture_accounts['collections']['where']['domain']).count.is_a? Integer
   end
 

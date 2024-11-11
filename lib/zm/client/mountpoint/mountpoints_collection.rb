@@ -19,12 +19,11 @@ module Zm
       def where(view: nil, tr: nil)
         @view = view
         @tr = tr
-        @all = nil
         self
       end
 
       def clear
-        @all = nil
+
         @root = nil
         reset_query_params
       end

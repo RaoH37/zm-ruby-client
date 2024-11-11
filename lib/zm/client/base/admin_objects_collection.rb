@@ -12,9 +12,6 @@ module Zm
         end
 
         def find_by(hash)
-          item = find_in_cache(hash)
-          return item unless item.nil?
-
           find_by!(hash)
         end
 
@@ -25,13 +22,12 @@ module Zm
         end
 
         def ldap
-          @all = nil
           @apply_cos = SoapUtils::OFF
           self
         end
 
         def where(ldap_query)
-          @all = nil if ldap_filter.add(ldap_query)
+          ldap_filter.add(ldap_query)
 
           self
         end
@@ -45,7 +41,6 @@ module Zm
 
           return self if @attrs == attributes
 
-          @all = nil
           @attrs = attributes
           self
         end
@@ -59,7 +54,6 @@ module Zm
         end
 
         def clear
-          @all = nil
           ldap_filter.clear
           reset_query_params
           self
@@ -99,12 +93,6 @@ module Zm
 
         def ldap_filter
           @ldap_filter ||= LdapFilter.new
-        end
-
-        def find_in_cache(hash)
-          return nil if @all.nil?
-
-          @all.find { |item| item.send(hash.keys.first) == hash.values.first }
         end
 
         def jsns

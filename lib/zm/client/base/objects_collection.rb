@@ -27,37 +27,29 @@ module Zm
         end
 
         def all
-          @all || all!
+          build_response
         end
-
-        def all!
-          @all = build_response
-        end
+        alias all! all
 
         def per_page(limit)
           return self if @limit == limit
 
-          @all = nil
           @limit = limit
           self
         end
-
         alias limit per_page
 
         def page(offset)
           return self if @offset == offset
 
-          @all = nil
           @offset = offset
           self
         end
-
         alias offset page
 
         def order(sort_by, sort_ascending = SoapUtils::ON)
           return self if @sort_by == sort_by && @sort_ascending == sort_ascending
 
-          @all = nil
           @sort_by = sort_by
           @sort_ascending = sort_ascending
           self

@@ -19,7 +19,7 @@ class TestContact < Minitest::Test
 
   def test_all
     contacts = @account.contacts.all
-    assert contacts.is_a?(Array)
+    assert contacts.is_a?(Array) && contacts.any?
   end
 
   def test_create
@@ -34,17 +34,35 @@ class TestContact < Minitest::Test
 
   def test_modify
     contact = @account.contacts.all.first
+
+    if contact.nil?
+      assert false
+      return
+    end
+
     contact.email2 = "test.#{contact.id}@domain.tld"
     assert contact.modify!
   end
 
   def test_update
     contact = @account.contacts.all.first
+
+    if contact.nil?
+      assert false
+      return
+    end
+
     assert contact.update!(email3: "test.#{contact.id}@domain.tld")
   end
 
   def test_delete
     contact = @account.contacts.first
+
+    if contact.nil?
+      assert false
+      return
+    end
+
     contact.delete!
     assert contact.id.nil?
   end

@@ -10,16 +10,12 @@ module Zm
       end
 
       def all
-        @all || all!
-      end
-
-      def all!
         build_response
       end
+      alias all! all
 
       def clear
         reset_query_params
-        @all.clear
       end
 
       def sections(*entries)
@@ -71,7 +67,7 @@ module Zm
       private
 
       def build_response
-        @all = make_query[:GetInfoResponse]
+        make_query[:GetInfoResponse]
       end
 
       def make_query

@@ -10,11 +10,7 @@ module Zm
         end
 
         def all
-          @all || all!
-        end
-
-        def all!
-          @parent.f.to_s.chars
+          @all ||= @parent.f.to_s.chars
         end
 
         # properties

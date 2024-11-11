@@ -7,7 +7,7 @@ require './lib/zm/client'
 class TestResource < Minitest::Test
 
   def setup
-    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config2.yml')
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
     @fixture_resources = YAML.load(File.read('./test/fixtures/resources.yml'))
 
     @admin = Zm::Client::Cluster.new(@config)
