@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'addressable', '2.8.7'
   s.add_dependency 'version_sorter', '2.3.0'
-  s.add_dependency 'faraday', '2.8.1'
+  s.add_dependency 'faraday', '>= 2.8.1'
   s.add_dependency 'faraday-multipart', '1.0.4'
   s.add_dependency "bundler", ">= 1.15.0"
 end
