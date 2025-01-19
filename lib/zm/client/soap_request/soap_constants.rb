@@ -50,6 +50,9 @@ module Zm
       SMTP = 'smtp'
 
       TEXT_CALENDAR = 'text/calendar'
+
+      NAMESPACE_STR = 'urn:zimbra'
+      BATCH_REQUEST = 'BatchRequest'
     end
   end
 end

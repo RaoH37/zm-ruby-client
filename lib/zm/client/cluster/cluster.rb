@@ -152,6 +152,38 @@ module Zm
         @config.logger
       end
 
+      def batch(onerror: 'continue')
+        onerrors = %w[continue stop]
+        onerror = onerrors.first unless onerrors.include?(onerror)
+
+        requests = []
+        yield requests
+
+        return [] if requests.empty?
+
+        soap_resp = @soap_admin_connector.invoke(build_batch(onerror, requests))[:BatchResponse]
+        format_batch_response(soap_resp)
+      end
+
+      def build_batch(onerror, requests)
+        soap_request = SoapElement.new(SoapConstants::BATCH_REQUEST, SoapConstants::NAMESPACE_STR)
+        soap_request.add_attribute(:onerror, onerror)
+        requests.each_with_index do |request, index|
+          request.add_attribute(:requestId, index + 1)
+          soap_request.add_node(request)
+        end
+        soap_request
+      end
+
+      def format_batch_response(soap_resp)
+        soap_resp.delete(:_jsns)
+        responses = soap_resp.values.flatten
+        responses.each do |response|
+          response[:requestId] = response[:requestId].to_i
+        end
+        responses
+      end
+
       private
 
       def find_domain_key(domain_name)

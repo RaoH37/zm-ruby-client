@@ -74,14 +74,14 @@ module Zm
         @DKIMPublicTxt = matches.first.first.strip
       end
 
+      def jsns_builder
+        @jsns_builder ||= DomainJsnsBuilder.new(self)
+      end
+
       private
 
       def do_update!(hash)
         sac.invoke(jsns_builder.to_patch(hash))
-      end
-
-      def jsns_builder
-        @jsns_builder ||= DomainJsnsBuilder.new(self)
       end
     end
   end

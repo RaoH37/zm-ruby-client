@@ -55,14 +55,14 @@ module Zm
         @parent.zimbra_attributes.all_account_attrs_writable_names
       end
 
+      def jsns_builder
+        @jsns_builder ||= AccountJsnsBuilder.new(self)
+      end
+
       private
 
       def do_update!(hash)
         sac.invoke(jsns_builder.to_patch(hash))
-      end
-
-      def jsns_builder
-        @jsns_builder ||= AccountJsnsBuilder.new(self)
       end
     end
   end

@@ -35,14 +35,14 @@ module Zm
         zimbraCalResType == EQUIPMENT
       end
 
+      def jsns_builder
+        @jsns_builder ||= ResourceJsnsBuilder.new(self)
+      end
+
       private
 
       def do_update!(hash)
         sac.invoke(jsns_builder.to_patch(hash))
-      end
-
-      def jsns_builder
-        @jsns_builder ||= ResourceJsnsBuilder.new(self)
       end
     end
   end

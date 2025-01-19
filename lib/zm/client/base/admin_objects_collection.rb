@@ -81,15 +81,17 @@ module Zm
           @persistent = previous_persistent
         end
 
-        private
+        def build_query
+          SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST).add_attributes(jsns)
+        end
 
         def make_query
-          soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
-          soap_request.add_attributes(jsns)
-          response = sac.invoke(soap_request)
+          response = sac.invoke(build_query)
           clear unless @persistent
           response
         end
+
+        private
 
         def ldap_filter
           @ldap_filter ||= LdapFilter.new
