@@ -12,6 +12,14 @@ module Zm
       end
 
       def find_by!(hash)
+
+        entry = sac.invoke(build_find_by(hash))[:GetCalendarResourceResponse][:calresource].first
+
+        reset_query_params
+        ResourceJsnsInitializer.create(@parent, entry)
+      end
+
+      def build_find_by(hash)
         soap_request = SoapElement.admin(SoapAdminConstants::GET_CALENDAR_RESOURCE_REQUEST)
         node_res = SoapElement.create(SoapConstants::CAL_RESOURCE)
                               .add_attribute(SoapConstants::BY, hash.keys.first)
@@ -19,10 +27,7 @@ module Zm
         soap_request.add_node(node_res)
         soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma)
         soap_request.add_attribute(SoapConstants::APPLY_COS, @apply_cos)
-        entry = sac.invoke(soap_request)[:GetCalendarResourceResponse][:calresource].first
-
-        reset_query_params
-        ResourceJsnsInitializer.create(@parent, entry)
+        soap_request
       end
 
       private

@@ -33,8 +33,6 @@ module Zm
         true
       end
 
-      private
-
       def jsns(op, emails)
         soap_request = SoapElement.account(SoapAccountConstants::DISTRIBUTION_LIST_ACTION_REQUEST)
         node_dl = SoapElement.create('dl').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@parent.id)
@@ -43,6 +41,8 @@ module Zm
         soap_request.add_node(node_action)
         soap_request
       end
+
+      private
 
       def jsns_owners(emails)
         emails.map { |email| { by: :name, type: :usr, _content: email } }

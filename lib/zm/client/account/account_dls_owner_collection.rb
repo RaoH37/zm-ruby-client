@@ -8,9 +8,11 @@ module Zm
         @parent = parent
       end
 
-      private
-
       def make_query
+        @parent.sac.invoke(build_query)
+      end
+
+      def build_query
         jsns = {
           query: "(zimbraACE=#{@parent.id} usr ownDistList)",
           types: SearchType::DL
@@ -18,8 +20,10 @@ module Zm
 
         soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
         soap_request.add_attributes(jsns)
-        @parent.sac.invoke(soap_request)
+        soap_request
       end
+
+      private
 
       def build_response
         DistributionListsBuilder.new(@parent, make_query).make
