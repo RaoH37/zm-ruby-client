@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'set'
+require 'philosophal'
 
 require 'zm/client/soap_request'
 require 'zm/modules/inspector'

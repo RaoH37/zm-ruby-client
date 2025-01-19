@@ -8,11 +8,42 @@ module Zm
       include RequestMethodsMailbox
       # include Zm::Model::AttributeChangeObserver
 
-      attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
-                    :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
-                    :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders,
-                    :grants, :retention_policies,
-                    :name, :color, :rgb, :l, :url, :f, :view
+      attr_accessor :type, :owner, :reminder, :acl, :folders, :grants, :retention_policies
+
+      extend Philosophal::Properties
+
+      cprop :type, String
+      cprop :id, Integer
+      cprop :uuid, String
+      cprop :name, String
+      cprop :absFolderPath, Pathname
+      cprop :l, Integer
+      cprop :luuid, String
+      cprop :f, String
+      cprop :color, Integer
+      cprop :rgb, String
+      cprop :u, Integer
+      cprop :view, String
+      cprop :rev, Integer
+      cprop :ms, Integer
+      cprop :md, Integer
+      cprop :n, Integer
+      cprop :i4n, Integer
+      cprop :s, Integer
+      cprop :i4ms, Integer
+      cprop :i4next, Integer
+      cprop :url, String
+      cprop :webOfflineSyncDays, Integer
+      cprop :activesyncdisabled, _Boolean
+      cprop :zid, String
+      cprop :rid, String
+      cprop :ruuid, String
+      cprop :recursive, Integer
+      cprop :rest, String
+      cprop :deletable, _Boolean
+      cprop :itemCount, Integer
+      cprop :broken, Integer
+      cprop :fb, Integer
 
       alias nb_messages n
       alias nb_items n
@@ -21,8 +52,8 @@ module Zm
       def initialize(parent)
         super(parent)
 
-        @l = FolderDefault::ROOT[:id]
-        @type = :folder
+        self.l = FolderDefault::ROOT[:id]
+        self.type = :folder
         @folders = []
         @grants = FolderGrantsCollection.new(self)
         @retention_policies = FolderRetentionPoliciesCollection.new(self)
@@ -31,7 +62,7 @@ module Zm
       end
 
       def is_immutable?
-        @is_immutable ||= Zm::Client::FolderDefault::IDS.include?(@id.to_i)
+        @is_immutable ||= Zm::Client::FolderDefault::IDS.include?(self.id)
       end
 
       def to_query

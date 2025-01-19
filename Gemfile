@@ -14,3 +14,5 @@ group :development do
   gem "yard"
   gem "benchmark-ips"
 end
+
+gem 'philosophal'
