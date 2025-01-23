@@ -51,8 +51,12 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       private

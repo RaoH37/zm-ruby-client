@@ -7,13 +7,21 @@ module Zm
       include HasSoapAdminConnector
 
       def create!
-        resp = sac.invoke(jsns_builder.to_create)
+        resp = sac.invoke(build_create)
         @id = resp[:CreateDomainResponse][:domain].first[:id]
       end
 
+      def build_create
+        jsns_builder.to_create
+      end
+
       def modify!
-        sac.invoke(jsns_builder.to_update)
+        sac.invoke(build_modify)
         true
+      end
+
+      def build_modify
+        jsns_builder.to_update
       end
 
       def update!(hash)
@@ -29,10 +37,13 @@ module Zm
       end
 
       def delete!
-        soap_request = SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST)
-                                  .add_attribute(SoapConstants::ID, @id)
-        sac.invoke(soap_request)
+        sac.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST)
+                   .add_attribute(SoapConstants::ID, @id)
       end
 
       def accounts

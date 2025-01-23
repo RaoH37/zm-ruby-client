@@ -59,21 +59,36 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
       end
 
+      def build_delete
+        jsns_builder.to_delete
+      end
+
       def unspam!
-        @parent.sacc.invoke(jsns_builder.to_unspam)
+        @parent.sacc.invoke(build_unspam)
+      end
+
+      def build_unspam
+        jsns_builder.to_unspam
       end
 
       def spam!
-        @parent.sacc.invoke(jsns_builder.to_spam)
+        @parent.sacc.invoke(build_spam)
+      end
+
+      def build_spam
+        jsns_builder.to_spam
       end
 
       def send!
-        soap_request = SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST).add_attributes(jsns_builder.to_jsns)
-        @parent.sacc.invoke(soap_request)
+        @parent.sacc.invoke(build_send)
+      end
+
+      def build_send
+        SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST).add_attributes(jsns_builder.to_jsns)
       end
 
       # content fo an email

@@ -68,6 +68,14 @@ module Zm
         self
       end
 
+      def jsns_builder
+        @jsns_builder ||= FoldersJsnsBuilder.new(self)
+      end
+
+      def build_query
+        jsns_builder.to_jsns
+      end
+
       private
 
       def build_response
@@ -88,10 +96,6 @@ module Zm
         @visible = nil
         @needGranteeName = nil
         @depth = nil
-      end
-
-      def jsns_builder
-        @jsns_builder ||= FoldersJsnsBuilder.new(self)
       end
     end
   end

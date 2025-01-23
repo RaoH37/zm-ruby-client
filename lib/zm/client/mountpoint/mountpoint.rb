@@ -19,11 +19,15 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        rep = @parent.sacc.invoke(build_create)
         json = rep[:CreateMountpointResponse][:link].first
 
         MountpointJsnsInitializer.update(self, json)
         @id
+      end
+
+      def build_create
+        jsns_builder.to_jsns
       end
 
       def modify!
@@ -35,17 +39,23 @@ module Zm
       end
 
       def color!
-        # @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
-        @parent.sacc.invoke(jsns_builder.to_color)
-
+        @parent.sacc.invoke(build_color)
         true
+      end
+
+      def build_color
+        jsns_builder.to_color
       end
 
       def rename!(new_name)
         return false if new_name == @name
 
-        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
+        @parent.sacc.invoke(build_rename(new_name))
         @name = new_name
+      end
+
+      def build_rename(new_name)
+        jsns_builder.to_rename(new_name)
       end
 
       def reload!
@@ -55,8 +65,12 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       private

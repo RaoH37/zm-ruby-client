@@ -38,15 +38,23 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        rep = @parent.sacc.invoke(build_create)
         json = rep[:CreateFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
         @id
       end
 
+      def build_create
+        jsns_builder.to_jsns
+      end
+
       def modify!
-        @parent.sacc.invoke(jsns_builder.to_update)
+        @parent.sacc.invoke(build_modify)
         true
+      end
+
+      def build_modify
+        jsns_builder.to_update
       end
 
       def update!(hash)
@@ -62,16 +70,23 @@ module Zm
       end
 
       def color!
-        @parent.sacc.invoke(jsns_builder.to_color)
-
+        @parent.sacc.invoke(build_color)
         true
+      end
+
+      def build_color
+        jsns_builder.to_color
       end
 
       def rename!(new_name)
         return false if new_name == @name
 
-        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
+        @parent.sacc.invoke(build_rename(new_name))
         @name = new_name
+      end
+
+      def build_rename(new_name)
+        jsns_builder.to_rename(new_name)
       end
 
       def reload!
@@ -88,16 +103,24 @@ module Zm
       def empty!
         return false if empty?
 
-        @parent.sacc.invoke(jsns_builder.to_empty)
+        @parent.sacc.invoke(build_empty)
         @n = 0
       end
       alias clear empty!
 
+      def build_empty
+        jsns_builder.to_empty
+      end
+
       def delete!
         return false if is_immutable? || @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       def remove_flag!(pattern)
@@ -106,6 +129,10 @@ module Zm
       end
 
       def add_message(eml, d = nil, f = nil, tn = nil)
+        @parent.sacc.invoke(build_add_message(eml, d, f, tn))
+      end
+
+      def build_add_message(eml, d = nil, f = nil, tn = nil)
         m = {
           l: id,
           d: d,
@@ -116,16 +143,19 @@ module Zm
 
         attrs = { m: m }
 
-        soap_request = SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST).add_attributes(attrs)
-        @parent.sacc.invoke(soap_request)
+        SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST).add_attributes(attrs)
       end
 
       def add_appointments(ics)
+        @parent.sacc.invoke(build_add_appointments(ics)).dig(:ImportAppointmentsResponse, :appt)
+      end
+
+      def build_add_appointments(ics)
         attrs = { l: id, ct: SoapConstants::TEXT_CALENDAR }
         soap_request = SoapElement.mail(SoapMailConstants::IMPORT_APPOINTMENTS_REQUEST).add_attributes(attrs)
         node_content = SoapElement.create(SoapConstants::CONTENT).add_content(ics)
         soap_request.add_node(node_content)
-        @parent.sacc.invoke(soap_request).dig(:ImportAppointmentsResponse, :appt)
+        soap_request
       end
 
       def download(dest_file_path, fmt = 'tgz')

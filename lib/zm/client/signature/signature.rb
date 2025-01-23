@@ -7,13 +7,21 @@ module Zm
       attr_accessor :id, :name, :txt, :html
 
       def create!
-        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        rep = @parent.sacc.invoke(build_create)
         @id = rep[:CreateSignatureResponse][:signature].first[:id]
       end
 
+      def build_create
+        jsns_builder.to_jsns
+      end
+
       def modify!
-        @parent.sacc.invoke(jsns_builder.to_update)
+        @parent.sacc.invoke(build_modify)
         true
+      end
+
+      def build_modify
+        jsns_builder.to_update
       end
 
       def update!(*args)
@@ -23,15 +31,23 @@ module Zm
       def rename!(new_name)
         return if new_name == @name
 
-        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
+        @parent.sacc.invoke(build_rename(new_name))
         @name = new_name
+      end
+
+      def build_rename(new_name)
+        jsns_builder.to_rename(new_name)
       end
 
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       def type

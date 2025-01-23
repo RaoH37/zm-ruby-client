@@ -16,10 +16,14 @@ module Zm
         emails.delete_if { |email| @all.include?(email) }
         return false if emails.empty?
 
-        @parent.sac.invoke(jsns('addOwners', emails))
+        @parent.sac.invoke(build_add(emails))
 
         @all += emails
         true
+      end
+
+      def build_add(emails)
+        jsns('addOwners', emails)
       end
 
       def remove!(*emails)
@@ -27,10 +31,14 @@ module Zm
         emails.delete_if { |email| !@all.include?(email) }
         return false if emails.empty?
 
-        @parent.sac.invoke(jsns('removeOwners', emails))
+        @parent.sac.invoke(build_remove(emails))
 
         @all -= emails
         true
+      end
+
+      def build_remove(emails)
+        jsns('removeOwners', emails)
       end
 
       def jsns(op, emails)

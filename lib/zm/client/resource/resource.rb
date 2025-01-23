@@ -9,18 +9,30 @@ module Zm
       TYPES = [LOCATION, EQUIPMENT].freeze
 
       def delete!
-        sac.invoke(jsns_builder.to_delete)
+        sac.invoke(build_delete)
         @id = nil
       end
 
+      def build_delete
+        jsns_builder.to_delete
+      end
+
       def modify!
-        sac.invoke(jsns_builder.to_update)
+        sac.invoke(build_modify)
         true
       end
 
+      def build_modify
+        jsns_builder.to_update
+      end
+
       def create!
-        resp = sac.invoke(jsns_builder.to_create)
+        resp = sac.invoke(build_create)
         @id = resp[:CreateCalendarResourceResponse][:calresource].first[:id]
+      end
+
+      def build_create
+        jsns_builder.to_create
       end
 
       def attrs_write

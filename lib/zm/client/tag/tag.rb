@@ -11,17 +11,23 @@ module Zm
       # define_changed_attributes :name, :color, :rgb
 
       def create!
-        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        rep = @parent.sacc.invoke(build_create)
         json = rep[:CreateTagResponse][:tag].first
         TagJsnsInitializer.update(self, json)
         @id
       end
 
-      def modify!
-        # return unless color_changed? || rgb_changed?
+      def build_create
+        jsns_builder.to_jsns
+      end
 
-        @parent.sacc.invoke(jsns_builder.to_update)
+      def modify!
+        @parent.sacc.invoke(build_modify)
         true
+      end
+
+      def build_modify
+        jsns_builder.to_update
       end
 
       def update!(hash)
@@ -39,15 +45,23 @@ module Zm
       def rename!(new_name)
         return false if new_name == @name
 
-        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
+        @parent.sacc.invoke(build_rename(new_name))
         @name = new_name
+      end
+
+      def build_rename(new_name)
+        jsns_builder.to_rename(new_name)
       end
 
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       private

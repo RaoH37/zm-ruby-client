@@ -81,14 +81,14 @@ module Zm
           @persistent = previous_persistent
         end
 
-        def build_query
-          SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST).add_attributes(jsns)
-        end
-
         def make_query
           response = sac.invoke(build_query)
           clear unless @persistent
           response
+        end
+
+        def build_query
+          SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST).add_attributes(jsns)
         end
 
         private

@@ -10,14 +10,22 @@ module Zm
                     :zimbraPrefWhenSentToEnabled, :zimbraPrefWhenInFoldersEnabled, :zimbraPrefWhenSentToAddresses
 
       def create!
-        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        rep = @parent.sacc.invoke(build_create)
         IdentityJsnsInitializer.update(self, rep[:CreateIdentityResponse][:identity].first)
         @id
       end
 
+      def build_create
+        jsns_builder.to_jsns
+      end
+
       def modify!
-        @parent.sacc.invoke(jsns_builder.to_update)
+        @parent.sacc.invoke(build_modify)
         true
+      end
+
+      def build_modify
+        jsns_builder.to_update
       end
 
       def update!(hash)
@@ -39,8 +47,12 @@ module Zm
       def delete!
         return if @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       def clone

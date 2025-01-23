@@ -32,13 +32,21 @@ module Zm
       end
 
       def create!
-        resp = sac.invoke(jsns_builder.to_create)
+        resp = sac.invoke(build_create)
         @id = resp[:CreateDistributionListResponse][:dl].first[:id]
       end
 
+      def build_create
+        jsns_builder.to_create
+      end
+
       def modify!
-        sac.invoke(jsns_builder.to_update)
+        sac.invoke(build_modify)
         true
+      end
+
+      def build_modify
+        jsns_builder.to_update
       end
 
       def update!(hash)
@@ -54,13 +62,21 @@ module Zm
       end
 
       def rename!(new_name)
-        sac.invoke(jsns_builder.to_rename(new_name))
+        sac.invoke(build_rename(new_name))
         @name = new_name
       end
 
+      def build_rename(new_name)
+        jsns_builder.to_rename(new_name)
+      end
+
       def delete!
-        sac.invoke(jsns_builder.to_delete)
+        sac.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       def local_transport

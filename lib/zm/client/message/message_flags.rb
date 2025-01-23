@@ -70,23 +70,35 @@ module Zm
         # actions
 
         def unread!
-          attrs = { op: '!read', id: @parent.id }
-          @parent.sacc.invoke(build(attrs))
+          @parent.sacc.invoke(build_unread)
+        end
+
+        def build_unread
+          build({ op: '!read', id: @parent.id })
         end
 
         def read!
-          attrs = { op: 'read', id: @parent.id }
-          @parent.sacc.invoke(build(attrs))
+          @parent.sacc.invoke(build_read)
+        end
+
+        def build_read
+          build({ op: 'read', id: @parent.id })
         end
 
         def unflag!
-          attrs = { op: '!flag', id: @parent.id }
-          @parent.sacc.invoke(build(attrs))
+          @parent.sacc.invoke(build_unflag)
+        end
+
+        def build_unflag
+          build({ op: '!flag', id: @parent.id })
         end
 
         def flag!
-          attrs = { op: 'flag', id: @parent.id }
-          @parent.sacc.invoke(build(attrs))
+          @parent.sacc.invoke(build_flag)
+        end
+
+        def build_flag
+          build({ op: 'flag', id: @parent.id })
         end
 
         private

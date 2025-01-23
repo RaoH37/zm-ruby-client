@@ -36,9 +36,7 @@ module Zm
       end
 
       def create!
-        soap_request = SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST)
-                                  .add_attributes(jsns_builder.to_jsns)
-        rep = @parent.sacc.invoke(soap_request)
+        rep = @parent.sacc.invoke(build_create)
 
         aji = AppointmentJsnsInitializer.new(@parent, rep[:CreateAppointmentResponse])
         aji.appointment = self
@@ -46,11 +44,17 @@ module Zm
         @id
       end
 
+      def build_create
+        SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_jsns)
+      end
+
       def modify!
-        soap_request = SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST)
-                                  .add_attributes(jsns_builder.to_update)
-        @parent.sacc.invoke(soap_request)
+        @parent.sacc.invoke(build_modify)
         true
+      end
+
+      def build_modify
+        SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_update)
       end
 
       def update!(*args)
@@ -64,8 +68,12 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.sacc.invoke(build_delete)
         @id = nil
+      end
+
+      def build_delete
+        jsns_builder.to_delete
       end
 
       def reload!
@@ -151,8 +159,6 @@ module Zm
           @rsvp = rsvp
         end
       end
-
-      private
 
       def jsns_builder
         @jsns_builder ||= AppointmentJsnsBuilder.new(self)

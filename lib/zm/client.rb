@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 require 'zm/modules/inspector'
 require 'zm/support/cache'
 require 'zm/client/zm_logger'

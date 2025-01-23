@@ -10,11 +10,12 @@ module Zm
         super(parent)
       end
 
-      private
-
       def make_query
-        soap_request = SoapElement.mail(SoapMailConstants::GET_SEARCH_FOLDER_REQUEST)
-        @parent.sacc.invoke(soap_request)
+        @parent.sacc.invoke(build_query)
+      end
+
+      def build_query
+        SoapElement.mail(SoapMailConstants::GET_SEARCH_FOLDER_REQUEST)
       end
     end
   end

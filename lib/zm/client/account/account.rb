@@ -23,18 +23,30 @@ module Zm
       # #################################################################
 
       def delete!
-        sac.invoke(jsns_builder.to_delete)
+        sac.invoke(build_delete)
         @id = nil
       end
 
+      def build_delete
+        jsns_builder.to_delete
+      end
+
       def modify!
-        sac.invoke(jsns_builder.to_update)
+        sac.invoke(build_modify)
         true
       end
 
+      def build_modify
+        jsns_builder.to_update
+      end
+
       def create!
-        resp = sac.invoke(jsns_builder.to_create)
+        resp = sac.invoke(build_create)
         @id = resp[:CreateAccountResponse][:account].first[:id]
+      end
+
+      def build_create
+        jsns_builder.to_create
       end
 
       def created_at
@@ -42,13 +54,17 @@ module Zm
       end
 
       def flush_cache!
+        sac.invoke(build_flush_cache)
+        true
+      end
+
+      def build_flush_cache
         soap_request = SoapElement.admin(SoapAdminConstants::FLUSH_CACHE_REQUEST)
         node_cache = SoapElement.create('cache').add_attributes({ type: SoapConstants::ACCOUNT, allServers: 1 })
         soap_request.add_node(node_cache)
         node_entry = SoapElement.create('entry').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@id)
         node_cache.add_node(node_entry)
-        sac.invoke(soap_request)
-        true
+        soap_request
       end
 
       def attrs_write
@@ -57,6 +73,13 @@ module Zm
 
       def jsns_builder
         @jsns_builder ||= AccountJsnsBuilder.new(self)
+      end
+
+      def batch
+        return @batch if defined? @batch
+
+        require 'zm/client/account/batch_request'
+        @batch = BatchRequest.new(self)
       end
 
       private
