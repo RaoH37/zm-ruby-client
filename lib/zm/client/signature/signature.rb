@@ -6,11 +6,16 @@ module Zm
     class Signature < Base::Object
       include RequestMethodsMailbox
 
-      attr_accessor :id, :name, :txt, :html
+      extend Philosophal::Properties
+
+      cprop :id, String
+      cprop :name, String
+      cprop :txt, String
+      cprop :html, String
 
       def create!
         rep = @parent.sacc.invoke(build_create)
-        @id = rep[:CreateSignatureResponse][:signature].first[:id]
+        self.id = rep[:CreateSignatureResponse][:signature].first[:id]
       end
 
       def update!(*args)
