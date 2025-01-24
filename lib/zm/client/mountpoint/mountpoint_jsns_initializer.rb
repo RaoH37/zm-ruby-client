@@ -11,28 +11,12 @@ module Zm
         end
 
         def update(item, json)
-          item.id = json[:id].to_i
-          item.name = json[:name]
-          item.owner = json[:owner]
-          item.rev = json[:rev]
-          item.reminder = json[:reminder]
-          item.ms = json[:ms]
-          item.deletable = json[:deletable]
-          item.rid = json[:rid].to_i
-          item.uuid = json[:uuid]
-          item.url = json[:url]
-          item.f = json[:f]
-          item.broken = json[:broken]
-          item.luuid = json[:luuid]
-          item.ruuid = json[:ruuid]
-          item.activesyncdisabled = json[:activesyncdisabled]
-          item.absFolderPath = json[:absFolderPath]
-          item.view = json[:view]
-          item.zid = json[:zid]
-          item.webOfflineSyncDays = json[:webOfflineSyncDays]
-          item.l = json[:l].to_i
-          item.color = json[:color].to_i
-          item.rgb = json[:rgb].to_i
+          item.cprop_inspect_map.keys.each do |k|
+            next unless json[k]
+
+            setter = :"#{k}="
+            item.send(setter, json[k]) if item.respond_to?(setter)
+          end
 
           item
         end
