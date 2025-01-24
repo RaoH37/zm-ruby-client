@@ -12,18 +12,18 @@ module Zm
 
       extend Philosophal::Properties
 
-      cprop :type, String
+      cprop :type, String, default: :folder
       cprop :id, Integer
       cprop :uuid, String
       cprop :name, String
       cprop :absFolderPath, Pathname
-      cprop :l, Integer
+      cprop :l, Integer, default: FolderDefault::ROOT[:id]
       cprop :luuid, String
       cprop :f, String
       cprop :color, Integer
       cprop :rgb, String
       cprop :u, Integer
-      cprop :view, String
+      cprop :view, String, default: FolderView::MESSAGE
       cprop :rev, Integer
       cprop :ms, Integer
       cprop :md, Integer
@@ -52,8 +52,8 @@ module Zm
       def initialize(parent)
         super(parent)
 
-        self.l = FolderDefault::ROOT[:id]
-        self.type = :folder
+        # self.l = FolderDefault::ROOT[:id]
+        # self.type = :folder
         @folders = []
         @grants = FolderGrantsCollection.new(self)
         @retention_policies = FolderRetentionPoliciesCollection.new(self)

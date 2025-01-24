@@ -45,6 +45,7 @@ module Zm
         if @item.is_immutable?
           action.delete(:name)
           action.delete(:l)
+          action.delete(:view)
         end
 
         attrs = { action: action }

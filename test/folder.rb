@@ -9,7 +9,7 @@ class TestSearchFolder < Minitest::Test
 
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
-    # @admin.logger.debug!
+    @admin.logger.debug!
     @admin.login
 
     @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
@@ -37,7 +37,7 @@ class TestSearchFolder < Minitest::Test
   end
 
   def test_modify
-    folder = @account.folders.first
+    folder = @account.folders.all.reject { |folder| folder.id == Zm::Client::FolderDefault::ROOT[:id] }.first
     folder.color = (1..5).to_a.sample
 
     assert folder.modify!
@@ -112,5 +112,14 @@ class TestSearchFolder < Minitest::Test
     folder2 = folders.find { |f| f.name == new_name }
 
     assert !folder2.nil?
+  end
+
+  def test_default_parent_id
+    folder = @account.folders.new do |f|
+      f.name = "Test parent_id #{Time.now.to_i}"
+      f.color = rand(1..5)
+    end
+    folder.create!
+    assert folder.l == Zm::Client::FolderDefault::ROOT[:id]
   end
 end
