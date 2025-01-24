@@ -4,6 +4,8 @@ module Zm
   module Client
     # class account identity
     class Identity < Base::Object
+      include RequestMethodsMailbox
+
       attr_accessor :id, :name, :zimbraPrefIdentityName, :zimbraPrefFromDisplay, :zimbraPrefFromAddress,
                     :zimbraPrefFromAddressType, :zimbraPrefReplyToEnabled, :zimbraPrefReplyToDisplay,
                     :zimbraPrefReplyToAddress, :zimbraPrefDefaultSignatureId, :zimbraPrefForwardReplySignatureId,
@@ -15,44 +17,12 @@ module Zm
         @id
       end
 
-      def build_create
-        jsns_builder.to_jsns
-      end
-
-      def modify!
-        @parent.sacc.invoke(build_modify)
-        true
-      end
-
-      def build_modify
-        jsns_builder.to_update
-      end
-
-      def update!(hash)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-        do_update!(hash)
-
-        hash.each do |key, value|
-          update_attribute(key, value)
-        end
-
-        true
-      end
-
-      def rename!(new_name)
+      def rename!(*args)
         raise NotImplementedError
       end
 
-      def delete!
-        return if @id.nil?
-
-        @parent.sacc.invoke(build_delete)
-        @id = nil
-      end
-
-      def build_delete
-        jsns_builder.to_delete
+      def build_rename(*args)
+        raise NotImplementedError
       end
 
       def clone
@@ -66,10 +36,6 @@ module Zm
       end
 
       private
-
-      def do_update!(hash)
-        @parent.sacc.invoke(jsns_builder.to_patch(hash))
-      end
 
       def jsns_builder
         @jsns_builder ||= IdentityJsnsBuilder.new(self)

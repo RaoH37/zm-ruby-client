@@ -6,6 +6,7 @@ module Zm
     class Appointment < Base::Object
       include BelongsToFolder
       include BelongsToTag
+      include RequestMethodsMailbox
 
       attr_accessor :id, :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
                     :calItemId, :apptId, :invId, :rev, :fb, :transp
@@ -48,11 +49,6 @@ module Zm
         SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_jsns)
       end
 
-      def modify!
-        @parent.sacc.invoke(build_modify)
-        true
-      end
-
       def build_modify
         SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_update)
       end
@@ -65,15 +61,8 @@ module Zm
         raise NotImplementedError
       end
 
-      def delete!
-        return false if @id.nil?
-
-        @parent.sacc.invoke(build_delete)
-        @id = nil
-      end
-
-      def build_delete
-        jsns_builder.to_delete
+      def build_rename(*args)
+        raise NotImplementedError
       end
 
       def reload!

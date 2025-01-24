@@ -6,6 +6,7 @@ module Zm
     class Message < Base::Object
       include BelongsToFolder
       include BelongsToTag
+      include RequestMethodsMailbox
 
       attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
       attr_reader :recipients, :attachments, :body
@@ -44,7 +45,15 @@ module Zm
         raise NotImplementedError
       end
 
+      def build_create
+        raise NotImplementedError
+      end
+
       def modify!(*args)
+        raise NotImplementedError
+      end
+
+      def build_modify
         raise NotImplementedError
       end
 
@@ -56,15 +65,8 @@ module Zm
         raise NotImplementedError
       end
 
-      def delete!
-        return false if @id.nil?
-
-        @parent.sacc.invoke(build_delete)
-        @id = nil
-      end
-
-      def build_delete
-        jsns_builder.to_delete
+      def build_rename(*args)
+        raise NotImplementedError
       end
 
       def unspam!

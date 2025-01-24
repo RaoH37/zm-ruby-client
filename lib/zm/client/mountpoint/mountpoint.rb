@@ -5,6 +5,7 @@ module Zm
     # class for account mountpoint
     class MountPoint < Base::Object
       include BelongsToFolder
+      include RequestMethodsMailbox
       # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid,
@@ -26,11 +27,11 @@ module Zm
         @id
       end
 
-      def build_create
-        jsns_builder.to_jsns
+      def modify!
+        raise NotImplementedError
       end
 
-      def modify!
+      def build_modify
         raise NotImplementedError
       end
 
@@ -47,30 +48,8 @@ module Zm
         jsns_builder.to_color
       end
 
-      def rename!(new_name)
-        return false if new_name == @name
-
-        @parent.sacc.invoke(build_rename(new_name))
-        @name = new_name
-      end
-
-      def build_rename(new_name)
-        jsns_builder.to_rename(new_name)
-      end
-
       def reload!
         raise NotImplementedError
-      end
-
-      def delete!
-        return false if @id.nil?
-
-        @parent.sacc.invoke(build_delete)
-        @id = nil
-      end
-
-      def build_delete
-        jsns_builder.to_delete
       end
 
       private

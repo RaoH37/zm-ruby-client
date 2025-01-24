@@ -5,6 +5,7 @@ module Zm
     # class for account folder
     class Folder < Base::Object
       include BelongsToFolder
+      include RequestMethodsMailbox
       # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
@@ -44,31 +45,6 @@ module Zm
         @id
       end
 
-      def build_create
-        jsns_builder.to_jsns
-      end
-
-      def modify!
-        @parent.sacc.invoke(build_modify)
-        true
-      end
-
-      def build_modify
-        jsns_builder.to_update
-      end
-
-      def update!(hash)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-        do_update!(hash)
-
-        hash.each do |key, value|
-          update_attribute(key, value)
-        end
-
-        true
-      end
-
       def color!
         @parent.sacc.invoke(build_color)
         true
@@ -76,17 +52,6 @@ module Zm
 
       def build_color
         jsns_builder.to_color
-      end
-
-      def rename!(new_name)
-        return false if new_name == @name
-
-        @parent.sacc.invoke(build_rename(new_name))
-        @name = new_name
-      end
-
-      def build_rename(new_name)
-        jsns_builder.to_rename(new_name)
       end
 
       def reload!
@@ -117,10 +82,6 @@ module Zm
 
         @parent.sacc.invoke(build_delete)
         @id = nil
-      end
-
-      def build_delete
-        jsns_builder.to_delete
       end
 
       def remove_flag!(pattern)
@@ -170,10 +131,6 @@ module Zm
       end
 
       private
-
-      def do_update!(hash)
-        @parent.sacc.invoke(jsns_builder.to_patch(hash))
-      end
 
       def jsns_builder
         @jsns_builder ||= FolderJsnsBuilder.new(self)

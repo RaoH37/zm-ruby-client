@@ -6,6 +6,7 @@ module Zm
       BY = 'by'
       ID = 'id'
       NAME = 'name'
+      EXPIRES = 'expires'
       A = 'a'
       N = 'n'
       TRUE = 'TRUE'

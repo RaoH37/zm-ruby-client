@@ -258,26 +258,6 @@ module Zm
           @password = new_password
         end
 
-        def rename!(email)
-          soap_request = SoapElement.admin(SoapAdminConstants::RENAME_ACCOUNT_REQUEST)
-          soap_request.add_attributes({ id: @id, newName: email })
-          sac.invoke(soap_request)
-
-          @name = email
-        end
-
-        def update!(hash)
-          return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-          do_update!(hash)
-
-          hash.each do |key, value|
-            update_attribute(key, value)
-          end
-
-          true
-        end
-
         def local_transport
           raise Zm::Client::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 

@@ -157,7 +157,7 @@ module Zm
       def batch
         return @batch if defined? @batch
 
-        @batch = BatchRequest.new(self)
+        @batch = BatchRequest.new(@soap_admin_connector)
       end
 
       private

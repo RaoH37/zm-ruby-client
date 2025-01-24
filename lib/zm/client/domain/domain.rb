@@ -5,45 +5,11 @@ module Zm
     # objectClass: zimbraDomain
     class Domain < Base::Object
       include HasSoapAdminConnector
+      include RequestMethodsAdmin
 
       def create!
         resp = sac.invoke(build_create)
         @id = resp[:CreateDomainResponse][:domain].first[:id]
-      end
-
-      def build_create
-        jsns_builder.to_create
-      end
-
-      def modify!
-        sac.invoke(build_modify)
-        true
-      end
-
-      def build_modify
-        jsns_builder.to_update
-      end
-
-      def update!(hash)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-        do_update!(hash)
-
-        hash.each do |key, value|
-          update_attribute(key, value)
-        end
-
-        true
-      end
-
-      def delete!
-        sac.invoke(build_delete)
-        @id = nil
-      end
-
-      def build_delete
-        SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST)
-                   .add_attribute(SoapConstants::ID, @id)
       end
 
       def accounts
@@ -87,12 +53,6 @@ module Zm
 
       def jsns_builder
         @jsns_builder ||= DomainJsnsBuilder.new(self)
-      end
-
-      private
-
-      def do_update!(hash)
-        sac.invoke(jsns_builder.to_patch(hash))
       end
     end
   end

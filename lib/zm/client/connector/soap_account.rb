@@ -42,6 +42,7 @@ module Zm
         soap_request.add_node(node_account)
         node_preauth = SoapElement.create(SoapConstants::PREAUTH)
                                   .add_attribute(SoapConstants::TIMESTAMP, ts)
+                                  .add_attribute(SoapConstants::EXPIRES, expires)
                                   .add_content(preauth)
         soap_request.add_node(node_preauth)
 

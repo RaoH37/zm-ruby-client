@@ -6,6 +6,8 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
+      include RequestMethodsAdmin
+
       # #################################################################
       # Associations
       # #################################################################
@@ -22,31 +24,9 @@ module Zm
       # SOAP Actions
       # #################################################################
 
-      def delete!
-        sac.invoke(build_delete)
-        @id = nil
-      end
-
-      def build_delete
-        jsns_builder.to_delete
-      end
-
-      def modify!
-        sac.invoke(build_modify)
-        true
-      end
-
-      def build_modify
-        jsns_builder.to_update
-      end
-
       def create!
         resp = sac.invoke(build_create)
         @id = resp[:CreateAccountResponse][:account].first[:id]
-      end
-
-      def build_create
-        jsns_builder.to_create
       end
 
       def created_at
@@ -78,8 +58,7 @@ module Zm
       def batch
         return @batch if defined? @batch
 
-        require 'zm/client/account/batch_request'
-        @batch = BatchRequest.new(self)
+        @batch = BatchRequest.new(soap_account_connector)
       end
 
       private

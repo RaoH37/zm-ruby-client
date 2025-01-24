@@ -4,35 +4,15 @@ module Zm
   module Client
     # objectClass: zimbraCalendarResource
     class Resource < Base::MailboxObject
+      include RequestMethodsAdmin
+
       LOCATION = 'Location'
       EQUIPMENT = 'Equipment'
       TYPES = [LOCATION, EQUIPMENT].freeze
 
-      def delete!
-        sac.invoke(build_delete)
-        @id = nil
-      end
-
-      def build_delete
-        jsns_builder.to_delete
-      end
-
-      def modify!
-        sac.invoke(build_modify)
-        true
-      end
-
-      def build_modify
-        jsns_builder.to_update
-      end
-
       def create!
         resp = sac.invoke(build_create)
         @id = resp[:CreateCalendarResourceResponse][:calresource].first[:id]
-      end
-
-      def build_create
-        jsns_builder.to_create
       end
 
       def attrs_write
@@ -49,12 +29,6 @@ module Zm
 
       def jsns_builder
         @jsns_builder ||= ResourceJsnsBuilder.new(self)
-      end
-
-      private
-
-      def do_update!(hash)
-        sac.invoke(jsns_builder.to_patch(hash))
       end
     end
   end

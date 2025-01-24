@@ -4,6 +4,8 @@ module Zm
   module Client
     # class account data source
     class DataSource < Base::Object
+      include RequestMethodsMailbox
+
       TYPES = %i[cal caldav yab gal imap pop3 rss unknown].freeze
 
       attr_accessor :a, :cconnectionType, :cdefaultSignature, :cemailAddress, :cfailingSince,
@@ -28,42 +30,27 @@ module Zm
         raise NotImplementedError
       end
 
+      def build_create
+        raise NotImplementedError
+      end
+
       def modify!
         raise NotImplementedError
       end
 
-      def update!(hash)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
-
-        do_update!(hash)
-
-        hash.each do |key, value|
-          update_attribute(key, value)
-        end
-
-        true
-      end
-
-      def rename!(new_name)
+      def build_modify
         raise NotImplementedError
       end
 
-      def delete!
-        return false if @id.nil?
-
-        @parent.sacc.invoke(build_delete)
-        @id = nil
+      def rename!(*args)
+        raise NotImplementedError
       end
 
-      def build_delete
-        jsns_builder.to_delete
+      def build_rename(*args)
+        raise NotImplementedError
       end
 
       private
-
-      def do_update!(hash)
-        @parent.sacc.invoke(jsns_builder.to_patch(hash))
-      end
 
       def jsns_builder
         @jsns_builder ||= DataSourceJsnsBuilder.new(self)
