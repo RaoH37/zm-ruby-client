@@ -8,12 +8,31 @@ module Zm
       include BelongsToTag
       include RequestMethodsMailbox
 
-      attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
+      # attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :subject
+      attr_accessor :tn
       attr_reader :recipients, :attachments, :body
+
+      extend Philosophal::Properties
+
+      cprop :id, Integer
+      cprop :d, Integer
+      cprop :l, Integer, default: FolderDefault::INBOX[:id]
+      cprop :f, String
+      cprop :su, String
+      cprop :fr, String
+      cprop :autoSendTime, Time
+      cprop :mid, String
+      cprop :idnt, String
+      cprop :subject, String, default: ''
+      cprop :s, Integer
+      cprop :cid, Integer
+      cprop :rev, Integer
+      cprop :sd, Integer
+      cprop :isEncrypted, _Boolean, default: false
+      cprop :isSigned, _Boolean, default: false
 
       def initialize(parent)
         @parent = parent
-        @subject = ''
 
         @recipients = Recipients.new
         @body = Body.new
@@ -34,7 +53,7 @@ module Zm
       end
 
       def date
-        @date ||= Time.at(d.to_i / 1000)
+        @date ||= Time.at(d / 1000)
       end
 
       def flags

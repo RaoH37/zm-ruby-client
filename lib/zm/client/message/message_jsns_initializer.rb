@@ -11,16 +11,14 @@ module Zm
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.d = json[:d]
-          item.l    = json[:l]
-          item.su   = json[:su]
-          item.fr   = json[:fr]
-          item.autoSendTime = json[:autoSendTime]
-          item.mid  = json[:mid]
-          item.idnt = json[:idnt]
-          item.f = json[:f]
           item.tn = json[:tn].to_s.split(',')
+
+          item.cprop_inspect_map.keys.each do |k|
+            next unless json[k]
+
+            setter = :"#{k}="
+            item.send(setter, json[k]) if item.respond_to?(setter)
+          end
 
           json[:e].each do |e|
             recipient = Recipient.new(e[:t], e[:a], e[:p])

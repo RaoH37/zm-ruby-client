@@ -9,6 +9,7 @@ class TestMessages < Minitest::Test
 
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
+    @admin.logger.debug!
     @admin.login
 
     @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
@@ -17,7 +18,7 @@ class TestMessages < Minitest::Test
   end
 
   def test_all
-    messages = @account.messages.all
+    messages = @account.messages.where('inid:2').all
     assert messages.any?
   end
 end
