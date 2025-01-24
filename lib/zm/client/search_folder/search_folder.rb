@@ -7,17 +7,24 @@ module Zm
       # include Zm::Model::AttributeChangeObserver
       include RequestMethodsMailbox
 
-      attr_accessor :id, :uuid, :deletable, :name, :absFolderPath, :l, :luuid, :color, :rgb, :rev, :ms,
-                    :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types,
-                    :name, :color, :rgb, :l, :query, :sortBy
+      extend Philosophal::Properties
 
-      # define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
-
-      def initialize(parent)
-        @l = FolderDefault::ROOT[:id]
-        @types = 'messages'
-        super(parent)
-      end
+      cprop :id, Integer
+      cprop :uuid, String
+      cprop :name, String
+      cprop :absFolderPath, Pathname
+      cprop :l, Integer, default: FolderDefault::ROOT[:id]
+      cprop :luuid, String
+      cprop :color, Integer
+      cprop :rgb, String
+      cprop :rev, Integer
+      cprop :ms, Integer
+      cprop :webOfflineSyncDays, Integer
+      cprop :activesyncdisabled, _Boolean
+      cprop :deletable, _Boolean
+      cprop :query, String
+      cprop :sortBy, String
+      cprop :types, String, default: 'messages'
 
       def create!
         rep = @parent.sacc.invoke(build_create)
