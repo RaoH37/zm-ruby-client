@@ -24,7 +24,7 @@ class TestSearchFolder < Minitest::Test
 
   def test_find
     folder = @account.folders.find(10)
-    assert folder.id.to_i == 10
+    assert folder.id == 10
   end
 
   def test_create
@@ -83,7 +83,7 @@ class TestSearchFolder < Minitest::Test
   end
 
   def test_move
-    folder = @account.folders.all.find { |f| !f.is_immutable? && f.l.to_i != 2 }
+    folder = @account.folders.all.find { |f| !f.is_immutable? && f.l != 2 }
     current_l = folder.l
     folder.move!(2)
 
