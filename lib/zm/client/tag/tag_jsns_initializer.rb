@@ -11,10 +11,12 @@ module Zm
         end
 
         def update(item, json)
-          item.id = json[:id].to_i
-          item.name = json[:name]
-          item.color = json[:color].to_i
-          item.rgb = json[:rgb]
+          item.cprop_inspect_map.keys.each do |k|
+            next unless json[k]
+
+            setter = :"#{k}="
+            item.send(setter, json[k]) if item.respond_to?(setter)
+          end
 
           item
         end

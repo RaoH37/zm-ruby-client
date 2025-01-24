@@ -77,6 +77,7 @@ module Zm
         json_response = @cache.fetch(json_body) do
           @logger.debug "Load from remote"
           response = http_client.post(@soap_path, json_body)
+          @logger.debug response.body
 
           if response.status >= 400
             raise(error_handler, JSON.parse(response.body, symbolize_names: true))

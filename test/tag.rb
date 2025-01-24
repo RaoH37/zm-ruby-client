@@ -9,6 +9,7 @@ class TestTAg < Minitest::Test
 
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
+    @admin.logger.debug!
     @admin.login
 
     @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))

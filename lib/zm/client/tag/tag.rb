@@ -4,12 +4,14 @@ module Zm
   module Client
     # class account tag
     class Tag < Base::Object
-      # include Zm::Model::AttributeChangeObserver
       include RequestMethodsMailbox
 
-      attr_accessor :id, :name, :color, :rgb
+      extend Philosophal::Properties
 
-      # define_changed_attributes :name, :color, :rgb
+      cprop :id, Integer
+      cprop :name, String
+      cprop :color, Integer
+      cprop :rgb, String
 
       def create!
         rep = @parent.sacc.invoke(build_create)
