@@ -9,6 +9,7 @@ class TestAccount < Minitest::Test
 
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
+    @admin.logger.debug!
     @admin.login
 
     @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
@@ -93,14 +94,16 @@ class TestAccount < Minitest::Test
   end
 
   def test_create_account
+    name = "#{Time.now.to_i}_#{@fixture_accounts['accounts']['unittest']['email']}"
+
     account = @admin.accounts.new
-    account.name = @fixture_accounts['accounts']['unittest']['email']
+    account.name = name
     account.description = @fixture_accounts['accounts']['unittest']['description']
     account.create!
 
     assert !account.id.nil?
 
-    unittest = @admin.accounts.attrs('description').find_by name: @fixture_accounts['accounts']['unittest']['email']
+    unittest = @admin.accounts.attrs('description').find_by name: name
     assert unittest.description == @fixture_accounts['accounts']['unittest']['description']
 
     unittest.delete!

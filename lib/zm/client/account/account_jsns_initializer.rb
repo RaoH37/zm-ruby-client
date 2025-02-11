@@ -17,8 +17,14 @@ module Zm
           item.used = json[:used] unless json[:used].nil?
           item.zimbraMailQuota = json[:limit] unless json[:limit].nil?
 
-          formatted_json(json).each do |k, v|
-            valorise(item, k, v)
+          fjson = formatted_json(json)
+          fjson.transform_keys! { |k| :"#{k}=" }
+
+          # formatted_json(json).each do |k, v|
+          fjson.each do |k, v|
+            # valorise(item, k, v)
+            setter = :"#{k}="
+            item.send(setter, v) if item.respond_to? setter
           end
 
           item

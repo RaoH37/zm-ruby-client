@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'zm/client/account/account_attrs'
 require 'zm/client/account/account_aliases_collection'
 
 module Zm
@@ -7,6 +8,7 @@ module Zm
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
       include RequestMethodsAdmin
+      include AccountAttrs
 
       # #################################################################
       # Associations
@@ -45,10 +47,6 @@ module Zm
         node_entry = SoapElement.create('entry').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@id)
         node_cache.add_node(node_entry)
         soap_request
-      end
-
-      def attrs_write
-        @parent.zimbra_attributes.all_account_attrs_writable_names
       end
 
       def jsns_builder

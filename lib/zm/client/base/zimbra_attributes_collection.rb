@@ -9,7 +9,7 @@ module Zm
       class ZimbraAttributesCollection
         include MissingMethodStaticCollection
 
-        attr_reader :all_versioned
+        attr_reader :all_versioned, :all
 
         def initialize(parent)
           @parent = parent
@@ -30,7 +30,7 @@ module Zm
           set_server_methods
           set_cos_methods
           set_domain_methods
-          set_account_methods
+          # set_account_methods
           set_distributionlist_methods
           set_resource_methods
         end

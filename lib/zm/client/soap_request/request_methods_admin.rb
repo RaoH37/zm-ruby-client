@@ -31,7 +31,9 @@ module Zm
         do_update!(hash)
 
         hash.each do |key, value|
-          update_attribute(key, value)
+          setter = :"#{key}="
+          send(setter, value) if respond_to?(setter)
+          # update_attribute(key, value)
         end
 
         true
@@ -46,7 +48,9 @@ module Zm
         jsns_builder.to_rename(new_name)
       end
 
-      private def do_update!(hash)
+      private
+
+      def do_update!(hash)
         sac.invoke(jsns_builder.to_patch(hash))
       end
     end

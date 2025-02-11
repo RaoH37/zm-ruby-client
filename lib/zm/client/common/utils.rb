@@ -9,6 +9,10 @@ module Zm
       A_NODE_PROC = ->(n) { { n: n.first, _content: n.last } }
       ARROW = '@'
       EQUALS = '='
+      TRUE_FALSE_STR_H = {
+        true => 'TRUE',
+        false => 'FALSE'
+      }.freeze
 
       class << self
         def format_email(email)
@@ -36,6 +40,12 @@ module Zm
 
         def arrow_name_sym(name)
           arrow_name(name).to_sym
+        end
+
+        def convert_bool_to_str(bool)
+          return bool unless bool.is_a?(TrueClass) || bool.is_a?(FalseClass)
+
+          TRUE_FALSE_STR_H[bool]
         end
 
         def equals_name(name)
