@@ -106,9 +106,11 @@ module Zm
       alias distribution_lists distributionlists
 
       def domain_key(domain_name)
-        key = @config.domain_key(domain_name)
-        key ||= find_domain_key(domain_name)
-        key
+        if logged?
+          find_domain_key(domain_name)
+        else
+          @config.domain_key(domain_name)
+        end
       end
 
       def count_object(type)
