@@ -8,6 +8,7 @@ module Zm
       end
 
       def folder=(folder)
+        return if folder.nil?
         return unless @l != folder.id
 
         @l = folder.id
@@ -24,9 +25,11 @@ module Zm
 
       def move!(new_folder_id)
         new_folder_id = new_folder_id.id if new_folder_id.is_a?(Zm::Client::Folder)
+        return if new_folder_id == @l
+
         @parent.sacc.invoke(jsns_builder.to_move(new_folder_id))
+        @folder = nil
         @l = new_folder_id
-        folder!
       end
 
       def trash!
