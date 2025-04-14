@@ -124,7 +124,7 @@ zimbraPrefTimeZoneId,"account,cos,domain","accountCosDomainInherited,domainAdmin
 zimbraPrefUseTimeZoneListInCalendar,"account,cos","accountInherited,domainAdminModifiable",,single,,,boolean,,,,
 zimbraPrefCalendarInitialView,"account,cos","accountInherited,domainAdminModifiable",,single,,,enum,"day,week,workWeek,month,list,year",,,
 zimbraPrefImapSearchFoldersEnabled,"account,cos","accountInherited,domainAdminModifiable",,single,,,boolean,,,,
-zimbraMailTransport,mailRecipient,,,single,,,astring,,320,,
+zimbraMailTransport,"mailRecipient,domain",,,single,,,astring,,320,,
 zimbraAuthLdapExternalDn,account,domainAdminModifiable,,single,,,,,256,,
 zimbraPrefHtmlEditorDefaultFontFamily,"account,cos","accountInherited,domainAdminModifiable",,single,,,,,64,,
 zimbraPrefHtmlEditorDefaultFontSize,"account,cos","accountInherited,domainAdminModifiable",,single,,,astring,,32,,
@@ -734,3 +734,4 @@ zimbraRecoveryAccountCodeValidity,"account,cos,calendarResource",,,single,,,cstr
 zimbraResetPasswordRecoveryCodeExpiry,"account,cos,calendarResource",,,single,,,cstring,,,,
 zimbraShowClientTOS,"account,domain,cos,calendarResource",,,single,,,cstring,,,,
 zimbraDistributionListSendShareMessageToNewMembers,distributionList,,,single,,,boolean,,,,
+zimbraServiceEnabled,,,server,multi,,,cstring,,,,
