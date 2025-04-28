@@ -7,7 +7,7 @@ module Zm
       EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[@id @name @parent @l @type @tn @jsns_builder].freeze
 
       def to_jsns
-        {
+        jsns = {
           cn: {
             a: instance_variables_array.map(&Utils::A_NODE_PROC),
             l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS[:id],
@@ -31,7 +31,7 @@ module Zm
       end
 
       def to_patch(hash)
-        {
+        jsns = {
           cn: {
             id: @item.id,
             a: hash.map(&Utils::A_ARRAY_PROC).flatten(1).map(&Utils::A_NODE_PROC)
@@ -50,7 +50,7 @@ module Zm
       end
 
       def instance_variables_array
-        [[:nickname, @item.name], [:fullname, @item.name], [:fileAs, "8:#{@item.name}"], %i[type group]]
+        [[:nickname, @item.name], [:fullName, @item.name], [:fileAs, "8:#{@item.name}"], %i[type group]]
       end
     end
   end

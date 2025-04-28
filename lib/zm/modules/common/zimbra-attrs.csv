@@ -734,3 +734,4 @@ zimbraRecoveryAccountCodeValidity,"account,cos,calendarResource",,,single,,,cstr
 zimbraResetPasswordRecoveryCodeExpiry,"account,cos,calendarResource",,,single,,,cstring,,,,
 zimbraShowClientTOS,"account,domain,cos,calendarResource",,,single,,,cstring,,,,
 zimbraDistributionListSendShareMessageToNewMembers,distributionList,,,single,,,boolean,,,,
+zimbraServiceEnabled,,,server,multi,,,cstring,,,,

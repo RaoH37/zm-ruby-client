@@ -23,11 +23,13 @@ module Zm
       end
 
       def sections(*entries)
+        entries.flatten!
         @sections += entries
         self
       end
 
       def rights(*entries)
+        entries.flatten!
         @rights += entries
         self
       end
