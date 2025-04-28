@@ -19,28 +19,21 @@ module Zm
       def where(view: nil, tr: nil)
         @view = view
         @tr = tr
+        @all = nil
         self
       end
 
       def clear
-
+        @all = nil
         @root = nil
         reset_query_params
       end
 
-      def jsns_builder
-        @jsns_builder ||= FoldersJsnsBuilder.new(self)
-      end
+      private
 
       def make_query
-        @parent.sacc.invoke(build_query)
+        @parent.sacc.invoke(jsns_builder.to_jsns)
       end
-
-      def build_query
-        jsns_builder.to_jsns
-      end
-
-      private
 
       def reset_query_params
         @view = nil
@@ -48,6 +41,10 @@ module Zm
         @visible = nil
         @needGranteeName = nil
         @depth = nil
+      end
+
+      def jsns_builder
+        @jsns_builder ||= FoldersJsnsBuilder.new(self)
       end
     end
   end

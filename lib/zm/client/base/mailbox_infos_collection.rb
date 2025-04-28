@@ -10,12 +10,16 @@ module Zm
       end
 
       def all
+        @all || all!
+      end
+
+      def all!
         build_response
       end
-      alias all! all
 
       def clear
         reset_query_params
+        @all.clear
       end
 
       def sections(*entries)
@@ -50,13 +54,9 @@ module Zm
         soap_request = SoapElement.account(SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
 
         if @parent.id
-          node_entry = SoapElement.create(SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapConstants::BY, SoapConstants::ID)
-                                  .add_content(@parent.id)
+          node_entry = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@parent.id)
         else
-          node_entry = SoapElement.create(SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapConstants::BY, SoapConstants::NAME)
-                                  .add_content(@parent.name)
+          node_entry = SoapElement.create(SoapConstants::ACCOUNT).add_attribute(SoapConstants::BY, SoapConstants::NAME).add_content(@parent.name)
         end
 
         soap_request.add_node(node_entry)
@@ -67,7 +67,7 @@ module Zm
       private
 
       def build_response
-        make_query[:GetInfoResponse]
+        @all = make_query[:GetInfoResponse]
       end
 
       def make_query

@@ -59,13 +59,9 @@ module Zm
         node_name = SoapElement.create(SoapConstants::NAME).add_content(new_name)
 
         if @item.id
-          node_cos = SoapElement.create(SoapConstants::COS)
-                                .add_attribute(SoapConstants::BY, SoapConstants::ID)
-                                .add_content(@item.id)
+          node_cos = SoapElement.create(SoapConstants::COS).add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@item.id)
         elsif @item.name
-          node_cos = SoapElement.create(SoapConstants::COS)
-                                .add_attribute(SoapConstants::BY, SoapConstants::NAME)
-                                .add_content(@item.name)
+          node_cos = SoapElement.create(SoapConstants::COS).add_attribute(SoapConstants::BY, SoapConstants::NAME).add_content(@item.name)
         else
           raise Zm::Client::ZmError, 'id or name attributes are required to clone cos'
         end

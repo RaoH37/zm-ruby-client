@@ -6,7 +6,6 @@ module Zm
     class Message < Base::Object
       include BelongsToFolder
       include BelongsToTag
-      include RequestMethodsMailbox
 
       attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
       attr_reader :recipients, :attachments, :body
@@ -24,13 +23,7 @@ module Zm
 
       def download(dest_file_path, fmt = 'eml')
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(
-          Zm::Client::FolderDefault::ROOT[:path],
-          fmt,
-          [Zm::Client::FolderView::MESSAGE],
-          [@id],
-          dest_file_path
-        )
+        uploader.download_file( Zm::Client::FolderDefault::ROOT[:path], fmt, [Zm::Client::FolderView::MESSAGE], [@id], dest_file_path)
       end
 
       def date
@@ -45,15 +38,7 @@ module Zm
         raise NotImplementedError
       end
 
-      def build_create
-        raise NotImplementedError
-      end
-
       def modify!(*args)
-        raise NotImplementedError
-      end
-
-      def build_modify
         raise NotImplementedError
       end
 
@@ -65,32 +50,24 @@ module Zm
         raise NotImplementedError
       end
 
-      def build_rename(*args)
-        raise NotImplementedError
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       def unspam!
-        @parent.sacc.invoke(build_unspam)
-      end
-
-      def build_unspam
-        jsns_builder.to_unspam
+        @parent.sacc.invoke(jsns_builder.to_unspam)
       end
 
       def spam!
-        @parent.sacc.invoke(build_spam)
-      end
-
-      def build_spam
-        jsns_builder.to_spam
+        @parent.sacc.invoke(jsns_builder.to_spam)
       end
 
       def send!
-        @parent.sacc.invoke(build_send)
-      end
-
-      def build_send
-        SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST).add_attributes(jsns_builder.to_jsns)
+        soap_request = SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST).add_attributes(jsns_builder.to_jsns)
+        @parent.sacc.invoke(soap_request)
       end
 
       # content fo an email

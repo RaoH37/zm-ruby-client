@@ -12,6 +12,9 @@ module Zm
         end
 
         def find_by(hash)
+          item = find_in_cache(hash)
+          return item unless item.nil?
+
           find_by!(hash)
         end
 
@@ -22,26 +25,28 @@ module Zm
         end
 
         def ldap
+          @all = nil
           @apply_cos = SoapUtils::OFF
           self
         end
 
         def where(ldap_query)
-          ldap_filter.add(ldap_query)
+          @all = nil if ldap_filter.add(ldap_query)
 
           self
         end
 
-        def attrs(*attributes)
-          attributes.flatten!
-          attributes.map! { |attr| attr.to_s.strip }
-          attributes.sort!
-          attributes.uniq!
-          attributes.delete_if { |attr| attr.nil? || attr.empty? }
+        def attrs(*attrs)
+          attrs.map!(&:to_s)
+          attrs.map!(&:strip)
+          attrs.sort!
+          attrs.uniq!
+          attrs.delete_if { |attr| attr.nil? || attr.empty? }
 
-          return self if @attrs == attributes
+          return self if @attrs == attrs
 
-          @attrs = attributes
+          @all = nil
+          @attrs = attrs
           self
         end
 
@@ -54,6 +59,7 @@ module Zm
         end
 
         def clear
+          @all = nil
           ldap_filter.clear
           reset_query_params
           self
@@ -81,20 +87,24 @@ module Zm
           @persistent = previous_persistent
         end
 
+        private
+
         def make_query
-          response = sac.invoke(build_query)
+          soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
+          soap_request.add_attributes(jsns)
+          response = sac.invoke(soap_request)
           clear unless @persistent
           response
         end
 
-        def build_query
-          SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST).add_attributes(jsns)
-        end
-
-        private
-
         def ldap_filter
           @ldap_filter ||= LdapFilter.new
+        end
+
+        def find_in_cache(hash)
+          return nil if @all.nil?
+
+          @all.find { |item| item.send(hash.keys.first) == hash.values.first }
         end
 
         def jsns

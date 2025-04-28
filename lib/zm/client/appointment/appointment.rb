@@ -6,7 +6,6 @@ module Zm
     class Appointment < Base::Object
       include BelongsToFolder
       include BelongsToTag
-      include RequestMethodsMailbox
 
       attr_accessor :id, :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
                     :calItemId, :apptId, :invId, :rev, :fb, :transp
@@ -27,17 +26,12 @@ module Zm
 
       def download(dest_file_path, fmt = 'ics')
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(
-          Zm::Client::FolderDefault::ROOT[:path],
-          fmt,
-          [Zm::Client::FolderView::APPOINTMENT],
-          [@id],
-          dest_file_path
-        )
+        uploader.download_file(Zm::Client::FolderDefault::ROOT[:path], fmt, [Zm::Client::FolderView::APPOINTMENT], [@id], dest_file_path)
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        soap_request = SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_jsns)
+        rep = @parent.sacc.invoke(soap_request)
 
         aji = AppointmentJsnsInitializer.new(@parent, rep[:CreateAppointmentResponse])
         aji.appointment = self
@@ -45,12 +39,10 @@ module Zm
         @id
       end
 
-      def build_create
-        SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_jsns)
-      end
-
-      def build_modify
-        SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_update)
+      def modify!
+        soap_request = SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_update)
+        @parent.sacc.invoke(soap_request)
+        true
       end
 
       def update!(*args)
@@ -61,8 +53,11 @@ module Zm
         raise NotImplementedError
       end
 
-      def build_rename(*args)
-        raise NotImplementedError
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       def reload!
@@ -148,6 +143,8 @@ module Zm
           @rsvp = rsvp
         end
       end
+
+      private
 
       def jsns_builder
         @jsns_builder ||= AppointmentJsnsBuilder.new(self)

@@ -39,16 +39,16 @@ module Zm
 
         File.open(dest_file_path, 'wb') do |f|
           response = conn.get(path) do |request|
-            request.options.on_data = proc do |chunk, _, _|
+            request.options.on_data = Proc.new do |chunk, _, _|
               f.write chunk
             end
           end
         end
 
-        return unless response.status >= 400
-
-        File.unlink(dest_file_path) if File.exist?(dest_file_path)
-        raise RestError, "Download failure: #{response.body} (status=#{response.status})"
+        if response.status >= 400
+          File.unlink(dest_file_path) if File.exist?(dest_file_path)
+          raise RestError, "Download failure: #{response.body} (status=#{response.status})"
+        end
       end
 
       def upload(upload_url, src_file_path)

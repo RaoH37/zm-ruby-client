@@ -11,8 +11,7 @@ module Zm
       private
 
       def make_query
-        soap_request = SoapElement.admin(SoapAdminConstants::BACKUP_QUERY_REQUEST)
-                                  .add_attribute(SoapConstants::QUERY, {})
+        soap_request = SoapElement.admin(SoapAdminConstants::BACKUP_QUERY_REQUEST).add_attribute(SoapConstants::QUERY, {})
         sac.target_invoke(soap_request, @parent.id)
       end
 

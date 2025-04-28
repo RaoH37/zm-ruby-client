@@ -25,6 +25,8 @@ module Zm
         true
       end
 
+      private
+
       def jsns_builder
         @jsns_builder ||= AceJsnsBuilder.new(self)
       end

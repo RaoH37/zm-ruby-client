@@ -10,12 +10,11 @@ module Zm
         super(parent)
       end
 
-      def make_query
-        @parent.sacc.invoke(build_query)
-      end
+      private
 
-      def build_query
-        SoapElement.mail(SoapMailConstants::GET_FILTER_RULES_REQUEST)
+      def make_query
+        soap_request = SoapElement.mail(SoapMailConstants::GET_FILTER_RULES_REQUEST)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end

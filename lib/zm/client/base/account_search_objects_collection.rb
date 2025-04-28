@@ -14,14 +14,13 @@ module Zm
         end
 
         def find(id)
-          rep = @parent.sacc.invoke(build_find(id))
+          jsns = { m: { id: id, html: 1 } }
+
+          soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes(jsns)
+          rep = @parent.sacc.invoke(soap_request)
           entry = rep[:GetMsgResponse][:m].first
 
           MessageJsnsInitializer.create(@parent, entry)
-        end
-
-        def build_find(id)
-          SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes({ m: { id: id, html: 1 } })
         end
 
         def start_at(start_at)
@@ -58,6 +57,7 @@ module Zm
         def order(sort_by)
           return self if @sort_by == sort_by
 
+          @all = nil
           @sort_by = sort_by
           self
         end
@@ -71,11 +71,9 @@ module Zm
           reset_query_params
         end
 
-        def make_query
-          @parent.sacc.invoke(build_query)
-        end
+        private
 
-        def build_query
+        def make_query
           jsns = {
             types: @type,
             offset: @offset,
@@ -89,10 +87,9 @@ module Zm
 
           jsns.reject! { |_, v| v.nil? }
 
-          SoapElement.mail(SoapMailConstants::SEARCH_REQUEST).add_attributes(jsns)
+          soap_request = SoapElement.mail(SoapMailConstants::SEARCH_REQUEST).add_attributes(jsns)
+          @parent.sacc.invoke(soap_request)
         end
-
-        private
 
         def search_builder
           @builder_class.new(@parent, search_response)

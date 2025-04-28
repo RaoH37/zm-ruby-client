@@ -10,8 +10,6 @@ require 'zm/client/domain'
 require 'zm/client/server'
 require 'zm/client/cos'
 require 'zm/client/license'
-require 'zm/client/cluster/batch_request'
-
 
 module Zm
   module Client
@@ -21,6 +19,8 @@ module Zm
                   :majorversion, :minorversion, :microversion
 
       def initialize(config)
+        # extend(ZmLogger)
+
         @config = config
         @version = config.zimbra_version
 
@@ -35,11 +35,11 @@ module Zm
       end
 
       def token
-        @token ||= (Token.new(@soap_admin_connector.token) if @soap_admin_connector.token)
+        @soap_admin_connector.token
       end
 
       def token=(value)
-        @token = Token.new(@soap_admin_connector.token = value)
+        @soap_admin_connector.token= value
       end
 
       def login
@@ -52,12 +52,11 @@ module Zm
         soap_request = SoapElement.admin(SoapAdminConstants::AUTH_REQUEST)
         soap_request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
         soap_resp = @soap_admin_connector.invoke(soap_request, Zm::Client::AuthError)
-        soap_resp_token = soap_resp[:AuthResponse][:authToken].first[:_content]
-        self.token = soap_resp_token
+        @soap_admin_connector.context.token(soap_resp[:AuthResponse][:authToken].first[:_content])
       end
 
       def logged?
-        !token.nil? && !token.expired?
+        !@soap_admin_connector.token.nil?
       end
 
       def alive?
@@ -69,8 +68,8 @@ module Zm
         false
       end
 
-      def logged_and_alive?
-        logged? && alive?
+      def token_metadata
+        @token_metadata ||= TokenMetaData.new(@soap_admin_connector.token)
       end
 
       def license
@@ -107,9 +106,11 @@ module Zm
       alias distribution_lists distributionlists
 
       def domain_key(domain_name)
-        key = @config.domain_key(domain_name)
-        key ||= find_domain_key(domain_name)
-        key
+        if logged?
+          find_domain_key(domain_name)
+        else
+          @config.domain_key(domain_name)
+        end
       end
 
       def count_object(type)
@@ -150,20 +151,14 @@ module Zm
         instance_variable_set(:@microversion, json[:microversion])
       end
 
-      def logger
-        @config.logger
-      end
-
-      def batch
-        return @batch if defined? @batch
-
-        @batch = BatchRequest.new(@soap_admin_connector)
-      end
-
       private
 
       def find_domain_key(domain_name)
         domains.attrs('zimbraPreAuthKey').find_by(name: domain_name).zimbraPreAuthKey
+      end
+
+      def logger
+        @config.logger
       end
     end
   end

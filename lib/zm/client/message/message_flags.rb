@@ -10,7 +10,11 @@ module Zm
         end
 
         def all
-          @all ||= @parent.f.to_s.chars
+          @all || all!
+        end
+
+        def all!
+          @parent.f.to_s.chars
         end
 
         # properties
@@ -70,35 +74,23 @@ module Zm
         # actions
 
         def unread!
-          @parent.sacc.invoke(build_unread)
-        end
-
-        def build_unread
-          build({ op: '!read', id: @parent.id })
+          attrs = { op: '!read', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
         end
 
         def read!
-          @parent.sacc.invoke(build_read)
-        end
-
-        def build_read
-          build({ op: 'read', id: @parent.id })
+          attrs = { op: 'read', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
         end
 
         def unflag!
-          @parent.sacc.invoke(build_unflag)
-        end
-
-        def build_unflag
-          build({ op: '!flag', id: @parent.id })
+          attrs = { op: '!flag', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
         end
 
         def flag!
-          @parent.sacc.invoke(build_flag)
-        end
-
-        def build_flag
-          build({ op: 'flag', id: @parent.id })
+          attrs = { op: 'flag', id: @parent.id }
+          @parent.sacc.invoke(build(attrs))
         end
 
         private

@@ -10,7 +10,6 @@ module Zm
     # objectClass: zimbraDistributionList
     class DistributionList < Base::Object
       include HasSoapAdminConnector
-      include RequestMethodsAdmin
 
       def aliases
         @aliases ||= DistributionListAliasesCollection.new(self)
@@ -33,8 +32,35 @@ module Zm
       end
 
       def create!
-        resp = sac.invoke(build_create)
+        resp = sac.invoke(jsns_builder.to_create)
         @id = resp[:CreateDistributionListResponse][:dl].first[:id]
+      end
+
+      def modify!
+        sac.invoke(jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
+        true
+      end
+
+      def rename!(new_name)
+        sac.invoke(jsns_builder.to_rename(new_name))
+        @name = new_name
+      end
+
+      def delete!
+        sac.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       def local_transport
@@ -73,6 +99,12 @@ module Zm
 
       def attrs_write
         @parent.zimbra_attributes.all_distributionlist_attrs_writable_names
+      end
+
+      private
+
+      def do_update!(hash)
+        sac.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

@@ -12,21 +12,18 @@ module Zm
         soap_request = SoapElement.account(SoapAccountConstants::CREATE_SIGNATURE_REQUEST)
         node_signature = SoapElement.create(SoapConstants::SIGNATURE).add_attributes({ name: @signature.name })
         soap_request.add_node(node_signature)
-        node_content = SoapElement.create(SoapConstants::CONTENT)
-                                  .add_attribute(SoapConstants::TYPE, @signature.type)
-                                  .add_content(@signature.content)
+        node_content = SoapElement.create(SoapConstants::CONTENT).add_attribute(SoapConstants::TYPE,
+                                                                   @signature.type).add_content(@signature.content)
         node_signature.add_node(node_content)
         soap_request
       end
 
       def to_update
         soap_request = SoapElement.account(SoapAccountConstants::MODIFY_SIGNATURE_REQUEST)
-        node_signature = SoapElement.create(SoapConstants::SIGNATURE)
-                                    .add_attributes({ name: @signature.name, id: @signature.id })
+        node_signature = SoapElement.create(SoapConstants::SIGNATURE).add_attributes({ name: @signature.name, id: @signature.id })
         soap_request.add_node(node_signature)
-        node_content = SoapElement.create(SoapConstants::CONTENT)
-                                  .add_attribute(SoapConstants::TYPE, @signature.type)
-                                  .add_content(@signature.content)
+        node_content = SoapElement.create(SoapConstants::CONTENT).add_attribute(SoapConstants::TYPE,
+                                                                   @signature.type).add_content(@signature.content)
         node_signature.add_node(node_content)
         soap_request
       end

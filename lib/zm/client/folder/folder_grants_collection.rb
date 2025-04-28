@@ -60,6 +60,10 @@ module Zm
       end
 
       alias sacc soap_account_connector
+
+      def to_s
+        @all.map(&:to_s)
+      end
     end
   end
 end

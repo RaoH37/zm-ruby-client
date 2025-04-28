@@ -6,7 +6,6 @@ module Zm
     class Contact < Base::Object
       include BelongsToFolder
       include BelongsToTag
-      include RequestMethodsMailbox
 
       GROUP_PATTERN = 'group'
 
@@ -33,18 +32,38 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
         ContactJsnsInitializer.update(self, rep[:CreateContactResponse][:cn].first)
 
         @id
+      end
+
+      def modify!
+        @parent.sacc.invoke(jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
+        true
       end
 
       def rename!(*args)
         raise NotImplementedError
       end
 
-      def build_rename(*args)
-        raise NotImplementedError
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       def reload!
@@ -52,6 +71,10 @@ module Zm
       end
 
       private
+
+      def do_update!(hash)
+        @parent.sacc.invoke(jsns_builder.to_patch(hash))
+      end
 
       def jsns_builder
         @jsns_builder ||= ContactJsnsBuilder.new(self)

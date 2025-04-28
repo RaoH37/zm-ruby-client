@@ -19,9 +19,12 @@ module Zm
       end
 
       def all
-        @share.parent.mountpoints.all.select { |mp| mp.zid == @share.ownerId && mp.rid == @share.folderId }
+        @all || all!
       end
-      alias all! all
+
+      def all!
+        @all = @share.parent.mountpoints.all.select { |mp| mp.zid == @share.ownerId && mp.rid == @share.folderId }
+      end
 
       private
 

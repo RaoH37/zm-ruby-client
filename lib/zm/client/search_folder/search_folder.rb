@@ -5,7 +5,6 @@ module Zm
     # class account SearchFolder
     class SearchFolder < Base::Object
       # include Zm::Model::AttributeChangeObserver
-      include RequestMethodsMailbox
 
       attr_accessor :id, :uuid, :deletable, :name, :absFolderPath, :l, :luuid, :color, :rgb, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types,
@@ -20,23 +19,40 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
         json = rep[:CreateSearchFolderResponse][:search].first
         SearchFolderJsnsInitializer.update(self, json)
         @id
+      end
+
+      def modify!
+        @parent.sacc.invoke(jsns_builder.to_modify)
+        true
       end
 
       def update!(*args)
         raise NotImplementedError
       end
 
+      def rename!(new_name)
+        return false if new_name == @name
+
+        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
+        @name = new_name
+      end
+
       def color!
-        @parent.sacc.invoke(build_color)
+        # @parent.sacc.invoke(jsns_builder.to_color) if color_changed? || rgb_changed?
+        @parent.sacc.invoke(jsns_builder.to_color)
+
         true
       end
 
-      def build_color
-        jsns_builder.to_color
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       private

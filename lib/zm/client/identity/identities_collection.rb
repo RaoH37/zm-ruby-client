@@ -10,12 +10,11 @@ module Zm
         super(parent)
       end
 
-      def make_query
-        @parent.sacc.invoke(build_query)
-      end
+      private
 
-      def build_query
-        SoapElement.account(SoapAccountConstants::GET_IDENTITIES_REQUEST)
+      def make_query
+        soap_request = SoapElement.account(SoapAccountConstants::GET_IDENTITIES_REQUEST)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end

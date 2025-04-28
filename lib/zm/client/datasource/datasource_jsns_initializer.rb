@@ -14,7 +14,9 @@ module Zm
           json.each do |k, v|
             setter_method = "#{k}=".to_sym
 
-            item.send(setter_method, v) if item.respond_to?(setter_method)
+            if item.respond_to?(setter_method)
+              item.send(setter_method, v)
+            end
           end
 
           item

@@ -6,8 +6,6 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
-      include RequestMethodsAdmin
-
       # #################################################################
       # Associations
       # #################################################################
@@ -24,8 +22,18 @@ module Zm
       # SOAP Actions
       # #################################################################
 
+      def delete!
+        sac.invoke(jsns_builder.to_delete)
+        @id = nil
+      end
+
+      def modify!
+        sac.invoke(jsns_builder.to_update)
+        true
+      end
+
       def create!
-        resp = sac.invoke(build_create)
+        resp = sac.invoke(jsns_builder.to_create)
         @id = resp[:CreateAccountResponse][:account].first[:id]
       end
 
@@ -34,37 +42,27 @@ module Zm
       end
 
       def flush_cache!
-        sac.invoke(build_flush_cache)
-        true
-      end
-
-      def build_flush_cache
         soap_request = SoapElement.admin(SoapAdminConstants::FLUSH_CACHE_REQUEST)
         node_cache = SoapElement.create('cache').add_attributes({ type: SoapConstants::ACCOUNT, allServers: 1 })
         soap_request.add_node(node_cache)
         node_entry = SoapElement.create('entry').add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@id)
         node_cache.add_node(node_entry)
-        soap_request
+        sac.invoke(soap_request)
+        true
       end
 
       def attrs_write
         @parent.zimbra_attributes.all_account_attrs_writable_names
       end
 
-      def jsns_builder
-        @jsns_builder ||= AccountJsnsBuilder.new(self)
-      end
-
-      def batch
-        return @batch if defined? @batch
-
-        @batch = BatchRequest.new(soap_account_connector)
-      end
-
       private
 
       def do_update!(hash)
         sac.invoke(jsns_builder.to_patch(hash))
+      end
+
+      def jsns_builder
+        @jsns_builder ||= AccountJsnsBuilder.new(self)
       end
     end
   end

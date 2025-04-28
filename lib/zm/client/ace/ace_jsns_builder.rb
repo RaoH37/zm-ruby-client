@@ -13,13 +13,15 @@ module Zm
       end
 
       def to_jsns
-        SoapElement.account(SoapAccountConstants::GRANT_RIGHTS_REQUEST)
-                   .add_attribute(SoapConstants::ACE, attrs)
+        soap_request = SoapElement.account(SoapAccountConstants::GRANT_RIGHTS_REQUEST)
+        soap_request.add_attribute(SoapConstants::ACE, attrs)
+        soap_request
       end
 
       def to_delete
-        SoapElement.account(SoapAccountConstants::REVOKE_RIGHTS_REQUEST)
-                   .add_attribute(SoapConstants::ACE, attrs)
+        soap_request = SoapElement.account(SoapAccountConstants::REVOKE_RIGHTS_REQUEST)
+        soap_request.add_attribute(SoapConstants::ACE, attrs)
+        soap_request
       end
 
       def attrs

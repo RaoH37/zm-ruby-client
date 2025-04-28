@@ -78,36 +78,14 @@ module Zm
         # Authentication
         # #################################################################
 
-        def token
-          @token ||= (Token.new(soap_account_connector.token) if soap_account_connector.token)
-        end
-
-        def token=(value)
-          @token = Token.new(soap_account_connector.token = value)
-        end
-
         def logged?
-          !token.nil? && !token.expired?
-        end
-
-        def alive?
-          soap_request = SoapElement.mail(SoapMailConstants::NO_OP_REQUEST)
-          sacc.invoke(soap_request)
-          true
-        rescue Zm::Client::SoapError => e
-          logger.warn "Mailbox session token alive ? #{e.message}"
-          false
-        end
-
-        def logged_and_alive?
-          logged? && alive?
+          !@token.nil?
         end
 
         def domain_key
-          return @domain_key if @domain_key
-          return @parent.domain_key(domain_name) if @parent.logged?
+          return @domain_key if defined?(@domain_key)
 
-          nil
+          @parent.domain_key(domain_name)
         end
 
         def login
@@ -129,21 +107,21 @@ module Zm
         end
 
         def account_login_preauth(expires = 0)
-          logger.info 'Get Account session token by preauth access'
           raise ZmError, 'domain key is required to login !' if domain_key.nil?
 
           content, by = account_content_by
 
-          self.token = sacc.auth_preauth(content, by, expires, domain_key)
+          @token = sacc.auth_preauth(content, by, expires, domain_key)
+          sacc.context.token(@token)
         end
 
         def account_login_password
-          logger.info 'Get Account session token by password access'
           raise ZmError, 'password is required to login !' if password.nil?
 
           content, by = account_content_by
 
-          self.token = sacc.auth_password(content, by, @password)
+          @token = sacc.auth_password(content, by, @password)
+          sacc.context.token(@token)
         end
 
         def account_content_by
@@ -151,7 +129,7 @@ module Zm
         end
 
         def admin_login
-          logger.info 'Get Account session token by Delegate access'
+          # @token = sac.delegate_auth(@name)
 
           soap_request = SoapElement.admin(SoapAdminConstants::DELEGATE_AUTH_REQUEST)
           node_account = SoapElement.create(SoapConstants::ACCOUNT)
@@ -163,12 +141,17 @@ module Zm
           end
 
           soap_request.add_node(node_account)
-          self.token = sac.invoke(soap_request)[:DelegateAuthResponse][:authToken].first[:_content]
+          @token = sac.invoke(soap_request)[:DelegateAuthResponse][:authToken].first[:_content]
+          sacc.context.token(@token)
         end
 
         # #################################################################
         # Associations
         # #################################################################
+
+        def token_metadata
+          @token_metadata ||= TokenMetaData.new(@token)
+        end
 
         def messages
           @messages ||= MessagesCollection.new(self)
@@ -256,6 +239,26 @@ module Zm
           sac.invoke(soap_request)
 
           @password = new_password
+        end
+
+        def rename!(email)
+          soap_request = SoapElement.admin(SoapAdminConstants::RENAME_ACCOUNT_REQUEST)
+          soap_request.add_attributes({ id: @id, newName: email })
+          sac.invoke(soap_request)
+
+          @name = email
+        end
+
+        def update!(hash)
+          return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+          do_update!(hash)
+
+          hash.each do |key, value|
+            update_attribute(key, value)
+          end
+
+          true
         end
 
         def local_transport

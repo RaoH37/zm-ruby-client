@@ -6,18 +6,16 @@ module Zm
   module Client
     # class config for cluster connection
     class ClusterConfig
+      include ZmLogger
+
       attr_reader :to_h
-      attr_writer :logger, :colorize_logging
       attr_accessor :zimbra_admin_host, :zimbra_admin_scheme, :zimbra_admin_port, :zimbra_admin_login,
                     :zimbra_admin_password, :zimbra_public_host, :zimbra_public_scheme, :zimbra_public_port,
-                    :domains, :zimbra_version, :log_path
+                    :domains, :zimbra_version
 
       def initialize(parameters = nil)
         @domains = []
         @zimbra_version = '8.8.15'
-        @log_path = $stdout
-        @log_level = Logger::INFO
-        @colorize_logging = true
 
         case parameters
         when String
@@ -32,38 +30,6 @@ module Zm
         end
 
         yield(self) if block_given?
-      end
-
-      def cache
-        @cache = Zm::Support::Cache.registered_storage[cache_store_key]
-                                   .new(**cache_store_options)
-                                   .tap do |store|
-                                     store.logger = logger
-                                   end
-      end
-
-      def cache_store_key
-        cache_store.first
-      end
-
-      def cache_store_options
-        cache_store.last
-      end
-
-      def cache_store
-        @cache_store ||= [:null_store, {}]
-      end
-
-      def cache_store=(options)
-        store_key = options.shift
-        store_options = options.last
-        store_class = Zm::Support::Cache.registered_storage[store_key]
-
-        unless store_class || store_class.test_required_options(store_options)
-          raise ClusterConfigError, 'invalid cache_store'
-        end
-
-        @cache_store = [store_key, store_options]
       end
 
       def init_from_file(file_config_path)
@@ -127,19 +93,6 @@ module Zm
         raise ClusterConfigError, 'no valid attributes file' unless File.exist?(path)
 
         @zimbra_attributes_path = path
-      end
-
-      def logger
-        @logger ||= ZmLogger.new(@log_path).tap do |log|
-          log.level = @log_level
-          log.colorize! if @colorize_logging
-        end
-      end
-
-      def log_level=(level)
-        return if level == @log_level
-
-        logger.level = @log_level = level
       end
     end
 

@@ -4,25 +4,43 @@ module Zm
   module Client
     # class account identity
     class Identity < Base::Object
-      include RequestMethodsMailbox
-
       attr_accessor :id, :name, :zimbraPrefIdentityName, :zimbraPrefFromDisplay, :zimbraPrefFromAddress,
                     :zimbraPrefFromAddressType, :zimbraPrefReplyToEnabled, :zimbraPrefReplyToDisplay,
                     :zimbraPrefReplyToAddress, :zimbraPrefDefaultSignatureId, :zimbraPrefForwardReplySignatureId,
                     :zimbraPrefWhenSentToEnabled, :zimbraPrefWhenInFoldersEnabled, :zimbraPrefWhenSentToAddresses
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
         IdentityJsnsInitializer.update(self, rep[:CreateIdentityResponse][:identity].first)
         @id
       end
 
-      def rename!(*args)
+      def modify!
+        @parent.sacc.invoke(jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
+        true
+      end
+
+      def rename!(new_name)
         raise NotImplementedError
       end
 
-      def build_rename(*args)
-        raise NotImplementedError
+      def delete!
+        return if @id.nil?
+
+        @parent.sacc.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       def clone
@@ -36,6 +54,10 @@ module Zm
       end
 
       private
+
+      def do_update!(hash)
+        @parent.sacc.invoke(jsns_builder.to_patch(hash))
+      end
 
       def jsns_builder
         @jsns_builder ||= IdentityJsnsBuilder.new(self)

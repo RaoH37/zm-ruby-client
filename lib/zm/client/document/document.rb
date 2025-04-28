@@ -6,7 +6,6 @@ module Zm
     class Document < Base::Object
       include BelongsToFolder
       include BelongsToTag
-      include RequestMethodsMailbox
 
       attr_accessor :id, :uuid, :name, :s, :d, :l, :luuid, :ms, :mdver, :md, :rev, :f, :t, :meta, :ct,
                     :descEnabled, :ver, :leb, :cr, :cd, :acl, :loid, :sf, :tn
@@ -15,15 +14,7 @@ module Zm
         raise NotImplementedError
       end
 
-      def build_create
-        raise NotImplementedError
-      end
-
       def modify!
-        raise NotImplementedError
-      end
-
-      def build_modify
         raise NotImplementedError
       end
 
@@ -35,8 +26,11 @@ module Zm
         raise NotImplementedError
       end
 
-      def build_rename(*args)
-        raise NotImplementedError
+      def delete!
+        return false if @id.nil?
+
+        @parent.sacc.invoke(jsns_builder.to_delete)
+        @id = nil
       end
 
       def reload!
@@ -45,13 +39,7 @@ module Zm
 
       def download(dest_file_path)
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(
-          Zm::Client::FolderDefault::ROOT[:path],
-          nil,
-          [Zm::Client::FolderView::DOCUMENT],
-          [@id],
-          dest_file_path
-        )
+        uploader.download_file( Zm::Client::FolderDefault::ROOT[:path], nil, [Zm::Client::FolderView::DOCUMENT], [@id], dest_file_path)
       end
 
       private

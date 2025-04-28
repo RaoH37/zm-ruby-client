@@ -8,14 +8,13 @@ module Zm
     class SoapAdminConnector < SoapBaseConnector
       class << self
         def create(config)
-          new(
+          trans = new(
             config.zimbra_admin_scheme,
             config.zimbra_admin_host,
             config.zimbra_admin_port
-          ).tap do |trans|
-            trans.logger = config.logger
-            trans.cache = config.cache
-          end
+          )
+          trans.logger = config.logger
+          trans
         end
       end
 

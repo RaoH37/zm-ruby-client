@@ -5,11 +5,34 @@ module Zm
     # objectClass: zimbraDomain
     class Domain < Base::Object
       include HasSoapAdminConnector
-      include RequestMethodsAdmin
 
       def create!
-        resp = sac.invoke(build_create)
+        resp = sac.invoke(jsns_builder.to_create)
         @id = resp[:CreateDomainResponse][:domain].first[:id]
+      end
+
+      def modify!
+        sac.invoke(jsns_builder.to_update)
+        true
+      end
+
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
+        true
+      end
+
+      def delete!
+        soap_request = SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST).add_attribute(SoapConstants::ID,
+                                                                                                  @id)
+        sac.invoke(soap_request)
+        @id = nil
       end
 
       def accounts
@@ -26,9 +49,9 @@ module Zm
       end
 
       def cos
-        return nil if zimbraDomainDefaultCOSId.nil?
+        return nil if self.zimbraDomainDefaultCOSId.nil?
 
-        @cos ||= @parent.coses.find_by id: zimbraDomainDefaultCOSId
+        @cos ||= @parent.coses.find_by id: self.zimbraDomainDefaultCOSId
       end
 
       def attrs_write
@@ -49,6 +72,12 @@ module Zm
         return if matches.first.nil?
 
         @DKIMPublicTxt = matches.first.first.strip
+      end
+
+      private
+
+      def do_update!(hash)
+        sac.invoke(jsns_builder.to_patch(hash))
       end
 
       def jsns_builder

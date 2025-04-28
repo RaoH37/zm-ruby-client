@@ -9,6 +9,8 @@ require_relative 'soap_error'
 module Zm
   module Client
     class SoapBaseConnector
+      include ZmLogger
+
       BASESPACE = 'urn:zimbra'
       HTTP_HEADERS = {
         'Content-Type' => 'application/json; charset=utf-8',
@@ -16,7 +18,6 @@ module Zm
       }.freeze
 
       attr_reader :context
-      attr_writer :logger, :cache
 
       def initialize(scheme, host, port, soap_path)
         @verbose = false
@@ -69,29 +70,15 @@ module Zm
       end
 
       def do_request(body, error_handler = SoapError)
-        json_body = body.to_json
-        @logger.debug json_body
+        response = http_client.post(@soap_path, body)
 
-        # cache json response
-        # no cache if response raise
-        json_response = @cache.fetch(json_body) do
-          @logger.debug "Load from remote"
-          response = http_client.post(@soap_path, json_body)
+        soapbody = JSON.parse(response.body, symbolize_names: true)
 
-          if response.status >= 400
-            raise(error_handler, JSON.parse(response.body, symbolize_names: true))
-          end
-
-          response.body
+        if response.status >= 400
+          raise(error_handler, soapbody)
         end
 
-        JSON.parse(json_response, symbolize_names: true)
-
-      # rescue Faraday::ConnectionFailed, SocketError => error
-      #   @logger.error "SoapConnectorError (#{error.class}): #{error.message}"
-      #   # raise error
-      #   {}
-      #   nil
+        soapbody
       end
 
       def envelope(soap_element)

@@ -5,7 +5,6 @@ module Zm
     # class for account folder
     class Folder < Base::Object
       include BelongsToFolder
-      include RequestMethodsMailbox
       # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
@@ -39,19 +38,40 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
         json = rep[:CreateFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
         @id
       end
 
-      def color!
-        @parent.sacc.invoke(build_color)
+      def modify!
+        @parent.sacc.invoke(jsns_builder.to_update)
         true
       end
 
-      def build_color
-        jsns_builder.to_color
+      def update!(hash)
+        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+
+        do_update!(hash)
+
+        hash.each do |key, value|
+          update_attribute(key, value)
+        end
+
+        true
+      end
+
+      def color!
+        @parent.sacc.invoke(jsns_builder.to_color)
+
+        true
+      end
+
+      def rename!(new_name)
+        return false if new_name == @name
+
+        @parent.sacc.invoke(jsns_builder.to_rename(new_name))
+        @name = new_name
       end
 
       def reload!
@@ -68,19 +88,15 @@ module Zm
       def empty!
         return false if empty?
 
-        @parent.sacc.invoke(build_empty)
+        @parent.sacc.invoke(jsns_builder.to_empty)
         @n = 0
       end
       alias clear empty!
 
-      def build_empty
-        jsns_builder.to_empty
-      end
-
       def delete!
         return false if is_immutable? || @id.nil?
 
-        @parent.sacc.invoke(build_delete)
+        @parent.sacc.invoke(jsns_builder.to_delete)
         @id = nil
       end
 
@@ -90,10 +106,6 @@ module Zm
       end
 
       def add_message(eml, d = nil, f = nil, tn = nil)
-        @parent.sacc.invoke(build_add_message(eml, d, f, tn))
-      end
-
-      def build_add_message(eml, d = nil, f = nil, tn = nil)
         m = {
           l: id,
           d: d,
@@ -104,19 +116,16 @@ module Zm
 
         attrs = { m: m }
 
-        SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST).add_attributes(attrs)
+        soap_request = SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST).add_attributes(attrs)
+        @parent.sacc.invoke(soap_request)
       end
 
       def add_appointments(ics)
-        @parent.sacc.invoke(build_add_appointments(ics)).dig(:ImportAppointmentsResponse, :appt)
-      end
-
-      def build_add_appointments(ics)
         attrs = { l: id, ct: SoapConstants::TEXT_CALENDAR }
         soap_request = SoapElement.mail(SoapMailConstants::IMPORT_APPOINTMENTS_REQUEST).add_attributes(attrs)
         node_content = SoapElement.create(SoapConstants::CONTENT).add_content(ics)
         soap_request.add_node(node_content)
-        soap_request
+        @parent.sacc.invoke(soap_request).dig(:ImportAppointmentsResponse, :appt)
       end
 
       def download(dest_file_path, fmt = 'tgz')
@@ -131,6 +140,10 @@ module Zm
       end
 
       private
+
+      def do_update!(hash)
+        @parent.sacc.invoke(jsns_builder.to_patch(hash))
+      end
 
       def jsns_builder
         @jsns_builder ||= FolderJsnsBuilder.new(self)

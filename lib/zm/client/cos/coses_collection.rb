@@ -13,9 +13,7 @@ module Zm
 
       def find_by!(hash)
         soap_request = SoapElement.admin(SoapAdminConstants::GET_COS_REQUEST)
-        node_cos = SoapElement.create(SoapConstants::COS)
-                              .add_attribute(SoapConstants::BY, hash.keys.first)
-                              .add_content(hash.values.first)
+        node_cos = SoapElement.create(SoapConstants::COS).add_attribute(SoapConstants::BY, hash.keys.first).add_content(hash.values.first)
         soap_request.add_node(node_cos)
         soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma)
         entry = sac.invoke(soap_request)[:GetCosResponse][:cos].first

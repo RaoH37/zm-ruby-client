@@ -59,10 +59,6 @@ module Zm
         SoapElement.admin(SoapAdminConstants::DELETE_ACCOUNT_REQUEST).add_attribute('id', @item.id)
       end
 
-      def to_rename(new_name)
-        SoapElement.admin(SoapAdminConstants::RENAME_ACCOUNT_REQUEST).add_attributes({ id: @item.id, newName: new_name })
-      end
-
       def attrs_only_set_h
         selected_attrs = @item.attrs_write.map { |a| Utils.arrow_name_sym(a) }
         attrs_only_set = @item.instance_variables & selected_attrs

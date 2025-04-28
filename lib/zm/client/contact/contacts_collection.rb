@@ -24,13 +24,12 @@ module Zm
         self
       end
 
-      def make_query
-        @parent.sacc.invoke(build_query)
-      end
+      private
 
-      def build_query
+      def make_query
         jsns = @folder_id.nil? ? nil : { l: @folder_id }
-        SoapElement.mail(SoapMailConstants::GET_CONTACTS_REQUEST).add_attributes(jsns)
+        soap_request = SoapElement.mail(SoapMailConstants::GET_CONTACTS_REQUEST).add_attributes(jsns)
+        @parent.sacc.invoke(soap_request)
       end
     end
   end
