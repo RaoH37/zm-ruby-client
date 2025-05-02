@@ -19,7 +19,8 @@ gem install zm-ruby-client
 ### Connection:
 
 ```ruby
-admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('config.json'))
+config = Zm::Client::ClusterConfig.new('config.json')
+admin = Zm::Client::Cluster.new(config)
 admin.login
 ````
 or
@@ -27,7 +28,7 @@ or
 config = Zm::Client::ClusterConfig.new do |cc|
   cc.zimbra_admin_host = 'mail.domain.tld'
   cc.zimbra_admin_scheme = 'https'
-  cc.zimbra_admin_port = 443
+  cc.zimbra_admin_port = 7071
   cc.zimbra_admin_login = 'admin@domain.tld'
   cc.zimbra_admin_password = 'secret'
 end
@@ -53,7 +54,9 @@ account = admin.accounts.find_by name: 'maxime@domain.tld'
 ```ruby
 account = Zm::Client::Account.new(admin) do |acc|
   acc.name = 'maxime@domain.tld'
+  acc.givenName = 'Maxime'
+  acc.sn = 'DÉSÉCOT'
 end
-account.zimbraMailQuota = 0
+
 account.save
 ```
