@@ -11,7 +11,9 @@ module Zm
           cn: {
             a: instance_variables_array.map(&Utils::A_NODE_PROC),
             l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS[:id],
-            m: members_node
+            m: @item.members.all.map do |m|
+              { type: m.type, value: m.value }
+            end
           }
         }
 
@@ -23,7 +25,9 @@ module Zm
           cn: {
             a: instance_variables_array.map(&Utils::A_NODE_PROC),
             id: @item.id,
-            m: members_node
+            m: @item.members.all.reject(&:current?).map do |m|
+              { type: m.type, value: m.value, op: m.op }
+            end
           }
         }
 
@@ -42,12 +46,6 @@ module Zm
       end
 
       alias to_create to_jsns
-
-      def members_node
-        @item.members.all.reject(&:current?).map do |m|
-          { type: m.type, value: m.value, op: m.op }
-        end
-      end
 
       def instance_variables_array
         [[:nickname, @item.name], [:fullName, @item.name], [:fileAs, "8:#{@item.name}"], %i[type group]]
