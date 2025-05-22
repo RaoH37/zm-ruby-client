@@ -1,49 +1,17 @@
 # frozen_string_literal: true
 
+require 'zm/client/folder/folder_attrs'
+
 module Zm
   module Client
     # class for account folder
     class Folder < Base::Object
+      include FolderAttrs
       include BelongsToFolder
       include RequestMethodsMailbox
       # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :type, :owner, :reminder, :acl, :folders, :grants, :retention_policies
-
-      extend Philosophal::Properties
-
-      cprop :type, String, default: :folder
-      cprop :id, Integer
-      cprop :uuid, String
-      cprop :name, String
-      cprop :absFolderPath, Pathname
-      cprop :l, Integer, default: FolderDefault::ROOT[:id]
-      cprop :luuid, String
-      cprop :f, String
-      cprop :color, Integer
-      cprop :rgb, String
-      cprop :u, Integer
-      cprop :view, String, default: FolderView::MESSAGE
-      cprop :rev, Integer
-      cprop :ms, Integer
-      cprop :md, Integer
-      cprop :n, Integer
-      cprop :i4n, Integer
-      cprop :s, Integer
-      cprop :i4ms, Integer
-      cprop :i4next, Integer
-      cprop :url, String
-      cprop :webOfflineSyncDays, Integer
-      cprop :activesyncdisabled, _Boolean
-      cprop :zid, String
-      cprop :rid, String
-      cprop :ruuid, String
-      cprop :recursive, Integer
-      cprop :rest, String
-      cprop :deletable, _Boolean
-      cprop :itemCount, Integer
-      cprop :broken, Integer
-      cprop :fb, Integer
 
       alias nb_messages n
       alias nb_items n
