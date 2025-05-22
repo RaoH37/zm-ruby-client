@@ -27,7 +27,7 @@ module Zm
         end
 
         def set_methods
-          set_server_methods
+          # set_server_methods
           set_cos_methods
           set_domain_methods
           # set_account_methods

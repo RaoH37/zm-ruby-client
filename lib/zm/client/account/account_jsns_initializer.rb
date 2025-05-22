@@ -20,10 +20,7 @@ module Zm
           fjson = formatted_json(json)
           fjson.transform_keys! { |k| :"#{k}=" }
 
-          # formatted_json(json).each do |k, v|
-          fjson.each do |k, v|
-            # valorise(item, k, v)
-            setter = :"#{k}="
+          fjson.each do |setter, v|
             item.send(setter, v) if item.respond_to? setter
           end
 

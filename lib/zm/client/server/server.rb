@@ -3,11 +3,14 @@
 require 'zm/client/backup'
 require 'zm/client/mta_queue'
 
+require 'zm/client/server/server_attrs'
+
 module Zm
   module Client
     # objectClass: zimbraServer
     class Server < Base::Object
       include HasSoapAdminConnector
+      include ServerAttrs
 
       def mta_queues
         @mta_queues ||= MtaQueuesCollection.new(self)
