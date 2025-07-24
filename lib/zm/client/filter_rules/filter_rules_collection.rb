@@ -10,6 +10,17 @@ module Zm
         super(parent)
       end
 
+      def save!
+        return false unless defined? @all
+
+        soap_request = SoapElement.mail(SoapMailConstants::MODIFY_FILTER_RULES_REQUEST)
+        node_rules = SoapElement.create(:filterRules).add_attribute(:filterRule, @all.map(&:to_h))
+        soap_request.add_node(node_rules)
+        @parent.sacc.invoke(soap_request)
+
+        true
+      end
+
       private
 
       def make_query

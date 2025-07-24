@@ -12,7 +12,10 @@ module Zm
       def make
         return [] if json_items.nil?
 
-        json_items.first[:filterRule].map do |entry|
+        rules = json_items.first[:filterRule]
+        return [] if rules.nil?
+
+        rules.map do |entry|
           FilterRuleJsnsInitializer.create(@parent, entry)
         end
       end
