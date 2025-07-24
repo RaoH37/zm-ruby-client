@@ -26,6 +26,10 @@ module Zm
         @rac.download(download_file_url(folder_path, fmt, types, ids), dest_file_path)
       end
 
+      def read_file(folder_path, fmt, types, ids)
+        @rac.read(download_file_url(folder_path, fmt, types, ids))
+      end
+
       def download_folder(id, fmt, dest_file_path)
         @rac.download(download_folder_url(id, fmt), dest_file_path)
       end
