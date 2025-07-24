@@ -7,23 +7,43 @@ module Zm
       include BelongsToFolder
       include BelongsToTag
 
-      attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
-      attr_reader :recipients, :attachments, :body
+      attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject, :s
+
+      alias size s
 
       def initialize(parent)
         @parent = parent
         @subject = ''
 
-        @recipients = Recipients.new
-        @body = Body.new
-        @attachments = AttachmentsCollection.new
-
         yield(self) if block_given?
+      end
+
+      def recipients
+        return @recipients if defined? @recipients
+
+        @recipients = Recipients.new
+      end
+
+      def attachments
+        return @attachments if defined? @attachments
+
+        @attachments = AttachmentsCollection.new
+      end
+
+      def body
+        return @body if defined? @body
+
+        @body = Body.new
       end
 
       def download(dest_file_path, fmt = 'eml')
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_file( Zm::Client::FolderDefault::ROOT[:path], fmt, [Zm::Client::FolderView::MESSAGE], [@id], dest_file_path)
+      end
+
+      def read(fmt = 'eml')
+        uploader = Upload.new(@parent, RestAccountConnector.new)
+        uploader.read_file( Zm::Client::FolderDefault::ROOT[:path], fmt, [Zm::Client::FolderView::MESSAGE], [@id])
       end
 
       def date
@@ -42,8 +62,23 @@ module Zm
         raise NotImplementedError
       end
 
-      def update!(*args)
-        raise NotImplementedError
+      def update!(l: nil, rgb: nil, color: nil, f: nil, tn: nil)
+        attrs = {
+          op: :update,
+          id: @id,
+          l: l,
+          rgb: rgb,
+          color: color,
+          f: f,
+          tn: tn
+        }
+
+        attrs.delete_if { |_, v| v.nil? }
+
+        soap_request = SoapElement.mail(SoapMailConstants::MSG_ACTION_REQUEST)
+        node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
+        soap_request.add_node(node_action)
+        @parent.sacc.invoke(soap_request)
       end
 
       def rename!(*args)

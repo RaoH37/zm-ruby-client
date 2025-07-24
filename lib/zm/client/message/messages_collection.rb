@@ -23,6 +23,20 @@ module Zm
         end
       end
 
+      def delete_all(ids)
+        attrs = {
+          op: :delete,
+          id: ids.join(',')
+        }
+
+        attrs.delete_if { |_, v| v.nil? }
+
+        soap_request = SoapElement.mail(SoapMailConstants::MSG_ACTION_REQUEST)
+        node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
+        soap_request.add_node(node_action)
+        @parent.sacc.invoke(soap_request)
+      end
+
       private
 
       def build_options
