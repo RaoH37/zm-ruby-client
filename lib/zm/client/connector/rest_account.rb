@@ -28,36 +28,38 @@ module Zm
         @cookies = cookies
       end
 
-      def download(download_url, dest_file_path)
+      def read(download_url)
         url, path = split_url(download_url)
 
-        conn = Faraday.new(**http_options(url)) do |faraday|
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
-        end
+        conn = conn_get(url)
 
-        response = nil
+        data = +''
 
-        File.open(dest_file_path, 'wb') do |f|
-          response = conn.get(path) do |request|
-            request.options.on_data = Proc.new do |chunk, _, _|
-              f.write chunk
-            end
+        response = conn.get(path) do |request|
+          request.options.on_data = Proc.new do |chunk, _, _|
+            data.concat(chunk)
           end
         end
 
         if response.status >= 400
-          File.unlink(dest_file_path) if File.exist?(dest_file_path)
           raise RestError, "Download failure: #{response.body} (status=#{response.status})"
         end
+
+        data
+      end
+
+      def download(download_url, dest_file_path)
+        url, path = split_url(download_url)
+
+        conn = conn_get(url)
+
+        write_downloaded_file(dest_file_path, conn, path)
       end
 
       def upload(upload_url, src_file_path)
         url, path = split_url(upload_url)
 
-        conn = Faraday.new(**http_options(url)) do |faraday|
-          faraday.request :multipart
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
-        end
+        conn = conn_multipart(url)
 
         payload = { file: Faraday::Multipart::FilePart.new(src_file_path, nil) }
         response = conn.post(path, payload)
@@ -75,6 +77,38 @@ module Zm
       end
 
       private
+
+      def conn_get(url)
+        Faraday.new(**http_options(url)) do |faraday|
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+        end
+      end
+
+      def conn_multipart(url)
+        Faraday.new(**http_options(url)) do |faraday|
+          faraday.request :multipart
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+        end
+      end
+
+      def write_downloaded_file(dest_file_path, conn, path)
+        response = nil
+
+        File.open(dest_file_path, 'wb') do |f|
+          response = conn.get(path) do |request|
+            request.options.on_data = Proc.new do |chunk, _, _|
+              f.write chunk
+            end
+          end
+        end
+
+        if response.status >= 400
+          File.unlink(dest_file_path) if File.exist?(dest_file_path)
+          raise RestError, "Download failure: #{response.body} (status=#{response.status})"
+        end
+
+        response
+      end
 
       def split_url(url)
         uri = URI(url)
