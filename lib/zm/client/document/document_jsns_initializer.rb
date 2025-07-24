@@ -23,7 +23,7 @@ module Zm
           item.md = json[:md]
           item.rev = json[:rev]
           item.f = json[:f]
-          item.tn = json[:tn].to_s.split(',')
+          item.tn = json[:tn]
           item.t = json[:t]
           item.meta = json[:meta]
           item.ct = json[:ct]

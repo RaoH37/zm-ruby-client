@@ -9,9 +9,30 @@ module Zm
       attr_reader :reason, :code
 
       def initialize(soapbody)
+        # @reason = soapbody[:Body][:Fault][:Reason][:Text]
+        # @code = soapbody[:Body][:Fault][:Detail][:Error][:Code]
+        if soapbody.start_with?('{')
+          init_from_json(soapbody)
+        elsif soapbody.start_with?('<')
+          init_from_xml(soapbody)
+        end
+
+        super "[#{@code}] [#{@reason}]"
+      end
+
+      private
+
+      def init_from_json(soapbody)
         @reason = soapbody[:Body][:Fault][:Reason][:Text]
         @code = soapbody[:Body][:Fault][:Detail][:Error][:Code]
-        super "[#{@code}] [#{@reason}]"
+      end
+
+      def init_from_xml(soapbody)
+        code_match = soapbody.match(%r{<Code>(.*?)</Code>})
+        @code = code_match[1]
+
+        text_match = soapbody.match(%r{<soap:Reason>.*?<soap:Text>(.*?)</soap:Text>}m)
+        @reason = text_match[1]
       end
     end
 
