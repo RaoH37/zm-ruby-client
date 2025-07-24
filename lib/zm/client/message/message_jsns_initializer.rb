@@ -20,7 +20,8 @@ module Zm
           item.mid  = json[:mid]
           item.idnt = json[:idnt]
           item.f = json[:f]
-          item.tn = json[:tn].to_s.split(',')
+          item.tn = json[:tn]
+          item.s = json[:s]
 
           json[:e].each do |e|
             recipient = Recipient.new(e[:t], e[:a], e[:p])

@@ -13,7 +13,7 @@ module Zm
         end
 
         def all!
-          @all = @parent.tn
+          @all = @parent.tn.split(',')
         end
 
         def add!(*new_tags)
