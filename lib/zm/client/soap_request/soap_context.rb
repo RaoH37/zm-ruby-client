@@ -9,6 +9,7 @@ module Zm
         @token = nil
         @user_agent = 'zmsoap'
         @target_server = nil
+        @account = nil
       end
 
       def token(str)
@@ -26,10 +27,16 @@ module Zm
         self
       end
 
+      def account(by, value)
+        @account = { by: by, _content: value }
+        self
+      end
+
       def to_hash
         {
           authToken: @token,
           userAgent: { name: @user_agent },
+          account: @account,
           targetServer: @target_server
         }.delete_if { |_, v| v.nil? }
       end

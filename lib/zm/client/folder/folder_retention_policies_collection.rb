@@ -25,7 +25,7 @@ module Zm
       end
 
       def save!
-        @parent.sacc.invoke(jsns_builder.to_retentionpolicy)
+        @parent.soap_connector.invoke(jsns_builder.to_retentionpolicy)
         true
       end
 

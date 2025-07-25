@@ -70,7 +70,7 @@ module Zm
         # actions
 
         def unread!
-          @parent.sacc.invoke(build_unread)
+          @parent.soap_connector.invoke(build_unread)
         end
 
         def build_unread
@@ -78,7 +78,7 @@ module Zm
         end
 
         def read!
-          @parent.sacc.invoke(build_read)
+          @parent.soap_connector.invoke(build_read)
         end
 
         def build_read
@@ -86,7 +86,7 @@ module Zm
         end
 
         def unflag!
-          @parent.sacc.invoke(build_unflag)
+          @parent.soap_connector.invoke(build_unflag)
         end
 
         def build_unflag
@@ -94,7 +94,7 @@ module Zm
         end
 
         def flag!
-          @parent.sacc.invoke(build_flag)
+          @parent.soap_connector.invoke(build_flag)
         end
 
         def build_flag

@@ -33,7 +33,7 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
         ContactJsnsInitializer.update(self, rep[:CreateContactResponse][:cn].first)
 
         @id

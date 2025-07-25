@@ -12,7 +12,7 @@ module Zm
       # define_changed_attributes :name, :color, :rgb
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateTagResponse][:tag].first
         TagJsnsInitializer.update(self, json)
         @id

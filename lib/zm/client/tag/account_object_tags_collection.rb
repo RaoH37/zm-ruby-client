@@ -55,7 +55,7 @@ module Zm
           node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
           soap_request.add_node(node_action)
 
-          @parent.parent.sacc.invoke(soap_request)
+          @parent.parent.soap_connector.invoke(soap_request)
         end
       end
     end

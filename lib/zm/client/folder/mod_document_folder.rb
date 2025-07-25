@@ -15,7 +15,7 @@ module DocumentFolder
 
     soap_request = Zm::Client::SoapElement.mail(Zm::Client::SoapMailConstants::SAVE_DOCUMENT_REQUEST)
                                           .add_attributes(jsns)
-    rep = @parent.sacc.invoke(soap_request)
+    rep = @parent.soap_connector.invoke(soap_request)
 
     Zm::Client::DocumentJsnsInitializer.create(@parent, rep[:SaveDocumentResponse][:doc].first)
   end

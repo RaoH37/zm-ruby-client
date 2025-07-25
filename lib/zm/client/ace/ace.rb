@@ -13,7 +13,7 @@ module Zm
       attr_accessor :zid, :gt, :right, :d
 
       def create!
-        rep = @parent.sacc.invoke(jsns_builder.to_jsns)
+        rep = @parent.soap_connector.invoke(jsns_builder.to_jsns)
 
         json = rep[:GrantRightsResponse][:ace].first if rep[:GrantRightsResponse][:ace].is_a?(Array)
         AceJsnsInitializer.update(self, json) unless json.nil?
@@ -21,7 +21,7 @@ module Zm
       end
 
       def delete!
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.soap_connector.invoke(jsns_builder.to_delete)
         true
       end
 

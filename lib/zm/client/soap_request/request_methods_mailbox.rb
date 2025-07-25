@@ -8,7 +8,7 @@ module Zm
       end
 
       def modify!
-        @parent.sacc.invoke(build_modify)
+        @parent.soap_connector.invoke(build_modify)
         true
       end
 
@@ -31,7 +31,7 @@ module Zm
       def rename!(new_name)
         return false if new_name == @name
 
-        @parent.sacc.invoke(build_rename(new_name))
+        @parent.soap_connector.invoke(build_rename(new_name))
         @name = new_name
       end
 
@@ -42,7 +42,7 @@ module Zm
       def delete!
         return false if @id.nil?
 
-        @parent.sacc.invoke(build_delete)
+        @parent.soap_connector.invoke(build_delete)
         @id = nil
       end
 
@@ -51,7 +51,7 @@ module Zm
       end
 
       private def do_update!(hash)
-        @parent.sacc.invoke(jsns_builder.to_patch(hash))
+        @parent.soap_connector.invoke(jsns_builder.to_patch(hash))
       end
     end
   end

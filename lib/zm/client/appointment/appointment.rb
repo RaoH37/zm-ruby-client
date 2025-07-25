@@ -37,7 +37,7 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
 
         aji = AppointmentJsnsInitializer.new(@parent, rep[:CreateAppointmentResponse])
         aji.appointment = self
@@ -69,7 +69,7 @@ module Zm
         jsns = { m: { id: @id, html: 1 } }
 
         soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes(jsns)
-        rep = @parent.sacc.invoke(soap_request)
+        rep = @parent.soap_connector.invoke(soap_request)
         entry = rep[:GetMsgResponse][:m].first
 
         aji = AppointmentJsnsInitializer.new(@parent, entry)

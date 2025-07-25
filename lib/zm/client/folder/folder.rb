@@ -39,14 +39,14 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
         @id
       end
 
       def color!
-        @parent.sacc.invoke(build_color)
+        @parent.soap_connector.invoke(build_color)
         true
       end
 
@@ -55,7 +55,7 @@ module Zm
       end
 
       def reload!
-        rep = @parent.sacc.invoke(jsns_builder.to_find)
+        rep = @parent.soap_connector.invoke(jsns_builder.to_find)
         json = rep[:GetFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
         true
@@ -68,7 +68,7 @@ module Zm
       def empty!
         return false if empty?
 
-        @parent.sacc.invoke(build_empty)
+        @parent.soap_connector.invoke(build_empty)
         @n = 0
       end
       alias clear empty!
@@ -80,7 +80,7 @@ module Zm
       def delete!
         return false if is_immutable? || @id.nil?
 
-        @parent.sacc.invoke(build_delete)
+        @parent.soap_connector.invoke(build_delete)
         @id = nil
       end
 
@@ -90,7 +90,7 @@ module Zm
       end
 
       def add_message(eml, d = nil, f = nil, tn = nil)
-        @parent.sacc.invoke(build_add_message(eml, d, f, tn))
+        @parent.soap_connector.invoke(build_add_message(eml, d, f, tn))
       end
 
       def build_add_message(eml, d = nil, f = nil, tn = nil)
@@ -108,7 +108,7 @@ module Zm
       end
 
       def add_appointments(ics)
-        @parent.sacc.invoke(build_add_appointments(ics)).dig(:ImportAppointmentsResponse, :appt)
+        @parent.soap_connector.invoke(build_add_appointments(ics)).dig(:ImportAppointmentsResponse, :appt)
       end
 
       def build_add_appointments(ics)

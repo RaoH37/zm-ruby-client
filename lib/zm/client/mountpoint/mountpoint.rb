@@ -20,7 +20,7 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateMountpointResponse][:link].first
 
         MountpointJsnsInitializer.update(self, json)
@@ -40,7 +40,7 @@ module Zm
       end
 
       def color!
-        @parent.sacc.invoke(build_color)
+        @parent.soap_connector.invoke(build_color)
         true
       end
 

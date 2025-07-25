@@ -9,7 +9,7 @@ module Zm
       attr_accessor :id, :name, :txt, :html
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
         @id = rep[:CreateSignatureResponse][:signature].first[:id]
       end
 

@@ -12,7 +12,7 @@ module Zm
                     :zimbraPrefWhenSentToEnabled, :zimbraPrefWhenInFoldersEnabled, :zimbraPrefWhenSentToAddresses
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
         IdentityJsnsInitializer.update(self, rep[:CreateIdentityResponse][:identity].first)
         @id
       end

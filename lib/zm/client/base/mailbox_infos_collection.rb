@@ -63,7 +63,7 @@ module Zm
 
         soap_request.add_node(node_entry)
 
-        @zimbraMailHost = @parent.sacc.invoke(soap_request).dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
+        @zimbraMailHost = @parent.soap_connector.invoke(soap_request).dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
       end
 
       private
@@ -74,7 +74,7 @@ module Zm
 
       def make_query
         soap_request = SoapElement.account(SoapAccountConstants::GET_INFO_REQUEST).add_attributes(jsns)
-        @parent.sacc.invoke(soap_request)
+        @parent.soap_connector.invoke(soap_request)
       end
 
       def jsns

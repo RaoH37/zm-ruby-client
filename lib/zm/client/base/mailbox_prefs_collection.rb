@@ -44,7 +44,7 @@ module Zm
         }
 
         soap_request = SoapElement.account(SoapAccountConstants::MODIFY_PREFS_REQUEST).add_attributes(req)
-        @parent.sacc.invoke(soap_request)
+        @parent.soap_connector.invoke(soap_request)
       end
 
       private
@@ -55,7 +55,7 @@ module Zm
 
       def make_query
         soap_request = SoapElement.account(SoapAccountConstants::GET_PREFS_REQUEST).add_attributes(jsns)
-        @parent.sacc.invoke(soap_request)
+        @parent.soap_connector.invoke(soap_request)
       end
 
       def jsns

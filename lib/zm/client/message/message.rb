@@ -70,7 +70,7 @@ module Zm
       end
 
       def unspam!
-        @parent.sacc.invoke(build_unspam)
+        @parent.soap_connector.invoke(build_unspam)
       end
 
       def build_unspam
@@ -78,7 +78,7 @@ module Zm
       end
 
       def spam!
-        @parent.sacc.invoke(build_spam)
+        @parent.soap_connector.invoke(build_spam)
       end
 
       def build_spam
@@ -86,7 +86,7 @@ module Zm
       end
 
       def send!
-        @parent.sacc.invoke(build_send)
+        @parent.soap_connector.invoke(build_send)
       end
 
       def build_send

@@ -33,6 +33,26 @@ module Zm
         end
         alias sacc soap_account_connector
 
+        def soap_connector
+          return @soap_connector if defined? @soap_connector
+
+          if logged?
+            @soap_connector = soap_account_connector
+          elsif (@id || @name) && @parent && @parent.logged?
+            @soap_connector = @parent.soap_admin_connector.clone
+
+            if @id
+              @soap_connector.context.account(:id, @id)
+            else
+              @soap_connector.context.account(:name, @name)
+            end
+          else
+            raise ZmError, 'SoapConnector not defined'
+          end
+
+          @soap_connector
+        end
+
         def rest_account_connector
           @rest_account_connector ||= RestAccountConnector.new
         end
@@ -84,6 +104,7 @@ module Zm
 
         def token=(value)
           @token = Token.new(soap_account_connector.token = value)
+          @soap_connector = soap_account_connector
         end
 
         def logged?
@@ -92,7 +113,7 @@ module Zm
 
         def alive?
           soap_request = SoapElement.mail(SoapMailConstants::NO_OP_REQUEST)
-          sacc.invoke(soap_request)
+          soap_connector.invoke(soap_request)
           true
         rescue Zm::Client::SoapError => e
           logger.warn "Mailbox session token alive ? #{e.message}"

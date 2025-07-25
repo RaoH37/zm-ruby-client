@@ -87,7 +87,9 @@ module Zm
       end
 
       def make_query
-        @parent.sacc.invoke(jsns_builder.to_jsns)
+        # @parent.sacc.invoke(jsns_builder.to_jsns)
+        # @parent.parent.soap_admin_connector.invoke(jsns_builder.to_jsns)
+        @parent.soap_connector.invoke(jsns_builder.to_jsns)
       end
 
       def reset_query_params

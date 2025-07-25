@@ -20,7 +20,7 @@ module Zm
       end
 
       def create!
-        rep = @parent.sacc.invoke(build_create)
+        rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateSearchFolderResponse][:search].first
         SearchFolderJsnsInitializer.update(self, json)
         @id
@@ -31,7 +31,7 @@ module Zm
       end
 
       def color!
-        @parent.sacc.invoke(build_color)
+        @parent.soap_connector.invoke(build_color)
         true
       end
 

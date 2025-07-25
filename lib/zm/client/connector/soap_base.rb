@@ -82,6 +82,7 @@ module Zm
             raise(error_handler, JSON.parse(response.body, symbolize_names: true))
           end
 
+          puts response.body
           response.body
         end
 
@@ -101,12 +102,13 @@ module Zm
         }
       end
 
-      def hash_header(token, target_server = nil)
-        h_context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
-          v.nil?
-        end
-        { Header: { context: h_context, _jsns: BASESPACE } }
-      end
+      # todo : à supprimer, code mort
+      # def hash_header(token, target_server = nil)
+      #   h_context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
+      #     v.nil?
+      #   end
+      #   { Header: { context: h_context, _jsns: BASESPACE } }
+      # end
     end
   end
 end

@@ -54,11 +54,11 @@ module Zm
       end
 
       def save!
-        @parent.sacc.invoke(jsns_builder.to_create)
+        @parent.soap_connector.invoke(jsns_builder.to_create)
       end
 
       def delete!
-        @parent.sacc.invoke(jsns_builder.to_delete)
+        @parent.soap_connector.invoke(jsns_builder.to_delete)
         @parent.all.delete(self)
       end
 

@@ -28,7 +28,7 @@ module Zm
           soap_request.add_node(node_owner)
         end
 
-        @parent.sacc.invoke(soap_request)
+        @parent.soap_connector.invoke(soap_request)
       end
 
       def share_builder

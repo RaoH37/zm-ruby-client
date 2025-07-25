@@ -12,7 +12,7 @@ module Zm
 
         def update(item, json)
           item.type = json[:type]
-          item.id = json[:id].to_i
+          item.id = json[:id].split(':').last.to_i
           item.uuid = json[:uuid]
           item.name = json[:name]
           item.absFolderPath = json[:absFolderPath]

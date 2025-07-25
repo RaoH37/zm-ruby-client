@@ -11,7 +11,8 @@ module Zm
       end
 
       def make_query
-        @parent.sacc.invoke(build_query)
+        # @parent.sacc.invoke(build_query)
+        @parent.soap_connector.invoke(build_query)
       end
 
       def build_query
