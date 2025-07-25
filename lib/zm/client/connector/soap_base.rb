@@ -70,20 +70,9 @@ module Zm
       end
 
       def do_request(body, error_handler = SoapError)
-        # puts body.to_json
-        # puts "json.bytesize=#{body.to_json.bytesize}"
         response = http_client.post(@soap_path, body)
 
-        # soapbody = JSON.parse(response.body, symbolize_names: true)
-        #
-        # if response.status >= 400
-        #   raise(error_handler, soapbody)
-        # end
-        #
-        # soapbody
-
         if response.status >= 400
-          puts response.body
           raise(error_handler, response.body)
         end
 

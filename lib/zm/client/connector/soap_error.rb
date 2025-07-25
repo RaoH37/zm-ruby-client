@@ -9,8 +9,6 @@ module Zm
       attr_reader :reason, :code
 
       def initialize(soapbody)
-        # @reason = soapbody[:Body][:Fault][:Reason][:Text]
-        # @code = soapbody[:Body][:Fault][:Detail][:Error][:Code]
         if soapbody.start_with?('{')
           init_from_json(soapbody)
         elsif soapbody.start_with?('<')
@@ -23,8 +21,9 @@ module Zm
       private
 
       def init_from_json(soapbody)
-        @reason = soapbody[:Body][:Fault][:Reason][:Text]
-        @code = soapbody[:Body][:Fault][:Detail][:Error][:Code]
+        json = JSON.parse(soapbody, symbolize_names: true)
+        @reason = json[:Body][:Fault][:Reason][:Text]
+        @code = json[:Body][:Fault][:Detail][:Error][:Code]
       end
 
       def init_from_xml(soapbody)
