@@ -29,4 +29,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'faraday', '>= 2.12'
   s.add_dependency 'faraday-multipart', '1.0.4'
   s.add_dependency "bundler", ">= 1.15.0"
+  s.add_dependency "msgpack", "1.8.0"
 end
