@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'zm/client/mailbox/mailbox_item_concern'
 require 'zm/client/connector/rest_account'
 require 'zm/client/signature'
 require 'zm/client/folder'

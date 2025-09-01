@@ -6,13 +6,13 @@ module Zm
     class Folder < Base::Object
       include BelongsToFolder
       include RequestMethodsMailbox
+      include MailboxItemConcern
       # include Zm::Model::AttributeChangeObserver
 
-      attr_accessor :type, :id, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
+      attr_accessor :type, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
                     :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders,
-                    :grants, :retention_policies,
-                    :name, :color, :rgb, :l, :url, :f, :view
+                    :grants, :retention_policies
 
       alias nb_messages n
       alias nb_items n
