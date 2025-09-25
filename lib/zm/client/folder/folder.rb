@@ -11,8 +11,7 @@ module Zm
 
       attr_accessor :type, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
-                    :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders,
-                    :grants, :retention_policies
+                    :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders
 
       alias nb_messages n
       alias nb_items n
@@ -24,14 +23,26 @@ module Zm
         @l = FolderDefault::ROOT[:id]
         @type = :folder
         @folders = []
-        @grants = FolderGrantsCollection.new(self)
-        @retention_policies = FolderRetentionPoliciesCollection.new(self)
+
+
 
         yield(self) if block_given?
       end
 
+      def grants
+        return @grants if defined? @grants
+
+        @grants = FolderGrantsCollection.new(self)
+      end
+
+      def retention_policies
+        return @retention_policies if defined? @retention_policies
+
+        @retention_policies = FolderRetentionPoliciesCollection.new(self)
+      end
+
       def is_immutable?
-        @is_immutable ||= Zm::Client::FolderDefault::IDS.include?(@id.to_i)
+        @is_immutable ||= Zm::Client::FolderDefault::IDS.include?(id.to_i)
       end
 
       def to_query
@@ -42,7 +53,7 @@ module Zm
         rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateFolderResponse][:folder].first
         FolderJsnsInitializer.update(self, json)
-        @id
+        id
       end
 
       def color!
@@ -78,10 +89,11 @@ module Zm
       end
 
       def delete!
-        return false if is_immutable? || @id.nil?
+        return false if is_immutable? || id.nil?
 
         @parent.soap_connector.invoke(build_delete)
-        @id = nil
+
+        remove_instance_variable(:id)
       end
 
       def remove_flag!(pattern)
@@ -121,7 +133,7 @@ module Zm
 
       def download(dest_file_path, fmt = 'tgz')
         uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_folder(@id, fmt, dest_file_path)
+        uploader.download_folder(id, fmt, dest_file_path)
       end
 
       def upload(file_path, fmt = nil, types = nil, resolve = 'replace')

@@ -7,8 +7,9 @@ module Zm
       include BelongsToFolder
       include BelongsToTag
       include RequestMethodsMailbox
+      include MailboxItemConcern
 
-      attr_accessor :id, :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
+      attr_accessor :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
                     :calItemId, :apptId, :invId, :rev, :fb, :transp
       attr_reader :recipients, :attendees, :body
 
@@ -31,7 +32,7 @@ module Zm
           Zm::Client::FolderDefault::ROOT[:path],
           fmt,
           [Zm::Client::FolderView::APPOINTMENT],
-          [@id],
+          [id],
           dest_file_path
         )
       end
@@ -42,7 +43,7 @@ module Zm
         aji = AppointmentJsnsInitializer.new(@parent, rep[:CreateAppointmentResponse])
         aji.appointment = self
         aji.update
-        @id
+        id
       end
 
       def build_create
@@ -66,7 +67,7 @@ module Zm
       end
 
       def reload!
-        jsns = { m: { id: @id, html: 1 } }
+        jsns = { m: { id: id, html: 1 } }
 
         soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes(jsns)
         rep = @parent.soap_connector.invoke(soap_request)

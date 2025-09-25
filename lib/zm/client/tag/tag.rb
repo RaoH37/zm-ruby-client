@@ -6,8 +6,9 @@ module Zm
     class Tag < Base::Object
       # include Zm::Model::AttributeChangeObserver
       include RequestMethodsMailbox
+      include MailboxItemConcern
 
-      attr_accessor :id, :name, :color, :rgb
+      attr_accessor :name, :color, :rgb
 
       # define_changed_attributes :name, :color, :rgb
 
@@ -15,7 +16,7 @@ module Zm
         rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateTagResponse][:tag].first
         TagJsnsInitializer.update(self, json)
-        @id
+        id
       end
 
       private

@@ -40,10 +40,10 @@ module Zm
       end
 
       def delete!
-        return false if @id.nil?
+        return false if id.nil?
 
         @parent.soap_connector.invoke(build_delete)
-        @id = nil
+        remove_instance_variable(:id)
       end
 
       def build_delete

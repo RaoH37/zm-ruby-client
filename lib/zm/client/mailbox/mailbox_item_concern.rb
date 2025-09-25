@@ -12,10 +12,14 @@ module Zm
       end
 
       def id
+        return nil unless defined? @id
+
         @id.item_id
       end
 
       def mailbox_id
+        return nil unless defined? @id
+
         @id.mailbox_id
       end
     end

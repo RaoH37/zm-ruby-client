@@ -11,7 +11,7 @@ module Zm
         end
 
         def update(item, json)
-          item.id = json[:id].split(':').last.to_i
+          item.id = json[:id]
           item.name = json[:name]
           item.color = json[:color].to_i
           item.rgb = json[:rgb]
