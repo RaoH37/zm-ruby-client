@@ -6,57 +6,75 @@ module Zm
     class FolderJsnsInitializer
       class << self
         def create(parent, json)
-          item = Folder.new(parent)
-          update(item, json)
+          Folder.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.type = json[:type]
-          item.id = json[:id]
-          item.uuid = json[:uuid]
-          item.name = json[:name]
-          item.absFolderPath = json[:absFolderPath]
-          item.l = json[:l]
-          item.url = json[:url]
-          item.luuid = json[:luuid]
-          item.f = json[:f]
-          item.view = json[:view]
-          item.rev = json[:rev]
-          item.ms = json[:ms]
-          item.webOfflineSyncDays = json[:webOfflineSyncDays]
-          item.activesyncdisabled = json[:activesyncdisabled]
-          item.n = json[:n]
-          item.s = json[:s]
-          item.i4ms = json[:i4ms]
-          item.i4next = json[:i4next]
-          item.zid = json[:zid]
-          item.rid = json[:rid]
-          item.ruuid = json[:ruuid]
-          item.owner = json[:owner]
-          item.reminder = json[:reminder]
-          item.acl = json[:acl]
-          item.itemCount = json[:itemCount]
-          item.broken = json[:broken]
-          item.deletable = json[:deletable]
-          item.color = json[:color]
-          item.rgb = json[:rgb]
-          item.fb = json[:fb]
+          item.type = json.delete(:type)
+          item.id = json.delete(:id)
+          item.uuid = json.delete(:uuid)
+          item.name = json.delete(:name)
+          item.absFolderPath = json.delete(:absFolderPath)
+          item.l = json.delete(:l)
+          item.url = json.delete(:url)
+          item.luuid = json.delete(:luuid)
+          item.f = json.delete(:f)
+          item.view = json.delete(:view)
+          item.rev = json.delete(:rev)
+          item.ms = json.delete(:ms)
+          item.webOfflineSyncDays = json.delete(:webOfflineSyncDays)
+          item.activesyncdisabled = json.delete(:activesyncdisabled)
+          item.n = json.delete(:n)
+          item.s = json.delete(:s)
+          item.i4ms = json.delete(:i4ms)
+          item.i4next = json.delete(:i4next)
+          item.zid = json.delete(:zid)
+          item.rid = json.delete(:rid)
+          item.ruuid = json.delete(:ruuid)
+          item.owner = json.delete(:owner)
+          item.reminder = json.delete(:reminder)
+          item.acl = json.delete(:acl)
+          item.itemCount = json.delete(:itemCount)
+          item.broken = json.delete(:broken)
+          item.deletable = json.delete(:deletable)
+          item.color = json.delete(:color)
+          item.rgb = json.delete(:rgb)
+          item.fb = json.delete(:fb)
 
-          if !json[:acl].nil? && json[:acl][:grant].is_a?(Array)
-            json[:acl][:grant].each do |json|
-              item.grants.create(json[:zid], json[:gt], json[:perm], json[:d])
+          grants = json.dig(:acl, :grant)
+          if grants.is_a?(Array)
+            grants.each do |grant|
+              item.grants.create(
+                grant.delete(:zid),
+                grant.delete(:gt),
+                grant.delete(:perm),
+                grant.delete(:d)
+              )
             end
           end
 
-          if json[:retentionPolicy].is_a?(Array)
-            json[:retentionPolicy].first.map do |policy, v|
-              next if v.first[:policy].nil?
+          if (policies = json.fetch(:retentionPolicy, []).first).is_a?(Array)
+            policies.each do |policy, v|
+              params = v.first[:policy]&.first
+              next if params.nil?
 
-              type = v.first[:policy].first[:type]
-              lifetime = v.first[:policy].first[:lifetime]
+              type = params.delete(:type)
+              lifetime = params.delete(:lifetime)
               item.retention_policies.create(policy, lifetime, type)
             end
           end
+
+          # if json[:retentionPolicy].is_a?(Array)
+          #   json[:retentionPolicy].first.each do |policy, v|
+          #     next if v.first[:policy].nil?
+          #
+          #     type = v.first[:policy].first[:type]
+          #     lifetime = v.first[:policy].first[:lifetime]
+          #     item.retention_policies.create(policy, lifetime, type)
+          #   end
+          # end
 
           item.extend(DocumentFolder) if item.view == Zm::Client::FolderView::DOCUMENT
 
