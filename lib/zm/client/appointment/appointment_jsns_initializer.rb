@@ -28,7 +28,7 @@ module Zm
 
         @appointment.id = @json[:id]
         @appointment.tn = @json[:tn]
-        @appointment.l = @json[:l].to_i
+        @appointment.l = @json[:l]
         @appointment.uid = @json[:uid]
 
         if inv.nil?

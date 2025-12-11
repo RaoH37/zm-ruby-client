@@ -60,7 +60,6 @@ module Zm
       private
 
       def make_query
-        # @parent.sacc.invoke(@jsns_builder.to_find)
         @parent.soap_connector.invoke(@jsns_builder.to_find)
       end
 

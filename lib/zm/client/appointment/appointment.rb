@@ -9,7 +9,7 @@ module Zm
       include RequestMethodsMailbox
       include MailboxItemConcern
 
-      attr_accessor :uid, :name, :l, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
+      attr_accessor :uid, :name, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
                     :calItemId, :apptId, :invId, :rev, :fb, :transp
       attr_reader :recipients, :attendees, :body
 

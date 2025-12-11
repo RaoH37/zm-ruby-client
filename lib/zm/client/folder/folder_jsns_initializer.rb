@@ -16,7 +16,7 @@ module Zm
           item.uuid = json[:uuid]
           item.name = json[:name]
           item.absFolderPath = json[:absFolderPath]
-          item.l = json[:l].to_i
+          item.l = json[:l]
           item.url = json[:url]
           item.luuid = json[:luuid]
           item.f = json[:f]

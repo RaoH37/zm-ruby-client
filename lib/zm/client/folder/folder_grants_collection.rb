@@ -59,7 +59,9 @@ module Zm
         @parent.parent.soap_account_connector
       end
 
-      alias sacc soap_account_connector
+      def soap_connector
+        @parent.parent.soap_connector
+      end
     end
   end
 end

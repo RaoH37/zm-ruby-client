@@ -11,7 +11,7 @@ module Zm
         end
 
         def update(item, json)
-          item.id = json[:id].to_i
+          item.id = json[:id]
           item.name = json[:name]
           item.owner = json[:owner]
           item.rev = json[:rev]
@@ -30,7 +30,7 @@ module Zm
           item.view = json[:view]
           item.zid = json[:zid]
           item.webOfflineSyncDays = json[:webOfflineSyncDays]
-          item.l = json[:l].to_i
+          item.l = json[:l]
           item.color = json[:color].to_i
           item.rgb = json[:rgb].to_i
 

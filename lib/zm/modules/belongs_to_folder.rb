@@ -3,9 +3,11 @@
 module Zm
   module Client
     module BelongsToFolder
-      def folder_id
-        @l
-      end
+      # def folder_id
+      #   @l
+      # end
+
+
 
       def folder=(folder)
         return if folder.nil?
@@ -27,13 +29,13 @@ module Zm
         new_folder_id = new_folder_id.id if new_folder_id.is_a?(Zm::Client::Folder)
         return if new_folder_id == @l
 
-        @parent.sacc.invoke(jsns_builder.to_move(new_folder_id))
+        @parent.soap_connector.invoke(jsns_builder.to_move(new_folder_id))
         @folder = nil
         @l = new_folder_id
       end
 
       def trash!
-        @parent.sacc.invoke(jsns_builder.to_trash)
+        @parent.soap_connector.invoke(jsns_builder.to_trash)
       end
     end
   end

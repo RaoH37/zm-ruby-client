@@ -7,8 +7,9 @@ module Zm
       include BelongsToFolder
       include BelongsToTag
       include RequestMethodsMailbox
+      include MailboxItemConcern
 
-      attr_accessor :id, :d, :l, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
+      attr_accessor :d, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
       attr_reader :recipients, :attachments, :body
 
       def initialize(parent)
@@ -96,10 +97,6 @@ module Zm
       # content fo an email
       class Body
         attr_accessor :text, :html
-      end
-
-      def sacc
-        @parent.sacc
       end
 
       def jsns_builder

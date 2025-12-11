@@ -11,13 +11,13 @@ module Zm
         end
 
         def update(item, json)
-          item.id = json[:id].to_i
+          item.id = json[:id]
           item.name = json[:name]
 
           item.uuid = json[:uuid]
           item.deletable = json[:deletable]
           item.absFolderPath = json[:absFolderPath]
-          item.l = json[:l].to_i
+          item.l = json[:l]
           item.luuid = json[:luuid]
           item.color = json[:color]
           item.rgb = json[:rgb]

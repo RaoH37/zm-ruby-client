@@ -25,12 +25,20 @@ module Zm
         end
 
         def start_at(start_at)
-          @start_at = start_at
+          @start_at = if start_at.is_a?(Time)
+                        start_at.to_i * 1000
+                      elsif start_at.is_a?(Date)
+                        start_at.to_time.to_i * 1000
+                      end
           self
         end
 
         def end_at(end_at)
-          @end_at = end_at
+          @end_at = if end_at.is_a?(Time)
+                      end_at.to_i * 1000
+                    elsif end_at.is_a?(Date)
+                      end_at.to_time.to_i * 1000
+                    end
           self
         end
 
@@ -125,14 +133,11 @@ module Zm
         end
 
         def build_options
-          start_at_ts = @start_at.is_a?(Time) ? (@start_at.to_f * 1000).to_i : nil
-          end_at_ts = @end_at.is_a?(Time) ? (@end_at.to_f * 1000).to_i : nil
-
           {
             resultMode: @resultMode,
-            calExpandInstStart: start_at_ts,
-            calExpandInstEnd: end_at_ts
-          }.delete_if { |_, v| v.nil? }
+            calExpandInstStart: @start_at,
+            calExpandInstEnd: @end_at
+          }.compact
         end
 
         def reset_query_params

@@ -36,6 +36,7 @@ module Zm
       CONTENT = 'content'
 
       APPOINTMENT = 'appointment'
+      CONTACT = 'contact'
       DOCUMENT = 'document'
       MESSAGE = 'message'
       TAG = 'tag'

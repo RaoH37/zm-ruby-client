@@ -16,6 +16,7 @@ module Zm
         reset_query_params
       end
 
+      # todo: forcer id en string
       def find(id)
         folder = @child_class.new(@parent) do |f|
           f.id = id
@@ -87,8 +88,6 @@ module Zm
       end
 
       def make_query
-        # @parent.sacc.invoke(jsns_builder.to_jsns)
-        # @parent.parent.soap_admin_connector.invoke(jsns_builder.to_jsns)
         @parent.soap_connector.invoke(jsns_builder.to_jsns)
       end
 

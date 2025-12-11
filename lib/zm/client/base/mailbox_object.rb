@@ -32,7 +32,6 @@ module Zm
         def soap_account_connector
           @soap_account_connector ||= SoapAccountConnector.create(soap_config)
         end
-        alias sacc soap_account_connector
 
         def soap_connector
           return @soap_connector if defined? @soap_connector
@@ -140,7 +139,7 @@ module Zm
         end
 
         def account_login
-          sacc.token = nil
+          soap_account_connector.token = nil
 
           if password
             account_login_password
@@ -155,7 +154,7 @@ module Zm
 
           content, by = account_content_by
 
-          self.token = sacc.auth_preauth(content, by, expires, domain_key)
+          self.token = soap_account_connector.auth_preauth(content, by, expires, domain_key)
         end
 
         def account_login_password
@@ -164,7 +163,7 @@ module Zm
 
           content, by = account_content_by
 
-          self.token = sacc.auth_password(content, by, @password)
+          self.token = soap_account_connector.auth_password(content, by, @password)
         end
 
         def account_content_by

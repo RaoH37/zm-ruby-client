@@ -6,10 +6,11 @@ module Zm
     class SearchFolder < Base::Object
       # include Zm::Model::AttributeChangeObserver
       include RequestMethodsMailbox
+      include MailboxItemConcern
 
-      attr_accessor :id, :uuid, :deletable, :name, :absFolderPath, :l, :luuid, :color, :rgb, :rev, :ms,
+      attr_accessor :uuid, :deletable, :name, :absFolderPath, :luuid, :color, :rgb, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types,
-                    :name, :color, :rgb, :l, :query, :sortBy
+                    :name, :color, :rgb, :query, :sortBy
 
       # define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
 

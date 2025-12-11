@@ -28,7 +28,7 @@ module Zm
           gt: @item.gt,
           right: @item.right,
           d: @item.d
-        }.reject { |_, v| v.nil? }
+        }.compact
       end
     end
   end

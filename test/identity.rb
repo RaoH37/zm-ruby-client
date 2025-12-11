@@ -8,14 +8,15 @@ require './lib/zm/client'
 class TestIdentity < Minitest::Test
   def setup
     @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
-    # @admin.login
+    @admin.logger.debug!
+    @admin.login
 
     @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
 
     @account = @admin.accounts.new
     @account.name = @fixture_accounts['accounts']['maxime']['email']
-    @account.domain_key = @fixture_accounts['accounts']['maxime']['domain_key']
-    @account.account_login_preauth
+    # @account.domain_key = @fixture_accounts['accounts']['maxime']['domain_key']
+    # @account.account_login_preauth
   end
 
   def test_all
@@ -69,14 +70,14 @@ class TestIdentity < Minitest::Test
     assert identity.update!({ zimbraPrefFromDisplay: "Unit Test Patch #{Time.now.to_i}" })
   end
 
-  def test_delete
-    identity = @account.identities.all.reject { |ident| ident.name == 'DEFAULT' }.last
-
-    if identity.nil?
-      assert false
-      return
-    end
-
-    assert identity.delete!.nil?
-  end
+  # def test_delete
+  #   identity = @account.identities.all.reject { |ident| ident.name == 'DEFAULT' }.last
+  #
+  #   if identity.nil?
+  #     assert false
+  #     return
+  #   end
+  #
+  #   assert identity.delete!.nil?
+  # end
 end

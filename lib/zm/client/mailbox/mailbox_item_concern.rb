@@ -22,6 +22,12 @@ module Zm
 
         @id.mailbox_id
       end
+
+      def l=(remote_l)
+        @l = remote_l.split(':').last
+      end
+
+      attr_reader :l
     end
   end
 end

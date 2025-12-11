@@ -6,25 +6,29 @@ module Zm
     class MountPoint < Base::Object
       include BelongsToFolder
       include RequestMethodsMailbox
-      # include Zm::Model::AttributeChangeObserver
+      include MailboxItemConcern
 
       attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid,
-                    :activesyncdisabled, :absFolderPath, :view, :zid, :id, :webOfflineSyncDays,
-                    :name, :color, :rgb, :l
-
-      # define_changed_attributes :name, :color, :rgb, :l
+                    :activesyncdisabled, :absFolderPath, :view, :zid, :webOfflineSyncDays, :name, :color, :rgb
 
       def initialize(parent)
         @l = FolderDefault::ROOT[:id]
         super(parent)
       end
 
+      # def l
+      #   return @l if defined? @l
+      #
+      #   FolderDefault::ROOT[:id]
+      # end
+      # alias folder_id l
+
       def create!
         rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateMountpointResponse][:link].first
 
         MountpointJsnsInitializer.update(self, json)
-        @id
+        id
       end
 
       def modify!

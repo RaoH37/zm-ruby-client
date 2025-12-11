@@ -9,7 +9,7 @@ module Zm
       include MailboxItemConcern
       # include Zm::Model::AttributeChangeObserver
 
-      attr_accessor :type, :uuid, :name, :absFolderPath, :l, :url, :luuid, :f, :view, :rev, :ms,
+      attr_accessor :type, :uuid, :name, :absFolderPath, :url, :luuid, :f, :view, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
                     :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders
 
@@ -20,7 +20,7 @@ module Zm
       def initialize(parent)
         super(parent)
 
-        @l = FolderDefault::ROOT[:id]
+        # @l = FolderDefault::ROOT[:id]
         @type = :folder
         @folders = []
 
@@ -28,6 +28,13 @@ module Zm
 
         yield(self) if block_given?
       end
+
+      def l
+        return @l if defined? @l
+
+        FolderDefault::ROOT[:id]
+      end
+      alias folder_id l
 
       def grants
         return @grants if defined? @grants
@@ -93,7 +100,7 @@ module Zm
 
         @parent.soap_connector.invoke(build_delete)
 
-        remove_instance_variable(:id)
+        # remove_instance_variable(:id)
       end
 
       def remove_flag!(pattern)

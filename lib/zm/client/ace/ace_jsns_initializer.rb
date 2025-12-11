@@ -12,10 +12,10 @@ module Zm
         end
 
         def update(item, json)
-          item.instance_variable_set(:@zid, json[:zid])
-          item.instance_variable_set(:@gt, json[:gt])
-          item.instance_variable_set(:@right, json[:right])
-          item.instance_variable_set(:@d, json[:d])
+          item.zid = json.delete(:zid)
+          item.gt = json.delete(:gt)
+          item.right = json.delete(:right)
+          item.d = json.delete(:d)
 
           item
         end
