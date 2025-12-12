@@ -6,9 +6,15 @@ module Zm
       # class for account object jsns initializer
       class BaseJsnsInitializer
         class << self
+          def create(parent, json)
+            klass.new(parent).tap do |item|
+              update(item, json)
+            end
+          end
+
           def update(item, json)
-            item.id = json[:id]
-            item.name = json[:name]
+            item.id = json.delete(:id)
+            item.name = json.delete(:name)
 
             formatted_json(json).each do |k, v|
               valorise(item, k, v)

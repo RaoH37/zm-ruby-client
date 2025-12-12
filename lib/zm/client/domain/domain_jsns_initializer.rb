@@ -5,11 +5,7 @@ module Zm
     # class for initialize domain
     class DomainJsnsInitializer < Base::BaseJsnsInitializer
       class << self
-        def create(parent, json)
-          Domain.new(parent).tap do |item|
-            update(item, json)
-          end
-        end
+        def klass = Domain
 
         def update(item, json)
           item = super(item, json)

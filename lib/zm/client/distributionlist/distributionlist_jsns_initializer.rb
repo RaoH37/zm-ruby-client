@@ -5,19 +5,10 @@ module Zm
     # class for initialize distribution list
     class DistributionListJsnsInitializer < Base::BaseJsnsInitializer
       class << self
-        def create(parent, json)
-          DistributionList.new(parent).tap do |item|
-            update(item, json)
-          end
-        end
+        def klass = DistributionList
 
         def update(item, json)
-          item.id = json.delete(:id)
-          item.name = json.delete(:name)
-
-          formatted_json(json).each do |k, v|
-            valorise(item, k, v)
-          end
+          super
 
           unless item.zimbraMailForwardingAddress.is_a?(Array)
             item.zimbraMailForwardingAddress = [item.zimbraMailForwardingAddress]

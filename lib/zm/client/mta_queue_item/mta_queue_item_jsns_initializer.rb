@@ -5,11 +5,7 @@ module Zm
     # class for initialize account
     class MtaQueueItemJsnsInitializer < Base::BaseJsnsInitializer
       class << self
-        def create(parent, json)
-          item = MtaQueueItem.new(parent)
-
-          update(item, json)
-        end
+        def klass = MtaQueueItem
 
         def update(item, json)
           item.size = json[:size]

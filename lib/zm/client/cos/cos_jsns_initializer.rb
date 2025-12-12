@@ -5,11 +5,7 @@ module Zm
     # class for initialize cos
     class CosJsnsInitializer < Base::BaseJsnsInitializer
       class << self
-        def create(parent, json)
-          item = Cos.new(parent)
-
-          update(item, json)
-        end
+        def klass = Cos
 
         def update(item, json)
           item = super(item, json)
