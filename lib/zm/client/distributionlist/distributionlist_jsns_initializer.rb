@@ -6,14 +6,14 @@ module Zm
     class DistributionListJsnsInitializer < Base::BaseJsnsInitializer
       class << self
         def create(parent, json)
-          item = DistributionList.new(parent)
-
-          update(item, json)
+          DistributionList.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.name = json[:name]
+          item.id = json.delete(:id)
+          item.name = json.delete(:name)
 
           formatted_json(json).each do |k, v|
             valorise(item, k, v)

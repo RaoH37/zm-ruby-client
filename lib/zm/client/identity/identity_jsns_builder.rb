@@ -10,28 +10,32 @@ module Zm
 
       def to_jsns
         soap_request = SoapElement.account(SoapAccountConstants::CREATE_IDENTITY_REQUEST)
-        node_identity = SoapElement.create(SoapConstants::IDENTITY).add_attributes({ name: @item.name, _attrs: attrs })
+        node_identity = SoapElement.create(SoapConstants::IDENTITY)
+                                   .add_attributes({ name: @item.name, _attrs: attrs })
         soap_request.add_node(node_identity)
         soap_request
       end
 
       def to_update
         soap_request = SoapElement.account(SoapAccountConstants::MODIFY_IDENTITY_REQUEST)
-        node_identity = SoapElement.create(SoapConstants::IDENTITY).add_attributes({ id: @item.id, _attrs: attrs })
+        node_identity = SoapElement.create(SoapConstants::IDENTITY)
+                                   .add_attributes({ id: @item.id, _attrs: attrs })
         soap_request.add_node(node_identity)
         soap_request
       end
 
       def to_patch(hash)
         soap_request = SoapElement.account(SoapAccountConstants::MODIFY_IDENTITY_REQUEST)
-        node_identity = SoapElement.create(SoapConstants::IDENTITY).add_attributes({ id: @item.id, _attrs: hash })
+        node_identity = SoapElement.create(SoapConstants::IDENTITY)
+                                   .add_attributes({ id: @item.id, _attrs: hash })
         soap_request.add_node(node_identity)
         soap_request
       end
 
       def to_delete
         soap_request = SoapElement.account(SoapAccountConstants::DELETE_IDENTITY_REQUEST)
-        node_identity = SoapElement.create(SoapConstants::IDENTITY).add_attributes({ id: @item.id })
+        node_identity = SoapElement.create(SoapConstants::IDENTITY)
+                                   .add_attributes({ id: @item.id })
         soap_request.add_node(node_identity)
         soap_request
       end

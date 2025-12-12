@@ -15,7 +15,9 @@ module Zm
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -25,12 +27,15 @@ module Zm
 
       def to_update
         soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_COS_REQUEST)
-        node_cos = SoapElement.create(SoapConstants::ID).add_content(@item.id)
+        node_cos = SoapElement.create(SoapConstants::ID)
+                              .add_content(@item.id)
         soap_request.add_node(node_cos)
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -40,13 +45,16 @@ module Zm
 
       def to_patch(hash)
         soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_COS_REQUEST)
-        node_cos = SoapElement.create(SoapConstants::ID).add_content(@item.id)
+        node_cos = SoapElement.create(SoapConstants::ID)
+                              .add_content(@item.id)
         soap_request.add_node(node_cos)
 
         hash.each do |key, values|
           values = [values] unless values.is_a?(Array)
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -56,7 +64,8 @@ module Zm
 
       def to_copy(new_name)
         soap_request = SoapElement.admin(SoapAdminConstants::COPY_COS_REQUEST)
-        node_name = SoapElement.create(SoapConstants::NAME).add_content(new_name)
+        node_name = SoapElement.create(SoapConstants::NAME)
+                               .add_content(new_name)
 
         if @item.id
           node_cos = SoapElement.create(SoapConstants::COS)

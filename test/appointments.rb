@@ -23,6 +23,11 @@ class TestAppointments < Minitest::Test
                     .start_at(Date.new(Time.now.year, 1, 1))
                     .end_at(Date.new(Time.now.year, 12, 31))
                     .all
+
+    appos.each do |appo|
+      puts appo.inspect
+    end
+
     assert appos.is_a?(Array)
   end
 end

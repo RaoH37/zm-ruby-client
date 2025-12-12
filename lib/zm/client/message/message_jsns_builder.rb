@@ -15,7 +15,7 @@ module Zm
           e: recipients_jsns,
           su: { _content: @item.su },
           mp: body_jsns
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
         jsns[:did] = @item.id if @item.l.to_i == FolderDefault::DRAFTS[:id]
 

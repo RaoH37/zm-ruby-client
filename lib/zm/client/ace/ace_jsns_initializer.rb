@@ -6,9 +6,9 @@ module Zm
     class AceJsnsInitializer
       class << self
         def create(parent, json)
-          item = Ace.new(parent)
-
-          update(item, json)
+          Ace.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)

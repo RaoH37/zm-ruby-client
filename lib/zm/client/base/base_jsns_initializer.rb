@@ -47,12 +47,6 @@ module Zm
             c = value.to_i
             c.to_s == value ? c : value
           end
-
-          # def arrow_name(name)
-          #   return name if name.to_s.start_with?('@')
-          #
-          #   "@#{name}"
-          # end
         end
       end
     end

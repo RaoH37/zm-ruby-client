@@ -12,13 +12,16 @@ module Zm
         req = {
           name: @item.name,
           password: @item.password
-        }.reject { |_, v| v.nil? }
+        }.compact
 
-        soap_request = SoapElement.admin(SoapAdminConstants::CREATE_ACCOUNT_REQUEST).add_attributes(req)
+        soap_request = SoapElement.admin(SoapAdminConstants::CREATE_ACCOUNT_REQUEST)
+                                  .add_attributes(req)
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -27,12 +30,14 @@ module Zm
       end
 
       def to_update
-        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_ACCOUNT_REQUEST).add_attribute(SoapConstants::ID,
-                                                                                                   @item.id)
+        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_ACCOUNT_REQUEST)
+                                  .add_attribute(SoapConstants::ID, @item.id)
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -41,13 +46,15 @@ module Zm
       end
 
       def to_patch(hash)
-        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_ACCOUNT_REQUEST).add_attribute(SoapConstants::ID,
-                                                                                                   @item.id)
+        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_ACCOUNT_REQUEST)
+                                  .add_attribute(SoapConstants::ID, @item.id)
 
         hash.each do |key, values|
           values = [values] unless values.is_a?(Array)
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -56,11 +63,13 @@ module Zm
       end
 
       def to_delete
-        SoapElement.admin(SoapAdminConstants::DELETE_ACCOUNT_REQUEST).add_attribute('id', @item.id)
+        SoapElement.admin(SoapAdminConstants::DELETE_ACCOUNT_REQUEST)
+                   .add_attribute('id', @item.id)
       end
 
       def to_rename(new_name)
-        SoapElement.admin(SoapAdminConstants::RENAME_ACCOUNT_REQUEST).add_attributes({ id: @item.id, newName: new_name })
+        SoapElement.admin(SoapAdminConstants::RENAME_ACCOUNT_REQUEST)
+                   .add_attributes({ id: @item.id, newName: new_name })
       end
 
       def attrs_only_set_h

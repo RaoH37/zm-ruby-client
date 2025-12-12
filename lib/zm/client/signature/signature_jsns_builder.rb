@@ -10,7 +10,8 @@ module Zm
 
       def to_jsns
         soap_request = SoapElement.account(SoapAccountConstants::CREATE_SIGNATURE_REQUEST)
-        node_signature = SoapElement.create(SoapConstants::SIGNATURE).add_attributes({ name: @signature.name })
+        node_signature = SoapElement.create(SoapConstants::SIGNATURE)
+                                    .add_attributes({ name: @signature.name })
         soap_request.add_node(node_signature)
         node_content = SoapElement.create(SoapConstants::CONTENT)
                                   .add_attribute(SoapConstants::TYPE, @signature.type)
@@ -45,7 +46,8 @@ module Zm
 
       def to_delete
         soap_request = SoapElement.account(SoapAccountConstants::DELETE_SIGNATURE_REQUEST)
-        node_signature = SoapElement.create(SoapConstants::SIGNATURE).add_attribute(SoapConstants::ID, @signature.id)
+        node_signature = SoapElement.create(SoapConstants::SIGNATURE)
+                                    .add_attribute(SoapConstants::ID, @signature.id)
         soap_request.add_node(node_signature)
         soap_request
       end

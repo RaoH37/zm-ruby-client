@@ -5,11 +5,12 @@ require 'faraday/multipart'
 module Zm
   module Client
     class RestAccountConnector
-      attr_reader :verbose, :follow_location
+      attr_reader :verbose, :follow_location, :timeout
 
-      def initialize
-        @verbose = false
-        @timeout = 300
+      def initialize(verbose: false, follow_location: false, timeout: 300)
+        @verbose = verbose
+        @follow_location = follow_location
+        @timeout = timeout
 
         @ssl_options = {
           verify: false,
@@ -20,9 +21,9 @@ module Zm
         @cookies = nil
       end
 
-      def verbose!
-        @verbose = true
-      end
+      # def verbose!
+      #   @verbose = true
+      # end
 
       def cookies(cookies)
         @cookies = cookies

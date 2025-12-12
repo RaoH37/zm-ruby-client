@@ -142,14 +142,14 @@ module Zm
 
         json = soap_response[:GetVersionInfoResponse][:info].first
 
-        instance_variable_set(:@type, json[:type])
-        instance_variable_set(:@version, json[:version])
-        instance_variable_set(:@release, json[:release])
-        instance_variable_set(:@buildDate, json[:buildDate])
-        instance_variable_set(:@host, json[:host])
-        instance_variable_set(:@majorversion, json[:majorversion])
-        instance_variable_set(:@minorversion, json[:minorversion])
-        instance_variable_set(:@microversion, json[:microversion])
+        instance_variable_set(:@type, json.delete(:type))
+        instance_variable_set(:@version, json.delete(:version))
+        instance_variable_set(:@release, json.delete(:release))
+        instance_variable_set(:@buildDate, json.delete(:buildDate))
+        instance_variable_set(:@host, json.delete(:host))
+        instance_variable_set(:@majorversion, json.delete(:majorversion))
+        instance_variable_set(:@minorversion, json.delete(:minorversion))
+        instance_variable_set(:@microversion, json.delete(:microversion))
       end
 
       def logger

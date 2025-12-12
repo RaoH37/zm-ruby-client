@@ -15,7 +15,8 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST).add_attributes(jsns)
+        SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST)
+                   .add_attributes(jsns)
       end
 
       def to_update
@@ -27,7 +28,8 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
+        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST)
+                   .add_attributes(jsns)
       end
 
       def to_patch(hash)
@@ -38,7 +40,8 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
+        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST)
+                   .add_attributes(jsns)
       end
 
       alias to_create to_jsns

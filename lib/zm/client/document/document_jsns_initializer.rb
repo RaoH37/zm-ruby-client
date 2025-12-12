@@ -6,35 +6,36 @@ module Zm
     class DocumentJsnsInitializer
       class << self
         def create(parent, json)
-          item = Document.new(parent)
-          update(item, json)
+          Document.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.uuid = json[:uuid]
-          item.name = json[:name]
-          item.s = json[:s]
-          item.d = json[:d]
-          item.l = json[:l]
-          item.luuid = json[:luuid]
-          item.ms = json[:ms]
-          item.mdver = json[:mdver]
-          item.md = json[:md]
-          item.rev = json[:rev]
-          item.f = json[:f]
-          item.tn = json[:tn].to_s.split(',')
-          item.t = json[:t]
-          item.meta = json[:meta]
-          item.ct = json[:ct]
-          item.descEnabled = json[:descEnabled]
-          item.ver = json[:ver]
-          item.leb = json[:leb]
-          item.cr = json[:cr]
-          item.cd = json[:cd]
-          item.acl = json[:acl]
-          item.loid = json[:loid]
-          item.sf = json[:sf]
+          item.id = json.delete(:id)
+          item.uuid = json.delete(:uuid)
+          item.name = json.delete(:name)
+          item.s = json.delete(:s)
+          item.d = json.delete(:d)
+          item.l = json.delete(:l)
+          item.luuid = json.delete(:luuid)
+          item.ms = json.delete(:ms)
+          item.mdver = json.delete(:mdver)
+          item.md = json.delete(:md)
+          item.rev = json.delete(:rev)
+          item.f = json.delete(:f)
+          item.tn = json.delete(:tn).to_s.split(',')
+          item.t = json.delete(:t)
+          item.meta = json.delete(:meta)
+          item.ct = json.delete(:ct)
+          item.descEnabled = json.delete(:descEnabled)
+          item.ver = json.delete(:ver)
+          item.leb = json.delete(:leb)
+          item.cr = json.delete(:cr)
+          item.cd = json.delete(:cd)
+          item.acl = json.delete(:acl)
+          item.loid = json.delete(:loid)
+          item.sf = json.delete(:sf)
 
           item
         end

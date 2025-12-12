@@ -7,8 +7,9 @@ module Zm
       include BelongsToFolder
       include BelongsToTag
 
-      attr_accessor :uid, :priority, :ptst, :percentComplete, :name, :loc, :alarm, :isOrg, :id, :invId, :compNum, :l,
-                    :status, :class, :allDay, :f, :tn, :t, :rev, :s, :d, :md, :ms, :cm, :sf
+      attr_accessor :uid, :priority, :ptst, :percentComplete, :name, :loc, :alarm, :isOrg,
+                    :id, :invId, :compNum, :l, :status, :class, :allDay, :f, :tn, :t, :rev,
+                    :s, :d, :md, :ms, :cm, :sf
 
       def download(dest_file_path, fmt = 'ics')
         uploader = Upload.new(@parent, RestAccountConnector.new)

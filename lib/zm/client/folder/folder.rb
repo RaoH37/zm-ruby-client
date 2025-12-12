@@ -7,7 +7,6 @@ module Zm
       include BelongsToFolder
       include RequestMethodsMailbox
       include MailboxItemConcern
-      # include Zm::Model::AttributeChangeObserver
 
       attr_accessor :type, :uuid, :name, :absFolderPath, :url, :luuid, :f, :view, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
@@ -20,11 +19,8 @@ module Zm
       def initialize(parent)
         super(parent)
 
-        # @l = FolderDefault::ROOT[:id]
         @type = :folder
         @folders = []
-
-
 
         yield(self) if block_given?
       end
@@ -99,8 +95,6 @@ module Zm
         return false if is_immutable? || id.nil?
 
         @parent.soap_connector.invoke(build_delete)
-
-        # remove_instance_variable(:id)
       end
 
       def remove_flag!(pattern)
@@ -119,11 +113,12 @@ module Zm
           f: f,
           tn: tn,
           content: { _content: eml }
-        }.reject { |_, v| v.nil? }
+        }.compact
 
         attrs = { m: m }
 
-        SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST)
+                   .add_attributes(attrs)
       end
 
       def add_appointments(ics)
@@ -145,7 +140,7 @@ module Zm
 
       def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
         fmt ||= File.extname(file_path)[1..]
-        uploader = Upload.new(@parent, RestAccountConnector.new)
+        uploader = Upload.new(@parent, RestAccountConnector.new(verbose: false, timeout: 1_200))
         uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
       end
 

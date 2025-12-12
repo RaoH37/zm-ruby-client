@@ -38,7 +38,7 @@ module Zm
           id: @item.id
         }.merge(hash)
 
-        attrs.reject! { |_, v| v.nil? }
+        attrs.compact!
 
         build(attrs)
       end
@@ -71,9 +71,6 @@ module Zm
           rgb: @item.rgb,
           color: @item.color
         }
-
-        # attrs[:rgb] = @item.rgb if @item.rgb_changed?
-        # attrs[:color] = @item.color if @item.color_changed?
 
         build(attrs)
       end

@@ -38,7 +38,7 @@ module Zm
           userAgent: { name: @user_agent },
           account: @account,
           targetServer: @target_server
-        }.delete_if { |_, v| v.nil? }
+        }.compact
       end
     end
   end

@@ -9,7 +9,7 @@ module Zm
           name: @item.name,
           color: @item.color,
           rgb: @item.rgb
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
         soap_request = SoapElement.mail(SoapMailConstants::CREATE_TAG_REQUEST)
         node_tag = SoapElement.create(SoapConstants::TAG).add_attributes(attrs)
@@ -25,7 +25,7 @@ module Zm
           id: @item.id,
           color: @item.color,
           rgb: @item.rgb
-        }.reject { |_, v| v.nil? }
+        }.compact
 
         build(attrs)
       end

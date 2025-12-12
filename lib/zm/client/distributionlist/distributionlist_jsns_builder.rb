@@ -14,7 +14,9 @@ module Zm
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -28,7 +30,9 @@ module Zm
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -43,7 +47,9 @@ module Zm
         hash.each do |key, values|
           values = [values] unless values.is_a?(Array)
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end

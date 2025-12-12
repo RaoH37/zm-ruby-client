@@ -45,7 +45,9 @@ module Zm
         hash.each do |key, values|
           values = [values] unless values.is_a?(Array)
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A).add_attribute(SoapConstants::N, key).add_content(value)
+            node_attr = SoapElement.create(SoapConstants::A)
+                                   .add_attribute(SoapConstants::N, key)
+                                   .add_content(value)
             soap_request.add_node(node_attr)
           end
         end
@@ -54,7 +56,8 @@ module Zm
       end
 
       def to_delete
-        SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST).add_attribute(SoapConstants::ID, @item.id)
+        SoapElement.admin(SoapAdminConstants::DELETE_DOMAIN_REQUEST)
+                   .add_attribute(SoapConstants::ID, @item.id)
       end
 
       def attrs_only_set_h

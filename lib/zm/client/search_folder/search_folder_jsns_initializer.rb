@@ -6,28 +6,29 @@ module Zm
     class SearchFolderJsnsInitializer
       class << self
         def create(parent, json)
-          item = SearchFolder.new(parent)
-          update(item, json)
+          SearchFolder.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.name = json[:name]
+          item.id = json.delete(:id)
+          item.name = json.delete(:name)
 
-          item.uuid = json[:uuid]
-          item.deletable = json[:deletable]
-          item.absFolderPath = json[:absFolderPath]
-          item.l = json[:l]
-          item.luuid = json[:luuid]
-          item.color = json[:color]
-          item.rgb = json[:rgb]
-          item.rev = json[:rev]
-          item.ms = json[:ms]
-          item.webOfflineSyncDays = json[:webOfflineSyncDays]
-          item.activesyncdisabled = json[:activesyncdisabled]
-          item.query = json[:query]
-          item.sortBy = json[:sortBy]
-          item.types = json[:types]
+          item.uuid = json.delete(:uuid)
+          item.deletable = json.delete(:deletable)
+          item.absFolderPath = json.delete(:absFolderPath)
+          item.l = json.delete(:l)
+          item.luuid = json.delete(:luuid)
+          item.color = json.delete(:color)
+          item.rgb = json.delete(:rgb)
+          item.rev = json.delete(:rev)
+          item.ms = json.delete(:ms)
+          item.webOfflineSyncDays = json.delete(:webOfflineSyncDays)
+          item.activesyncdisabled = json.delete(:activesyncdisabled)
+          item.query = json.delete(:query)
+          item.sortBy = json.delete(:sortBy)
+          item.types = json.delete(:types)
 
           item
         end

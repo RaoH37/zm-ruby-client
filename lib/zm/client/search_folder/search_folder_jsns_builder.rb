@@ -31,7 +31,7 @@ module Zm
           id: @item.id,
           query: @item.query,
           types: @item.types
-        }.reject { |_, v| v.nil? }
+        }.compact
 
         soap_request = SoapElement.mail(SoapMailConstants::MODIFY_SEARCH_FOLDER_REQUEST)
         node_search = SoapElement.create(SoapConstants::SEARCH).add_attributes(attrs)
@@ -78,9 +78,6 @@ module Zm
           rgb: @item.rgb,
           color: @item.color
         }
-
-        # attrs[:rgb] = @item.rgb if @item.rgb_changed?
-        # attrs[:color] = @item.color if @item.color_changed?
 
         build(attrs)
       end

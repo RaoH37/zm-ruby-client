@@ -6,15 +6,16 @@ module Zm
     class TagJsnsInitializer
       class << self
         def create(parent, json)
-          item = Tag.new(parent)
-          update(item, json)
+          Tag.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.name = json[:name]
-          item.color = json[:color].to_i
-          item.rgb = json[:rgb]
+          item.id = json.delete(:id)
+          item.name = json.delete(:name)
+          item.color = json.delete(:color)
+          item.rgb = json.delete(:rgb)
 
           item
         end

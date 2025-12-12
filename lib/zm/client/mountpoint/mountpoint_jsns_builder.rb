@@ -23,7 +23,8 @@ module Zm
 
         attrs = { link: link }
 
-        SoapElement.mail(SoapMailConstants::CREATE_MOUNTPOINT_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::CREATE_MOUNTPOINT_REQUEST)
+                   .add_attributes(attrs)
       end
 
       alias to_create to_jsns
@@ -39,7 +40,7 @@ module Zm
           rgb: @item.rgb,
           url: @item.url,
           view: @item.view
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
         if @item.is_immutable?
           attrs.delete(:name)

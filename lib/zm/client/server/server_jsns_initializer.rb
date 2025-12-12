@@ -6,9 +6,9 @@ module Zm
     class ServerJsnsInitializer < Base::BaseJsnsInitializer
       class << self
         def create(parent, json)
-          item = Server.new(parent)
-
-          update(item, json)
+          Server.new(parent).tap do |item|
+            update(item, json)
+          end
         end
       end
     end

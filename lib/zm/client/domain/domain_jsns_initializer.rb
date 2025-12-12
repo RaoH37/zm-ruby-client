@@ -6,9 +6,9 @@ module Zm
     class DomainJsnsInitializer < Base::BaseJsnsInitializer
       class << self
         def create(parent, json)
-          item = Domain.new(parent)
-
-          update(item, json)
+          Domain.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)

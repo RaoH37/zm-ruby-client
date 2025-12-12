@@ -11,32 +11,10 @@ module Zm
         end
 
         def update(item, json)
-          # part_id = json[:id].split(':')
-          #
-          # if part_id.length == 1
-          #   item.id = json[:id].to_i
-          # elsif part_id.length == 2
-          #   item.shared_account_id = part_id.first
-          #   item.id = part_id.last.to_i
-          # else
-            item.id = json[:id]
-          # end
-
-          # part_l = json[:l].split(':')
-          #
-          # if part_l.length == 1
-          #   item.l = json[:l].to_i
-          # elsif part_l.length == 2
-          #   item.shared_folder_account_id = part_l.first
-          #   item.l = part_l.last.to_i
-          # else
-            item.l = json[:l]
-          # end
-
-          # item.id   = json[:id]
-          item.name = json[:fileAsStr]
-          # item.l    = json[:l].to_i
-          item.tn   = json[:tn]
+          item.id = json.delete(:id)
+          item.l = json.delete(:l)
+          item.name = json.delete(:fileAsStr)
+          item.tn   = json.delete(:tn)
 
           if json[:_attrs].is_a?(Hash)
             make_custom_keys(json[:_attrs], item)

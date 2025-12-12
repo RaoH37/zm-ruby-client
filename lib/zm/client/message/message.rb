@@ -91,7 +91,8 @@ module Zm
       end
 
       def build_send
-        SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST).add_attributes(jsns_builder.to_jsns)
+        SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST)
+                   .add_attributes(jsns_builder.to_jsns)
       end
 
       # content fo an email

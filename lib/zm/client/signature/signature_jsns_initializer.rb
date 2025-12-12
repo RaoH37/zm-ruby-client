@@ -6,13 +6,14 @@ module Zm
     class SignatureJsnsInitializer
       class << self
         def create(parent, json)
-          item = Signature.new(parent)
-          update(item, json)
+          Signature.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.name = json[:name]
+          item.id = json.delete(:id)
+          item.name = json.delete(:name)
 
           content = json[:content].is_a?(Array) ? json[:content] : [json[:content]]
 

@@ -34,7 +34,7 @@ module Zm
             t: recipient.field,
             a: recipient.email,
             p: recipient.display_name
-          }.reject { |_, v| v.nil? }
+          }.compact
         end
       end
 
@@ -66,7 +66,7 @@ module Zm
             name: @item.name,
             fb: @item.fb,
             transp: @item.transp
-          }.reject { |_, v| v.nil? }
+          }.compact
         ]
       end
 
@@ -78,7 +78,7 @@ module Zm
             role: attendee.role,
             ptst: attendee.ptst,
             rsvp: attendee.rsvp
-          }.reject { |_, v| v.nil? }
+          }.compact
         end
       end
 
@@ -102,7 +102,7 @@ module Zm
         {
           a: @item.organizer.email,
           d: @item.organizer.display_name
-        }.reject { |_, v| v.nil? }
+        }.compact
       end
 
       def time_format

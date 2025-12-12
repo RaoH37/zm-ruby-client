@@ -4,13 +4,10 @@ module Zm
   module Client
     # class account tag
     class Tag < Base::Object
-      # include Zm::Model::AttributeChangeObserver
       include RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :name, :color, :rgb
-
-      # define_changed_attributes :name, :color, :rgb
 
       def create!
         rep = @parent.soap_connector.invoke(build_create)

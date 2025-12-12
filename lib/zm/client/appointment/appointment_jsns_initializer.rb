@@ -9,16 +9,17 @@ module Zm
       def initialize(parent, json)
         @parent = parent
         @json = json
+        @inv_id = @json.delete(:invId)
       end
 
       def update
         return false if @appointment.nil?
 
-        @appointment.calItemId = @json[:calItemId]
-        @appointment.apptId = @json[:apptId]
-        @appointment.invId = @json[:invId]
-        @appointment.id = @json[:invId]
-        @appointment.rev = @json[:rev]
+        @appointment.calItemId = @json.delete(:calItemId)
+        @appointment.apptId = @json.delete(:apptId)
+        @appointment.invId = @inv_id
+        @appointment.id = @inv_id
+        @appointment.rev = @json.delete(:rev)
 
         true
       end
@@ -26,10 +27,10 @@ module Zm
       def create
         @appointment ||= Appointment.new(@parent)
 
-        @appointment.id = @json[:id]
-        @appointment.tn = @json[:tn]
-        @appointment.l = @json[:l]
-        @appointment.uid = @json[:uid]
+        @appointment.id = @json.delete(:id)
+        @appointment.tn = @json.delete(:tn)
+        @appointment.l = @json.delete(:l)
+        @appointment.uid = @json.delete(:uid)
 
         if inv.nil?
           init_from_search
@@ -48,10 +49,10 @@ module Zm
         unless search_organizer_name.nil?
           @appointment.organizer = Zm::Client::Appointment::Organizer.new(search_organizer_name)
         end
-        @appointment.name = @json[:name]
-        @appointment.id = @json[:invId]
-        @appointment.desc = @json[:fr]
-        @appointment.allDay = @json[:allDay] unless @json[:allDay].nil?
+        @appointment.name = @json.delete(:name)
+        @appointment.id = @inv_id
+        @appointment.desc = @json.delete(:fr)
+        @appointment.allDay = @json.delete(:allDay) unless @json[:allDay].nil?
         search_make_date
       end
 

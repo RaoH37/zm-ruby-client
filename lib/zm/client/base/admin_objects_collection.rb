@@ -111,7 +111,7 @@ module Zm
             sortAscending: @sort_ascending,
             countOnly: @count_only,
             attrs: attrs_comma
-          }.reject { |_, v| v.nil? }
+          }.compact
         end
       end
     end

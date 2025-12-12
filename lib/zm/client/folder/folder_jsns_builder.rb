@@ -19,11 +19,12 @@ module Zm
           url: @item.url,
           fb: @item.fb,
           view: @item.view
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
         attrs = { folder: folder }
 
-        SoapElement.mail(SoapMailConstants::CREATE_FOLDER_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::CREATE_FOLDER_REQUEST)
+                   .add_attributes(attrs)
       end
 
       alias to_create to_jsns
@@ -40,7 +41,7 @@ module Zm
           url: @item.url,
           fb: @item.fb,
           view: @item.view
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
         if @item.is_immutable?
           action.delete(:name)
@@ -49,7 +50,8 @@ module Zm
 
         attrs = { action: action }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+                   .add_attributes(attrs)
       end
 
       def to_patch(options)
@@ -60,7 +62,8 @@ module Zm
 
         attrs = { action: action }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+                   .add_attributes(attrs)
       end
 
       def to_retentionpolicy
@@ -74,7 +77,8 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+                   .add_attributes(attrs)
       end
 
       def to_empty
@@ -86,7 +90,8 @@ module Zm
 
         attrs = { action: action }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+                   .add_attributes(attrs)
       end
 
       private

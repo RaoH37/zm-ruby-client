@@ -13,7 +13,7 @@ module Zm
           id: @item.id
         }.merge(hash)
 
-        attrs.reject! { |_, v| v.nil? }
+        attrs.compact!
 
         soap_request = SoapElement.mail(SoapMailConstants::MODIFY_DATA_SOURCE_REQUEST)
         node_action = SoapElement.create(@item.type).add_attributes(attrs)

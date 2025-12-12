@@ -6,19 +6,21 @@ module Zm
     class BackupJsnsInitializer
       class << self
         def create(parent, json)
-          item = Backup.new(parent)
-
-          item.label = json[:label]
-          item.type = json[:type]
-          item.aborted = json[:aborted]
-          item.start = json[:start].to_i
-          item.end = json[:end].to_i
-          item.minRedoSeq = json[:minRedoSeq]
-          item.maxRedoSeq = json[:maxRedoSeq]
-          item.live = json[:live]
-          item.accounts = json[:accounts]
-
-          item
+          Backup.new(parent).tap do |item|
+            update(item, json)
+          end
+        end
+        
+        def update(item, json)
+          item.label = json.delete(:label)
+          item.type = json.delete(:type)
+          item.aborted = json.delete(:aborted)
+          item.start = json.delete(:start)
+          item.end = json.delete(:end)
+          item.minRedoSeq = json.delete(:minRedoSeq)
+          item.maxRedoSeq = json.delete(:maxRedoSeq)
+          item.live = json.delete(:live)
+          item.accounts = json.delete(:accounts)
         end
       end
     end

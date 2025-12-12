@@ -3,8 +3,8 @@
 module Zm
   module Client
     class MtaQueueItem < Base::Object
-      attr_accessor :name, :n, :size, :fromdomain, :id, :reason, :time, :to, :addr, :filter, :host, :from, :todomain,
-                    :received
+      attr_accessor :name, :n, :size, :fromdomain, :id, :reason, :time, :to, :addr,
+                    :filter, :host, :from, :todomain, :received
 
       def mta_queue
         parent

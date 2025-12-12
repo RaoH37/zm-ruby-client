@@ -21,7 +21,8 @@ module Zm
         end
 
         def build_find(id)
-          SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes({ m: { id: id, html: 1 } })
+          SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
+                     .add_attributes({ m: { id: id, html: 1 } })
         end
 
         def start_at(start_at)
@@ -99,7 +100,8 @@ module Zm
 
           jsns.reject! { |_, v| v.nil? }
 
-          SoapElement.mail(SoapMailConstants::SEARCH_REQUEST).add_attributes(jsns)
+          SoapElement.mail(SoapMailConstants::SEARCH_REQUEST)
+                     .add_attributes(jsns)
         end
 
         private

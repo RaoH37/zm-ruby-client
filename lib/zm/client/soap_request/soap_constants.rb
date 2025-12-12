@@ -21,6 +21,7 @@ module Zm
       SERVER = 'server'
       COS = 'cos'
       DL = 'dl'
+      DLM = 'dlm'
       DOMAIN = 'domain'
       CAL_RESOURCE = 'calresource'
 

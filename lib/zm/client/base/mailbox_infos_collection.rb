@@ -63,7 +63,9 @@ module Zm
 
         soap_request.add_node(node_entry)
 
-        @zimbraMailHost = @parent.soap_connector.invoke(soap_request).dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
+        @zimbraMailHost = @parent.soap_connector
+                                 .invoke(soap_request)
+                                 .dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
       end
 
       private
@@ -73,12 +75,16 @@ module Zm
       end
 
       def make_query
-        soap_request = SoapElement.account(SoapAccountConstants::GET_INFO_REQUEST).add_attributes(jsns)
+        soap_request = SoapElement.account(SoapAccountConstants::GET_INFO_REQUEST)
+                                  .add_attributes(jsns)
         @parent.soap_connector.invoke(soap_request)
       end
 
       def jsns
-        { rights: @rights.join(','), sections: @sections.join(',') }.reject { |_, v| v.empty? }
+        {
+          rights: @rights.join(','),
+          sections: @sections.join(',')
+        }.compact
       end
 
       def reset_query_params

@@ -6,23 +6,24 @@ module Zm
     class ShareJsnsInitializer
       class << self
         def create(parent, json)
-          item = Share.new(parent)
-          update(item, json)
+          Share.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.ownerId = json[:ownerId]
-          item.ownerEmail = json[:ownerEmail]
-          item.ownerName = json[:ownerName]
-          item.folderId = json[:folderId]
-          item.folderUuid = json[:folderUuid]
-          item.folderPath = json[:folderPath]
-          item.view = json[:view]
-          item.rights = json[:rights]
-          item.granteeType = json[:granteeType]
-          item.granteeId = json[:granteeId]
-          item.granteeName = json[:granteeName]
-          item.mid = json[:mid]
+          item.ownerId = json.delete(:ownerId)
+          item.ownerEmail = json.delete(:ownerEmail)
+          item.ownerName = json.delete(:ownerName)
+          item.folderId = json.delete(:folderId)
+          item.folderUuid = json.delete(:folderUuid)
+          item.folderPath = json.delete(:folderPath)
+          item.view = json.delete(:view)
+          item.rights = json.delete(:rights)
+          item.granteeType = json.delete(:granteeType)
+          item.granteeId = json.delete(:granteeId)
+          item.granteeName = json.delete(:granteeName)
+          item.mid = json.delete(:mid)
 
           item
         end

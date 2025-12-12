@@ -6,16 +6,16 @@ module Zm
     class AccountJsnsInitializer < Base::BaseJsnsInitializer
       class << self
         def create(parent, json)
-          item = Account.new(parent)
-
-          update(item, json)
+          Account.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.name = json[:name]
-          item.used = json[:used] unless json[:used].nil?
-          item.zimbraMailQuota = json[:limit] unless json[:limit].nil?
+          item.id = json.delete(:id)
+          item.name = json.delete(:name)
+          item.used = json.delete(:used) unless json[:used].nil?
+          item.zimbraMailQuota = json.delete(:limit) unless json[:limit].nil?
 
           formatted_json(json).each do |k, v|
             valorise(item, k, v)

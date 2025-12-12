@@ -6,13 +6,14 @@ module Zm
     class IdentityJsnsInitializer
       class << self
         def create(parent, json)
-          item = Identity.new(parent)
-          update(item, json)
+          Identity.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.name = json[:name]
+          item.id = json.delete(:id)
+          item.name = json.delete(:name)
 
           return item if json[:_attrs].nil? || json[:_attrs].empty?
 

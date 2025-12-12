@@ -15,9 +15,10 @@ module Zm
           view: @item.view,
           depth: @item.depth,
           tr: @item.tr
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
-        SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST).add_attributes(attrs)
+        SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST)
+                   .add_attributes(attrs)
       end
     end
   end

@@ -16,8 +16,6 @@ module Zm
       def add!(email)
         return false if all.include?(Utils.format_email(email))
 
-        # soap_request = SoapElement.admin(SoapAdminConstants::ADD_ACCOUNT_ALIAS_REQUEST)
-        # soap_request.add_attributes({ id: @parent.id, alias: email })
         @parent.sac.invoke(build_add(email))
 
         all.push(email)
@@ -33,8 +31,6 @@ module Zm
       def remove!(email)
         return false unless all.include?(Utils.format_email(email))
 
-        # soap_request = SoapElement.admin(SoapAdminConstants::REMOVE_ACCOUNT_ALIAS_REQUEST)
-        # soap_request.add_attributes({ id: @parent.id, alias: email })
         @parent.sac.invoke(build_remove(email))
 
         all.delete(email)

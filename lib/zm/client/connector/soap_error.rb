@@ -9,8 +9,8 @@ module Zm
       attr_reader :reason, :code
 
       def initialize(soapbody)
-        @reason = soapbody[:Body][:Fault][:Reason][:Text]
-        @code = soapbody[:Body][:Fault][:Detail][:Error][:Code]
+        @reason = soapbody.dig(:Body, :Fault, :Reason, :Text)
+        @code = soapbody.dig(:Body, :Fault, :Detail, :Error, :Code)
         super "[#{@code}] [#{@reason}]"
       end
     end

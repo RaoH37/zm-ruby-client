@@ -4,15 +4,12 @@ module Zm
   module Client
     # class account SearchFolder
     class SearchFolder < Base::Object
-      # include Zm::Model::AttributeChangeObserver
       include RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :uuid, :deletable, :name, :absFolderPath, :luuid, :color, :rgb, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types,
                     :name, :color, :rgb, :query, :sortBy
-
-      # define_changed_attributes :name, :color, :rgb, :l, :query, :sortBy
 
       def initialize(parent)
         @l = FolderDefault::ROOT[:id]

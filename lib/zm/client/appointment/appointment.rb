@@ -47,11 +47,13 @@ module Zm
       end
 
       def build_create
-        SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_jsns)
+        SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST)
+                   .add_attributes(jsns_builder.to_jsns)
       end
 
       def build_modify
-        SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST).add_attributes(jsns_builder.to_update)
+        SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST)
+                   .add_attributes(jsns_builder.to_update)
       end
 
       def update!(*args)
@@ -69,7 +71,8 @@ module Zm
       def reload!
         jsns = { m: { id: id, html: 1 } }
 
-        soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST).add_attributes(jsns)
+        soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
+                                  .add_attributes(jsns)
         rep = @parent.soap_connector.invoke(soap_request)
         entry = rep[:GetMsgResponse][:m].first
 

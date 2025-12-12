@@ -6,28 +6,29 @@ module Zm
     class MessageJsnsInitializer
       class << self
         def create(parent, json)
-          item = Message.new(parent)
-          update(item, json)
+          Message.new(parent).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)
-          item.id = json[:id]
-          item.d = json[:d]
-          item.l    = json[:l]
-          item.su   = json[:su]
-          item.fr   = json[:fr]
-          item.autoSendTime = json[:autoSendTime]
-          item.mid  = json[:mid]
-          item.idnt = json[:idnt]
-          item.f = json[:f]
-          item.tn = json[:tn].to_s.split(',')
+          item.id = json.delete(:id)
+          item.d = json.delete(:d)
+          item.l    = json.delete(:l)
+          item.su   = json.delete(:su)
+          item.fr   = json.delete(:fr)
+          item.autoSendTime = json.delete(:autoSendTime)
+          item.mid  = json.delete(:mid)
+          item.idnt = json.delete(:idnt)
+          item.f = json.delete(:f)
+          item.tn = json.delete(:tn).to_s.split(',')
 
           json[:e].each do |e|
-            recipient = Recipient.new(e[:t], e[:a], e[:p])
+            recipient = Recipient.new(e.delete(:t), e.delete(:a), e.delete(:p))
             item.recipients.add(recipient)
           end
 
-          update_mps(item, json[:mp])
+          update_mps(item, json.delete(:mp))
 
           item
         end
@@ -55,14 +56,14 @@ module Zm
 
         def update_attachment(item, json)
           pj = Zm::Client::Message::Attachment.new(self)
-          pj.mid  = json[:mid]
-          pj.aid  = json[:aid]
-          pj.ct   = json[:ct]
-          pj.s    = json[:s]
-          pj.filename = json[:filename]
-          pj.ci   = json[:ci]
-          pj.cd   = json[:cd]
-          pj.part = json[:part]
+          pj.mid  = json.delete(:mid)
+          pj.aid  = json.delete(:aid)
+          pj.ct   = json.delete(:ct)
+          pj.s    = json.delete(:s)
+          pj.filename = json.delete(:filename)
+          pj.ci   = json.delete(:ci)
+          pj.cd   = json.delete(:cd)
+          pj.part = json.delete(:part)
           item.attachments.add(pj)
         end
       end

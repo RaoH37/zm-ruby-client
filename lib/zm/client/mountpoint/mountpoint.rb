@@ -16,13 +16,6 @@ module Zm
         super(parent)
       end
 
-      # def l
-      #   return @l if defined? @l
-      #
-      #   FolderDefault::ROOT[:id]
-      # end
-      # alias folder_id l
-
       def create!
         rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateMountpointResponse][:link].first

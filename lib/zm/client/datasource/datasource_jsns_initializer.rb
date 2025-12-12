@@ -6,8 +6,9 @@ module Zm
     class DataSourceJsnsInitializer
       class << self
         def create(parent, data_source_type, json)
-          item = DataSource.new(parent, data_source_type)
-          update(item, json)
+          DataSource.new(parent, data_source_type).tap do |item|
+            update(item, json)
+          end
         end
 
         def update(item, json)

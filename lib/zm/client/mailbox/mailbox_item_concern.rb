@@ -24,7 +24,7 @@ module Zm
       end
 
       def l=(remote_l)
-        @l = remote_l.split(':').last
+        @l = remote_l.to_s.split(':').last
       end
 
       attr_reader :l
