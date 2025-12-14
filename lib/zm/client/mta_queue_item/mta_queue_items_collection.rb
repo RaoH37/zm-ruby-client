@@ -57,7 +57,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= MtaQueueJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = MtaQueueJsnsBuilder.new(self)
       end
     end
   end

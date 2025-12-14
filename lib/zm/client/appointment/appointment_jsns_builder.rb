@@ -106,7 +106,9 @@ module Zm
       end
 
       def time_format
-        @time_format ||= @item.allDay ? '%Y%m%d' : '%Y%m%dT%H%M00'
+        return @time_format if defined? @time_format
+
+        @time_format = @item.allDay ? '%Y%m%d' : '%Y%m%dT%H%M00'
       end
     end
   end

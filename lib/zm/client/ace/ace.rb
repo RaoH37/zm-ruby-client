@@ -26,7 +26,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= AceJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = AceJsnsBuilder.new(self)
       end
     end
   end

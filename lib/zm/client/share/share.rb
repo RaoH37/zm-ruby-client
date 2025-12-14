@@ -8,7 +8,9 @@ module Zm
                     :view, :rights, :granteeType, :granteeId, :granteeName, :mid
 
       def mountpoints
-        @mountpoints ||= ShareMountPointsCollection.new(self)
+        return @mountpoints if defined? @mountpoints
+
+        @mountpoints = ShareMountPointsCollection.new(self)
       end
     end
   end

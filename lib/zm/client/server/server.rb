@@ -10,15 +10,21 @@ module Zm
       include HasSoapAdminConnector
 
       def mta_queues
-        @mta_queues ||= MtaQueuesCollection.new(self)
+        return @mta_queues if defined? @mta_queues
+
+        @mta_queues = MtaQueuesCollection.new(self)
       end
 
       def backups
-        @backups ||= BackupsCollection.new(self)
+        return @backups if defined? @backups
+
+        @backups = BackupsCollection.new(self)
       end
 
       def accounts
-        @accounts ||= ServerAccountsCollection.new(self)
+        return @accounts if defined? @accounts
+
+        @accounts = ServerAccountsCollection.new(self)
       end
 
       def update!(hash)

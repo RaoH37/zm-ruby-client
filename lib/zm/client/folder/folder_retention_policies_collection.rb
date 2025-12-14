@@ -32,7 +32,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= FolderJsnsBuilder.new(@parent)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = FolderJsnsBuilder.new(@parent)
       end
     end
   end

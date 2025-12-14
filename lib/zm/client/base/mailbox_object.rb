@@ -30,7 +30,9 @@ module Zm
         attr_writer :used, :domain_key
 
         def soap_account_connector
-          @soap_account_connector ||= SoapAccountConnector.create(soap_config)
+          return @soap_account_connector if defined? @soap_account_connector
+
+          @soap_account_connector = SoapAccountConnector.create(soap_config)
         end
 
         def soap_connector
@@ -54,21 +56,29 @@ module Zm
         end
 
         def rest_account_connector
-          @rest_account_connector ||= RestAccountConnector.new
+          return @rest_account_connector if defined? @rest_account_connector
+
+          @rest_account_connector = RestAccountConnector.new
         end
 
         alias rac rest_account_connector
 
         def domain_name
-          @domain_name ||= @name.split('@').last
+          return @domain_name if defined? @domain_name
+
+          @domain_name = @name.split('@').last
         end
 
         def infos
-          @infos ||= MailboxInfosCollection.new(self)
+          return @infos if defined? @infos
+
+          @infos = MailboxInfosCollection.new(self)
         end
 
         def prefs
-          @prefs ||= MailboxPrefsCollection.new(self)
+          return @prefs if defined? @prefs
+
+          @prefs = MailboxPrefsCollection.new(self)
         end
 
         def used
@@ -99,7 +109,9 @@ module Zm
         # #################################################################
 
         def token
-          @token ||= (Token.new(soap_account_connector.token) if soap_account_connector.token)
+          return @token if defined? @token
+
+          @token = (Token.new(soap_account_connector.token) if soap_account_connector.token)
         end
 
         def token=(value)
@@ -191,76 +203,112 @@ module Zm
         # #################################################################
 
         def messages
-          @messages ||= MessagesCollection.new(self)
+          return @messages if defined? @messages
+
+          @messages = MessagesCollection.new(self)
         end
 
         def folders
-          @folders ||= FoldersCollection.new(self)
+          return @folders if defined? @folders
+
+          @folders = FoldersCollection.new(self)
         end
 
         def mountpoints
-          @mountpoints ||= MountPointsCollection.new(self)
+          return @mountpoints if defined? @mountpoints
+
+          @mountpoints = MountPointsCollection.new(self)
         end
 
         def search_folders
-          @search_folders ||= SearchFoldersCollection.new(self)
+          return @search_folders if defined? @search_folders
+
+          @search_folders = SearchFoldersCollection.new(self)
         end
 
         def identities
-          @identities ||= IdentitiesCollection.new(self)
+          return @identities if defined? @identities
+
+          @identities = IdentitiesCollection.new(self)
         end
 
         def shares
-          @shares ||= SharesCollection.new(self)
+          return @shares if defined? @shares
+
+          @shares = SharesCollection.new(self)
         end
 
         def contacts
-          @contacts ||= ContactsCollection.new(self)
+          return @contacts if defined? @contacts
+
+          @contacts = ContactsCollection.new(self)
         end
 
         def appointments
-          @appointments ||= AppointmentsCollection.new(self)
+          return @appointments if defined? @appointments
+
+          @appointments = AppointmentsCollection.new(self)
         end
 
         def tags
-          @tags ||= TagsCollection.new(self)
+          return @tags if defined? @tags
+
+          @tags = TagsCollection.new(self)
         end
 
         def tasks
-          @tasks ||= TasksCollection.new(self)
+          return @tasks if defined? @tasks
+
+          @tasks = TasksCollection.new(self)
         end
 
         def aces
-          @aces ||= AcesCollection.new(self)
+          return @aces if defined? @aces
+
+          @aces = AcesCollection.new(self)
         end
         alias rights aces
 
         def signatures
-          @signatures ||= SignaturesCollection.new(self)
+          return @signatures if defined? @signatures
+
+          @signatures = SignaturesCollection.new(self)
         end
 
         def documents
-          @documents ||= DocumentsCollection.new(self)
+          return @documents if defined? @documents
+
+          @documents = DocumentsCollection.new(self)
         end
 
         def memberships
-          @memberships ||= AccountDlsMembershipCollection.new(self)
+          return @memberships if defined? @memberships
+
+          @memberships = AccountDlsMembershipCollection.new(self)
         end
 
         def dls_owner
-          @dls_owner ||= AccountDlsOwnerCollection.new(self)
+          return @dls_owner if defined? @dls_owner
+
+          @dls_owner = AccountDlsOwnerCollection.new(self)
         end
 
         def filter_rules
-          @filter_rules ||= FilterRulesCollection.new(self)
+          return @filter_rules if defined? @filter_rules
+
+          @filter_rules = FilterRulesCollection.new(self)
         end
 
         def outgoing_filter_rules
-          @outgoing_filter_rules ||= OutgoingFilterRulesCollection.new(self)
+          return @outgoing_filter_rules if defined? @outgoing_filter_rules
+
+          @outgoing_filter_rules = OutgoingFilterRulesCollection.new(self)
         end
 
         def data_sources
-          @data_sources ||= DataSourcesCollection.new(self)
+          return @data_sources if defined? @data_sources
+
+          @data_sources = DataSourcesCollection.new(self)
         end
 
         # #################################################################
@@ -301,13 +349,17 @@ module Zm
         end
 
         def last_logon
-          @last_logon ||= Time.parse(zimbraLastLogonTimestamp) unless zimbraLastLogonTimestamp.nil?
+          return @last_logon if defined? @last_logon
+
+          @last_logon = Time.parse(zimbraLastLogonTimestamp) unless zimbraLastLogonTimestamp.nil?
         end
 
         # #################################################################
 
         def uploader
-          @uploader ||= Upload.new(self)
+          return @uploader if defined? @uploader
+
+          @uploader = Upload.new(self)
         end
 
         private

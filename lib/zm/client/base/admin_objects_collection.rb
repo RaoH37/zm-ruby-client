@@ -94,7 +94,9 @@ module Zm
         private
 
         def ldap_filter
-          @ldap_filter ||= LdapFilter.new
+          return @ldap_filter if defined? @ldap_filter
+
+          @ldap_filter = LdapFilter.new
         end
 
         def jsns

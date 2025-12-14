@@ -2,10 +2,14 @@
 
 module GroupContact
   def members
-    @members ||= Zm::Client::ContactMembersCollection.new(self)
+    return @members if defined? @members
+
+    @members = Zm::Client::ContactMembersCollection.new(self)
   end
 
   def jsns_builder
-    @jsns_builder ||= Zm::Client::GroupContactJsnsBuilder.new(self)
+    return @jsns_builder if defined? @jsns_builder
+
+    @jsns_builder = Zm::Client::GroupContactJsnsBuilder.new(self)
   end
 end

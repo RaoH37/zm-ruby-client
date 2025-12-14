@@ -40,7 +40,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= SearchFolderJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = SearchFolderJsnsBuilder.new(self)
       end
     end
   end

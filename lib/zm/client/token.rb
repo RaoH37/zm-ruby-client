@@ -13,11 +13,15 @@ module Zm
       end
 
       def decoded
-        @decoded ||= [@encoded].pack('H*')
+        return @decoded if defined? @decoded
+
+        @decoded = [@encoded].pack('H*')
       end
 
       def metadatas
-        @metadatas ||= Hash[decoded.split(/;/).map { |part| part.split(/=\d+:/) }].freeze
+        return @metadatas if defined? @metadatas
+
+        @metadatas = Hash[decoded.split(/;/).map { |part| part.split(/=\d+:/) }].freeze
       end
 
       def zimbra_id
@@ -25,7 +29,9 @@ module Zm
       end
 
       def admin?
-        @admin ||= metadatas['admin'] == '1'
+        return @admin if defined? @admin
+
+        @admin = metadatas['admin'] == '1'
       end
 
       def server_version
@@ -33,7 +39,9 @@ module Zm
       end
 
       def expire_at
-        @expire_at ||= Time.at(metadatas['exp'].to_f / 1000).freeze
+        return @expire_at if defined? @expire_at
+
+        @expire_at = Time.at(metadatas['exp'].to_f / 1000).freeze
       end
 
       def expired?

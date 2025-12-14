@@ -19,7 +19,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= TagJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = TagJsnsBuilder.new(self)
       end
     end
   end

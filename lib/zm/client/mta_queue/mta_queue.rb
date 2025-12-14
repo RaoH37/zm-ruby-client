@@ -16,7 +16,9 @@ module Zm
       end
 
       def items
-        @items ||= MtaQueueItemsCollection.new self
+        return @items if defined? @items
+
+        @items = MtaQueueItemsCollection.new self
       end
 
       def hold!(ids)
@@ -38,7 +40,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= MtaQueueJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = MtaQueueJsnsBuilder.new(self)
       end
     end
   end

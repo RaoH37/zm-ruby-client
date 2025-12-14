@@ -12,7 +12,9 @@ module Zm
       private
 
       def ldap_filter
-        @ldap_filter ||= LdapFilter.new("(zimbraMailHost=#{@parent.name})")
+        return @ldap_filter if defined? @ldap_filter
+
+        @ldap_filter = LdapFilter.new("(zimbraMailHost=#{@parent.name})")
       end
     end
   end

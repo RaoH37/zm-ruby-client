@@ -38,7 +38,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= IdentityJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = IdentityJsnsBuilder.new(self)
       end
     end
   end

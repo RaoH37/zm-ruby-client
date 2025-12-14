@@ -45,7 +45,9 @@ module Zm
       end
 
       def is_immutable?
-        @is_immutable ||= Zm::Client::FolderDefault::IDS.include?(id.to_i)
+        return @is_immutable if defined? @is_immutable
+
+        @is_immutable = Zm::Client::FolderDefault::IDS.include?(id.to_i)
       end
 
       def to_query
@@ -147,7 +149,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= FolderJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = FolderJsnsBuilder.new(self)
       end
     end
   end

@@ -55,19 +55,25 @@ module Zm
       end
 
       def servers
-        @servers ||= CosServersCollection.new(self)
+        return @servers if defined? @servers
+
+        @servers = CosServersCollection.new(self)
       end
 
       def domains
         return if @id.nil?
 
-        @domains ||= CosDomainsCollection.new(self)
+        return @domains if defined? @domains
+
+        @domains = CosDomainsCollection.new(self)
       end
 
       def accounts
         return if @id.nil?
 
-        @accounts ||= CosAccountsCollection.new(self)
+        return @accounts if defined? @accounts
+
+        @accounts = CosAccountsCollection.new(self)
       end
 
       def attrs_write
@@ -75,7 +81,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= CosJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = CosJsnsBuilder.new(self)
       end
 
       private

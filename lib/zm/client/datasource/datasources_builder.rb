@@ -22,7 +22,9 @@ module Zm
       private
 
       def json_items
-        @json_items ||= @json[json_key]
+        return @json_items if defined? @json_items
+
+        @json_items = @json[json_key]
       end
     end
   end

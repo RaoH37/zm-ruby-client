@@ -15,7 +15,9 @@ module Zm
       end
 
       def sent_at
-        @sent_at ||= Time.at(@time / 1000)
+        return @sent_at if defined? @sent_at
+
+        @sent_at = Time.at(@time / 1000)
       rescue StandardError
         nil
       end

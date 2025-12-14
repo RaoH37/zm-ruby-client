@@ -35,7 +35,9 @@ module Zm
       end
 
       def token
-        @token ||= (Token.new(@soap_admin_connector.token) if @soap_admin_connector.token)
+        return @token if defined? @token
+
+        @token = (Token.new(@soap_admin_connector.token) if @soap_admin_connector.token)
       end
 
       def token=(value)
@@ -74,34 +76,48 @@ module Zm
       end
 
       def license
-        @license ||= LicensesCollection.new(self).find
+        return @license if defined? @license
+
+        @license = LicensesCollection.new(self).find
       rescue Zm::Client::SoapError => e
         logger.error "Get License info #{e.message}"
         nil
       end
 
       def domains
-        @domains ||= DomainsCollection.new self
+        return @domains if defined? @domains
+
+        @domains = DomainsCollection.new self
       end
 
       def accounts
-        @accounts ||= AccountsCollection.new self
+        return @accounts if defined? @accounts
+
+        @accounts = AccountsCollection.new self
       end
 
       def resources
-        @resources ||= ResourcesCollection.new self
+        return @resources if defined? @resources
+
+        @resources = ResourcesCollection.new self
       end
 
       def servers
-        @servers ||= ServersCollection.new self
+        return @servers if defined? @servers
+
+        @servers = ServersCollection.new self
       end
 
       def coses
-        @coses ||= CosesCollection.new self
+        return @coses if defined? @coses
+
+        @coses = CosesCollection.new self
       end
 
       def distributionlists
-        @distributionlists ||= DistributionListsCollection.new self
+        return @distributionlists if defined? @distributionlists
+
+        @distributionlists = DistributionListsCollection.new self
       end
 
       alias distribution_lists distributionlists

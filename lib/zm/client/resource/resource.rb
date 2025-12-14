@@ -28,7 +28,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= ResourceJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = ResourceJsnsBuilder.new(self)
       end
     end
   end

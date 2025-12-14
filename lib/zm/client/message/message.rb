@@ -35,11 +35,15 @@ module Zm
       end
 
       def date
-        @date ||= Time.at(d.to_i / 1000)
+        return @date if defined? @date
+
+        @date = Time.at(d.to_i / 1000)
       end
 
       def flags
-        @flags ||= FlagsCollection.new(self)
+        return @flags if defined? @flags
+
+        @flags = FlagsCollection.new(self)
       end
 
       def create!(*args)
@@ -101,7 +105,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= MessageJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = MessageJsnsBuilder.new(self)
       end
     end
   end

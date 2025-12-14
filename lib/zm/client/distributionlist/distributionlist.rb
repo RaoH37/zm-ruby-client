@@ -13,23 +13,33 @@ module Zm
       include RequestMethodsAdmin
 
       def aliases
-        @aliases ||= DistributionListAliasesCollection.new(self)
+        return @aliases if defined? @aliases
+
+        @aliases = DistributionListAliasesCollection.new(self)
       end
 
       def members
-        @members ||= DistributionListMembersCollection.new(self)
+        return @members if defined? @members
+
+        @members = DistributionListMembersCollection.new(self)
       end
 
       def owners
-        @owners ||= DistributionListOwnersCollection.new(self)
+        return @owners if defined? @owners
+
+        @owners = DistributionListOwnersCollection.new(self)
       end
 
       def memberships
-        @memberships ||= DlsMembershipCollection.new(self)
+        return @memberships if defined? @memberships
+
+        @memberships = DlsMembershipCollection.new(self)
       end
 
       def aces
-        @aces ||= DistributionListAcesCollection.new(self)
+        return @aces if defined? @aces
+
+        @aces = DistributionListAcesCollection.new(self)
       end
 
       def create!
@@ -76,7 +86,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= DistributionListJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = DistributionListJsnsBuilder.new(self)
       end
     end
   end

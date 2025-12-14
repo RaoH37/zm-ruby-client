@@ -70,7 +70,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= FoldersJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = FoldersJsnsBuilder.new(self)
       end
 
       def build_query

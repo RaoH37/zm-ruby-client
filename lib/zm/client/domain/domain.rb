@@ -13,22 +13,30 @@ module Zm
       end
 
       def accounts
-        @accounts ||= DomainAccountsCollection.new(self)
+        return @accounts if defined? @accounts
+
+        @accounts = DomainAccountsCollection.new(self)
       end
 
       def distributionlists
-        @distributionlists ||= DomainDistributionListsCollection.new(self)
+        return @distributionlists if defined? @distributionlists
+
+        @distributionlists = DomainDistributionListsCollection.new(self)
       end
       alias distribution_lists distributionlists
 
       def resources
-        @resources ||= DomainResourcesCollection.new(self)
+        return @resources if defined? @resources
+
+        @resources = DomainResourcesCollection.new(self)
       end
 
       def cos
         return nil if zimbraDomainDefaultCOSId.nil?
 
-        @cos ||= @parent.coses.find_by id: zimbraDomainDefaultCOSId
+        return @cos if defined? @cos
+
+        @cos = @parent.coses.find_by(id: zimbraDomainDefaultCOSId)
       end
 
       def attrs_write
@@ -52,7 +60,9 @@ module Zm
       end
 
       def jsns_builder
-        @jsns_builder ||= DomainJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = DomainJsnsBuilder.new(self)
       end
     end
   end

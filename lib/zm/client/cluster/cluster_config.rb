@@ -130,7 +130,9 @@ module Zm
       end
 
       def logger
-        @logger ||= ZmLogger.new(@log_path).tap do |log|
+        return @logger if defined? @logger
+
+        @logger = ZmLogger.new(@log_path).tap do |log|
           log.level = @log_level
           log.colorize! if @colorize_logging
         end

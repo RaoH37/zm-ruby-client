@@ -15,7 +15,9 @@ module Zm
       private
 
       def json_items
-        @json_items ||= @json[:GetMailQueueInfoResponse][:server].first[:queue]
+        return @json_items if defined? @json_items
+
+        @json_items = @json[:GetMailQueueInfoResponse][:server].first[:queue]
       end
     end
   end

@@ -52,7 +52,9 @@ module Zm
       end
 
       def servers_collection
-        @servers_collection ||= ServersCollection.new(@parent)
+        return @servers_collection if defined? @servers_collection
+
+        @servers_collection = ServersCollection.new(@parent)
       end
     end
   end

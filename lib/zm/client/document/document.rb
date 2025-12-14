@@ -57,7 +57,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= DocumentJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = DocumentJsnsBuilder.new(self)
       end
     end
   end

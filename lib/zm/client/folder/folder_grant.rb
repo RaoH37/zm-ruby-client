@@ -84,7 +84,9 @@ module Zm
       private
 
       def jsns_builder
-        @jsns_builder ||= FolderGrantJsnsBuilder.new(self)
+        return @jsns_builder if defined? @jsns_builder
+
+        @jsns_builder = FolderGrantJsnsBuilder.new(self)
       end
 
       def get_token(target = self)
