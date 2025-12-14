@@ -9,11 +9,10 @@ module Zm
         @child_class = Server
         @builder_class = ServersBuilder
         @service = nil
-        super(parent)
+        super
       end
 
       def find_by!(hash)
-
         entry = sac.invoke(build_find_by(hash))[:GetServerResponse][:server].first
 
         reset_query_params
@@ -36,7 +35,6 @@ module Zm
       end
 
       def make_query
-
         sac.invoke(build_query)
       end
 

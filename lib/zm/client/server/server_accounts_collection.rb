@@ -6,7 +6,7 @@ module Zm
     class ServerAccountsCollection < AccountsCollection
       def initialize(parent)
         @target_server_id = parent.id
-        super(parent)
+        super
       end
 
       private

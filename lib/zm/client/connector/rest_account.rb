@@ -44,7 +44,7 @@ module Zm
 
         return unless response.status >= 400
 
-        File.unlink(dest_file_path) if File.exist?(dest_file_path)
+        FileUtils.rm_f(dest_file_path)
         raise RestError, "Download failure: #{response.body} (status=#{response.status})"
       end
 

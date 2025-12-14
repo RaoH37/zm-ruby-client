@@ -5,14 +5,17 @@ module Zm
     # class factory [filter rules]
     class FilterRulesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :filterRules
       end
 
       def make
         return [] if json_items.nil?
 
-        json_items.first[:filterRule].map do |entry|
+        rules = json_items.first[:filterRule]
+        return [] if rules.nil?
+
+        rules.map do |entry|
           FilterRuleJsnsInitializer.create(@parent, entry)
         end
       end

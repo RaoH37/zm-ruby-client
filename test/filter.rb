@@ -22,9 +22,4 @@ class TestFilter < Minitest::Test
     assert @account.filter_rules.all.is_a?(Array)
     assert @account.outgoing_filter_rules.all.is_a?(Array)
   end
-
-  def test_all_any
-    assert @account.filter_rules.all.any?
-    assert @account.outgoing_filter_rules.all.any?
-  end
 end

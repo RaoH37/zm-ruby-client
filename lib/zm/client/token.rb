@@ -21,7 +21,7 @@ module Zm
       def metadatas
         return @metadatas if defined? @metadatas
 
-        @metadatas = Hash[decoded.split(/;/).map { |part| part.split(/=\d+:/) }].freeze
+        @metadatas = decoded.split(';').to_h { |part| part.split(/=\d+:/) }.freeze
       end
 
       def zimbra_id

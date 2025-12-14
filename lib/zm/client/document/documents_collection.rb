@@ -7,7 +7,7 @@ module Zm
       DEFAULT_QUERY = 'in:briefcase'
 
       def initialize(parent)
-        super(parent)
+        super
         @child_class = Document
         @builder_class = DocumentsBuilder
         @type = SoapConstants::DOCUMENT

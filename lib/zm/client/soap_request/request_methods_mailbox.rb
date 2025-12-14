@@ -50,7 +50,9 @@ module Zm
         jsns_builder.to_delete
       end
 
-      private def do_update!(hash)
+      private
+
+      def do_update!(hash)
         @parent.soap_connector.invoke(jsns_builder.to_patch(hash))
       end
     end

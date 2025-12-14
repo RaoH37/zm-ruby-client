@@ -5,7 +5,7 @@ module Zm
     # class factory [resources]
     class ResourcesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :calresource
       end
 

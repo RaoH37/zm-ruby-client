@@ -7,11 +7,11 @@ module Zm
       def initialize(parent)
         @child_class = FilterRule
         @builder_class = FilterRulesBuilder
-        super(parent)
+        super
       end
 
       def make_query
-        @parent.soap_connectorv.invoke(build_query)
+        @parent.soap_connector.invoke(build_query)
       end
 
       def build_query

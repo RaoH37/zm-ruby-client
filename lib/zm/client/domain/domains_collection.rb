@@ -8,11 +8,10 @@ module Zm
         @child_class = Domain
         @builder_class = DomainsBuilder
         @search_type = SearchType::DOMAIN
-        super(parent)
+        super
       end
 
       def find_by!(hash)
-
         entry = sac.invoke(build_find_by(hash))[:GetDomainResponse][:domain].first
 
         reset_query_params

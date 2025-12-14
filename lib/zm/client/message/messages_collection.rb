@@ -5,7 +5,7 @@ module Zm
     # Collection Messages
     class MessagesCollection < Base::AccountSearchObjectsCollection
       def initialize(parent)
-        super(parent)
+        super
         @child_class = Message
         @builder_class = MessagesBuilder
         @type = SoapConstants::MESSAGE

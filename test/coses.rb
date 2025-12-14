@@ -26,7 +26,7 @@ class TestCoses < Minitest::Test
 
   def test_create
     cos = @admin.coses.new
-    cos.name = 'test_soap_api'
+    cos.name = "test_cos_#{Time.now.to_i}"
     cos.zimbraMailQuota = 10 * 1024**3
     cos.zimbraFeatureBriefcasesEnabled = 'FALSE'
     cos.zimbraPop3Enabled = 'FALSE'

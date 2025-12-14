@@ -17,7 +17,7 @@ module Zm
       alias size s
 
       def initialize(parent)
-        super(parent)
+        super
 
         @type = :folder
         @folders = []

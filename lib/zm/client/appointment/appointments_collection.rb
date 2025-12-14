@@ -5,7 +5,7 @@ module Zm
     # collection of appointments
     class AppointmentsCollection < Base::AccountSearchObjectsCollection
       def initialize(parent)
-        super(parent)
+        super
         @child_class = Appointment
         @builder_class = AppointmentsBuilder
         @type = SoapConstants::APPOINTMENT

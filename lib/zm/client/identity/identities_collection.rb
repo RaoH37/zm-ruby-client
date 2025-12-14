@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Identity
         @builder_class = IdentitiesBuilder
-        super(parent)
+        super
       end
 
       def make_query

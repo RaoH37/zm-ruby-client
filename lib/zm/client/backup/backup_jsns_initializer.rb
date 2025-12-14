@@ -10,7 +10,7 @@ module Zm
             update(item, json)
           end
         end
-        
+
         def update(item, json)
           item.label = json.delete(:label)
           item.type = json.delete(:type)

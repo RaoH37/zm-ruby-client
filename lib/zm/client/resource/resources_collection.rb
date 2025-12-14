@@ -8,11 +8,10 @@ module Zm
         @child_class = Resource
         @builder_class = ResourcesBuilder
         @search_type = SearchType::RESOURCE
-        super(parent)
+        super
       end
 
       def find_by!(hash)
-
         entry = sac.invoke(build_find_by(hash))[:GetCalendarResourceResponse][:calresource].first
 
         reset_query_params

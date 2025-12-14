@@ -13,7 +13,7 @@ module Zm
 
       def initialize(parent)
         @l = FolderDefault::ROOT.id
-        super(parent)
+        super
       end
 
       def create!

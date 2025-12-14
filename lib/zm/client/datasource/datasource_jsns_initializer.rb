@@ -13,7 +13,7 @@ module Zm
 
         def update(item, json)
           json.each do |k, v|
-            setter_method = "#{k}=".to_sym
+            setter_method = :"#{k}="
 
             item.send(setter_method, v) if item.respond_to?(setter_method)
           end

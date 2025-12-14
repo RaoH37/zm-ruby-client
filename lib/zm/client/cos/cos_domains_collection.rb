@@ -5,7 +5,7 @@ module Zm
     # Collection Domains for cos
     class CosDomainsCollection < DomainsCollection
       def initialize(parent)
-        super(parent)
+        super
 
         @default_ldap_filter = "(zimbraDomainDefaultCOSId=#{@parent.id})"
       end

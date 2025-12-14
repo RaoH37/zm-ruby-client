@@ -5,7 +5,7 @@ module Zm
     # class factory [signatures]
     class SignaturesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :signature
       end
 

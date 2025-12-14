@@ -75,24 +75,22 @@ module Zm
         # cache json response
         # no cache if response raise
         json_response = @cache.fetch(json_body) do
-          @logger.debug "Load from remote"
+          @logger.debug 'Load from remote'
           response = http_client.post(@soap_path, json_body)
           @logger.debug response.body
 
-          if response.status >= 400
-            raise(error_handler, JSON.parse(response.body, symbolize_names: true))
-          end
+          raise(error_handler, JSON.parse(response.body, symbolize_names: true)) if response.status >= 400
 
           response.body
         end
 
         JSON.parse(json_response, symbolize_names: true)
 
-      # rescue Faraday::ConnectionFailed, SocketError => error
-      #   @logger.error "SoapConnectorError (#{error.class}): #{error.message}"
-      #   # raise error
-      #   {}
-      #   nil
+        # rescue Faraday::ConnectionFailed, SocketError => error
+        #   @logger.error "SoapConnectorError (#{error.class}): #{error.message}"
+        #   # raise error
+        #   {}
+        #   nil
       end
 
       def envelope(soap_element)
@@ -102,7 +100,7 @@ module Zm
         }
       end
 
-      # todo : à supprimer, code mort
+      # TODO: à supprimer, code mort
       # def hash_header(token, target_server = nil)
       #   h_context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
       #     v.nil?

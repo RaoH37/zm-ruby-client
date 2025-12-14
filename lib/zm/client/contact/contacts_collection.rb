@@ -5,7 +5,7 @@ module Zm
     # collection account contacts
     class ContactsCollection < Base::AccountSearchObjectsCollection
       def initialize(parent)
-        super(parent)
+        super
         @child_class = Contact
         @builder_class = ContactBuilder
         @type = SoapConstants::CONTACT

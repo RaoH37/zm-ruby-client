@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Signature
         @builder_class = SignaturesBuilder
-        super(parent)
+        super
       end
 
       def make_query

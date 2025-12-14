@@ -5,7 +5,7 @@ module Zm
     # class factory [dls]
     class DistributionListsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :dl
       end
 

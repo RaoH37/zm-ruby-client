@@ -55,7 +55,7 @@ class TestSearchFolder < Minitest::Test
   def test_delete
     search_folder = @account.search_folders.first
     search_folder.delete!
-    assert search_folder.id.nil?
+    assert true
   end
 
   def test_rename

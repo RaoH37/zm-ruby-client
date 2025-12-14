@@ -13,9 +13,9 @@ module Zm
                 0x01,
                 self,
                 packer: ->(entry) { entry.pack.to_msgpack },
-                unpacker: ->(data) {
+                unpacker: lambda { |data|
                   value, expires_at, version = MessagePack.unpack(data)
-                  self.new(Marshal.load(value), version: version, expires_at: expires_at)
+                  new(Marshal.load(value), version: version, expires_at: expires_at)
                 }
               )
             end
@@ -27,7 +27,7 @@ module Zm
         def initialize(value, version: 1, expires_in: nil, expires_at: nil)
           @value      = value
           @version    = version.to_i
-          @expires_at = expires_at&.to_f || expires_in && (expires_in.to_f + Time.now.to_f)
+          @expires_at = expires_at&.to_f || (expires_in && (expires_in.to_f + Time.now.to_f))
         end
 
         def to_s

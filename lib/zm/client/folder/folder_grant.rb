@@ -67,12 +67,12 @@ module Zm
       end
 
       def to_h
-        Hash[instance_variables_map]
+        instance_variables_map.to_h
       end
 
       def inspect
         keys_str = to_h.map { |k, v| "#{k}: #{v}" }.join(', ')
-        "#{self.class}:#{format('0x00%x', (object_id << 1))} #{keys_str}"
+        "#{self.class}:#{format('0x00%x', object_id << 1)} #{keys_str}"
       end
 
       def instance_variables_map

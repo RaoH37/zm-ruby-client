@@ -17,30 +17,31 @@ module Zm
         soap_request = SoapElement.admin(SoapAdminConstants::CREATE_ACCOUNT_REQUEST)
                                   .add_attributes(req)
 
-        attrs_only_set_h.each do |key, values|
-          values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A)
-                                   .add_attribute(SoapConstants::N, key)
-                                   .add_content(value)
-            soap_request.add_node(node_attr)
-          end
-        end
+        add_soap_request_nodes(soap_request)
 
         soap_request
+      end
+
+      def add_soap_request_nodes(soap_request)
+        attrs_only_set_h.each do |key, values|
+          values.each do |value|
+            add_soap_request_node(soap_request, key, value)
+          end
+        end
+      end
+
+      def add_soap_request_node(soap_request, key, value)
+        node_attr = SoapElement.create(SoapConstants::A)
+                               .add_attribute(SoapConstants::N, key)
+                               .add_content(value)
+        soap_request.add_node(node_attr)
       end
 
       def to_update
         soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_ACCOUNT_REQUEST)
                                   .add_attribute(SoapConstants::ID, @item.id)
 
-        attrs_only_set_h.each do |key, values|
-          values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A)
-                                   .add_attribute(SoapConstants::N, key)
-                                   .add_content(value)
-            soap_request.add_node(node_attr)
-          end
-        end
+        add_soap_request_nodes(soap_request)
 
         soap_request
       end
@@ -52,10 +53,7 @@ module Zm
         hash.each do |key, values|
           values = [values] unless values.is_a?(Array)
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A)
-                                   .add_attribute(SoapConstants::N, key)
-                                   .add_content(value)
-            soap_request.add_node(node_attr)
+            add_soap_request_node(soap_request, key, value)
           end
         end
 
@@ -83,7 +81,7 @@ module Zm
           [n, values]
         end
 
-        Hash[arr]
+        arr.to_h
       end
     end
   end

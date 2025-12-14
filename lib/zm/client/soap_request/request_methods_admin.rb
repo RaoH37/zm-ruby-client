@@ -46,7 +46,9 @@ module Zm
         jsns_builder.to_rename(new_name)
       end
 
-      private def do_update!(hash)
+      private
+
+      def do_update!(hash)
         sac.invoke(jsns_builder.to_patch(hash))
       end
     end

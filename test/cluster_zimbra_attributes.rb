@@ -7,7 +7,7 @@ require './lib/zm/client'
 class TestZimbraAttributes < Minitest::Test
 
   def setup
-    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.json')
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
     @admin = Zm::Client::Cluster.new(@config)
   end
 

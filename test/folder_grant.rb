@@ -44,7 +44,7 @@ class TestFolderGrant < Minitest::Test
     grant = folder.grants.new(@fixture_accounts['accounts']['unittest']['id'], 'usr', 'r', @fixture_accounts['accounts']['unittest']['email'])
     grant.save!
 
-    folder_ids_with_grants = @account.folders.all!.reject { |f| f.grants.all.empty? }.map(&:id)
+    folder_ids_with_grants = @account.folders.all.reject { |f| f.grants.all.empty? }.map(&:id)
     assert folder_ids_with_grants.include?(folder.id)
   end
 end

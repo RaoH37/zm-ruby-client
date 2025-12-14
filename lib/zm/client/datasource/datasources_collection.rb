@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = DataSource
         @builder_class = DataSourceBuilder
-        super(parent)
+        super
       end
 
       def make_query

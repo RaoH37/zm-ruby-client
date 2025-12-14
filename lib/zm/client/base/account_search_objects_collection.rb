@@ -8,7 +8,7 @@ module Zm
         attr_accessor :more
 
         def initialize(parent)
-          super(parent)
+          super
           @more = true
           reset_query_params
         end
@@ -98,7 +98,7 @@ module Zm
 
           jsns.merge!(build_options)
 
-          jsns.reject! { |_, v| v.nil? }
+          jsns.compact!
 
           SoapElement.mail(SoapMailConstants::SEARCH_REQUEST)
                      .add_attributes(jsns)

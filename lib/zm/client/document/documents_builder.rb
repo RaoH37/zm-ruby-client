@@ -5,7 +5,7 @@ module Zm
     # class factory [documents]
     class DocumentsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :doc
       end
 

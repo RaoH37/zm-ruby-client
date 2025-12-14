@@ -116,8 +116,8 @@ module Zm
           @attendees = []
         end
 
-        def map(&block)
-          @attendees.map(&block)
+        def map(&)
+          @attendees.map(&)
         end
 
         def add(attendee)

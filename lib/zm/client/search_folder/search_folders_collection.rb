@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = SearchFolder
         @builder_class = SearchFoldersBuilder
-        super(parent)
+        super
       end
 
       def make_query

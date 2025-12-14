@@ -23,11 +23,11 @@ module Zm
           super(options)
         end
 
-        def clear(options = nil)
+        def clear(_options = nil)
           root_dirs = (Dir.children(cache_path) - GITKEEP_FILES)
           FileUtils.rm_r(root_dirs.collect { |f| File.join(cache_path, f) })
-        rescue Errno::ENOENT, Errno::ENOTEMPTY => error
-          @logger&.error "FileStoreError (#{error}): #{error.message}"
+        rescue Errno::ENOENT, Errno::ENOTEMPTY => e
+          @logger&.error "FileStoreError (#{e}): #{e.message}"
         end
 
         def cleanup(options = nil)
@@ -44,8 +44,8 @@ module Zm
 
         private
 
-        def read_entry(key, **options)
-          if (payload = read_serialized_entry(key, **options))
+        def read_entry(key, **)
+          if (payload = read_serialized_entry(key, **))
             entry = deserialize_entry(payload)
             entry if entry.is_a?(Cache::Entry)
           end
@@ -53,30 +53,31 @@ module Zm
 
         def read_serialized_entry(key, **)
           File.binread(key) if File.exist?(key)
-        rescue => error
-          $stderr.puts "FileStoreError (#{error}): #{error.message}"
+        rescue StandardError => e
+          warn "FileStoreError (#{e}): #{e.message}"
           nil
         end
 
-        def write_entry(key, entry, **options)
-          write_serialized_entry(key, serialize_entry(entry), **options)
+        def write_entry(key, entry, **)
+          write_serialized_entry(key, serialize_entry(entry), **)
         end
 
         def write_serialized_entry(key, payload, **)
           ensure_cache_path(File.dirname(key))
-          File.open(key, 'w') { |f| f.write(payload) }
+          File.write(key, payload)
           true
         end
 
-        def delete_entry(key, **options)
+        def delete_entry(key, **_options)
           if File.exist?(key)
             begin
               File.delete(key)
               delete_empty_directories(File.dirname(key))
               true
-            rescue
+            rescue StandardError
               # Just in case the error was caused by another process deleting the file first.
               raise if File.exist?(key)
+
               false
             end
           else
@@ -108,14 +109,18 @@ module Zm
         def delete_empty_directories(dir)
           return if File.realpath(dir) == File.realpath(cache_path)
 
-          if Dir.children(dir).empty?
-            Dir.delete(dir) rescue nil
-            delete_empty_directories(File.dirname(dir))
+          return unless Dir.empty?(dir)
+
+          begin
+            Dir.delete(dir)
+          rescue StandardError
+            nil
           end
+          delete_empty_directories(File.dirname(dir))
         end
 
         def ensure_cache_path(path)
-          FileUtils.makedirs(path) unless File.exist?(path)
+          FileUtils.makedirs(path)
         end
 
         def search_dir(dir, &callback)

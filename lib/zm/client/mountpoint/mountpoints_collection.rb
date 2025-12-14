@@ -11,7 +11,7 @@ module Zm
       def initialize(parent)
         @child_class = MountPoint
         @builder_class = MountPointsBuilder
-        super(parent)
+        super
         @root = nil
         reset_query_params
       end
@@ -23,7 +23,6 @@ module Zm
       end
 
       def clear
-
         @root = nil
         reset_query_params
       end

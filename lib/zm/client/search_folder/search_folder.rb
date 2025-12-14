@@ -14,7 +14,7 @@ module Zm
       def initialize(parent)
         @l = FolderDefault::ROOT.id
         @types = 'messages'
-        super(parent)
+        super
       end
 
       def create!

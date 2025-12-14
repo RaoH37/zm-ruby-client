@@ -7,7 +7,7 @@ module Zm
       DEFAULT_QUERY = 'in:tasks'
 
       def initialize(parent)
-        super(parent)
+        super
         @child_class = Task
         @builder_class = TasksBuilder
         @type = 'task'

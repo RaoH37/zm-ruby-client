@@ -74,7 +74,7 @@ module Zm
         def format_message(severity, datetime, progname, msg)
           colorize_message(
             severity,
-            super(severity, datetime, progname, msg)
+            super
           )
         end
       end

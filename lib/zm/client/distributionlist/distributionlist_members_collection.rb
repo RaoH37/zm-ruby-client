@@ -16,7 +16,6 @@ module Zm
         emails.delete_if { |email| @all.include?(email) }
         return false if emails.empty?
 
-
         @parent.sac.invoke(build_add(emails))
 
         @all += emails
@@ -36,7 +35,6 @@ module Zm
         emails.each { |email| Utils.format_email(email) }
         emails.delete_if { |email| !@all.include?(email) }
         return false if emails.empty?
-
 
         @parent.sac.invoke(build_remove(emails))
 

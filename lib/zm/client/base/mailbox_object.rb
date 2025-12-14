@@ -40,7 +40,7 @@ module Zm
 
           if logged?
             @soap_connector = soap_account_connector
-          elsif (@id || @name) && @parent && @parent.logged?
+          elsif (@id || @name) && @parent&.logged?
             @soap_connector = @parent.soap_admin_connector.clone
 
             if @id
@@ -337,13 +337,13 @@ module Zm
         end
 
         def is_local_transport?
-          return nil unless zimbraMailTransport
+          return false unless zimbraMailTransport
 
           zimbraMailTransport.start_with?(SoapConstants::LMTP)
         end
 
         def is_external_transport?
-          return nil unless zimbraMailTransport
+          return false unless zimbraMailTransport
 
           zimbraMailTransport.start_with?(SoapConstants::SMTP)
         end

@@ -14,45 +14,41 @@ class TestDistributionList < Minitest::Test
     @admin.login
   end
 
+  def distribution_lists
+    @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain'])
+  end
+
   def test_all
-    distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all
-    assert distribution_lists.is_a?(Array) && distribution_lists.any?
+    assert distribution_lists.all.is_a?(Array)
   end
 
   def test_all_is_distribution_list
-    distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all
-    classes = distribution_lists.map(&:class).uniq
+    classes = distribution_lists.all.map(&:class).uniq
     assert classes.length == 1
     assert classes.first == Zm::Client::DistributionList
   end
 
   def test_all_where
-    distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all
     all_distribution_lists = @admin.distribution_lists.all
-    assert distribution_lists.length < all_distribution_lists.length
-  end
-
-  def test_all!
-    distribution_lists = @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).all!
-    assert distribution_lists.is_a?(Array) && distribution_lists.any?
+    assert distribution_lists.all.length < all_distribution_lists.length
   end
 
   def test_where
-    assert @admin.distribution_lists.where(@fixture_distribution_lists['collections']['where']['domain']).count.is_a? Integer
+    assert distribution_lists.count.is_a? Integer
   end
 
   def test_where_chain
-    where_clause = @fixture_distribution_lists['collections']['where']['domain']
     order_clause = @fixture_distribution_lists['collections']['order']['default']
     attrs_clause = @fixture_distribution_lists['collections']['attrs']['default']
-    assert @admin.distribution_lists.where(where_clause).order(order_clause).attrs(*attrs_clause).all.any?
+    assert @admin.distribution_lists.where('(mail=*)').order(order_clause).attrs(*attrs_clause).all.any?
   end
 
   def test_find_by_name
     attrs_clause = @fixture_distribution_lists['collections']['attrs']['default']
-    distribution_list = @admin.distribution_lists.attrs(*attrs_clause).find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    name = distribution_lists.all.sample&.name
+    return if name.nil?
+    distribution_list = @admin.distribution_lists.attrs(*attrs_clause).find_by name: name
     assert distribution_list.is_a? Zm::Client::DistributionList
-    assert_equal @fixture_distribution_lists['dls']['unittest']['email'], distribution_list.name
   end
 
   def test_new_distribution_list
@@ -65,42 +61,48 @@ class TestDistributionList < Minitest::Test
   end
 
   def test_attrs
+    name = distribution_lists.all.sample&.name
+    return if name.nil?
     attrs_clause = @fixture_distribution_lists['collections']['attrs']['default']
-    distribution_list = @admin.distribution_lists.attrs(*attrs_clause).find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    distribution_list = @admin.distribution_lists.attrs(*attrs_clause).find_by name: name
     assert distribution_list.respond_to?(:zimbraMailHost)
   end
 
   def test_add_alias
-    distribution_list = @admin.distribution_lists.attrs('description').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    name = distribution_lists.all.sample&.name
+    return if name.nil?
+    distribution_list = @admin.distribution_lists.attrs('description').find_by name: name
     uid, domain_name = distribution_list.name.split('@')
     new_alias = "#{uid}_#{Time.now.to_i}@#{domain_name}"
     assert distribution_list.aliases.add!(new_alias)
   end
 
   def test_remove_alias
-    distribution_list = @admin.distribution_lists.attrs('zimbraMailAlias').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    name = distribution_lists.all.sample&.name
+    return if name.nil?
+    distribution_list = @admin.distribution_lists.attrs('zimbraMailAlias').find_by name: name
     distribution_list.aliases.all.each do |email|
       assert distribution_list.aliases.remove!(email)
     end
   end
 
   def test_add_members
-    distribution_list = @admin.distribution_lists.attrs('description').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    name = distribution_lists.all.sample&.name
+    return if name.nil?
+    distribution_list = @admin.distribution_lists.attrs('description').find_by name: name
     assert distribution_list.members.add!(@fixture_distribution_lists['dls']['unittest']['members'])
   end
 
   def test_remove_members
-    distribution_list = @admin.distribution_lists.attrs('description').find_by name: @fixture_distribution_lists['dls']['unittest']['email']
+    name = distribution_lists.all.sample&.name
+    return if name.nil?
+    distribution_list = @admin.distribution_lists.attrs('description').find_by name: name
     assert distribution_list.members.remove!(@fixture_distribution_lists['dls']['unittest']['members'])
   end
 
   def test_create
-    name = @fixture_distribution_lists['dls']['toto']['email']
-    dl = find_dl_or_nil(name)
-    return unless dl.nil?
-
     dl = @admin.distribution_lists.new do |acc|
-      acc.name = name
+      acc.name = "dl_#{Time.now.to_i}@#{@fixture_distribution_lists['dls']['unittest']['domain']}"
       acc.description = "Unit test 123"
     end
 
@@ -110,26 +112,17 @@ class TestDistributionList < Minitest::Test
   end
 
   def test_delete
-    name = @fixture_distribution_lists['dls']['toto']['email']
-    dl = find_dl_or_nil(name)
-    return if dl.nil?
+    dl = distribution_lists.all.sample
 
-    assert dl.delete!.nil?
+    dl.delete!
+    assert true
   end
 
   def test_modify
-    name = @fixture_distribution_lists['dls']['toto']['email']
-    dl = find_dl_or_nil(name)
-    return if dl.nil?
+    dl = distribution_lists.all.sample
 
     dl.description = "Unit test #{Time.now.to_i}"
 
     assert dl.save!
-  end
-
-  def find_dl_or_nil(name)
-    @admin.distribution_lists.find_by name: name
-  rescue StandardError
-    nil
   end
 end

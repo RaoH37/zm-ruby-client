@@ -43,7 +43,7 @@ module Zm
       end
 
       def initialize(parent)
-        super(parent)
+        super
         @child_class = Ace
         @builder_class = AcesBuilder
         @jsns_builder = AceJsnsBuilder.new(self)

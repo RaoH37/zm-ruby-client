@@ -8,7 +8,7 @@ module Zm
         @child_class = Cos
         @builder_class = CosesBuilder
         @search_type = SearchType::COS
-        super(parent)
+        super
       end
 
       def find_by!(hash)
@@ -24,8 +24,8 @@ module Zm
         CosJsnsInitializer.create(@parent, entry)
       end
 
-      def clone!(new_name, &block)
-        cos = Cos.new(parent, &block)
+      def clone!(new_name, &)
+        cos = Cos.new(parent, &)
         cos.clone!(new_name)
       end
 

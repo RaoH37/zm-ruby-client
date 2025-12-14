@@ -26,7 +26,7 @@ module Zm
         @l = FolderDefault::CONTACTS.id
         @shared_account_id = nil
         @shared_folder_account_id = nil
-        super(parent)
+        super
       end
 
       def group?

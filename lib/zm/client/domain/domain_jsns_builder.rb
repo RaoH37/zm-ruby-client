@@ -71,7 +71,7 @@ module Zm
           [n, values]
         end
 
-        Hash[arr]
+        arr.to_h
       end
     end
   end

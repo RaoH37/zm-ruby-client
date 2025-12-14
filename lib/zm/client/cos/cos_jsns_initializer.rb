@@ -8,7 +8,7 @@ module Zm
         def klass = Cos
 
         def update(item, json)
-          item = super(item, json)
+          item = super
 
           case item.zimbraMailHostPool
           when String

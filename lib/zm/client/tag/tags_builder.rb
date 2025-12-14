@@ -5,7 +5,7 @@ module Zm
     # class factory [tags]
     class TagBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :tag
       end
 

@@ -11,7 +11,7 @@ module Zm
       def initialize(soapbody)
         @reason = soapbody.dig(:Body, :Fault, :Reason, :Text)
         @code = soapbody.dig(:Body, :Fault, :Detail, :Error, :Code)
-        super "[#{@code}] [#{@reason}]"
+        super("[#{@code}] [#{@reason}]")
       end
     end
 

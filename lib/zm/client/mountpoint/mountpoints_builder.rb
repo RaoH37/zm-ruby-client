@@ -5,7 +5,7 @@ module Zm
     # class factory [mountpoints]
     class MountPointsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @key_link = :link
         @key_folder = :folder
         @list = []

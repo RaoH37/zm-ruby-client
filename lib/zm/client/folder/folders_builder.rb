@@ -5,7 +5,7 @@ module Zm
     # class factory [folders]
     class FoldersBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @key = :folder
         @root_folder = nil
         @list = []

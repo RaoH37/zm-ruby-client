@@ -12,7 +12,6 @@ require 'zm/client/cos'
 require 'zm/client/license'
 require 'zm/client/cluster/batch_request'
 
-
 module Zm
   module Client
     # class admin connection

@@ -14,7 +14,7 @@ module Zm
           @logger = nil
         end
 
-        def fetch(name, options = nil, &block)
+        def fetch(name, options = nil, &)
           if block_given?
             options = merged_options(options)
             key = normalize_key(name, options)
@@ -25,19 +25,17 @@ module Zm
               cached_entry = read_entry(key, **options)
               entry = handle_expired_entry(cached_entry, key, options)
 
-              if entry && entry.mismatched?(normalize_version(options))
-                entry = nil
-              end
+              entry = nil if entry&.mismatched?(normalize_version(options))
             end
 
             if entry
-              @logger&.info "Load from cache"
+              @logger&.info 'Load from cache'
               entry.value
             else
-              save_block_result_to_cache(key, options, &block)
+              save_block_result_to_cache(key, options, &)
             end
           elsif options && options[:force]
-            raise ArgumentError, "Missing block: Calling `Cache#fetch` with `force: true` requires a block."
+            raise ArgumentError, 'Missing block: Calling `Cache#fetch` with `force: true` requires a block.'
           else
             read(name, options)
           end
@@ -50,16 +48,14 @@ module Zm
 
           entry = read_entry(key, **options)
 
-          if entry
-            if entry.expired? || entry.mismatched?(version)
-              delete_entry(key, **options)
-              nil
-            else
-              @logger&.info "Load from cache"
-              entry.value
-            end
-          else
+          return unless entry
+
+          if entry.expired? || entry.mismatched?(version)
+            delete_entry(key, **options)
             nil
+          else
+            @logger&.info 'Load from cache'
+            entry.value
           end
         end
 
@@ -68,7 +64,7 @@ module Zm
           key = normalize_key(name, options)
           version = normalize_version(options)
 
-          entry = Entry.new(value, **options.merge(version: version))
+          entry = Entry.new(value, **options, version: version)
           write_entry(key, entry, **options)
         end
 
@@ -88,12 +84,12 @@ module Zm
           (entry && !entry.expired? && !entry.mismatched?(version)) || false
         end
 
-        def clear(options = nil)
-          raise NotImplementedError.new
+        def clear(_options = nil)
+          raise NotImplementedError
         end
 
-        def cleanup(options = nil)
-          raise NotImplementedError.new
+        def cleanup(_options = nil)
+          raise NotImplementedError
         end
 
         private
@@ -124,23 +120,23 @@ module Zm
           end
         end
 
-        def read_entry(key, **options)
-          raise NotImplementedError.new
+        def read_entry(_key, **_options)
+          raise NotImplementedError
         end
 
-        def write_entry(key, entry, **options)
-          raise NotImplementedError.new
+        def write_entry(_key, _entry, **_options)
+          raise NotImplementedError
         end
 
-        def delete_entry(key, **options)
-          raise NotImplementedError.new
+        def delete_entry(_key, **_options)
+          raise NotImplementedError
         end
 
         def merged_options(call_options)
           if call_options
             call_options = normalize_options(call_options)
             if call_options.key?(:expires_in) && call_options.key?(:expires_at)
-              raise ArgumentError, "Either :expires_in or :expires_at can be supplied, but not both"
+              raise ArgumentError, 'Either :expires_in or :expires_at can be supplied, but not both'
             end
 
             expires_at = call_options.delete(:expires_at)
@@ -148,7 +144,8 @@ module Zm
 
             if call_options[:expires_in].is_a?(Time)
               expires_in = call_options[:expires_in]
-              raise ArgumentError.new("expires_in parameter should not be a Time. Did you mean to use expires_at? Got: #{expires_in}")
+              raise ArgumentError,
+                    "expires_in parameter should not be a Time. Did you mean to use expires_at? Got: #{expires_in}"
             end
 
             if call_options[:expires_in]&.negative?
@@ -180,7 +177,7 @@ module Zm
 
           value = yield
 
-          entry = Entry.new(value, **options.merge(version: version))
+          entry = Entry.new(value, **options, version: version)
           write_entry(key, entry, **options)
           value
         end

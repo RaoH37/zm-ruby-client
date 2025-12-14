@@ -8,8 +8,8 @@ module Zm
         @recipients = []
       end
 
-      def map(&block)
-        @recipients.map(&block)
+      def map(&)
+        @recipients.map(&)
       end
 
       def add(recipient)

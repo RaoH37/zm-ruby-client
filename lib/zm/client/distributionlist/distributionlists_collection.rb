@@ -8,7 +8,7 @@ module Zm
         @child_class = DistributionList
         @builder_class = DistributionListsBuilder
         @search_type = SearchType::DL
-        super(parent)
+        super
       end
 
       def find_by!(hash)

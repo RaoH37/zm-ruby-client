@@ -8,7 +8,7 @@ module Zm
         @child_class = Account
         @builder_class = AccountsBuilder
         @search_type = SearchType::ACCOUNT
-        super(parent)
+        super
       end
 
       def find_by!(hash)

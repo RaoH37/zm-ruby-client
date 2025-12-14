@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Tag
         @builder_class = TagBuilder
-        super(parent)
+        super
       end
 
       def make_query

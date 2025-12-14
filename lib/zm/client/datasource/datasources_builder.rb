@@ -7,9 +7,7 @@ module Zm
       def make
         return [] if json_items.nil?
 
-        json_items.select { |data_source_type, _|
-          DataSource::TYPES.include?(data_source_type)
-        }.flat_map do |data_source_type, entries|
+        json_items.slice(*DataSource::TYPES).flat_map do |data_source_type, entries|
           entries.map do |entry|
             DataSourceJsnsInitializer.create(@parent, data_source_type, entry)
           end

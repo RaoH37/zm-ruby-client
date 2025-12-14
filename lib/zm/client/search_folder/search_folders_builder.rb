@@ -5,7 +5,7 @@ module Zm
     # class factory [Search folders]
     class SearchFoldersBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :search
       end
 

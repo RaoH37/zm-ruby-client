@@ -5,7 +5,7 @@ module Zm
     # Collection Resources from domain
     class DomainResourcesCollection < ResourcesCollection
       def initialize(parent)
-        super(parent)
+        super
         @domain_name = parent.name
       end
     end

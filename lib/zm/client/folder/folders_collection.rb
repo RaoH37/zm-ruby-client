@@ -4,19 +4,17 @@ module Zm
   module Client
     # collection of folders
     class FoldersCollection < Base::AccountObjectsCollection
-      attr_reader :root
-
       attr_accessor :view, :tr, :visible, :needGranteeName, :depth
 
       def initialize(parent)
         @child_class = Folder
         @builder_class = FoldersBuilder
-        super(parent)
+        super
         @root = nil
         reset_query_params
       end
 
-      # todo: forcer id en string
+      # TODO: forcer id en string
       def find(id)
         folder = @child_class.new(@parent) do |f|
           f.id = id

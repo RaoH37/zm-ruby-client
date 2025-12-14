@@ -89,7 +89,7 @@ module Zm
       end
 
       def init_from_yml(file_config_path)
-        @to_h = YAML.safe_load(File.read(file_config_path), symbolize_names: true)
+        @to_h = YAML.safe_load_file(file_config_path, symbolize_names: true)
       end
 
       def init_from_json(file_config_path)

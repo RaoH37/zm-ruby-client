@@ -3,9 +3,9 @@
 module MissingMethodStaticCollection
   attr_reader :all
 
-  def method_missing(method, *args, &block)
+  def method_missing(method, *, &)
     if @all.respond_to?(method)
-      @all.send(method, *args, &block)
+      @all.send(method, *, &)
     else
       super
     end

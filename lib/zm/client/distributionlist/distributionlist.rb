@@ -58,13 +58,13 @@ module Zm
       end
 
       def local_transport?
-        return nil unless zimbraMailTransport
+        return false unless zimbraMailTransport
 
         zimbraMailTransport.start_with?(SoapConstants::LMTP)
       end
 
       def external_transport?
-        return nil unless zimbraMailTransport
+        return false unless zimbraMailTransport
 
         zimbraMailTransport.start_with?(SoapConstants::SMTP)
       end

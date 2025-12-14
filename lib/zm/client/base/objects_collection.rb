@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
 module Zm
   module Client
     module Base
@@ -55,9 +54,9 @@ module Zm
           self
         end
 
-        def method_missing(method, *args, &block)
+        def method_missing(method, *, &)
           if METHODS_MISSING_LIST.include?(method)
-            build_response.send(method, *args, &block)
+            build_response.send(method, *, &)
           else
             super
           end

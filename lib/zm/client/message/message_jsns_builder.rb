@@ -33,7 +33,7 @@ module Zm
             filename: attachment.filename,
             ci: attachment.ci,
             cd: attachment.cd
-          }.reject { |_, v| v.nil? }
+          }.compact
         end
       end
 
@@ -45,7 +45,7 @@ module Zm
             t: recipient.field,
             a: recipient.email,
             p: recipient.display_name
-          }.reject { |_, v| v.nil? }
+          }.compact
         end
       end
 

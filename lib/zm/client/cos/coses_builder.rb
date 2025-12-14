@@ -5,7 +5,7 @@ module Zm
     # class factory [coses]
     class CosesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
-        super(parent, json)
+        super
         @json_item_key = :cos
       end
 

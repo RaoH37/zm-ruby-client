@@ -3,41 +3,41 @@
 module Zm
   module Support
     module Cache
-    class NullStore < Store
-      Cache.register_storage(:null_store, self)
+      class NullStore < Store
+        Cache.register_storage(:null_store, self)
 
-      def fetch(name, options = nil, &block)
-        block.call
-      end
+        def fetch(_name, _options = nil, &block)
+          block.call
+        end
 
-      def read(name, options = nil)
-        nil
-      end
+        def read(_name, _options = nil)
+          nil
+        end
 
-      def write(name, value, options = nil)
-        nil
-      end
+        def write(_name, _value, _options = nil)
+          nil
+        end
 
-      def delete(name, options = nil)
-        nil
-      end
+        def delete(_name, _options = nil)
+          nil
+        end
 
-      def exist?(name, options = nil)
-        false
-      end
+        def exist?(_name, _options = nil)
+          false
+        end
 
-      def clear(options = nil)
-        nil
-      end
+        def clear(_options = nil)
+          nil
+        end
 
-      def cleanup(options = nil)
-        nil
-      end
+        def cleanup(_options = nil)
+          nil
+        end
 
-      def inspect # :nodoc:
-        "#<#{self.class.name} options=#{@options.inspect}>"
+        def inspect # :nodoc:
+          "#<#{self.class.name} options=#{@options.inspect}>"
+        end
       end
     end
   end
-end
 end

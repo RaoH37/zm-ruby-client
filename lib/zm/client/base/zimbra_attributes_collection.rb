@@ -52,7 +52,7 @@ module Zm
         end
 
         def all_cos_attr_types_h
-          @all_cos_attr_types_h ||= Hash[all_cos_attrs.map { |attr| [attr.name, attr.type] }].freeze
+          @all_cos_attr_types_h ||= all_cos_attrs.map { |attr| [attr.name, attr.type] }.to_h.freeze
         end
 
         def set_cos_methods
@@ -76,7 +76,7 @@ module Zm
         end
 
         def all_server_attr_types_h
-          @all_server_attr_types_h ||= Hash[all_server_attrs.map { |attr| [attr.name, attr.type] }].freeze
+          @all_server_attr_types_h ||= all_server_attrs.map { |attr| [attr.name, attr.type] }.to_h.freeze
         end
 
         def set_server_methods
@@ -100,7 +100,7 @@ module Zm
         end
 
         def all_domain_attr_types_h
-          @all_domain_attr_types_h ||= Hash[all_domain_attrs.map { |attr| [attr.name, attr.type] }].freeze
+          @all_domain_attr_types_h ||= all_domain_attrs.map { |attr| [attr.name, attr.type] }.to_h.freeze
         end
 
         def set_domain_methods
@@ -124,7 +124,7 @@ module Zm
         end
 
         def all_account_attr_types_h
-          @all_account_attr_types_h ||= Hash[all_account_attrs.map { |attr| [attr.name, attr.type] }].freeze
+          @all_account_attr_types_h ||= all_account_attrs.map { |attr| [attr.name, attr.type] }.to_h.freeze
         end
 
         def set_account_methods
@@ -150,9 +150,9 @@ module Zm
         end
 
         def all_distributionlist_attrs_types_h
-          @all_distributionlist_attrs_types_h ||= Hash[all_distributionlist_attrs.map do |attr|
+          @all_distributionlist_attrs_types_h ||= all_distributionlist_attrs.map do |attr|
                                                          [attr.name, attr.type]
-                                                       end].freeze
+                                                       end.to_h.freeze
         end
 
         def set_distributionlist_methods
@@ -176,7 +176,7 @@ module Zm
         end
 
         def all_resource_attrs_types_h
-          @all_resource_attrs_types_h ||= Hash[all_resource_attrs.map { |attr| [attr.name, attr.type] }].freeze
+          @all_resource_attrs_types_h ||= all_resource_attrs.map { |attr| [attr.name, attr.type] }.to_h.freeze
         end
 
         def set_resource_methods
