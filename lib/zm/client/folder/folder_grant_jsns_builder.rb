@@ -12,7 +12,8 @@ module Zm
           d: @item.d,
           expiry: @item.expiry,
           key: @item.key
-        }.compact
+        }
+        grant.compact!
 
         attrs = {
           action: {

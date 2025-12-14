@@ -33,12 +33,14 @@ module Zm
       end
 
       def to_hash
-        {
+        h = {
           authToken: @token,
           userAgent: { name: @user_agent },
           account: @account,
           targetServer: @target_server
-        }.compact
+        }
+        h.compact!
+        h
       end
     end
   end

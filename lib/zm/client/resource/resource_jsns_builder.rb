@@ -12,7 +12,8 @@ module Zm
         req = {
           name: @item.name,
           password: @item.password
-        }.compact
+        }
+        req.compact!
 
         soap_request = SoapElement.admin(SoapAdminConstants::CREATE_CALENDAR_RESOURCE_REQUEST)
                                   .add_attributes(req)

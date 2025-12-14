@@ -19,7 +19,8 @@ module Zm
           view: @item.view,
           zid: @item.zid,
           rid: @item.rid
-        }.compact
+        }
+        link.compact!
 
         attrs = { link: link }
 
@@ -40,7 +41,8 @@ module Zm
           rgb: @item.rgb,
           url: @item.url,
           view: @item.view
-        }.compact
+        }
+        attrs.compact!
 
         if @item.is_immutable?
           attrs.delete(:name)

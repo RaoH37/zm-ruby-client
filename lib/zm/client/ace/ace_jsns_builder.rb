@@ -23,12 +23,14 @@ module Zm
       end
 
       def attrs
-        {
+        h = {
           zid: @item.zid,
           gt: @item.gt,
           right: @item.right,
           d: @item.d
-        }.compact
+        }
+        h.compact!
+        h
       end
     end
   end

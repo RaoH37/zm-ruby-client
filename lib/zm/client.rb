@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
 require 'date'
 
 require 'zm/client/soap_request'

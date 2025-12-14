@@ -15,7 +15,8 @@ module Zm
           view: @item.view,
           depth: @item.depth,
           tr: @item.tr
-        }.compact
+        }
+        attrs.compact!
 
         SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST)
                    .add_attributes(attrs)

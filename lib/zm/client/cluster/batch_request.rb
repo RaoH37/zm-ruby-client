@@ -3,7 +3,7 @@
 module Zm
   module Client
     class BatchRequest
-      ONERRORS = Set['continue', 'stop'].freeze
+      ONERRORS = %w[continue stop].freeze
 
       attr_reader :requests
 

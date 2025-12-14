@@ -30,11 +30,13 @@ module Zm
 
       def recipients_to_jsns
         @item.recipients.map do |recipient|
-          {
+          h = {
             t: recipient.field,
             a: recipient.email,
             p: recipient.display_name
-          }.compact
+          }
+          h.compact!
+          h
         end
       end
 
@@ -56,29 +58,32 @@ module Zm
       end
 
       def comp_to_jsns
-        [
-          {
-            allDay: @item.allDay,
-            at: attendees_to_jsns,
-            e: end_at_jsns,
-            s: start_at_jsns,
-            or: organizer_to_jsns,
-            name: @item.name,
-            fb: @item.fb,
-            transp: @item.transp
-          }.compact
-        ]
+        h = {
+          allDay: @item.allDay,
+          at: attendees_to_jsns,
+          e: end_at_jsns,
+          s: start_at_jsns,
+          or: organizer_to_jsns,
+          name: @item.name,
+          fb: @item.fb,
+          transp: @item.transp
+        }
+        h.compact!
+
+        [h]
       end
 
       def attendees_to_jsns
         @item.attendees.map do |attendee|
-          {
+          h = {
             a: attendee.email,
             d: attendee.display_name,
             role: attendee.role,
             ptst: attendee.ptst,
             rsvp: attendee.rsvp
-          }.compact
+          }
+          h.compact!
+          h
         end
       end
 
@@ -99,10 +104,12 @@ module Zm
       def organizer_to_jsns
         return nil if @item.organizer.nil?
 
-        {
+        h = {
           a: @item.organizer.email,
           d: @item.organizer.display_name
-        }.compact
+        }
+        h.compact!
+        h
       end
 
       def time_format

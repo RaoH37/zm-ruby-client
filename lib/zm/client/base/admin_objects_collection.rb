@@ -101,7 +101,7 @@ module Zm
         end
 
         def jsns
-          {
+          h = {
             query: ldap_filter.join,
             maxResults: @max_result,
             limit: @limit,
@@ -114,7 +114,9 @@ module Zm
             sortAscending: @sort_ascending,
             countOnly: @count_only,
             attrs: attrs_comma
-          }.compact
+          }
+          h.compact!
+          h
         end
       end
     end

@@ -19,7 +19,8 @@ module Zm
           url: @item.url,
           fb: @item.fb,
           view: @item.view
-        }.compact
+        }
+        folder.compact!
 
         attrs = { folder: folder }
 
@@ -41,7 +42,8 @@ module Zm
           url: @item.url,
           fb: @item.fb,
           view: @item.view
-        }.compact
+        }
+        action.compact!
 
         if @item.is_immutable?
           action.delete(:name)

@@ -16,7 +16,8 @@ module Zm
           l: @item.l,
           color: @item.color,
           sortBy: @item.sortBy
-        }.compact
+        }
+        attrs.compact!
 
         soap_request = SoapElement.mail(SoapMailConstants::CREATE_SEARCH_FOLDER_REQUEST)
         node_search = SoapElement.create(SoapConstants::SEARCH).add_attributes(attrs)
@@ -31,7 +32,8 @@ module Zm
           id: @item.id,
           query: @item.query,
           types: @item.types
-        }.compact
+        }
+        attrs.compact!
 
         soap_request = SoapElement.mail(SoapMailConstants::MODIFY_SEARCH_FOLDER_REQUEST)
         node_search = SoapElement.create(SoapConstants::SEARCH).add_attributes(attrs)
@@ -46,7 +48,8 @@ module Zm
           name: @item.name,
           color: @item.color,
           rgb: @item.rgb
-        }.compact
+        }
+        attrs.compact!
 
         build(attrs)
       end

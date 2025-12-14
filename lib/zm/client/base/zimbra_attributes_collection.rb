@@ -21,7 +21,8 @@ module Zm
             strip: true,
             header_converters: lambda { |header| header.to_sym }
           ).map do |attr|
-            attr_h = attr.to_h.delete_if { |_, v| v.nil? }
+            attr_h = attr.to_h
+            attr_h.compact!
             ZimbraAttribute.new(**attr_h)
           end.freeze
         end

@@ -115,7 +115,8 @@ module Zm
           f: f,
           tn: tn,
           content: { _content: eml }
-        }.compact
+        }
+        m.compact!
 
         attrs = { m: m }
 

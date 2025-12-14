@@ -46,7 +46,8 @@ module Zm
           sortBy: @sort_by,
           sortAscending: @sort_ascending,
           refresh: @refresh
-        }.compact
+        }
+        jsns.compact!
 
         soap_request = SoapElement.admin(SoapAdminConstants::GET_QUOTA_USAGE_REQUEST)
                                   .add_attributes(jsns)

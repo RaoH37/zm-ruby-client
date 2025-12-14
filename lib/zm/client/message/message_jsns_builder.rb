@@ -15,7 +15,8 @@ module Zm
           e: recipients_jsns,
           su: { _content: @item.su },
           mp: body_jsns
-        }.compact
+        }
+        jsns.compact!
 
         jsns[:did] = @item.id if @item.l.to_i == FolderDefault::DRAFTS.id
 
@@ -24,7 +25,7 @@ module Zm
 
       def attachments_jsns
         @item.attachments.all.map do |attachment|
-          {
+          h = {
             part: attachment.part,
             mid: attachment.mid,
             aid: attachment.aid,
@@ -33,7 +34,9 @@ module Zm
             filename: attachment.filename,
             ci: attachment.ci,
             cd: attachment.cd
-          }.compact
+          }
+          h.compact!
+          h
         end
       end
 
@@ -41,11 +44,13 @@ module Zm
         return nil if @item.recipients.all.empty?
 
         @item.recipients.all.map do |recipient|
-          {
+          h = {
             t: recipient.field,
             a: recipient.email,
             p: recipient.display_name
-          }.compact
+          }
+          h.compact!
+          h
         end
       end
 

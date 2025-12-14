@@ -135,11 +135,13 @@ module Zm
         end
 
         def build_options
-          {
+          h = {
             resultMode: @resultMode,
             calExpandInstStart: @start_at,
             calExpandInstEnd: @end_at
-          }.compact
+          }
+          h.compact!
+          h
         end
 
         def reset_query_params

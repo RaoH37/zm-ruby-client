@@ -81,10 +81,12 @@ module Zm
       end
 
       def jsns
-        {
+        h = {
           rights: @rights.join(','),
           sections: @sections.join(',')
-        }.compact
+        }
+        h.compact!
+        h
       end
 
       def reset_query_params
