@@ -18,9 +18,8 @@ module Zm
           types: SearchType::DL
         }
 
-        soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
-        soap_request.add_attributes(jsns)
-        soap_request
+        SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
+                   .add_attributes(jsns)
       end
 
       private

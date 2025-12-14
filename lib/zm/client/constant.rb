@@ -12,18 +12,20 @@ module Zm
     end
 
     module FolderDefault
-      ROOT = { id: 1, name: '', path: '/', type: 'unknown' }.freeze
-      BRIEFCASE = { id: 16, name: 'Briefcase', path: '/Briefcase', type: 'document' }.freeze
-      CALENDAR = { id: 10, name: 'Calendar', path: '/Calendar', type: 'appointment' }.freeze
-      CHATS = { id: 14, name: 'Chats', path: '/Chats', type: 'message' }.freeze
-      CONTACTS = { id: 7, name: 'Contacts', path: '/Contacts', type: 'contact' }.freeze
-      DRAFTS = { id: 6, name: 'Drafts', path: '/Drafts', type: 'message' }.freeze
-      EMAILED = { id: 13, name: 'Emailed Contacts', path: '/Emailed Contacts', type: 'contact' }.freeze
-      INBOX = { id: 2, name: 'Inbox', path: '/Inbox', type: 'message' }.freeze
-      JUNK = { id: 4, name: 'Junk', path: '/Junk', type: 'message' }.freeze
-      SENT = { id: 5, name: 'Sent', path: '/Sent', type: 'message' }.freeze
-      TASKS = { id: 15, name: 'Tasks', path: '/Tasks', type: 'task' }.freeze
-      TRASH = { id: 3, name: 'Trash', path: '/Trash', type: 'unknown' }.freeze
+      FolderData = Data.define(:id, :name, :path, :type)
+
+      ROOT = FolderData.new(1, '', '/', 'unknown')
+      INBOX = FolderData.new(2, 'Inbox', '/Inbox', 'message')
+      TRASH = FolderData.new(3, 'Trash', '/Trash', 'unknown')
+      JUNK = FolderData.new(4, 'Junk', '/Junk', 'message')
+      SENT = FolderData.new(5, 'Sent', '/Sent', 'message')
+      DRAFTS = FolderData.new(6, 'Drafts', '/Drafts', 'message')
+      CONTACTS = FolderData.new(7, 'Contacts', '/Contacts', 'contact')
+      CALENDAR = FolderData.new(10, 'Calendar', '/Calendar', 'appointment')
+      EMAILED = FolderData.new(13, 'Emailed Contacts', '/Emailed Contacts', 'contact')
+      CHATS = FolderData.new(14, 'Chats', '/Chats', 'message')
+      TASKS = FolderData.new(15, 'Tasks', '/Tasks', 'task')
+      BRIEFCASE = FolderData.new(16, 'Briefcase', '/Briefcase', 'document')
 
       ALL = [
         ROOT,
@@ -40,7 +42,7 @@ module Zm
         TRASH
       ].freeze
 
-      IDS = ALL.map { |folder| folder[:id] }.freeze
+      IDS = ALL.map(&:id).freeze
     end
 
     module ShareType

@@ -12,7 +12,7 @@ module Zm
                     :name, :color, :rgb, :query, :sortBy
 
       def initialize(parent)
-        @l = FolderDefault::ROOT[:id]
+        @l = FolderDefault::ROOT.id
         @types = 'messages'
         super(parent)
       end

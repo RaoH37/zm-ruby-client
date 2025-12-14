@@ -10,7 +10,7 @@ module Zm
 
       def new
         MountPoint.new(@share.parent) do |mp|
-          mp.l = FolderDefault::ROOT[:id]
+          mp.l = FolderDefault::ROOT.id
           mp.name = default_mountpoint_name
           mp.zid = @share.ownerId
           mp.rid = @share.folderId

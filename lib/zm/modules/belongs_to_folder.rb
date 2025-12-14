@@ -3,12 +3,6 @@
 module Zm
   module Client
     module BelongsToFolder
-      # def folder_id
-      #   @l
-      # end
-
-
-
       def folder=(folder)
         return if folder.nil?
         return unless @l != folder.id

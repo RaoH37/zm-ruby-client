@@ -22,7 +22,7 @@ module Zm
 
       def to_update
         jsns = to_jsns
-        jsns[:comp] = 0
+        jsns[:comp] = SoapUtils::OFF
         jsns[:id] = @item.id
         jsns[:m][:inv][:uid] = @item.uid
         jsns

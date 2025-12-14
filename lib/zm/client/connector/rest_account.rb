@@ -21,10 +21,6 @@ module Zm
         @cookies = nil
       end
 
-      # def verbose!
-      #   @verbose = true
-      # end
-
       def cookies(cookies)
         @cookies = cookies
       end

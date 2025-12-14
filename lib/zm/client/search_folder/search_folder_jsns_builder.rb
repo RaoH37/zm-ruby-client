@@ -16,7 +16,7 @@ module Zm
           l: @item.l,
           color: @item.color,
           sortBy: @item.sortBy
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
         soap_request = SoapElement.mail(SoapMailConstants::CREATE_SEARCH_FOLDER_REQUEST)
         node_search = SoapElement.create(SoapConstants::SEARCH).add_attributes(attrs)
@@ -46,7 +46,7 @@ module Zm
           name: @item.name,
           color: @item.color,
           rgb: @item.rgb
-        }.reject { |_, v| v.nil? }
+        }.compact
 
         build(attrs)
       end

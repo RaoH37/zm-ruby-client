@@ -22,7 +22,7 @@ module Zm
 
       def share_response
         soap_request = SoapElement.account(SoapAccountConstants::GET_SHARE_INFO_REQUEST)
-                                  .add_attributes({ includeSelf: 0 })
+                                  .add_attributes({ includeSelf: SoapUtils::OFF })
 
         unless @owner_name.nil?
           node_owner = SoapElement.create('owner')

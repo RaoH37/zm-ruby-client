@@ -10,7 +10,7 @@ module Zm
         jsns = {
           cn: {
             a: instance_variables_array(all_instance_variables).map(&Utils::A_NODE_PROC),
-            l: @item.l || Zm::Client::FolderDefault::CONTACTS[:id]
+            l: @item.l || Zm::Client::FolderDefault::CONTACTS.id
           }
         }
 

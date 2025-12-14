@@ -27,7 +27,7 @@ module Zm
           uri.query
         end
 
-        # TODO: chercher - remplacer toutes les occurences dans le code
+        # TODO: chercher - remplacer toutes les occurrences dans le code
         def arrow_name(name)
           return name if name.to_s.start_with?(ARROW)
 

@@ -19,7 +19,7 @@ module Zm
           view: @item.view,
           zid: @item.zid,
           rid: @item.rid
-        }.delete_if { |_, v| v.nil? }
+        }.compact
 
         attrs = { link: link }
 

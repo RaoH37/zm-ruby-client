@@ -64,7 +64,7 @@ module Zm
 
       def to_delete
         SoapElement.admin(SoapAdminConstants::DELETE_ACCOUNT_REQUEST)
-                   .add_attribute('id', @item.id)
+                   .add_attribute(SoapConstants::ID, @item.id)
       end
 
       def to_rename(new_name)

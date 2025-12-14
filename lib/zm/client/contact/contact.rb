@@ -23,7 +23,7 @@ module Zm
                     :tn, :shared_account_id, :shared_folder_account_id
 
       def initialize(parent)
-        @l = FolderDefault::CONTACTS[:id]
+        @l = FolderDefault::CONTACTS.id
         @shared_account_id = nil
         @shared_folder_account_id = nil
         super(parent)

@@ -28,7 +28,7 @@ module Zm
       def l
         return @l if defined? @l
 
-        FolderDefault::ROOT[:id]
+        FolderDefault::ROOT.id
       end
       alias folder_id l
 

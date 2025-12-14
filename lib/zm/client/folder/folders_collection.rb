@@ -45,27 +45,27 @@ module Zm
       end
 
       def document
-        @view = FolderDefault::BRIEFCASE[:type]
+        @view = FolderDefault::BRIEFCASE.type
         self
       end
 
       def appointment
-        @view = FolderDefault::CALENDAR[:type]
+        @view = FolderDefault::CALENDAR.type
         self
       end
 
       def contact
-        @view = FolderDefault::CONTACTS[:type]
+        @view = FolderDefault::CONTACTS.type
         self
       end
 
       def message
-        @view = FolderDefault::INBOX[:type]
+        @view = FolderDefault::INBOX.type
         self
       end
 
       def task
-        @view = FolderDefault::TASKS[:type]
+        @view = FolderDefault::TASKS.type
         self
       end
 

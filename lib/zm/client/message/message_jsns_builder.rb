@@ -17,7 +17,7 @@ module Zm
           mp: body_jsns
         }.compact
 
-        jsns[:did] = @item.id if @item.l.to_i == FolderDefault::DRAFTS[:id]
+        jsns[:did] = @item.id if @item.l.to_i == FolderDefault::DRAFTS.id
 
         jsns
       end

@@ -7,7 +7,7 @@ module Zm
       def to_delete
         attrs = {
           op: :delete,
-          comp: 0,
+          comp: SoapUtils::OFF,
           id: @item.id
         }
 

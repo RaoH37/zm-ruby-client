@@ -9,7 +9,7 @@ module Zm
         @child_class = Contact
         @builder_class = ContactBuilder
         @type = SoapConstants::CONTACT
-        @folder_ids = [FolderDefault::CONTACTS[:id]]
+        @folder_ids = [FolderDefault::CONTACTS.id]
       end
     end
   end

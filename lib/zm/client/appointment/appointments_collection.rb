@@ -13,7 +13,7 @@ module Zm
       end
 
       def find(id)
-        jsns = { m: { id: id, html: 1 } }
+        jsns = { m: { id: id, html: SoapUtils::ON } }
 
         soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)
@@ -24,7 +24,7 @@ module Zm
       end
 
       def find_each(offset: 0, limit: 500, &block)
-        (1970..(Time.now.year + 10)).each do |year|
+        (Time.at(0).year..(Time.now.year + 10)).each do |year|
           @start_at = Time.new(year, 1, 1)
           @end_at = Time.new(year, 12, 31)
           @more = true

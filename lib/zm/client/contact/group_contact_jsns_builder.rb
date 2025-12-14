@@ -10,7 +10,7 @@ module Zm
         {
           cn: {
             a: instance_variables_array.map(&Utils::A_NODE_PROC),
-            l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS[:id],
+            l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS.id,
             m: members_node
           }
         }

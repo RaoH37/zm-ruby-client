@@ -29,7 +29,7 @@ module Zm
       def download(dest_file_path, fmt = 'ics')
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_file(
-          Zm::Client::FolderDefault::ROOT[:path],
+          Zm::Client::FolderDefault::ROOT.path,
           fmt,
           [Zm::Client::FolderView::APPOINTMENT],
           [id],
@@ -69,7 +69,7 @@ module Zm
       end
 
       def reload!
-        jsns = { m: { id: id, html: 1 } }
+        jsns = { m: { id: id, html: SoapUtils::ON } }
 
         soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)

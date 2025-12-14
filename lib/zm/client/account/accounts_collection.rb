@@ -49,7 +49,7 @@ module Zm
         }.compact
 
         soap_request = SoapElement.admin(SoapAdminConstants::GET_QUOTA_USAGE_REQUEST)
-        soap_request.add_attributes(jsns)
+                                  .add_attributes(jsns)
         json = sac.invoke(soap_request)
 
         sac.context.target_server(nil) unless target_server_id.nil?

@@ -22,7 +22,7 @@ module Zm
 
         def build_find(id)
           SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
-                     .add_attributes({ m: { id: id, html: 1 } })
+                     .add_attributes({ m: { id: id, html: SoapUtils::ON } })
         end
 
         def start_at(start_at)

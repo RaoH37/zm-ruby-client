@@ -14,7 +14,7 @@ module Zm
       def download(dest_file_path, fmt = 'ics')
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_file(
-          Zm::Client::FolderDefault::ROOT[:path],
+          Zm::Client::FolderDefault::ROOT.path,
           fmt,
           [Zm::Client::FolderView::TASK],
           [@id],

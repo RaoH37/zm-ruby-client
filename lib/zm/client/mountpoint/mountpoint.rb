@@ -12,7 +12,7 @@ module Zm
                     :activesyncdisabled, :absFolderPath, :view, :zid, :webOfflineSyncDays, :name, :color, :rgb
 
       def initialize(parent)
-        @l = FolderDefault::ROOT[:id]
+        @l = FolderDefault::ROOT.id
         super(parent)
       end
 

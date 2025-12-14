@@ -88,7 +88,8 @@ module Zm
         end
 
         def build_query
-          SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST).add_attributes(jsns)
+          SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
+                     .add_attributes(jsns)
         end
 
         private

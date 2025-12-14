@@ -146,14 +146,7 @@ module Zm
     end
 
     # class config for connection
-    class ClusterConfigDomain
-      attr_reader :name, :key
-
-      def initialize(name, key)
-        @name = name
-        @key = key
-      end
-    end
+    ClusterConfigDomain = Data.define(:name, :key)
 
     # class error for config
     class ClusterConfigError < StandardError; end
