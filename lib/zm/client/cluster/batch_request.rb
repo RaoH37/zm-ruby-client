@@ -38,7 +38,8 @@ module Zm
 
       def format_response(soap_resp)
         soap_resp.delete(:_jsns)
-        responses = soap_resp.values.flatten
+        responses = soap_resp.values
+        responses.flatten!
         responses.each do |response|
           response[:requestId] = response[:requestId].to_i
         end
