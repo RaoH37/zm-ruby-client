@@ -6,13 +6,16 @@ module Zm
     class LicenseJsnsInitializer
       class << self
         def create(parent, json)
-          item = License.new(parent)
+          License.new(parent).tap do |item|
+            json[:attr].each do |a|
+              setter = "#{a.delete(:name)}="
+              value = a.dig(:maxLimit, :_content) || a.delete(:_content)
 
-          json[:attr].each do |a|
-            item.instance_variable_set(Utils.arrow_name(a[:name]), a[:_content])
+              if item.respond_to?(setter)
+                item.send(setter, value)
+              end
+            end
           end
-
-          item
         end
       end
     end

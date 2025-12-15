@@ -10,7 +10,7 @@ module Zm
 
       def find
         soap_request = SoapElement.admin(SoapAdminConstants::GET_LICENSE_REQUEST)
-        entry = sac.invoke(soap_request)[:GetLicenseResponse][:license].first
+        entry = @parent.soap_admin_connector.invoke(soap_request)[:GetLicenseResponse][:license].first
         LicenseJsnsInitializer.create(@parent, entry)
       end
     end
