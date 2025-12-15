@@ -9,9 +9,7 @@ module Zm
       class << self
         def create(config)
           new(
-            config.zimbra_admin_scheme,
-            config.zimbra_admin_host,
-            config.zimbra_admin_port
+            config.zimbra_admin_url
           ).tap do |trans|
             trans.logger = config.logger
             trans.cache = config.cache
@@ -27,8 +25,8 @@ module Zm
         context.token(value)
       end
 
-      def initialize(scheme, host, port)
-        super(scheme, host, port, SoapAdminConstants::ADMIN_SERVICE_URI)
+      def initialize(url)
+        super(url, SoapAdminConstants::ADMIN_SERVICE_URI)
       end
     end
   end

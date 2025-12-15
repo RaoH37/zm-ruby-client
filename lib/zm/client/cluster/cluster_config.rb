@@ -6,10 +6,11 @@ module Zm
   module Client
     # class config for cluster connection
     class ClusterConfig
-      attr_reader :to_h
+      BASE_URL_REGEX = %r{\A(https?://[^/?#]+).*}
+
+      attr_reader :to_h, :zimbra_admin_url, :zimbra_public_url
       attr_writer :logger, :colorize_logging
-      attr_accessor :zimbra_admin_host, :zimbra_admin_scheme, :zimbra_admin_port, :zimbra_admin_login,
-                    :zimbra_admin_password, :zimbra_public_host, :zimbra_public_scheme, :zimbra_public_port,
+      attr_accessor :zimbra_admin_login, :zimbra_admin_password,
                     :domains, :zimbra_version, :log_path
 
       def initialize(parameters = nil)
@@ -19,17 +20,7 @@ module Zm
         @log_level = Logger::INFO
         @colorize_logging = true
 
-        case parameters
-        when String
-          init_from_file(parameters)
-        when Hash
-          @to_h = parameters
-        end
-
-        unless @to_h.nil?
-          init_from_h
-          make_config_domain
-        end
+        init_from_parameters(parameters)
 
         yield(self) if block_given?
       end
@@ -66,6 +57,15 @@ module Zm
         @cache_store = [store_key, store_options]
       end
 
+      def init_from_parameters(parameters)
+        case parameters
+        when String
+          init_from_h(init_from_file(parameters))
+        when Hash
+          init_from_h(parameters)
+        end
+      end
+
       def init_from_file(file_config_path)
         if file_config_path.end_with?('.json')
           init_from_json(file_config_path)
@@ -76,32 +76,74 @@ module Zm
         end
       end
 
-      def init_from_h
-        @zimbra_admin_host = @to_h.fetch(:zimbra_admin_host, nil)
-        @zimbra_admin_scheme = @to_h.fetch(:zimbra_admin_scheme, 'https')
-        @zimbra_admin_port = @to_h.fetch(:zimbra_admin_port, 7071)
-        @zimbra_admin_login = @to_h.fetch(:zimbra_admin_login, nil)
-        @zimbra_admin_password = @to_h.fetch(:zimbra_admin_password, nil)
-        @zimbra_public_host = @to_h.fetch(:zimbra_public_host, nil)
-        @zimbra_public_scheme = @to_h.fetch(:zimbra_public_scheme, 'https')
-        @zimbra_public_port = @to_h.fetch(:zimbra_public_port, 443)
-        @zimbra_version = @to_h.fetch(:zimbra_version, @zimbra_version)
-      end
-
       def init_from_yml(file_config_path)
-        @to_h = YAML.safe_load_file(file_config_path, symbolize_names: true)
+        YAML.safe_load_file(file_config_path, symbolize_names: true)
       end
 
       def init_from_json(file_config_path)
-        @to_h = JSON.parse(File.read(file_config_path), symbolize_names: true)
+        JSON.parse(File.read(file_config_path), symbolize_names: true)
       end
 
-      def make_config_domain
-        return if @to_h[:domains].nil?
+      def init_from_h(parameters)
+        @zimbra_admin_login = parameters.delete(:zimbra_admin_login)
+        @zimbra_admin_password = parameters.delete(:zimbra_admin_password)
 
-        @domains = @to_h[:domains].map do |h|
-          ClusterConfigDomain.new(h[:name], h[:key])
+        init_admin_url_from_parameters(parameters)
+
+        init_public_url_from_parameters(parameters)
+
+        if (version = parameters.delete(:zimbra_version))
+          @zimbra_version = version
         end
+
+        init_domains_from_parameters(parameters)
+      end
+
+      def init_domains_from_parameters(parameters)
+        if (config_domains = parameters.delete(:domains))
+          @domains = config_domains.map do |h|
+            ClusterConfigDomain.new(h[:name], h[:key])
+          end
+        end
+      end
+
+      def init_public_url_from_parameters(parameters)
+        if (url = parameters.delete(:zimbra_public_url))
+          self.zimbra_public_url = url
+        elsif (host = parameters.delete(:zimbra_public_host))
+          scheme = parameters.delete(:zimbra_public_scheme) || 'https'
+          port = parameters.delete(:zimbra_public_port) || 443
+
+          self.zimbra_public_url = "#{scheme}://#{host}:#{port}"
+        end
+      end
+
+      def init_admin_url_from_parameters(parameters)
+        if (url = parameters.delete(:zimbra_admin_url))
+          self.zimbra_admin_url = url
+        else
+          scheme = parameters.delete(:zimbra_admin_scheme) || 'https'
+          host = parameters.delete(:zimbra_admin_host)
+          port = parameters.delete(:zimbra_admin_port) || 7071
+
+          self.zimbra_admin_url = "#{scheme}://#{host}:#{port}"
+        end
+      end
+
+      def zimbra_admin_url=(url)
+        match_data = BASE_URL_REGEX.match(url)
+
+        raise ClusterConfigError, 'no valid zimbra_admin_url configuration' unless match_data
+
+        @zimbra_admin_url = match_data[1]
+      end
+
+      def zimbra_public_url=(url)
+        match_data = BASE_URL_REGEX.match(url)
+
+        raise ClusterConfigError, 'no valid zimbra_public_url configuration' unless match_data
+
+        @zimbra_public_url = match_data[1]
       end
 
       def find_domain(domain_name)
@@ -116,7 +158,7 @@ module Zm
       end
 
       def has_admin_credentials?
-        !@zimbra_admin_host.nil? && !@zimbra_admin_login.nil? && !@zimbra_admin_password.nil?
+        !@zimbra_admin_url.nil? && !@zimbra_admin_login.nil? && !@zimbra_admin_password.nil?
       end
 
       def zimbra_attributes_path

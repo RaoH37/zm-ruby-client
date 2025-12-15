@@ -9,9 +9,7 @@ module Zm
       class << self
         def create(config)
           new(
-            config.zimbra_public_scheme,
-            config.zimbra_public_host,
-            config.zimbra_public_port
+            config.zimbra_public_url
           ).tap do |trans|
             trans.logger = config.logger
             trans.cache = config.cache
@@ -27,8 +25,8 @@ module Zm
         context.token(value)
       end
 
-      def initialize(scheme, host, port)
-        super(scheme, host, port, SoapAccountConstants::ACCOUNT_SERVICE_URI)
+      def initialize(url)
+        super(url, SoapAccountConstants::ACCOUNT_SERVICE_URI)
       end
 
       def auth_preauth(content, by, expires, domainkey)
