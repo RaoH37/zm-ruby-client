@@ -136,6 +136,18 @@ module Zm
         soap_request
       end
 
+      def add_contacts(csv)
+        @parent.soap_connector.invoke(build_add_contacts(csv)).dig(:ImportContactsResponse, :cn)
+      end
+
+      def build_add_contacts(csv)
+        attrs = { l: id, ct: SoapConstants::CSV }
+        soap_request = SoapElement.mail(SoapMailConstants::IMPORT_CONTACTS_REQUEST).add_attributes(attrs)
+        node_content = SoapElement.create(SoapConstants::CONTENT).add_content(csv)
+        soap_request.add_node(node_content)
+        soap_request
+      end
+
       def download(dest_file_path, fmt = 'tgz')
         uploader = Upload.new(@parent, RestAccountConnector.new)
         uploader.download_folder(id, fmt, dest_file_path)
