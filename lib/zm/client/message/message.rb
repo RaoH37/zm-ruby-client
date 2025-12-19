@@ -23,15 +23,9 @@ module Zm
         yield(self) if block_given?
       end
 
-      def download(dest_file_path, fmt = 'eml')
-        uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(
-          Zm::Client::FolderDefault::ROOT.path,
-          fmt,
-          [Zm::Client::FolderView::MESSAGE],
-          [@id],
-          dest_file_path
-        )
+      def download(dest_file_path, fmt: 'eml')
+        uploader = @parent.build_uploader
+        uploader.download_file(dest_file_path, id, FolderView::MESSAGE, fmt:)
       end
 
       def date

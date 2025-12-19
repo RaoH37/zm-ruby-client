@@ -136,15 +136,14 @@ module Zm
         soap_request
       end
 
-      def download(dest_file_path, fmt = 'tgz')
-        uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_folder(id, fmt, dest_file_path)
+      def download(dest_file_path, fmt: nil)
+        uploader = @parent.build_uploader
+        uploader.download_folder(dest_file_path, id, fmt:)
       end
 
-      def upload(file_path, fmt = nil, types = nil, resolve = 'replace')
-        fmt ||= File.extname(file_path)[1..]
-        uploader = Upload.new(@parent, RestAccountConnector.new(verbose: false, timeout: 1_200))
-        uploader.send_file(absFolderPath, fmt, types, resolve, file_path)
+      def upload(src_file_path, fmt: nil, resolve: nil)
+        uploader = @parent.build_uploader
+        uploader.send_file(src_file_path, id, fmt:, type: view, resolve:)
       end
 
       private

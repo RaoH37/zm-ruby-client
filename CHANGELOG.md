@@ -2,7 +2,7 @@
 
 ## Unreleased [3.0.0]
 
-### [3.0.0] 2025-04-14
+### [3.0.0] 2025-12(19)
 
 - [Changed] Move token metadata decoder in token class
 - [Changed] Move logger in ClusterConfig class
@@ -13,3 +13,4 @@
 - [Changed] Authorize array and undetermined parameters for add! and remove! methods
 - [Changed] Memory optimization in object initializers
 - [Changed] Replace FolderDefault as Data object
+- [Changed] Modify config admin and public url format

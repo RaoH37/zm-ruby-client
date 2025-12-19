@@ -42,7 +42,7 @@ module Zm
 
           url << '?' << Utils.format_url_params(h)
 
-          uploader = Upload.new(@parent, RestAccountConnector.new)
+          uploader = @parent.build_uploader
           uploader.download_file_with_url(url, dest_file_path)
         end
 

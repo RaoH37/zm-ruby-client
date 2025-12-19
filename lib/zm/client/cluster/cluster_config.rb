@@ -8,10 +8,10 @@ module Zm
     class ClusterConfig
       BASE_URL_REGEX = %r{\A(https?://[^/?#]+).*}
 
-      attr_reader :to_h, :zimbra_admin_url, :zimbra_public_url
+      attr_reader :zimbra_admin_url, :zimbra_public_url
       attr_writer :logger, :colorize_logging
       attr_accessor :zimbra_admin_login, :zimbra_admin_password,
-                    :domains, :zimbra_version, :log_path
+                    :domains, :zimbra_version, :log_path, :timeout
 
       def initialize(parameters = nil)
         @domains = []
@@ -19,6 +19,7 @@ module Zm
         @log_path = $stdout
         @log_level = Logger::INFO
         @colorize_logging = true
+        @timeout = 300
 
         init_from_parameters(parameters)
 
@@ -94,6 +95,10 @@ module Zm
 
         if (version = parameters.delete(:zimbra_version))
           @zimbra_version = version
+        end
+
+        if (p_timeout = parameters.delete(:timeout))
+          @timeout = p_timeout.to_i
         end
 
         init_domains_from_parameters(parameters)

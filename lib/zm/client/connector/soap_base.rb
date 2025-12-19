@@ -15,7 +15,7 @@ module Zm
       }.freeze
 
       attr_reader :context
-      attr_writer :logger, :cache
+      attr_writer :logger, :cache, :timeout
 
       def initialize(url, soap_path)
         @verbose = false
@@ -99,14 +99,6 @@ module Zm
           Header: { context: context.to_hash, _jsns: BASESPACE }
         }
       end
-
-      # TODO: à supprimer, code mort
-      # def hash_header(token, target_server = nil)
-      #   h_context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
-      #     v.nil?
-      #   end
-      #   { Header: { context: h_context, _jsns: BASESPACE } }
-      # end
     end
   end
 end

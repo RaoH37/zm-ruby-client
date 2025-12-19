@@ -44,14 +44,8 @@ module Zm
       end
 
       def download(dest_file_path)
-        uploader = Upload.new(@parent, RestAccountConnector.new)
-        uploader.download_file(
-          Zm::Client::FolderDefault::ROOT.path,
-          nil,
-          [Zm::Client::FolderView::DOCUMENT],
-          [@id],
-          dest_file_path
-        )
+        uploader = @parent.build_uploader
+        uploader.download_file(dest_file_path, id, nil)
       end
 
       private

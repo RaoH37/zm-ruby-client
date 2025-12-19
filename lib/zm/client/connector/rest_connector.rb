@@ -4,12 +4,12 @@ require 'faraday/multipart'
 
 module Zm
   module Client
-    class RestAccountConnector
-      attr_reader :verbose, :follow_location, :timeout
+    class RestConnector
+      attr_reader :verbose, :timeout
+      attr_writer :cookies
 
-      def initialize(verbose: false, follow_location: false, timeout: 300)
+      def initialize(verbose: false, timeout: 300)
         @verbose = verbose
-        @follow_location = follow_location
         @timeout = timeout
 
         @ssl_options = {
@@ -19,10 +19,8 @@ module Zm
         }
 
         @cookies = nil
-      end
 
-      def cookies(cookies)
-        @cookies = cookies
+        yield(self) if block_given?
       end
 
       def download(download_url, dest_file_path)
@@ -59,9 +57,15 @@ module Zm
         payload = { file: Faraday::Multipart::FilePart.new(src_file_path, nil) }
         response = conn.post(path, payload)
 
+        upload_return(response, failure_message: "Upload failure ! #{src_file_path}")
+      end
+
+      private
+
+      def upload_return(response, failure_message: 'Upload failure')
         if response.status >= 400
           messages = [
-            "Upload failure ! #{src_file_path}",
+            failure_message,
             extract_title(response.body)
           ].compact
 
@@ -70,8 +74,6 @@ module Zm
 
         response.body
       end
-
-      private
 
       def split_url(url)
         uri = URI(url)

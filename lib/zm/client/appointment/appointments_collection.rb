@@ -25,8 +25,8 @@ module Zm
 
       def find_each(offset: 0, limit: 500, &block)
         (Time.at(0).year..(Time.now.year + 10)).each do |year|
-          @start_at = Time.new(year, 1, 1)
-          @end_at = Time.new(year, 12, 31)
+          @start_at ||= Time.new(year, 1, 1).to_i * 1000
+          @end_at ||= Time.new(year, 12, 31).to_i * 1000
           @more = true
           @offset = offset
           @limit = limit

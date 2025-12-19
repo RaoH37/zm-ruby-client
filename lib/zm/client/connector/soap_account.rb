@@ -13,6 +13,7 @@ module Zm
           ).tap do |trans|
             trans.logger = config.logger
             trans.cache = config.cache
+            trans.timeout = config.timeout
           end
         end
       end
