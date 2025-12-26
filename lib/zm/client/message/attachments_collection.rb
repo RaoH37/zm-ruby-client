@@ -40,7 +40,7 @@ module Zm
 
           url = account.home_url
 
-          url << '?' << Utils.format_url_params(h)
+          url << '?' << h.map { |k, v| "#{k}=#{v}" }.join('&')
 
           uploader = @parent.build_uploader
           uploader.download_file_with_url(url, dest_file_path)
