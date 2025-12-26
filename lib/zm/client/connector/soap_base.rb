@@ -2,7 +2,6 @@
 
 require 'json'
 require 'openssl'
-require 'uri'
 
 require_relative 'soap_error'
 
@@ -16,9 +15,9 @@ module Zm
       }.freeze
 
       attr_reader :context
-      attr_writer :logger, :cache
+      attr_writer :logger, :cache, :timeout
 
-      def initialize(scheme, host, port, soap_path)
+      def initialize(url, soap_path)
         @verbose = false
         @timeout = 300
 
@@ -28,8 +27,9 @@ module Zm
           verify_mode: OpenSSL::SSL::VERIFY_NONE
         }
 
+        @url = url
         @soap_path = soap_path
-        @uri = URI::HTTP.new(scheme, nil, host, port, nil, nil, nil, nil, nil)
+
         @context = SoapContext.new
       end
 
@@ -50,7 +50,7 @@ module Zm
 
       def http_client!
         @http_client = Faraday.new(
-          url: @uri.to_s,
+          url: @url,
           headers: HTTP_HEADERS,
           request: {
             timeout: @timeout
@@ -99,14 +99,6 @@ module Zm
           Header: { context: context.to_hash, _jsns: BASESPACE }
         }
       end
-
-      # TODO: à supprimer, code mort
-      # def hash_header(token, target_server = nil)
-      #   h_context = { authToken: token, userAgent: { name: :zmsoap }, targetServer: target_server }.delete_if do |_, v|
-      #     v.nil?
-      #   end
-      #   { Header: { context: h_context, _jsns: BASESPACE } }
-      # end
     end
   end
 end

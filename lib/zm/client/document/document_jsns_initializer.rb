@@ -24,7 +24,7 @@ module Zm
           item.md = json.delete(:md)
           item.rev = json.delete(:rev)
           item.f = json.delete(:f)
-          item.tn = json.delete(:tn).to_s.split(',')
+          item.tn = json.delete(:tn)
           item.t = json.delete(:t)
           item.meta = json.delete(:meta)
           item.ct = json.delete(:ct)

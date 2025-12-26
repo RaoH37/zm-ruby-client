@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'zm/client/mailbox/mailbox_item_concern'
-require 'zm/client/connector/rest_account'
+require 'zm/client/connector/rest_connector'
 require 'zm/client/signature'
 require 'zm/client/folder'
 require 'zm/client/mountpoint'
@@ -54,14 +54,6 @@ module Zm
 
           @soap_connector
         end
-
-        def rest_account_connector
-          return @rest_account_connector if defined? @rest_account_connector
-
-          @rest_account_connector = RestAccountConnector.new
-        end
-
-        alias rac rest_account_connector
 
         def domain_name
           return @domain_name if defined? @domain_name
@@ -356,19 +348,63 @@ module Zm
 
         # #################################################################
 
-        def uploader
-          return @uploader if defined? @uploader
+        def build_uploader
+          tmp_token = soap_connector&.token
+          raise ZmError, 'token have to be set to instance Upload class' unless tmp_token
 
-          @uploader = Upload.new(self)
+          Upload.new(rest_url, tmp_token, is_token_admin: soap_connector.is_a?(SoapAdminConnector), **rest_options)
+        end
+
+        def rest_options
+          if soap_config
+            {
+              timeout: soap_config.timeout,
+              verbose: soap_config.logger.debug?
+            }
+          else
+            {}
+          end
+        end
+
+        def rest_url
+          raise ZmError, 'name attribute is requuired for REST Url' unless @name
+
+          if logged?
+            rest_account_url
+          elsif parent_logged?
+            rest_admin_url
+          else
+            raise ZmError, 'impossible to set rest_url'
+          end
+        end
+
+        def rest_admin_url
+          raise ZmError, 'impossible to set rest_admin_url' unless soap_config.zimbra_admin_url
+
+          File.join(soap_config.zimbra_admin_url, 'home', @name)
+        end
+
+        def rest_account_url
+          if soap_config.zimbra_public_url
+            File.join(soap_config.zimbra_public_url, 'home', @name)
+          elsif home_url
+            home_url
+          else
+            raise ZmError, 'impossible to set rest_account_url'
+          end
         end
 
         private
 
         def soap_config
-          return @parent.config if @parent.respond_to?(:config)
-          return @parent.parent.config if @parent.respond_to?(:parent) && @parent.parent.respond_to?(:config)
+          return @soap_config if defined? @soap_config
+          return unless @parent
 
-          nil
+          if @parent.respond_to?(:config)
+            @soap_config = @parent.config
+          elsif @parent.respond_to?(:parent) && @parent.parent.respond_to?(:config)
+            @soap_config = @parent.parent.config
+          end
         end
 
         def parent_logged?

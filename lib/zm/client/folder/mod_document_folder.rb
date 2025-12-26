@@ -4,7 +4,7 @@ module DocumentFolder
   UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
 
   def upload(file_path)
-    uploader = Zm::Client::Upload.new(@parent, Zm::Client::RestAccountConnector.new)
+    uploader = @parent.build_uploader
     str = uploader.upload_attachment(file_path)
 
     uuid = str.scan(UUID_REGEX).first

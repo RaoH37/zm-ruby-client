@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 require 'faraday/multipart'
+require 'uri'
 
 module Zm
   module Client
-    class RestAccountConnector
-      attr_reader :verbose, :follow_location, :timeout
+    class RestConnector
+      attr_reader :verbose, :timeout
+      attr_writer :cookies
 
-      def initialize(verbose: false, follow_location: false, timeout: 300)
+      def initialize(verbose: false, timeout: 300)
         @verbose = verbose
-        @follow_location = follow_location
         @timeout = timeout
 
         @ssl_options = {
@@ -19,18 +20,14 @@ module Zm
         }
 
         @cookies = nil
-      end
 
-      def cookies(cookies)
-        @cookies = cookies
+        yield(self) if block_given?
       end
 
       def download(download_url, dest_file_path)
         url, path = split_url(download_url)
 
-        conn = Faraday.new(**http_options(url)) do |faraday|
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
-        end
+        conn = conn_get(url)
 
         response = nil
 
@@ -48,6 +45,26 @@ module Zm
         raise RestError, "Download failure: #{response.body} (status=#{response.status})"
       end
 
+      def read(download_url)
+        url, path = split_url(download_url)
+
+        conn = conn_get(url)
+
+        data = +''
+
+        response = conn.get(path) do |request|
+          request.options.on_data = Proc.new do |chunk, _, _|
+            data.concat(chunk)
+          end
+        end
+
+        if response.status >= 400
+          raise RestError, "Download failure: #{response.body} (status=#{response.status})"
+        end
+
+        data
+      end
+
       def upload(upload_url, src_file_path)
         url, path = split_url(upload_url)
 
@@ -59,9 +76,21 @@ module Zm
         payload = { file: Faraday::Multipart::FilePart.new(src_file_path, nil) }
         response = conn.post(path, payload)
 
+        upload_return(response, failure_message: "Upload failure ! #{src_file_path}")
+      end
+
+      private
+
+      def conn_get(url)
+        Faraday.new(**http_options(url)) do |faraday|
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+        end
+      end
+
+      def upload_return(response, failure_message: 'Upload failure')
         if response.status >= 400
           messages = [
-            "Upload failure ! #{src_file_path}",
+            failure_message,
             extract_title(response.body)
           ].compact
 
@@ -70,8 +99,6 @@ module Zm
 
         response.body
       end
-
-      private
 
       def split_url(url)
         uri = URI(url)

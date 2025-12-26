@@ -21,7 +21,8 @@ module Zm
           item.mid  = json.delete(:mid)
           item.idnt = json.delete(:idnt)
           item.f = json.delete(:f)
-          item.tn = json.delete(:tn).to_s.split(',')
+          item.tn = json.delete(:tn)
+          item.s = json.delete(:s)
 
           json[:e].each do |e|
             recipient = Recipient.new(e.delete(:t), e.delete(:a), e.delete(:p))

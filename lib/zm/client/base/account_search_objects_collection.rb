@@ -104,6 +104,20 @@ module Zm
                      .add_attributes(jsns)
         end
 
+        def delete_all(ids)
+          attrs = {
+            op: :delete,
+            id: ids.join(',')
+          }
+
+          attrs.compact!
+
+          soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+          node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
+          soap_request.add_node(node_action)
+          @parent.soap_connector.invoke(soap_request)
+        end
+
         private
 
         def search_builder
