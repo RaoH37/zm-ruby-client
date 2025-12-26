@@ -9,8 +9,10 @@ module Zm
       include RequestMethodsMailbox
       include MailboxItemConcern
 
-      attr_accessor :d, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject
+      attr_accessor :d, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject, :s
       attr_reader :recipients, :attachments, :body
+
+      alias size s
 
       def initialize(parent)
         @parent = parent
@@ -26,6 +28,11 @@ module Zm
       def download(dest_file_path, fmt: 'eml')
         uploader = @parent.build_uploader
         uploader.download_file(dest_file_path, id, FolderView::MESSAGE, fmt:)
+      end
+
+      def read
+        uploader = @parent.build_uploader
+        uploader.read_file(id, FolderView::MESSAGE, fmt: 'eml')
       end
 
       def date
@@ -56,8 +63,19 @@ module Zm
         raise NotImplementedError
       end
 
-      def update!(*args)
-        raise NotImplementedError
+      def update!(attrs)
+        authorized_keys = %i[l rgb color f tn]
+
+        attrs.reject! { |k| !authorized_keys.include?(k) }
+
+        attrs.merge!({ op: :update, id: id })
+
+        attrs.compact!
+
+        soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+        node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
+        soap_request.add_node(node_action)
+        @parent.soap_connector.invoke(soap_request)
       end
 
       def rename!(*args)

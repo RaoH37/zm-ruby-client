@@ -9,7 +9,9 @@ module Zm
         end
 
         def all
-          @parent.tn
+          return @all if defined? @all
+
+          @all = @parent.tn.to_s.split(',')
         end
 
         def add!(*new_tags)
@@ -27,8 +29,8 @@ module Zm
             do_action(attrs)
           end
 
-          @parent.tn += new_tags
-          all!
+          @all += new_tags
+          update_parent
         end
 
         def remove!(*tag_names)
@@ -46,8 +48,12 @@ module Zm
             do_action(attrs)
           end
 
-          @parent.tn -= tag_names
-          all!
+          @all -= tag_names
+          update_parent
+        end
+
+        def update_parent
+          @parent.tn = @all.join(',')
         end
 
         def do_action(attrs)

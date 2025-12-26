@@ -51,6 +51,15 @@ module Zm
         @rest_connector.download(remote_url, dest_file_path)
       end
 
+      def read_file(file_id, type, fmt: nil)
+        type ||= FMT_TYPES_H[fmt]
+
+        raise RestError, 'Invalid fmt type' if type.nil? && fmt.nil?
+
+        remote_url = download_file_url(fmt, type, file_id)
+        @rest_connector.read(remote_url)
+      end
+
       def download_files(dest_file_path, file_ids, type, fmt: nil)
         fmt ||= File.extname(dest_file_path)[1..]
         type ||= FMT_TYPES_H[fmt]

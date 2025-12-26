@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'faraday/multipart'
+require 'uri'
 
 module Zm
   module Client
@@ -26,9 +27,7 @@ module Zm
       def download(download_url, dest_file_path)
         url, path = split_url(download_url)
 
-        conn = Faraday.new(**http_options(url)) do |faraday|
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
-        end
+        conn = conn_get(url)
 
         response = nil
 
@@ -46,6 +45,26 @@ module Zm
         raise RestError, "Download failure: #{response.body} (status=#{response.status})"
       end
 
+      def read(download_url)
+        url, path = split_url(download_url)
+
+        conn = conn_get(url)
+
+        data = +''
+
+        response = conn.get(path) do |request|
+          request.options.on_data = Proc.new do |chunk, _, _|
+            data.concat(chunk)
+          end
+        end
+
+        if response.status >= 400
+          raise RestError, "Download failure: #{response.body} (status=#{response.status})"
+        end
+
+        data
+      end
+
       def upload(upload_url, src_file_path)
         url, path = split_url(upload_url)
 
@@ -61,6 +80,12 @@ module Zm
       end
 
       private
+
+      def conn_get(url)
+        Faraday.new(**http_options(url)) do |faraday|
+          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+        end
+      end
 
       def upload_return(response, failure_message: 'Upload failure')
         if response.status >= 400
