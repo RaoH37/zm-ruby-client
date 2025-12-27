@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased [3.0.0]
+## Released [3.0.0]
 
-### [3.0.0] 2025-12(19)
+### [3.0.0] 2025-12(27)
 
 - [Changed] Move token metadata decoder in token class
 - [Changed] Move logger in ClusterConfig class
@@ -14,3 +14,4 @@
 - [Changed] Memory optimization in object initializers
 - [Changed] Replace FolderDefault as Data object
 - [Changed] Modify config admin and public url format
+- [Added]   Can access mailbox objects without mailbox login
