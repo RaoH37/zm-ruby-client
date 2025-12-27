@@ -18,7 +18,7 @@ module Zm
         @zimbra_version = '8.8.15'
         @log_path = $stdout
         @log_level = Logger::INFO
-        @colorize_logging = true
+        @colorize_logging = false
         @timeout = 300
 
         init_from_parameters(parameters)
