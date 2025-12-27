@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'ostruct'
-require 'version_sorter'
-
 module Zm
   module Client
     module Base
@@ -24,18 +21,6 @@ module Zm
           @max = max
           @min = min
           @since = since
-        end
-
-        def version_start
-          return @version_start unless @version_start.nil?
-
-          @version_start = if since.nil?
-                             '0.0.0'
-                           else
-                             VersionSorter.sort(since.split(',')).first
-                           end
-
-          @version_start
         end
 
         def immutable?
