@@ -42,7 +42,7 @@ module Zm
       end
 
       def is_public?
-        gt == GT_PUBLIC
+        gt == GT_PUB
       end
 
       def is_external?
