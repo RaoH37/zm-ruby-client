@@ -5,6 +5,8 @@ module Zm
     module Base
       # Collection AdminObjectsCollection
       class AdminObjectsCollection < ObjectsCollection
+        ONERRORS = %w[continue stop].freeze
+
         def initialize(parent)
           @parent = parent
           @persistent = false
@@ -92,7 +94,37 @@ module Zm
                      .add_attributes(jsns)
         end
 
+        def update_all!(hash, onerror: ONERRORS.first, update_attributes: true)
+          mass_update!(build_response, hash, onerror:, update_attributes:)
+        end
+
+        def mass_update!(items, hash, onerror: ONERRORS.first, update_attributes: true)
+          format_mass_items_parameter(items)
+
+          items.each do |item|
+            item.update!(hash, update_attributes:)
+          rescue Zm::Client::SoapError => e
+            @parent.logger.error e.message
+            @parent.logger.debug e.backtrace.join("\n")
+
+            return items if onerror == ONERRORS.last
+          end
+
+          items
+        end
+
         private
+
+        def format_mass_items_parameter(items)
+          items.map! do |item|
+            if item.is_a?(@child_class)
+              item.updated = false
+              item
+            else
+              new { |acc| acc.id = item }
+            end
+          end
+        end
 
         def ldap_filter
           return @ldap_filter if defined? @ldap_filter

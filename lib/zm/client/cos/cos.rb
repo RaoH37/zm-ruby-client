@@ -18,16 +18,20 @@ module Zm
         jsns_builder.to_update
       end
 
-      def update!(hash)
+      def update!(hash, update_attributes: true)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
         do_update!(hash)
 
+        do_update_attributes(hash) if update_attributes
+
+        @updated = true
+      end
+
+      def do_update_attributes(hash)
         hash.each do |key, value|
           update_attribute(key, value)
         end
-
-        true
       end
 
       def create!

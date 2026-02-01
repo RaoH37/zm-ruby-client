@@ -4,8 +4,6 @@ module Zm
   module Client
     # Collection Accounts
     class AccountsCollection < Base::AdminObjectsCollection
-      ONERRORS = %w[continue stop].freeze
-
       def initialize(parent)
         @child_class = Account
         @builder_class = AccountsBuilder
@@ -61,37 +59,7 @@ module Zm
         @builder_class.new(@parent, json).make
       end
 
-      def update_all!(hash, onerror: ONERRORS.first, update_attributes: true)
-        mass_update!(build_response, hash, onerror:, update_attributes:)
-      end
-
-      def mass_update!(accounts, hash, onerror: ONERRORS.first, update_attributes: true)
-        format_mass_accounts_parameter(accounts)
-
-        accounts.each do |account|
-          account.update!(hash, update_attributes:)
-        rescue Zm::Client::SoapError => e
-          @parent.logger.error e.message
-          @parent.logger.debug e.backtrace.join("\n")
-
-          return accounts if onerror == ONERRORS.last
-        end
-
-        accounts
-      end
-
       private
-
-      def format_mass_accounts_parameter(accounts)
-        accounts.map! do |account|
-          if account.is_a?(@child_class)
-            account.updated = false
-            account
-          else
-            new { |acc| acc.id = account }
-          end
-        end
-      end
 
       def reset_query_params
         super
