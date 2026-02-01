@@ -14,7 +14,7 @@ module Zm
 
       def modify!
         sac.invoke(build_modify)
-        true
+        @updated = true
       end
 
       def build_modify
@@ -25,20 +25,25 @@ module Zm
         jsns_builder.to_create
       end
 
-      def update!(hash)
+      def update!(hash, update_attributes: true)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
         do_update!(hash)
 
+        do_update_attributes(hash) if update_attributes
+
+        @updated = true
+      end
+
+      def do_update_attributes(hash)
         hash.each do |key, value|
           update_attribute(key, value)
         end
-
-        true
       end
 
       def rename!(new_name)
         sac.invoke(build_rename(new_name))
+        @updated = true
         @name = new_name
       end
 

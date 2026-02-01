@@ -5,15 +5,20 @@ module Zm
     module Base
       # Abstract Class Provisionning Object
       class Object
-        attr_accessor :parent, :token, :name, :id
+        attr_accessor :parent, :token, :name, :id, :updated
 
         def initialize(parent)
           @parent = parent
+          @updated = false
           yield(self) if block_given?
         end
 
         def recorded?
           !@id.nil?
+        end
+
+        def updated?
+          @updated
         end
 
         def save!
