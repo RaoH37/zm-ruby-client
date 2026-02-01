@@ -113,6 +113,25 @@ module Zm
           items
         end
 
+        def delete_all!(onerror: ONERRORS.first)
+          mass_delete!(build_response, onerror:)
+        end
+
+        def mass_delete!(items, onerror:)
+          format_mass_items_parameter(items)
+
+          items.each do |item|
+            item.delete!
+          rescue Zm::Client::SoapError => e
+            @parent.logger.error e.message
+            @parent.logger.debug e.backtrace.join("\n")
+
+            return items if onerror == ONERRORS.last
+          end
+
+          items
+        end
+
         private
 
         def format_mass_items_parameter(items)
