@@ -2,6 +2,11 @@
 
 require 'zm/client/mailbox/mailbox_item_concern'
 require 'zm/client/connector/rest_connector'
+require 'zm/client/account/account_aliases_collection'
+require 'zm/client/base/mailbox_infos_collection'
+require 'zm/client/base/mailbox_prefs_collection'
+require 'zm/client/account/account_dls_membership_collection'
+require 'zm/client/account/account_dls_owner_collection'
 require 'zm/client/signature'
 require 'zm/client/folder'
 require 'zm/client/mountpoint'
@@ -25,6 +30,7 @@ module Zm
       # Abstract Class for Account and Resource
       class MailboxObject < Object
         include HasSoapAdminConnector
+        extend Relationship
 
         attr_accessor :home_url, :public_url, :password, :carLicense
         attr_writer :used, :domain_key
@@ -61,17 +67,9 @@ module Zm
           @domain_name = @name.split('@').last
         end
 
-        def infos
-          return @infos if defined? @infos
-
-          @infos = MailboxInfosCollection.new(self)
-        end
-
-        def prefs
-          return @prefs if defined? @prefs
-
-          @prefs = MailboxPrefsCollection.new(self)
-        end
+        has_many :aliases, klass: AccountAliasesCollection
+        has_many :infos, klass: MailboxInfosCollection
+        has_many :prefs, klass: MailboxPrefsCollection
 
         def used
           @used || used!
@@ -194,114 +192,28 @@ module Zm
         # Associations
         # #################################################################
 
-        def messages
-          return @messages if defined? @messages
+        has_many :messages
+        has_many :folders
+        has_many :mount_points
+        alias mountpoints mount_points
 
-          @messages = MessagesCollection.new(self)
-        end
-
-        def folders
-          return @folders if defined? @folders
-
-          @folders = FoldersCollection.new(self)
-        end
-
-        def mountpoints
-          return @mountpoints if defined? @mountpoints
-
-          @mountpoints = MountPointsCollection.new(self)
-        end
-
-        def search_folders
-          return @search_folders if defined? @search_folders
-
-          @search_folders = SearchFoldersCollection.new(self)
-        end
-
-        def identities
-          return @identities if defined? @identities
-
-          @identities = IdentitiesCollection.new(self)
-        end
-
-        def shares
-          return @shares if defined? @shares
-
-          @shares = SharesCollection.new(self)
-        end
-
-        def contacts
-          return @contacts if defined? @contacts
-
-          @contacts = ContactsCollection.new(self)
-        end
-
-        def appointments
-          return @appointments if defined? @appointments
-
-          @appointments = AppointmentsCollection.new(self)
-        end
-
-        def tags
-          return @tags if defined? @tags
-
-          @tags = TagsCollection.new(self)
-        end
-
-        def tasks
-          return @tasks if defined? @tasks
-
-          @tasks = TasksCollection.new(self)
-        end
-
-        def aces
-          return @aces if defined? @aces
-
-          @aces = AcesCollection.new(self)
-        end
+        has_many :search_folders
+        has_many :identities
+        has_many :shares
+        has_many :contacts
+        has_many :appointments
+        has_many :tags
+        has_many :tasks
+        has_many :aces
         alias rights aces
 
-        def signatures
-          return @signatures if defined? @signatures
-
-          @signatures = SignaturesCollection.new(self)
-        end
-
-        def documents
-          return @documents if defined? @documents
-
-          @documents = DocumentsCollection.new(self)
-        end
-
-        def memberships
-          return @memberships if defined? @memberships
-
-          @memberships = AccountDlsMembershipCollection.new(self)
-        end
-
-        def dls_owner
-          return @dls_owner if defined? @dls_owner
-
-          @dls_owner = AccountDlsOwnerCollection.new(self)
-        end
-
-        def filter_rules
-          return @filter_rules if defined? @filter_rules
-
-          @filter_rules = FilterRulesCollection.new(self)
-        end
-
-        def outgoing_filter_rules
-          return @outgoing_filter_rules if defined? @outgoing_filter_rules
-
-          @outgoing_filter_rules = OutgoingFilterRulesCollection.new(self)
-        end
-
-        def data_sources
-          return @data_sources if defined? @data_sources
-
-          @data_sources = DataSourcesCollection.new(self)
-        end
+        has_many :signatures
+        has_many :documents
+        has_many :memberships, klass: AccountDlsMembershipCollection
+        has_many :dls_owner, klass: AccountDlsOwnerCollection
+        has_many :filter_rules
+        has_many :outgoing_filter_rules
+        has_many :data_sources
 
         # #################################################################
         # SOAP Actions

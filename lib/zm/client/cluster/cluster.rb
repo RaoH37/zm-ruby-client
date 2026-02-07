@@ -16,6 +16,8 @@ module Zm
   module Client
     # class admin connection
     class Cluster
+      extend Relationship
+
       attr_reader :soap_admin_connector, :config, :zimbra_attributes, :type, :version, :release, :buildDate, :host,
                   :majorversion, :minorversion, :microversion
 
@@ -83,43 +85,14 @@ module Zm
         nil
       end
 
-      def domains
-        return @domains if defined? @domains
+      has_many :domains
+      has_many :accounts
+      has_many :resources
+      has_many :servers
+      has_many :coses
+      has_many :distribution_lists
 
-        @domains = DomainsCollection.new self
-      end
-
-      def accounts
-        return @accounts if defined? @accounts
-
-        @accounts = AccountsCollection.new self
-      end
-
-      def resources
-        return @resources if defined? @resources
-
-        @resources = ResourcesCollection.new self
-      end
-
-      def servers
-        return @servers if defined? @servers
-
-        @servers = ServersCollection.new self
-      end
-
-      def coses
-        return @coses if defined? @coses
-
-        @coses = CosesCollection.new self
-      end
-
-      def distributionlists
-        return @distributionlists if defined? @distributionlists
-
-        @distributionlists = DistributionListsCollection.new self
-      end
-
-      alias distribution_lists distributionlists
+      alias distributionlists distribution_lists
 
       def domain_key(domain_name)
         if logged?

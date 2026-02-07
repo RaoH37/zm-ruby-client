@@ -7,3 +7,5 @@ require 'zm/modules/has_soap_admin_connector'
 
 require 'zm/modules/belongs_to_folder'
 require 'zm/modules/belongs_to_tag'
+
+require 'zm/modules/relationship'

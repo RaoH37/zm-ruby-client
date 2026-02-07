@@ -1,22 +1,15 @@
 # frozen_string_literal: true
 
-require 'zm/client/account/account_aliases_collection'
-
 module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
       include RequestMethodsAdmin
+      extend Relationship
 
       # #################################################################
       # Associations
       # #################################################################
-
-      def aliases
-        return @aliases if defined? @aliases
-
-        @aliases = AccountAliasesCollection.new(self)
-      end
 
       def cos
         return @cos if defined? @cos
