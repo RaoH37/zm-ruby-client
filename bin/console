@@ -10,7 +10,7 @@ puts "Zm::Client.version=#{Zm::Client.version}"
 require 'get_process_mem'
 @mem = GetProcessMem.new
 
-config_path = '/home/maxime/dev/zextras/credentials/zcs8815.json'
+config_path = './test/fixtures/config.yml'
 config = Zm::Client::ClusterConfig.new(config_path)
 @cluster = Zm::Client::Cluster.new(config)
 
