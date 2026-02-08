@@ -33,7 +33,20 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = :resources
+        @attrs = %w[
+          displayName
+          zimbraId
+          zimbraMailHost
+          uid
+          zimbraAccountStatus
+          description
+          zimbraCalResType
+          zimbraIsDelegatedAdminAccount
+          zimbraIsAdminAccount
+          zimbraIsSystemResource
+          zimbraIsSystemAccount
+          zimbraIsExternalVirtualAccount
+        ]
       end
     end
   end

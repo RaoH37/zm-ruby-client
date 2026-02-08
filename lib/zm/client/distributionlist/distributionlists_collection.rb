@@ -32,7 +32,15 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = :distributionlists
+        @attrs = %w[
+          displayName
+          zimbraId
+          zimbraMailHost
+          uid
+          description
+          zimbraMailStatus
+          zimbraMailAlias
+        ]
       end
     end
   end

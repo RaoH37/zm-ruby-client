@@ -63,7 +63,24 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = :accounts
+        @attrs = %w[
+          displayName
+          zimbraId
+          cn
+          sn
+          zimbraMailHost
+          uid
+          zimbraCOSId
+          zimbraAccountStatus
+          zimbraLastLogonTimestamp
+          description
+          zimbraIsSystemAccount
+          zimbraIsDelegatedAdminAccount
+          zimbraAuthTokenValidityValue
+          zimbraMailStatus
+          zimbraIsAdminAccount
+          zimbraIsExternalVirtualAccount
+        ]
       end
     end
   end

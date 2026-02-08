@@ -33,7 +33,12 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = :coses
+        @attrs = %w[
+          cn
+          description
+          zimbraMailHostPool
+          zimbraMailQuota
+        ]
       end
     end
   end

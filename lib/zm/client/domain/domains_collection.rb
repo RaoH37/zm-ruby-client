@@ -32,7 +32,14 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = :domains
+        @attrs = %w[
+          description
+          zimbraDomainName
+          zimbraDomainStatus
+          zimbraId
+          zimbraDomainType
+          zimbraDomainDefaultCOSId
+        ]
       end
     end
   end
