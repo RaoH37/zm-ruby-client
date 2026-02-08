@@ -72,7 +72,7 @@ module Zm
 
         attrs.compact!
 
-        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ITEM_ACTION_REQUEST)
         node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
         soap_request.add_node(node_action)
         @parent.soap_connector.invoke(soap_request)
@@ -107,7 +107,7 @@ module Zm
       end
 
       def build_send
-        SoapRequest::SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::SEND_MSG_REQUEST)
                    .add_attributes(jsns_builder.to_jsns)
       end
 

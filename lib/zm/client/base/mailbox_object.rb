@@ -90,7 +90,7 @@ module Zm
         end
 
         def alive?
-          soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::NO_OP_REQUEST)
+          soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::NO_OP_REQUEST)
           soap_connector.invoke(soap_request)
           true
         rescue Zm::Error::SoapError => e

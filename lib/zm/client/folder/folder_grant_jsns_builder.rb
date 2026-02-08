@@ -23,7 +23,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
       end
 
@@ -41,7 +41,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
       end
 

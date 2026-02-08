@@ -56,7 +56,7 @@ module Zm
         end
 
         def do_action(attrs)
-          soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+          soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ITEM_ACTION_REQUEST)
           node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
           soap_request.add_node(node_action)
 

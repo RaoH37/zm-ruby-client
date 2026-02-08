@@ -15,7 +15,7 @@ module Zm
       end
 
       def build_query
-        SoapRequest::SoapElement.mail(SoapMailConstants::GET_DATA_SOURCES_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_DATA_SOURCES_REQUEST)
       end
     end
   end

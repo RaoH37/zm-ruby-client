@@ -12,7 +12,7 @@ module Zm
         }
         attrs.compact!
 
-        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_TAG_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_TAG_REQUEST)
         node_tag = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::TAG).add_attributes(attrs)
         soap_request.add_node(node_tag)
         soap_request

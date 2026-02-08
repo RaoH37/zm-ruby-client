@@ -21,7 +21,7 @@ module Zm
         end
 
         def build_find(id)
-          SoapRequest::SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
+          SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_MSG_REQUEST)
                      .add_attributes({ m: { id: id, html: Zm::Utils::SearchUtils::ON } })
         end
 
@@ -100,7 +100,7 @@ module Zm
 
           jsns.compact!
 
-          SoapRequest::SoapElement.mail(SoapMailConstants::SEARCH_REQUEST)
+          SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::SEARCH_REQUEST)
                      .add_attributes(jsns)
         end
 
@@ -112,7 +112,7 @@ module Zm
 
           attrs.compact!
 
-          soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+          soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ITEM_ACTION_REQUEST)
           node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
           soap_request.add_node(node_action)
           @parent.soap_connector.invoke(soap_request)

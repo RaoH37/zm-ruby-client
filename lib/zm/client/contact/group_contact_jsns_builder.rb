@@ -15,7 +15,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_CONTACT_REQUEST)
                    .add_attributes(jsns)
       end
 
@@ -28,7 +28,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_CONTACT_REQUEST)
                    .add_attributes(jsns)
       end
 
@@ -40,7 +40,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_CONTACT_REQUEST)
                    .add_attributes(jsns)
       end
 

@@ -5,7 +5,6 @@ module Zm
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
       include SoapRequest::RequestMethodsAdmin
-      extend Zm::Relationship
 
       # #################################################################
       # Associations

@@ -18,7 +18,7 @@ module Zm
         }
         attrs.compact!
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_FOLDER_REQUEST)
                    .add_attributes(attrs)
       end
     end

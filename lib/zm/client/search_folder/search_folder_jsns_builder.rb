@@ -19,7 +19,7 @@ module Zm
         }
         attrs.compact!
 
-        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_SEARCH_FOLDER_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_SEARCH_FOLDER_REQUEST)
         node_search = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::SEARCH).add_attributes(attrs)
         soap_request.add_node(node_search)
         soap_request
@@ -35,7 +35,7 @@ module Zm
         }
         attrs.compact!
 
-        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_SEARCH_FOLDER_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_SEARCH_FOLDER_REQUEST)
         node_search = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::SEARCH).add_attributes(attrs)
         soap_request.add_node(node_search)
         soap_request
@@ -95,7 +95,7 @@ module Zm
       end
 
       def build(attrs)
-        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::FOLDER_ACTION_REQUEST)
         node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
         soap_request.add_node(node_action)
         soap_request

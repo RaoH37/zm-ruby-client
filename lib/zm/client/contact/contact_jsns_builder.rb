@@ -14,7 +14,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST).add_attributes(jsns)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_update
@@ -25,7 +25,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_patch(hash)
@@ -36,7 +36,7 @@ module Zm
           }
         }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def instance_variables_array(zcs_attrs)

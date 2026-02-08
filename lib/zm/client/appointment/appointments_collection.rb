@@ -15,7 +15,7 @@ module Zm
       def find(id)
         jsns = { m: { id: id, html: Zm::Utils::SearchUtils::ON } }
 
-        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)
         rep = @parent.soap_connector.invoke(soap_request)
         entry = rep[:GetMsgResponse][:m].first

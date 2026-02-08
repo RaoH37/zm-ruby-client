@@ -24,7 +24,7 @@ module Zm
 
         attrs = { link: link }
 
-        SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_MOUNTPOINT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_MOUNTPOINT_REQUEST)
                    .add_attributes(attrs)
       end
 
