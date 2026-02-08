@@ -15,14 +15,14 @@ module Zm
           find_by!(hash)
         end
 
-        def find_by_or_nil(hash, error_handler = SoapError)
+        def find_by_or_nil(hash, error_handler = Zm::Error::SoapError)
           find_by(hash)
         rescue error_handler => _e
           nil
         end
 
         def ldap
-          @apply_cos = SoapUtils::OFF
+          @apply_cos = Zm::Utils::SearchUtils::OFF
           self
         end
 
@@ -47,9 +47,9 @@ module Zm
 
         def count
           reset_query_params
-          @count_only = SoapUtils::ON
+          @count_only = Zm::Utils::SearchUtils::ON
           json = make_query
-          @count_only = SoapUtils::OFF
+          @count_only = Zm::Utils::SearchUtils::OFF
           json[:SearchDirectoryResponse][:num]
         end
 
@@ -88,7 +88,7 @@ module Zm
         end
 
         def build_query
-          SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
+          SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
                      .add_attributes(jsns)
         end
 

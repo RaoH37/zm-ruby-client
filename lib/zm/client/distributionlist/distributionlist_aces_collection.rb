@@ -2,11 +2,11 @@
 
 module Zm
   module Client
-    DistributionListAce = Struct.new(:zimbra_id, :type, :right)
 
     # Collection Account Aliases
     class DistributionListAcesCollection
-      include MissingMethodStaticCollection
+      include Zm::Utils::MissingMethodStaticCollection
+      DistributionListAce = Struct.new(:zimbra_id, :type, :right)
 
       def initialize(parent)
         @parent = parent

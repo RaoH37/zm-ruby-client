@@ -22,7 +22,7 @@ module Zm
           end
 
           if item.group?
-            item.extend(GroupContact)
+            item.extend(ModGroupContact)
             init_members_from_json(json[:m], item)
           end
 

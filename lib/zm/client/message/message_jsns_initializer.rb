@@ -40,7 +40,7 @@ module Zm
           mps = [mps] unless mps.is_a?(Array)
 
           mps.each do |mp|
-            if ContentType::ALL.include?(mp[:ct])
+            if Zm::Utils::ContentType::ALL.include?(mp[:ct])
               update_body(item, mp)
             elsif mp[:cd] == 'attachment'
               update_attachment(item, mp)
@@ -51,8 +51,8 @@ module Zm
         end
 
         def update_body(item, json)
-          item.body.text = json[:content] if json[:ct] == ContentType::TEXT
-          item.body.html = json[:content] if json[:ct] == ContentType::HTML
+          item.body.text = json[:content] if json[:ct] == Zm::Utils::ContentType::TEXT
+          item.body.html = json[:content] if json[:ct] == Zm::Utils::ContentType::HTML
         end
 
         def update_attachment(item, json)

@@ -21,11 +21,11 @@ module Zm
       end
 
       def share_response
-        soap_request = SoapElement.account(SoapAccountConstants::GET_SHARE_INFO_REQUEST)
-                                  .add_attributes({ includeSelf: SoapUtils::OFF })
+        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_SHARE_INFO_REQUEST)
+                                  .add_attributes({ includeSelf: Zm::Utils::SearchUtils::OFF })
 
         unless @owner_name.nil?
-          node_owner = SoapElement.create('owner')
+          node_owner = SoapRequest::SoapElement.create('owner')
                                   .add_attributes({ by: :name })
                                   .add_content(@owner_name)
           soap_request.add_node(node_owner)

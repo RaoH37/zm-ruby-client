@@ -23,9 +23,9 @@ module Zm
       end
 
       def build_add(emails)
-        soap_request = SoapElement.admin(SoapAdminConstants::ADD_DISTRIBUTION_LIST_MEMBER_REQUEST)
-        soap_request.add_attribute(SoapConstants::ID, @parent.id)
-        node_dlm = SoapElement.create(SoapConstants::DLM)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::ADD_DISTRIBUTION_LIST_MEMBER_REQUEST)
+        soap_request.add_attribute(SoapRequest::SoapConstants::ID, @parent.id)
+        node_dlm = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::DLM)
         node_dlm.add_content(emails)
         soap_request.add_node(node_dlm)
         soap_request
@@ -43,9 +43,9 @@ module Zm
       end
 
       def build_remove(emails)
-        soap_request = SoapElement.admin(SoapAdminConstants::REMOVE_DISTRIBUTION_LIST_MEMBER_REQUEST)
-        soap_request.add_attribute(SoapConstants::ID, @parent.id)
-        node_dlm = SoapElement.create(SoapConstants::DLM)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::REMOVE_DISTRIBUTION_LIST_MEMBER_REQUEST)
+        soap_request.add_attribute(SoapRequest::SoapConstants::ID, @parent.id)
+        node_dlm = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::DLM)
         node_dlm.add_content(emails)
         soap_request.add_node(node_dlm)
         soap_request

@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account contact jsns builder
-    class ContactJsnsBuilder < BaseAccountJsnsBuilder
+    class ContactJsnsBuilder < Base::BaseAccountJsnsBuilder
       EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[@id @name @parent @l @type @tn @jsns_builder].freeze
 
       def to_jsns
@@ -14,7 +14,7 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST).add_attributes(jsns)
+        SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_update
@@ -25,7 +25,7 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
+        SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def to_patch(hash)
@@ -36,7 +36,7 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
+        SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_CONTACT_REQUEST).add_attributes(jsns)
       end
 
       def instance_variables_array(zcs_attrs)

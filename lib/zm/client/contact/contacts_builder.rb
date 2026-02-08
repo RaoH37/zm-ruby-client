@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class factory [contacts]
-    class ContactBuilder < Base::ObjectsBuilder
+    class ContactsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super
         @json_item_key = :cn

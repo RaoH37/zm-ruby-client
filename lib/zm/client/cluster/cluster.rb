@@ -1,22 +1,10 @@
 # frozen_string_literal: true
 
-require 'zm/client/connector/soap_admin'
-require 'zm/client/connector/soap_account'
-require 'zm/client/common'
-require 'zm/client/account'
-require 'zm/client/resource'
-require 'zm/client/distributionlist'
-require 'zm/client/domain'
-require 'zm/client/server'
-require 'zm/client/cos'
-require 'zm/client/license'
-require 'zm/client/cluster/batch_request'
-
 module Zm
   module Client
     # class admin connection
     class Cluster
-      extend Relationship
+      extend Zm::Relationship
 
       attr_reader :soap_admin_connector, :config, :zimbra_attributes, :type, :version, :release, :buildDate, :host,
                   :majorversion, :minorversion, :microversion
@@ -28,7 +16,7 @@ module Zm
         @zimbra_attributes = Base::ZimbraAttributesCollection.new(self)
         @zimbra_attributes.set_methods
 
-        @soap_admin_connector = SoapAdminConnector.create(@config)
+        @soap_admin_connector = Zm::Connector::SoapAdminConnector.create(@config)
       end
 
       def has_admin_credentials?
@@ -52,9 +40,9 @@ module Zm
 
         @soap_admin_connector.token = nil if logged?
 
-        soap_request = SoapElement.admin(SoapAdminConstants::AUTH_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::AUTH_REQUEST)
         soap_request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
-        soap_resp = @soap_admin_connector.invoke(soap_request, Zm::Client::AuthError)
+        soap_resp = @soap_admin_connector.invoke(soap_request, Zm::Error::AuthError)
         soap_resp_token = soap_resp[:AuthResponse][:authToken].first[:_content]
         self.token = soap_resp_token
       end
@@ -64,10 +52,10 @@ module Zm
       end
 
       def alive?
-        soap_request = SoapElement.admin(SoapAdminConstants::NO_OP_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::NO_OP_REQUEST)
         @soap_admin_connector.invoke(soap_request)
         true
-      rescue Zm::Client::SoapError => e
+      rescue Zm::Error::SoapError => e
         logger.error "Admin session token alive ? #{e.message}"
         false
       end
@@ -80,7 +68,7 @@ module Zm
         return @license if defined? @license
 
         @license = LicensesCollection.new(self).find
-      rescue Zm::Client::SoapError => e
+      rescue Zm::Error::SoapError => e
         logger.error "Get License info #{e.message}"
         nil
       end
@@ -103,9 +91,10 @@ module Zm
       end
 
       def count_object(type)
-        raise ZmError, 'Unknown object type' unless Zm::Client::CountTypes::ALL.include?(type)
+        authorized_types = [:userAccount, :account, :alias, :dl, :domain, :cos, :server, :calresource, :internalUserAccount]
+        raise Zm::Error::ZmError, 'Unknown object type' unless authorized_types.include?(type)
 
-        soap_request = SoapElement.admin(SoapAdminConstants::COUNT_OBJECTS_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::COUNT_OBJECTS_REQUEST)
         soap_request.add_attribute('type', type)
         soap_resp = @soap_admin_connector.invoke(soap_request)
         soap_resp[:CountObjectsResponse][:num]
@@ -115,17 +104,17 @@ module Zm
         jsns = {
           query: "(mail=#{email})",
           types: 'accounts,distributionlists,aliases,resources',
-          countOnly: SoapUtils::ON
+          countOnly: Zm::Utils::SearchUtils::ON
         }
 
-        soap_request = SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
         soap_request.add_attributes(jsns)
         soap_resp = @soap_admin_connector.invoke(soap_request)
         !soap_resp[:SearchDirectoryResponse][:num].zero?
       end
 
       def infos!
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_VERSION_INFO_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_VERSION_INFO_REQUEST)
         soap_response = @soap_admin_connector.invoke(soap_request)
 
         json = soap_response[:GetVersionInfoResponse][:info].first

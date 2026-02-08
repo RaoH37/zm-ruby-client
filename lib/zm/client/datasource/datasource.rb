@@ -4,7 +4,7 @@ module Zm
   module Client
     # class account data source
     class DataSource < Base::Object
-      include RequestMethodsMailbox
+      include SoapRequest::RequestMethodsMailbox
 
       TYPES = %i[cal caldav yab gal imap pop3 rss unknown].freeze
 

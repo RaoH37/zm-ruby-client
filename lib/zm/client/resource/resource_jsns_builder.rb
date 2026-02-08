@@ -15,13 +15,13 @@ module Zm
         }
         req.compact!
 
-        soap_request = SoapElement.admin(SoapAdminConstants::CREATE_CALENDAR_RESOURCE_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::CREATE_CALENDAR_RESOURCE_REQUEST)
                                   .add_attributes(req)
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A)
-                                   .add_attribute(SoapConstants::N, key)
+            node_attr = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::A)
+                                   .add_attribute(SoapRequest::SoapConstants::N, key)
                                    .add_content(value)
             soap_request.add_node(node_attr)
           end
@@ -31,13 +31,13 @@ module Zm
       end
 
       def to_update
-        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_CALENDAR_RESOURCE_REQUEST)
-                                  .add_attribute(SoapConstants::ID, @item.id)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::MODIFY_CALENDAR_RESOURCE_REQUEST)
+                                  .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
 
         attrs_only_set_h.each do |key, values|
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A)
-                                   .add_attribute(SoapConstants::N, key)
+            node_attr = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::A)
+                                   .add_attribute(SoapRequest::SoapConstants::N, key)
                                    .add_content(value)
             soap_request.add_node(node_attr)
           end
@@ -47,14 +47,14 @@ module Zm
       end
 
       def to_patch(hash)
-        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_CALENDAR_RESOURCE_REQUEST)
-                                  .add_attribute(SoapConstants::ID, @item.id)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::MODIFY_CALENDAR_RESOURCE_REQUEST)
+                                  .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
 
         hash.each do |key, values|
           values = [values] unless values.is_a?(Array)
           values.each do |value|
-            node_attr = SoapElement.create(SoapConstants::A)
-                                   .add_attribute(SoapConstants::N, key)
+            node_attr = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::A)
+                                   .add_attribute(SoapRequest::SoapConstants::N, key)
                                    .add_content(value)
             soap_request.add_node(node_attr)
           end
@@ -64,8 +64,8 @@ module Zm
       end
 
       def to_delete
-        SoapElement.admin(SoapAdminConstants::DELETE_CALENDAR_RESOURCE_REQUEST)
-                   .add_attribute(SoapConstants::ID, @item.id)
+        SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::DELETE_CALENDAR_RESOURCE_REQUEST)
+                   .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
       end
 
       def attrs_only_set_h

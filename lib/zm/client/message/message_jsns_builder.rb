@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account message jsns builder
-    class MessageJsnsBuilder < BaseAccountJsnsBuilder
+    class MessageJsnsBuilder < Base::BaseAccountJsnsBuilder
       def initialize(item)
         @item = item
       end
@@ -57,12 +57,12 @@ module Zm
       def body_jsns
         return nil if @item.body.text.nil? && @item.body.html.nil?
 
-        text_jsns = @item.body.text.nil? ? nil : { ct: ContentType::TEXT, content: { _content: @item.body.text } }
-        html_jsns = @item.body.html.nil? ? nil : { ct: ContentType::HTML, content: { _content: @item.body.html } }
+        text_jsns = @item.body.text.nil? ? nil : { ct: Zm::Utils::ContentType::TEXT, content: { _content: @item.body.text } }
+        html_jsns = @item.body.html.nil? ? nil : { ct: Zm::Utils::ContentType::HTML, content: { _content: @item.body.html } }
 
         [
           {
-            ct: ContentPart::ALTERNATIVE,
+            ct: Zm::Utils::ContentPart::ALTERNATIVE,
             mp: [text_jsns, html_jsns].compact
           }
         ]

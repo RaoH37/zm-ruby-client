@@ -106,7 +106,7 @@ class TestDistributionList < Minitest::Test
       acc.description = "Unit test 123"
     end
 
-    dl.zimbraMailStatus = Zm::Client::SoapConstants::DISABLED
+    dl.zimbraMailStatus = Zm::SoapRequest::SoapConstants::DISABLED
 
     assert dl.save!
   end

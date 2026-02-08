@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'zm/client/mta_queue_item'
-
 module Zm
   module Client
     class MtaQueue < Base::Object
-      include HasSoapAdminConnector
+      include Zm::Utils::HasSoapAdminConnector
 
       attr_accessor :name, :n
 

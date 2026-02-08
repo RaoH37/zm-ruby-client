@@ -4,8 +4,8 @@ module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
-      include RequestMethodsAdmin
-      extend Relationship
+      include SoapRequest::RequestMethodsAdmin
+      extend Zm::Relationship
 
       # #################################################################
       # Associations
@@ -38,12 +38,12 @@ module Zm
       end
 
       def build_flush_cache
-        soap_request = SoapElement.admin(SoapAdminConstants::FLUSH_CACHE_REQUEST)
-        node_cache = SoapElement.create('cache')
-                                .add_attributes({ type: SoapConstants::ACCOUNT, allServers: SoapUtils::ON })
+        soap_request = Zm::SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::FLUSH_CACHE_REQUEST)
+        node_cache = Zm::SoapRequest::SoapElement.create('cache')
+                                .add_attributes({ type: Zm::SoapRequest::SoapConstants::ACCOUNT, allServers: Zm::Utils::SearchUtils::ON })
         soap_request.add_node(node_cache)
-        node_entry = SoapElement.create('entry')
-                                .add_attribute(SoapConstants::BY, SoapConstants::ID)
+        node_entry = Zm::SoapRequest::SoapElement.create('entry')
+                                .add_attribute(Zm::SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
                                 .add_content(@id)
         node_cache.add_node(node_entry)
         soap_request

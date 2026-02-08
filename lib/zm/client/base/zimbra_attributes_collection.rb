@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'zm/client/base/zimbra_attribute'
 require 'csv'
 
 module Zm
   module Client
     module Base
       class ZimbraAttributesCollection
-        include MissingMethodStaticCollection
+        include Zm::Utils::MissingMethodStaticCollection
 
         attr_reader :all_versioned
 

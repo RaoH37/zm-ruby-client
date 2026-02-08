@@ -3,7 +3,7 @@
 module Zm
   module Client
     class ConcatMember
-      include Zm::Inspector
+      include Zm::Utils::Inspector
 
       INTERNAL = 'C'
       FREE     = 'I'
@@ -22,7 +22,7 @@ module Zm
 
         if !value_int.zero?
           @value = value_int
-        elsif Zm::Client::Regex::SHARED_CONTACT.match(value)
+        elsif Zm::Utils::Regex::SHARED_CONTACT.match(value)
           part_value = value.split(':')
           @shared_account_id = part_value.first
           @value = part_value.last.to_i

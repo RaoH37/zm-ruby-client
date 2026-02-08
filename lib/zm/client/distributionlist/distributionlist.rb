@@ -1,16 +1,11 @@
 # frozen_string_literal: true
 
-require 'zm/client/distributionlist/distributionlist_aliases_collection'
-require 'zm/client/distributionlist/distributionlist_members_collection'
-require 'zm/client/distributionlist/distributionlist_owners_collection'
-require 'zm/client/distributionlist/distributionlist_aces_collection'
-
 module Zm
   module Client
     # objectClass: zimbraDistributionList
     class DistributionList < Base::Object
-      include HasSoapAdminConnector
-      include RequestMethodsAdmin
+      include Zm::Utils::HasSoapAdminConnector
+      include SoapRequest::RequestMethodsAdmin
 
       def aliases
         return @aliases if defined? @aliases
@@ -48,7 +43,7 @@ module Zm
       end
 
       def local_transport
-        raise Zm::Client::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
+        raise Zm::Error::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 
         "lmtp:#{zimbraMailHost}:7025"
       end
@@ -60,25 +55,25 @@ module Zm
       def local_transport?
         return false unless zimbraMailTransport
 
-        zimbraMailTransport.start_with?(SoapConstants::LMTP)
+        zimbraMailTransport.start_with?(SoapRequest::SoapConstants::LMTP)
       end
 
       def external_transport?
         return false unless zimbraMailTransport
 
-        zimbraMailTransport.start_with?(SoapConstants::SMTP)
+        zimbraMailTransport.start_with?(SoapRequest::SoapConstants::SMTP)
       end
 
       def hide_in_gal?
-        zimbraHideInGal == SoapConstants::TRUE
+        zimbraHideInGal == SoapRequest::SoapConstants::TRUE
       end
 
       def group?
-        zimbraMailStatus == SoapConstants::DISABLED
+        zimbraMailStatus == SoapRequest::SoapConstants::DISABLED
       end
 
       def mailing_list?
-        zimbraMailStatus == SoapConstants::ENABLED
+        zimbraMailStatus == SoapRequest::SoapConstants::ENABLED
       end
 
       def attrs_write

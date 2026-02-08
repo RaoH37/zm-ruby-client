@@ -4,7 +4,7 @@ module Zm
   module Client
     # class account tag
     class Tag < Base::Object
-      include RequestMethodsMailbox
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :name, :color, :rgb

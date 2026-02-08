@@ -5,7 +5,7 @@ module Zm
     module Base
       # Abstract Class Collection
       class ObjectsCollection
-        include Zm::Inspector
+        include Zm::Utils::Inspector
 
         METHODS_MISSING_LIST = %i[select each map length].to_set.freeze
         attr_reader :parent
@@ -46,7 +46,7 @@ module Zm
         end
         alias offset page
 
-        def order(sort_by, sort_ascending = SoapUtils::ON)
+        def order(sort_by, sort_ascending = Zm::Utils::SearchUtils::ON)
           return self if @sort_by == sort_by && @sort_ascending == sort_ascending
 
           @sort_by = sort_by
@@ -88,19 +88,19 @@ module Zm
           # @attrs.compact!
           return nil if @attrs.empty?
 
-          @attrs.join(COMMA)
+          @attrs.join(',')
         end
 
         def reset_query_params
-          @max_result = SoapUtils::MAX_RESULT
+          @max_result = Zm::Utils::SearchUtils::MAX_RESULT
           @limit = nil
           @offset = nil
           @sort_by = nil
-          @sort_ascending = SoapUtils::ON
-          @count_only = SoapUtils::OFF
-          @all_servers = SoapUtils::OFF
-          @refresh = SoapUtils::OFF
-          @apply_cos = SoapUtils::ON
+          @sort_ascending = Zm::Utils::SearchUtils::ON
+          @count_only = Zm::Utils::SearchUtils::OFF
+          @all_servers = Zm::Utils::SearchUtils::OFF
+          @refresh = Zm::Utils::SearchUtils::OFF
+          @apply_cos = Zm::Utils::SearchUtils::ON
         end
       end
     end

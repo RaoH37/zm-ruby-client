@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'zm/client/backup'
-require 'zm/client/mta_queue'
-
 module Zm
   module Client
     # objectClass: zimbraServer
     class Server < Base::Object
-      include HasSoapAdminConnector
+      include Zm::Utils::HasSoapAdminConnector
 
       def mta_queues
         return @mta_queues if defined? @mta_queues

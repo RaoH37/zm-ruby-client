@@ -4,7 +4,7 @@ module Zm
   module Client
     # class account signature
     class Signature < Base::Object
-      include RequestMethodsMailbox
+      include SoapRequest::RequestMethodsMailbox
 
       attr_accessor :id, :name, :txt, :html
 
@@ -18,17 +18,17 @@ module Zm
       end
 
       def type
-        return ContentType::HTML unless html.nil?
+        return Zm::Utils::ContentType::HTML unless html.nil?
 
-        ContentType::TEXT
+        Zm::Utils::ContentType::TEXT
       end
 
       def html?
-        type == ContentType::HTML
+        type == Zm::Utils::ContentType::HTML
       end
 
       def txt?
-        type == ContentType::TEXT
+        type == Zm::Utils::ContentType::TEXT
       end
 
       def content

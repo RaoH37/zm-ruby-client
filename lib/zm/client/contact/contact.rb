@@ -4,9 +4,9 @@ module Zm
   module Client
     # class account tag
     class Contact < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
 
       GROUP_PATTERN = 'group'

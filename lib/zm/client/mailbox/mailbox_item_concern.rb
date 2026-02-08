@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'mailbox_item_id'
-
 module Zm
   module Client
     module MailboxItemConcern

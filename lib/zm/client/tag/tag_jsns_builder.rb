@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account tag jsns builder
-    class TagJsnsBuilder < BaseAccountJsnsBuilder
+    class TagJsnsBuilder < Base::BaseAccountJsnsBuilder
       def to_jsns
         attrs = {
           name: @item.name,
@@ -12,8 +12,8 @@ module Zm
         }
         attrs.compact!
 
-        soap_request = SoapElement.mail(SoapMailConstants::CREATE_TAG_REQUEST)
-        node_tag = SoapElement.create(SoapConstants::TAG).add_attributes(attrs)
+        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_TAG_REQUEST)
+        node_tag = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::TAG).add_attributes(attrs)
         soap_request.add_node(node_tag)
         soap_request
       end

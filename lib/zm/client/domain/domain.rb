@@ -4,8 +4,8 @@ module Zm
   module Client
     # objectClass: zimbraDomain
     class Domain < Base::Object
-      include HasSoapAdminConnector
-      include RequestMethodsAdmin
+      include Zm::Utils::HasSoapAdminConnector
+      include SoapRequest::RequestMethodsAdmin
 
       def create!
         resp = sac.invoke(build_create)

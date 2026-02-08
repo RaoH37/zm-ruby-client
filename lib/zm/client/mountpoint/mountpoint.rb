@@ -4,8 +4,8 @@ module Zm
   module Client
     # class for account mountpoint
     class MountPoint < Base::Object
-      include BelongsToFolder
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid,

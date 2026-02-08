@@ -4,7 +4,7 @@ module Zm
   module Client
     # class account identity
     class Identity < Base::Object
-      include RequestMethodsMailbox
+      include SoapRequest::RequestMethodsMailbox
 
       attr_accessor :id, :name, :zimbraPrefIdentityName, :zimbraPrefFromDisplay, :zimbraPrefFromAddress,
                     :zimbraPrefFromAddressType, :zimbraPrefReplyToEnabled, :zimbraPrefReplyToDisplay,

@@ -1,36 +1,12 @@
 # frozen_string_literal: true
 
-require 'zm/client/mailbox/mailbox_item_concern'
-require 'zm/client/connector/rest_connector'
-require 'zm/client/account/account_aliases_collection'
-require 'zm/client/base/mailbox_infos_collection'
-require 'zm/client/base/mailbox_prefs_collection'
-require 'zm/client/account/account_dls_membership_collection'
-require 'zm/client/account/account_dls_owner_collection'
-require 'zm/client/signature'
-require 'zm/client/folder'
-require 'zm/client/mountpoint'
-require 'zm/client/search_folder'
-require 'zm/client/share'
-require 'zm/client/tag'
-require 'zm/client/ace'
-require 'zm/client/contact'
-require 'zm/client/appointment'
-require 'zm/client/task'
-require 'zm/client/document'
-require 'zm/client/message'
-require 'zm/client/identity'
-require 'zm/client/upload'
-require 'zm/client/filter_rule'
-require 'zm/client/datasource'
-
 module Zm
   module Client
     module Base
       # Abstract Class for Account and Resource
       class MailboxObject < Object
-        include HasSoapAdminConnector
-        extend Relationship
+        include Zm::Utils::HasSoapAdminConnector
+        extend Zm::Relationship
 
         attr_accessor :home_url, :public_url, :password, :carLicense
         attr_writer :used, :domain_key
@@ -38,7 +14,7 @@ module Zm
         def soap_account_connector
           return @soap_account_connector if defined? @soap_account_connector
 
-          @soap_account_connector = SoapAccountConnector.create(soap_config)
+          @soap_account_connector = Zm::Connector::SoapAccountConnector.create(soap_config)
         end
 
         def soap_connector
@@ -55,7 +31,7 @@ module Zm
               @soap_connector.context.account(:name, @name)
             end
           else
-            raise ZmError, 'SoapConnector not defined'
+            raise Zm::Error::ZmError, 'SoapConnector not defined'
           end
 
           @soap_connector
@@ -68,8 +44,8 @@ module Zm
         end
 
         has_many :aliases, klass: AccountAliasesCollection
-        has_many :infos, klass: MailboxInfosCollection
-        has_many :prefs, klass: MailboxPrefsCollection
+        has_many :infos, klass: Base::MailboxInfosCollection
+        has_many :prefs, klass: Base::MailboxPrefsCollection
 
         def used
           @used || used!
@@ -88,8 +64,8 @@ module Zm
         end
 
         def mailbox_infos
-          soap_request = SoapElement.admin(SoapAdminConstants::GET_MAILBOX_REQUEST)
-          node_mbox = SoapElement.create(SoapConstants::MBOX).add_attribute(SoapConstants::ID, @id)
+          soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_MAILBOX_REQUEST)
+          node_mbox = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::MBOX).add_attribute(SoapRequest::SoapConstants::ID, @id)
           soap_request.add_node(node_mbox)
           sac.invoke(soap_request)[:GetMailboxResponse][:mbox].first
         end
@@ -114,10 +90,10 @@ module Zm
         end
 
         def alive?
-          soap_request = SoapElement.mail(SoapMailConstants::NO_OP_REQUEST)
+          soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::NO_OP_REQUEST)
           soap_connector.invoke(soap_request)
           true
-        rescue Zm::Client::SoapError => e
+        rescue Zm::Error::SoapError => e
           logger.warn "Mailbox session token alive ? #{e.message}"
           false
         end
@@ -152,7 +128,7 @@ module Zm
 
         def account_login_preauth(expires = 0)
           logger.info 'Get Account session token by preauth access'
-          raise ZmError, 'domain key is required to login !' if domain_key.nil?
+          raise Zm::Error::ZmError, 'domain key is required to login !' if domain_key.nil?
 
           content, by = account_content_by
 
@@ -161,7 +137,7 @@ module Zm
 
         def account_login_password
           logger.info 'Get Account session token by password access'
-          raise ZmError, 'password is required to login !' if password.nil?
+          raise Zm::Error::ZmError, 'password is required to login !' if password.nil?
 
           content, by = account_content_by
 
@@ -175,13 +151,13 @@ module Zm
         def admin_login
           logger.info 'Get Account session token by Delegate access'
 
-          soap_request = SoapElement.admin(SoapAdminConstants::DELEGATE_AUTH_REQUEST)
-          node_account = SoapElement.create(SoapConstants::ACCOUNT)
+          soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::DELEGATE_AUTH_REQUEST)
+          node_account = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
 
           if recorded?
-            node_account.add_attribute(SoapConstants::BY, SoapConstants::ID).add_content(@id)
+            node_account.add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID).add_content(@id)
           else
-            node_account.add_attribute(SoapConstants::BY, SoapConstants::NAME).add_content(@name)
+            node_account.add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::NAME).add_content(@name)
           end
 
           soap_request.add_node(node_account)
@@ -223,7 +199,7 @@ module Zm
           new_password ||= @password
           return false if new_password.nil?
 
-          soap_request = SoapElement.admin(SoapAdminConstants::SET_PASSWORD_REQUEST)
+          soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::SET_PASSWORD_REQUEST)
           soap_request.add_attributes({ id: @id, newPassword: new_password })
           sac.invoke(soap_request)
 
@@ -231,7 +207,7 @@ module Zm
         end
 
         def local_transport
-          raise Zm::Client::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
+          raise Zm::Error::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 
           "lmtp:#{zimbraMailHost}:7025"
         end
@@ -243,13 +219,13 @@ module Zm
         def is_local_transport?
           return false unless zimbraMailTransport
 
-          zimbraMailTransport.start_with?(SoapConstants::LMTP)
+          zimbraMailTransport.start_with?(SoapRequest::SoapConstants::LMTP)
         end
 
         def is_external_transport?
           return false unless zimbraMailTransport
 
-          zimbraMailTransport.start_with?(SoapConstants::SMTP)
+          zimbraMailTransport.start_with?(SoapRequest::SoapConstants::SMTP)
         end
 
         def last_logon
@@ -262,9 +238,9 @@ module Zm
 
         def build_uploader
           tmp_token = soap_connector&.token
-          raise ZmError, 'token have to be set to instance Upload class' unless tmp_token
+          raise Zm::Error::ZmError, 'token have to be set to instance Upload class' unless tmp_token
 
-          Upload.new(rest_url, tmp_token, is_token_admin: soap_connector.is_a?(SoapAdminConnector), **rest_options)
+          Upload.new(rest_url, tmp_token, is_token_admin: soap_connector.is_a?(Zm::Connector::SoapAdminConnector), **rest_options)
         end
 
         def rest_options
@@ -279,19 +255,19 @@ module Zm
         end
 
         def rest_url
-          raise ZmError, 'name attribute is requuired for REST Url' unless @name
+          raise Zm::Error::ZmError, 'name attribute is requuired for REST Url' unless @name
 
           if logged?
             rest_account_url
           elsif parent_logged?
             rest_admin_url
           else
-            raise ZmError, 'impossible to set rest_url'
+            raise Zm::Error::ZmError, 'impossible to set rest_url'
           end
         end
 
         def rest_admin_url
-          raise ZmError, 'impossible to set rest_admin_url' unless soap_config.zimbra_admin_url
+          raise Zm::Error::ZmError, 'impossible to set rest_admin_url' unless soap_config.zimbra_admin_url
 
           File.join(soap_config.zimbra_admin_url, 'home', @name)
         end
@@ -302,7 +278,7 @@ module Zm
           elsif home_url
             home_url
           else
-            raise ZmError, 'impossible to set rest_account_url'
+            raise Zm::Error::ZmError, 'impossible to set rest_account_url'
           end
         end
 

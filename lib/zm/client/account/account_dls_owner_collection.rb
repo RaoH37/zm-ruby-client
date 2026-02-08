@@ -15,10 +15,10 @@ module Zm
       def build_query
         jsns = {
           query: "(zimbraACE=#{@parent.id} usr ownDistList)",
-          types: SearchType::DL
+          types: :distributionlists
         }
 
-        SoapElement.admin(SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
+        SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::SEARCH_DIRECTORY_REQUEST)
                    .add_attributes(jsns)
       end
 

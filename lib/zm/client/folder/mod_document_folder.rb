@@ -1,22 +1,26 @@
 # frozen_string_literal: true
 
-module DocumentFolder
-  UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+module ZM
+  module Client
+    module ModDocumentFolder
+      UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
 
-  def upload(file_path)
-    uploader = @parent.build_uploader
-    str = uploader.upload_attachment(file_path)
+      def upload(file_path)
+        uploader = @parent.build_uploader
+        str = uploader.upload_attachment(file_path)
 
-    uuid = str.scan(UUID_REGEX).first
+        uuid = str.scan(UUID_REGEX).first
 
-    raise Zm::Client::RestError, 'failed to extract uuid' if uuid.nil?
+        raise Zm::Error::RestError, 'failed to extract uuid' if uuid.nil?
 
-    jsns = { doc: { l: @id, upload: { id: uuid } } }
+        jsns = { doc: { l: @id, upload: { id: uuid } } }
 
-    soap_request = Zm::Client::SoapElement.mail(Zm::Client::SoapMailConstants::SAVE_DOCUMENT_REQUEST)
-                                          .add_attributes(jsns)
-    rep = @parent.soap_connector.invoke(soap_request)
+        soap_request = Zm::SoapRequest::SoapElement.mail(Zm::SoapRequest::SoapMailConstants::SAVE_DOCUMENT_REQUEST)
+                                                   .add_attributes(jsns)
+        rep = @parent.soap_connector.invoke(soap_request)
 
-    Zm::Client::DocumentJsnsInitializer.create(@parent, rep[:SaveDocumentResponse][:doc].first)
+        Zm::Client::DocumentJsnsInitializer.create(@parent, rep[:SaveDocumentResponse][:doc].first)
+      end
+    end
   end
 end

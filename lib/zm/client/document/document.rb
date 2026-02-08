@@ -4,9 +4,9 @@ module Zm
   module Client
     # class for account document
     class Document < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
 
       attr_accessor :id, :uuid, :name, :s, :d, :l, :luuid, :ms, :mdver, :md, :rev, :f, :t, :meta, :ct,
                     :descEnabled, :ver, :leb, :cr, :cd, :acl, :loid, :sf, :tn

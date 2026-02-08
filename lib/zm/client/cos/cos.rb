@@ -4,7 +4,7 @@ module Zm
   module Client
     # objectClass: zimbraCos
     class Cos < Base::Object
-      include HasSoapAdminConnector
+      include Zm::Utils::HasSoapAdminConnector
 
       def modify!
         sac.invoke(build_modify)

@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account folder
-    class MountpointJsnsBuilder < BaseAccountJsnsBuilder
+    class MountpointJsnsBuilder < Base::BaseAccountJsnsBuilder
       def to_find
         { link: { l: @item.id } }
       end
@@ -24,7 +24,7 @@ module Zm
 
         attrs = { link: link }
 
-        SoapElement.mail(SoapMailConstants::CREATE_MOUNTPOINT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_MOUNTPOINT_REQUEST)
                    .add_attributes(attrs)
       end
 

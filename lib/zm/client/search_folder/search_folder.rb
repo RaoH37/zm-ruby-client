@@ -4,7 +4,7 @@ module Zm
   module Client
     # class account SearchFolder
     class SearchFolder < Base::Object
-      include RequestMethodsMailbox
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :uuid, :deletable, :name, :absFolderPath, :luuid, :color, :rgb, :rev, :ms,

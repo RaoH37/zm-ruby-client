@@ -3,10 +3,10 @@
 module Zm
   module Client
     # class for account folder jsns builder
-    class FolderJsnsBuilder < BaseAccountJsnsBuilder
+    class FolderJsnsBuilder < Base::BaseAccountJsnsBuilder
       def to_find
         attrs = { folder: { l: @item.id } }
-        SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST).add_attributes(attrs)
+        SoapRequest::SoapElement.mail(SoapMailConstants::GET_FOLDER_REQUEST).add_attributes(attrs)
       end
 
       def to_jsns
@@ -24,7 +24,7 @@ module Zm
 
         attrs = { folder: folder }
 
-        SoapElement.mail(SoapMailConstants::CREATE_FOLDER_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_FOLDER_REQUEST)
                    .add_attributes(attrs)
       end
 
@@ -52,7 +52,7 @@ module Zm
 
         attrs = { action: action }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
       end
 
@@ -64,7 +64,7 @@ module Zm
 
         attrs = { action: action }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
       end
 
@@ -79,7 +79,7 @@ module Zm
           }
         }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
       end
 
@@ -92,7 +92,7 @@ module Zm
 
         attrs = { action: action }
 
-        SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
       end
 

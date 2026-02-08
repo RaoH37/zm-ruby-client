@@ -2,6 +2,7 @@
 
 module Zm
   module Client
+    module Base
     class MailboxPrefsCollection
       def initialize(parent)
         @parent = parent
@@ -43,7 +44,7 @@ module Zm
           _attrs: hash
         }
 
-        soap_request = SoapElement.account(SoapAccountConstants::MODIFY_PREFS_REQUEST).add_attributes(req)
+        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::MODIFY_PREFS_REQUEST).add_attributes(req)
         @parent.soap_connector.invoke(soap_request)
       end
 
@@ -54,7 +55,7 @@ module Zm
       end
 
       def make_query
-        soap_request = SoapElement.account(SoapAccountConstants::GET_PREFS_REQUEST).add_attributes(jsns)
+        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_PREFS_REQUEST).add_attributes(jsns)
         @parent.soap_connector.invoke(soap_request)
       end
 
@@ -69,4 +70,5 @@ module Zm
       end
     end
   end
+end
 end

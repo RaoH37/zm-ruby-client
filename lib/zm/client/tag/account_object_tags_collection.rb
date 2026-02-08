@@ -2,8 +2,7 @@
 
 module Zm
   module Client
-    class AccountObject
-      class TagsCollection
+    class AccountObjectTagsCollection
         def initialize(parent)
           @parent = parent
         end
@@ -57,8 +56,8 @@ module Zm
         end
 
         def do_action(attrs)
-          soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
-          node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
+          soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+          node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
           soap_request.add_node(node_action)
 
           @parent.parent.soap_connector.invoke(soap_request)
@@ -66,4 +65,3 @@ module Zm
       end
     end
   end
-end

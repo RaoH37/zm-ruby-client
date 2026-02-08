@@ -4,9 +4,9 @@ module Zm
   module Client
     # class for account appointment
     class Appointment < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :uid, :name, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
@@ -41,12 +41,12 @@ module Zm
       end
 
       def build_create
-        SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST)
                    .add_attributes(jsns_builder.to_jsns)
       end
 
       def build_modify
-        SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST)
                    .add_attributes(jsns_builder.to_update)
       end
 
@@ -63,9 +63,9 @@ module Zm
       end
 
       def reload!
-        jsns = { m: { id: id, html: SoapUtils::ON } }
+        jsns = { m: { id: id, html: Zm::Utils::SearchUtils::ON } }
 
-        soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)
         rep = @parent.soap_connector.invoke(soap_request)
         entry = rep[:GetMsgResponse][:m].first
@@ -145,6 +145,10 @@ module Zm
           @ptst = ptst
           @rsvp = rsvp
         end
+      end
+
+      class BodyMail
+        attr_accessor :text, :html
       end
 
       def jsns_builder

@@ -4,7 +4,7 @@ module Zm
   module Client
     # class for folder retention policies collection
     class FolderGrantsCollection
-      include MissingMethodStaticCollection
+      include Zm::Utils::MissingMethodStaticCollection
 
       attr_reader :parent
 

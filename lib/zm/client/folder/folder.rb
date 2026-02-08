@@ -4,8 +4,8 @@ module Zm
   module Client
     # class for account folder
     class Folder < Base::Object
-      include BelongsToFolder
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :type, :uuid, :name, :absFolderPath, :url, :luuid, :f, :view, :rev, :ms,
@@ -120,7 +120,7 @@ module Zm
 
         attrs = { m: m }
 
-        SoapElement.mail(SoapMailConstants::ADD_MSG_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ADD_MSG_REQUEST)
                    .add_attributes(attrs)
       end
 
@@ -129,9 +129,9 @@ module Zm
       end
 
       def build_add_appointments(ics)
-        attrs = { l: id, ct: SoapConstants::TEXT_CALENDAR }
-        soap_request = SoapElement.mail(SoapMailConstants::IMPORT_APPOINTMENTS_REQUEST).add_attributes(attrs)
-        node_content = SoapElement.create(SoapConstants::CONTENT).add_content(ics)
+        attrs = { l: id, ct: SoapRequest::SoapConstants::TEXT_CALENDAR }
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::IMPORT_APPOINTMENTS_REQUEST).add_attributes(attrs)
+        node_content = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::CONTENT).add_content(ics)
         soap_request.add_node(node_content)
         soap_request
       end
@@ -141,9 +141,9 @@ module Zm
       end
 
       def build_add_contacts(csv)
-        attrs = { l: id, ct: SoapConstants::CSV }
-        soap_request = SoapElement.mail(SoapMailConstants::IMPORT_CONTACTS_REQUEST).add_attributes(attrs)
-        node_content = SoapElement.create(SoapConstants::CONTENT).add_content(csv)
+        attrs = { l: id, ct: SoapRequest::SoapConstants::CSV }
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::IMPORT_CONTACTS_REQUEST).add_attributes(attrs)
+        node_content = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::CONTENT).add_content(csv)
         soap_request.add_node(node_content)
         soap_request
       end

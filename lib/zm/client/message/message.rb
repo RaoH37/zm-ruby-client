@@ -4,9 +4,9 @@ module Zm
   module Client
     # class message for account
     class Message < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
 
       attr_accessor :d, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject, :s
@@ -18,9 +18,9 @@ module Zm
         @parent = parent
         @subject = ''
 
-        @recipients = Recipients.new
+        @recipients = MessageRecipients.new
         @body = Body.new
-        @attachments = AttachmentsCollection.new
+        @attachments = MessageAttachmentsCollection.new
 
         yield(self) if block_given?
       end
@@ -44,7 +44,7 @@ module Zm
       def flags
         return @flags if defined? @flags
 
-        @flags = FlagsCollection.new(self)
+        @flags = MessageFlagsCollection.new(self)
       end
 
       def create!(*args)
@@ -72,8 +72,8 @@ module Zm
 
         attrs.compact!
 
-        soap_request = SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
-        node_action = SoapElement.create(SoapConstants::ACTION).add_attributes(attrs)
+        soap_request = SoapRequest::SoapElement.mail(SoapMailConstants::ITEM_ACTION_REQUEST)
+        node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
         soap_request.add_node(node_action)
         @parent.soap_connector.invoke(soap_request)
       end
@@ -107,7 +107,7 @@ module Zm
       end
 
       def build_send
-        SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST)
+        SoapRequest::SoapElement.mail(SoapMailConstants::SEND_MSG_REQUEST)
                    .add_attributes(jsns_builder.to_jsns)
       end
 

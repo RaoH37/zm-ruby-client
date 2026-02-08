@@ -3,6 +3,9 @@
 module Zm
   module Client
     class Backup < Base::Object
+      FULL = 'full'
+      INCREMENTAL = 'incremental'
+
       attr_accessor :label, :type, :aborted, :start, :end, :minRedoSeq, :maxRedoSeq, :live, :accounts
 
       alias name label
@@ -28,11 +31,11 @@ module Zm
       end
 
       def full?
-        @type == Zm::Client::BackupTypes::FULL
+        @type == FULL
       end
 
       def incremental?
-        @type == Zm::Client::BackupTypes::INCREMENTAL
+        @type == INCREMENTAL
       end
     end
   end

@@ -17,10 +17,10 @@ class TestAccount < Minitest::Test
   end
 
   def do_login
-    @trans = Zm::Client::SoapAdminConnector.create(@config)
-    soap_request = Zm::Client::SoapElement.admin(Zm::Client::SoapAdminConstants::AUTH_REQUEST)
+    @trans = Zm::Connector::SoapAdminConnector.create(@config)
+    soap_request = Zm::Client::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::AUTH_REQUEST)
     soap_request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
-    soap_resp = @trans.invoke(soap_request, Zm::Client::AuthError)
+    soap_resp = @trans.invoke(soap_request, Zm::Error::AuthError)
 
     @trans.context.token(soap_resp[:AuthResponse][:authToken].first[:_content])
   end
@@ -30,7 +30,7 @@ class TestAccount < Minitest::Test
   end
 
   def test_auth_json_by_attribute
-    request = Zm::Client::SoapElement.new(Zm::Client::SoapAdminConstants::AUTH_REQUEST, Zm::Client::SoapAdminConstants::NAMESPACE_STR)
+    request = Zm::Client::SoapElement.new(Zm::SoapRequest::SoapAdminConstants::AUTH_REQUEST, Zm::SoapRequest::SoapAdminConstants::NAMESPACE_STR)
     request.add_attribute('name', @config.zimbra_admin_login)
     request.add_attribute('password', @config.zimbra_admin_password)
     json = request.to_json
@@ -38,14 +38,14 @@ class TestAccount < Minitest::Test
   end
 
   def test_auth_json_by_attributes
-    request = Zm::Client::SoapElement.new(Zm::Client::SoapAdminConstants::AUTH_REQUEST, Zm::Client::SoapAdminConstants::NAMESPACE_STR)
+    request = Zm::Client::SoapElement.new(Zm::SoapRequest::SoapAdminConstants::AUTH_REQUEST, Zm::SoapRequest::SoapAdminConstants::NAMESPACE_STR)
     request.add_attributes(name: @config.zimbra_admin_login, password: @config.zimbra_admin_password)
     json = request.to_json
     assert json.is_a?(String)
   end
 
   def test_server_json
-    request = Zm::Client::SoapElement.new(Zm::Client::SoapAdminConstants::GET_SERVER_REQUEST, Zm::Client::SoapAdminConstants::NAMESPACE_STR)
+    request = Zm::Client::SoapElement.new(Zm::SoapRequest::SoapAdminConstants::GET_SERVER_REQUEST, Zm::SoapRequest::SoapAdminConstants::NAMESPACE_STR)
     request.add_attribute('attrs', nil)
     server = Zm::Client::SoapElement.new('server', nil).add_attribute('by', 'name').add_content('mailstore.domain.com')
     request.add_node(server)
@@ -54,7 +54,7 @@ class TestAccount < Minitest::Test
   end
 
   def test_server_invoke
-    request = Zm::Client::SoapElement.new(Zm::Client::SoapAdminConstants::GET_SERVER_REQUEST, Zm::Client::SoapAdminConstants::NAMESPACE_STR)
+    request = Zm::Client::SoapElement.new(Zm::SoapRequest::SoapAdminConstants::GET_SERVER_REQUEST, Zm::SoapRequest::SoapAdminConstants::NAMESPACE_STR)
     request.add_attribute('attrs', nil)
     server = Zm::Client::SoapElement.new('server', nil)
                                     .add_attribute('by', 'name')
@@ -66,7 +66,7 @@ class TestAccount < Minitest::Test
   end
 
   def test_domain_invoke
-    request = Zm::Client::SoapElement.new(Zm::Client::SoapAdminConstants::GET_DOMAIN_REQUEST, Zm::Client::SoapAdminConstants::NAMESPACE_STR)
+    request = Zm::Client::SoapElement.new(Zm::SoapRequest::SoapAdminConstants::GET_DOMAIN_REQUEST, Zm::SoapRequest::SoapAdminConstants::NAMESPACE_STR)
     request.add_attribute('attrs', nil)
     domain = Zm::Client::SoapElement.new('domain', nil)
                                     .add_attribute('by', 'name')

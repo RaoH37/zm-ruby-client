@@ -7,5 +7,12 @@ $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 require 'zm-ruby-client'
 puts "Zm::Client.version=#{Zm::Client.version}"
 
+require 'get_process_mem'
+@mem = GetProcessMem.new
+
+config_path = '/home/maxime/dev/zextras/credentials/zcs8815.json'
+config = Zm::Client::ClusterConfig.new(config_path)
+@cluster = Zm::Client::Cluster.new(config)
+
 require 'irb'
 IRB.start(__FILE__)

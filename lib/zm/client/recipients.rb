@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+
+module Zm
+  module Client
+    # Collection recipients
+    class Recipients
+      def initialize
+        @recipients = []
+      end
+
+      def map(&)
+        @recipients.map(&)
+      end
+
+      def add(recipient)
+        return unless recipient.is_a?(Recipient)
+
+        @recipients.push(recipient)
+      end
+
+      def del(recipient)
+        case recipient
+        when Recipient
+          @recipients.delete(recipient)
+        when String
+          @recipients.delete_if { |r| r.email == recipient }
+        end
+      end
+
+      def clear
+        @recipients.clear
+      end
+
+      def to
+        @recipients.select { |r| r.field == Recipient::TO }
+      end
+
+      def cc
+        @recipients.select { |r| r.field == Recipient::CC }
+      end
+
+      def bcc
+        @recipients.select { |r| r.field == Recipient::BCC }
+      end
+
+      def from
+        @recipients.select { |r| r.field == Recipient::FROM }
+      end
+    end
+  end
+end

@@ -4,7 +4,7 @@ module Zm
   module Client
     # Collection Account Aliases
     class DistributionListAliasesCollection
-      include MissingMethodStaticCollection
+      include Zm::Utils::MissingMethodStaticCollection
 
       def initialize(parent)
         @parent = parent
@@ -22,7 +22,7 @@ module Zm
       end
 
       def build_add(email)
-        soap_request = SoapElement.admin(SoapAdminConstants::ADD_DISTRIBUTION_LIST_ALIAS_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::ADD_DISTRIBUTION_LIST_ALIAS_REQUEST)
         soap_request.add_attributes({ id: @parent.id, alias: email })
         soap_request
       end
@@ -37,7 +37,7 @@ module Zm
       end
 
       def build_remove(email)
-        soap_request = SoapElement.admin(SoapAdminConstants::REMOVE_DISTRIBUTION_LIST_ALIAS_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::REMOVE_DISTRIBUTION_LIST_ALIAS_REQUEST)
         soap_request.add_attributes({ id: @parent.id, alias: email })
         soap_request
       end

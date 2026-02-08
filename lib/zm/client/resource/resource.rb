@@ -4,7 +4,7 @@ module Zm
   module Client
     # objectClass: zimbraCalendarResource
     class Resource < Base::MailboxObject
-      include RequestMethodsAdmin
+      include SoapRequest::RequestMethodsAdmin
 
       LOCATION = 'Location'
       EQUIPMENT = 'Equipment'

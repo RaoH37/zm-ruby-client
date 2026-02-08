@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Account
         @builder_class = AccountsBuilder
-        @search_type = SearchType::ACCOUNT
+        @search_type = :accounts
         super
       end
 
@@ -19,13 +19,13 @@ module Zm
       end
 
       def build_find_by(hash)
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_ACCOUNT_REQUEST)
-        node_account = SoapElement.create(SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapConstants::BY, hash.keys.first)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_ACCOUNT_REQUEST)
+        node_account = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapRequest::SoapConstants::BY, hash.keys.first)
                                   .add_content(hash.values.first)
         soap_request.add_node(node_account)
-        soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma)
-        soap_request.add_attribute(SoapConstants::APPLY_COS, @apply_cos)
+        soap_request.add_attribute(SoapRequest::SoapConstants::ATTRS, attrs_comma)
+        soap_request.add_attribute(SoapRequest::SoapConstants::APPLY_COS, @apply_cos)
         soap_request
       end
 
@@ -33,7 +33,7 @@ module Zm
         return nil if domain_name.nil? && target_server_id.nil?
 
         if target_server_id.nil?
-          @all_servers = SoapUtils::ON
+          @all_servers = Zm::Utils::SearchUtils::ON
         else
           sac.context.target_server(target_server_id)
         end
@@ -49,7 +49,7 @@ module Zm
         }
         jsns.compact!
 
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_QUOTA_USAGE_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_QUOTA_USAGE_REQUEST)
                                   .add_attributes(jsns)
         json = sac.invoke(soap_request)
 
@@ -63,7 +63,7 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = SearchType::Attributes::ACCOUNT.dup
+        @attrs = :accounts
       end
     end
   end
