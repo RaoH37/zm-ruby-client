@@ -43,9 +43,9 @@ module Zm
           @domain_name = @name.split('@').last
         end
 
-        has_many :aliases, klass: AccountAliasesCollection
-        has_many :infos, klass: Base::MailboxInfosCollection
-        has_many :prefs, klass: Base::MailboxPrefsCollection
+        has_many :aliases, klass: :'Zm::Client::AccountAliasesCollection'
+        has_many :infos, klass: :'Zm::Client::Base::MailboxInfosCollection'
+        has_many :prefs, klass: :'Zm::Client::Base::MailboxPrefsCollection'
 
         def used
           @used || used!
@@ -185,8 +185,8 @@ module Zm
 
         has_many :signatures
         has_many :documents
-        has_many :memberships, klass: AccountDlsMembershipCollection
-        has_many :dls_owner, klass: AccountDlsOwnerCollection
+        has_many :memberships, klass: :'Zm::Client::AccountDlsMembershipCollection'
+        has_many :dls_owner, klass: :'Zm::Client::AccountDlsOwnerCollection'
         has_many :filter_rules
         has_many :outgoing_filter_rules
         has_many :data_sources

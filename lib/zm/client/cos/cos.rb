@@ -4,6 +4,7 @@ module Zm
   module Client
     # objectClass: zimbraCos
     class Cos < Base::Object
+      extend Relationship
       include Zm::Utils::HasSoapAdminConnector
 
       def modify!
@@ -54,27 +55,9 @@ module Zm
         jsns_builder.to_copy(new_name)
       end
 
-      def servers
-        return @servers if defined? @servers
-
-        @servers = CosServersCollection.new(self)
-      end
-
-      def domains
-        return if @id.nil?
-
-        return @domains if defined? @domains
-
-        @domains = CosDomainsCollection.new(self)
-      end
-
-      def accounts
-        return if @id.nil?
-
-        return @accounts if defined? @accounts
-
-        @accounts = CosAccountsCollection.new(self)
-      end
+      has_many :servers, klass: :'Zm::Client::CosServersCollection'
+      has_many :domains, klass: :'Zm::Client::CosDomainsCollection'
+      has_many :accounts, klass: :'Zm::Client::CosAccountsCollection'
 
       def attrs_write
         @parent.zimbra_attributes.all_cos_attrs_writable_names

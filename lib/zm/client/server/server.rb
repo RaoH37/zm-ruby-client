@@ -4,25 +4,12 @@ module Zm
   module Client
     # objectClass: zimbraServer
     class Server < Base::Object
+      extend Relationship
       include Zm::Utils::HasSoapAdminConnector
 
-      def mta_queues
-        return @mta_queues if defined? @mta_queues
-
-        @mta_queues = MtaQueuesCollection.new(self)
-      end
-
-      def backups
-        return @backups if defined? @backups
-
-        @backups = BackupsCollection.new(self)
-      end
-
-      def accounts
-        return @accounts if defined? @accounts
-
-        @accounts = ServerAccountsCollection.new(self)
-      end
+      has_many :mta_queues, klass: :'Zm::Client::MtaQueuesCollection'
+      has_many :backups, klass: :'Zm::Client::BackupsCollection'
+      has_many :accounts, klass: :'Zm::Client::ServerAccountsCollection'
 
       def update!(hash)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?

@@ -4,14 +4,11 @@ module Zm
   module Client
     # class for account share
     class Share < Base::Object
+      extend Relationship
       attr_accessor :ownerId, :ownerEmail, :ownerName, :folderId, :folderUuid, :folderPath,
                     :view, :rights, :granteeType, :granteeId, :granteeName, :mid
 
-      def mountpoints
-        return @mountpoints if defined? @mountpoints
-
-        @mountpoints = ShareMountPointsCollection.new(self)
-      end
+      has_many :mountpoints, klass: :'Zm::Client::ShareMountPointsCollection'
     end
   end
 end

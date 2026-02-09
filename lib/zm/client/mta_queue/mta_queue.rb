@@ -3,6 +3,7 @@
 module Zm
   module Client
     class MtaQueue < Base::Object
+      extend Relationship
       include Zm::Utils::HasSoapAdminConnector
 
       attr_accessor :name, :n
@@ -13,11 +14,7 @@ module Zm
         @parent
       end
 
-      def items
-        return @items if defined? @items
-
-        @items = MtaQueueItemsCollection.new self
-      end
+      has_many :items, klass: :'Zm::Client::MtaQueueItemsCollection'
 
       def hold!(ids)
         sac.invoke(jsns_builder.to_jsns(Zm::Client::MtaQueueAction::HOLD, ids))

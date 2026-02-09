@@ -4,38 +4,15 @@ module Zm
   module Client
     # objectClass: zimbraDistributionList
     class DistributionList < Base::Object
+      extend Relationship
       include Zm::Utils::HasSoapAdminConnector
       include SoapRequest::RequestMethodsAdmin
 
-      def aliases
-        return @aliases if defined? @aliases
-
-        @aliases = DistributionListAliasesCollection.new(self)
-      end
-
-      def members
-        return @members if defined? @members
-
-        @members = DistributionListMembersCollection.new(self)
-      end
-
-      def owners
-        return @owners if defined? @owners
-
-        @owners = DistributionListOwnersCollection.new(self)
-      end
-
-      def memberships
-        return @memberships if defined? @memberships
-
-        @memberships = DlsMembershipCollection.new(self)
-      end
-
-      def aces
-        return @aces if defined? @aces
-
-        @aces = DistributionListAcesCollection.new(self)
-      end
+      has_many :aliases, klass: :'Zm::Client::DistributionListAliasesCollection'
+      has_many :members, klass: :'Zm::Client::DistributionListMembersCollection'
+      has_many :owners, klass: :'Zm::Client::DistributionListOwnersCollection'
+      has_many :memberships, klass: :'Zm::Client::DlsMembershipCollection'
+      has_many :aces, klass: :'Zm::Client::DistributionListAcesCollection'
 
       def create!
         resp = sac.invoke(build_create)
