@@ -5,6 +5,8 @@ module Zm
     # objectClass: zimbraCos
     class Cos < Base::Object
       extend Relationship
+      has_jsns_builder
+
       include Zm::Utils::HasSoapAdminConnector
 
       def modify!
@@ -61,12 +63,6 @@ module Zm
 
       def attrs_write
         @parent.zimbra_attributes.all_cos_attrs_writable_names
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = CosJsnsBuilder.new(self)
       end
 
       private

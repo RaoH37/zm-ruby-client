@@ -23,10 +23,13 @@ module Zm
         AppointmentJsnsInitializer.new(@parent, entry).create
       end
 
-      def find_each(offset: 0, limit: 500, &block)
-        (Time.at(0).year..(Time.now.year + 10)).each do |year|
-          @start_at ||= Time.new(year, 1, 1).to_i * 1000
-          @end_at ||= Time.new(year, 12, 31).to_i * 1000
+      def find_each(offset: 0, limit: 500, start_year: nil, end_year: nil, &block)
+        start_year ||= Time.now.year - 10
+        end_year ||= Time.now.year + 10
+
+        (start_year..end_year).each do |year|
+          @start_at = Time.new(year, 1, 1).to_i * 1000
+          @end_at = Time.new(year, 12, 31).to_i * 1000
           @more = true
           @offset = offset
           @limit = limit

@@ -7,6 +7,8 @@ module Zm
       include Zm::Utils::BelongsToFolder
       include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
+      extend Relationship
+      has_jsns_builder
 
       attr_accessor :type, :uuid, :name, :absFolderPath, :url, :luuid, :f, :view, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
@@ -156,14 +158,6 @@ module Zm
       def upload(src_file_path, fmt: nil, resolve: nil)
         uploader = @parent.build_uploader
         uploader.send_file(src_file_path, id, fmt:, type: view, resolve:)
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = FolderJsnsBuilder.new(self)
       end
     end
   end

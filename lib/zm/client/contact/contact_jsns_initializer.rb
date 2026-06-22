@@ -22,7 +22,7 @@ module Zm
           end
 
           if item.group?
-            item.extend(ModGroupContact)
+            item.extend(Zm::Client::ModGroupContact)
             init_members_from_json(json[:m], item)
           end
 
@@ -48,7 +48,7 @@ module Zm
         def init_members_from_json(m, item)
           return if m.nil?
 
-          item.members.all = m.map { |m| Zm::Client::ConcatMember.new(m[:type], m[:value]) }
+          item.members.all = m.map { |m| Zm::Client::ContactMember.new(m[:type], m[:value]) }
         end
       end
     end

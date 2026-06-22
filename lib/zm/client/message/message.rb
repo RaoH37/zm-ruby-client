@@ -8,6 +8,8 @@ module Zm
       include Zm::Utils::BelongsToTag
       include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
+      extend Relationship
+      has_jsns_builder
 
       attr_accessor :d, :f, :su, :fr, :autoSendTime, :mid, :idnt, :tn, :subject, :s
       attr_reader :recipients, :attachments, :body
@@ -66,7 +68,7 @@ module Zm
       def update!(attrs)
         authorized_keys = %i[l rgb color f tn]
 
-        attrs.reject! { |k| !authorized_keys.include?(k) }
+        attrs.select! { |k| authorized_keys.include?(k) }
 
         attrs.merge!({ op: :update, id: id })
 
@@ -114,12 +116,6 @@ module Zm
       # content fo an email
       class Body
         attr_accessor :text, :html
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = MessageJsnsBuilder.new(self)
       end
     end
   end

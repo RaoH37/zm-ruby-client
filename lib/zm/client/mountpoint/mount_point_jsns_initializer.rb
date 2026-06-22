@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for initialize account mountpoint
-    class MountpointJsnsInitializer
+    class MountPointJsnsInitializer
       class << self
         def create(parent, json)
           MountPoint.new(parent).tap do |item|

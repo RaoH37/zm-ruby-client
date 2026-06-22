@@ -7,6 +7,8 @@ module Zm
       include Zm::Utils::BelongsToFolder
       include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
+      extend Relationship
+      has_jsns_builder
 
       attr_accessor :owner, :rev, :reminder, :ms, :deletable, :rid, :uuid, :url, :f, :broken, :luuid, :ruuid,
                     :activesyncdisabled, :absFolderPath, :view, :zid, :webOfflineSyncDays, :name, :color, :rgb
@@ -47,14 +49,6 @@ module Zm
 
       def reload!
         raise NotImplementedError
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = MountpointJsnsBuilder.new(self)
       end
     end
   end

@@ -6,6 +6,8 @@ module Zm
     class Resource < Base::MailboxObject
       include SoapRequest::RequestMethodsAdmin
 
+      has_jsns_builder
+
       LOCATION = 'Location'
       EQUIPMENT = 'Equipment'
       TYPES = [LOCATION, EQUIPMENT].freeze
@@ -25,12 +27,6 @@ module Zm
 
       def equipment?
         zimbraCalResType == EQUIPMENT
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = ResourceJsnsBuilder.new(self)
       end
     end
   end

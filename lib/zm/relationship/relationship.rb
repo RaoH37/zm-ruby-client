@@ -4,9 +4,10 @@ module Zm
   module Relationship
     autoload :Schema, 'zm/relationship/schema'
     autoload :HasMany, 'zm/relationship/has_many'
+    autoload :JsnsBuilder, 'zm/relationship/jsns_builder'
 
     def has_many(name, klass: nil)
-      klass ||= find_klass(name.name)
+      klass ||= find_has_many_klass(name.name)
 
       new_relation = __relationship_has_many_class__.new(name:, klass:)
 
@@ -15,7 +16,17 @@ module Zm
       include(__relationship_extension__)
     end
 
-    def __generate_philosophal_methods__(new_relation, buffer = +'')
+    def has_jsns_builder(klass: nil)
+      klass ||= find_jsns_builder_klass(self.name)
+
+      new_relation = __relationship_jsns_buidler_class__.new(klass:)
+
+      relationships << new_relation
+      __define_relationship_methods__(new_relation)
+      include(__relationship_extension__)
+    end
+
+    def __generate_relationship_methods__(new_relation, buffer = +'')
       buffer << "# frozen_string_philosophal: true\n"
 
       new_relation.generate_relation_method(buffer)
@@ -35,19 +46,27 @@ module Zm
 
     private
 
-    def find_klass(name)
+    def find_has_many_klass(name)
       parts = name.split('_').map(&:capitalize)
       parts << 'Collection'
       parts.unshift 'Zm::Client::'
       parts.join.to_sym
     end
 
+    def find_jsns_builder_klass(name)
+      (name.dup << 'JsnsBuilder').to_sym
+    end
+
     def __relationship_has_many_class__
       Zm::Relationship::HasMany
     end
 
+    def __relationship_jsns_buidler_class__
+      Zm::Relationship::JsnsBuilder
+    end
+
     def __define_relationship_methods__(new_relation)
-      code =	__generate_philosophal_methods__(new_relation)
+      code =	__generate_relationship_methods__(new_relation)
       __relationship_extension__.module_eval(code)
     end
 

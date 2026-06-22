@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class factory [shares]
-    class ShareBuilder < Base::ObjectsBuilder
+    class SharesBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super
         @json_item_key = :share

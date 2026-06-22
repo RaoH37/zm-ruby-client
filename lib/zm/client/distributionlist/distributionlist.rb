@@ -5,6 +5,7 @@ module Zm
     # objectClass: zimbraDistributionList
     class DistributionList < Base::Object
       extend Relationship
+      has_jsns_builder
       include Zm::Utils::HasSoapAdminConnector
       include SoapRequest::RequestMethodsAdmin
 
@@ -55,12 +56,6 @@ module Zm
 
       def attrs_write
         @parent.zimbra_attributes.all_distributionlist_attrs_writable_names
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = DistributionListJsnsBuilder.new(self)
       end
     end
   end

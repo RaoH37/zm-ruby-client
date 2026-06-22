@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account folder
-    class MountpointJsnsBuilder < Base::BaseAccountJsnsBuilder
+    class MountPointJsnsBuilder < Base::BaseAccountJsnsBuilder
       def to_find
         { link: { l: @item.id } }
       end

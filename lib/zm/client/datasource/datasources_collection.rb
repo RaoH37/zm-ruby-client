@@ -6,7 +6,7 @@ module Zm
     class DataSourcesCollection < Base::AccountObjectsCollection
       def initialize(parent)
         @child_class = DataSource
-        @builder_class = DataSourceBuilder
+        @builder_class = DataSourcesBuilder
         super
       end
 

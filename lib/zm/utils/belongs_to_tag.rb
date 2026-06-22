@@ -6,7 +6,7 @@ module Zm
       def tags
         return @tags if defined? @tags
 
-        @tags = AccountObjectTagsCollection.new(self)
+        @tags = Zm::Client::AccountObjectTagsCollection.new(self)
       end
     end
   end

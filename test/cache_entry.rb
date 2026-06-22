@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'yaml'
 
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+
 require 'zm-ruby-client'
 
 class CacheEntry < Minitest::Test

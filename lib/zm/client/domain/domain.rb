@@ -5,6 +5,7 @@ module Zm
     # objectClass: zimbraDomain
     class Domain < Base::Object
       extend Zm::Relationship
+      has_jsns_builder
       include Zm::Utils::HasSoapAdminConnector
       include SoapRequest::RequestMethodsAdmin
 
@@ -45,12 +46,6 @@ module Zm
         return if matches.first.nil?
 
         @DKIMPublicTxt = matches.first.first.strip
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = DomainJsnsBuilder.new(self)
       end
     end
   end

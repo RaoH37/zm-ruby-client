@@ -2,7 +2,7 @@
 
 module Zm
   module Client
-    class ConcatMember
+    class ContactMember
       include Zm::Utils::Inspector
 
       INTERNAL = 'C'

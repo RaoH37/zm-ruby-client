@@ -8,12 +8,16 @@ module Zm
       include Zm::Utils::BelongsToTag
       include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
+      extend Zm::Relationship
+      has_jsns_builder
 
       attr_accessor :uid, :name, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
-                    :calItemId, :apptId, :invId, :rev, :fb, :transp
+                    :calItemId, :apptId, :invId, :rev, :fb, :transp, :recur, :s, :ms
       attr_reader :recipients, :attendees, :body
 
       alias description desc
+      alias recurrent recur
+      alias size s
 
       def initialize(parent)
         @parent = parent
@@ -151,11 +155,11 @@ module Zm
         attr_accessor :text, :html
       end
 
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = AppointmentJsnsBuilder.new(self)
-      end
+      # def jsns_builder
+      #   return @jsns_builder if defined? @jsns_builder
+      #
+      #   @jsns_builder = AppointmentJsnsBuilder.new(self)
+      # end
     end
   end
 end

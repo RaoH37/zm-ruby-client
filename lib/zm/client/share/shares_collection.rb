@@ -35,7 +35,7 @@ module Zm
       end
 
       def share_builder
-        ShareBuilder.new(@parent, share_response)
+        SharesBuilder.new(@parent, share_response)
       end
 
       def reset_query_params

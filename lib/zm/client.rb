@@ -177,11 +177,11 @@ module Zm
     autoload :IdentitiesBuilder, 'zm/client/identity/identities_builder'
     autoload :IdentitiesCollection, 'zm/client/identity/identities_collection'
 
-    autoload :MountPoint, 'zm/client/mountpoint/mountpoint'
-    autoload :MountPointJsnsBuilder, 'zm/client/mountpoint/mountpoint_jsns_builder'
-    autoload :MountPointJsnsInitializer, 'zm/client/mountpoint/mountpoint_jsns_initializer'
-    autoload :MountPointsBuilder, 'zm/client/mountpoint/mountpoints_builder'
-    autoload :MountPointsCollection, 'zm/client/mountpoint/mountpoints_collection'
+    autoload :MountPoint, 'zm/client/mountpoint/mount_point'
+    autoload :MountPointJsnsBuilder, 'zm/client/mountpoint/mount_point_jsns_builder'
+    autoload :MountPointJsnsInitializer, 'zm/client/mountpoint/mount_point_jsns_initializer'
+    autoload :MountPointsBuilder, 'zm/client/mountpoint/mount_points_builder'
+    autoload :MountPointsCollection, 'zm/client/mountpoint/mount_points_collection'
 
     autoload :Message, 'zm/client/message/message'
     autoload :MessageFlagsCollection, 'zm/client/message/message_flags_collection'

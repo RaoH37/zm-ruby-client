@@ -23,7 +23,7 @@ module Zm
         json_folders.each do |json_folder|
           if json_folder[@key_link].is_a?(Array)
             @list += json_folder[@key_link].map do |json_link|
-              MountpointJsnsInitializer.create(@parent, json_link)
+              MountPointJsnsInitializer.create(@parent, json_link)
             end
           end
 

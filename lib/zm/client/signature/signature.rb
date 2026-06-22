@@ -5,6 +5,8 @@ module Zm
     # class account signature
     class Signature < Base::Object
       include SoapRequest::RequestMethodsMailbox
+      extend Relationship
+      has_jsns_builder
 
       attr_accessor :id, :name, :txt, :html
 
@@ -33,14 +35,6 @@ module Zm
 
       def content
         html || txt || ''
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = SignatureJsnsBuilder.new(self)
       end
     end
   end

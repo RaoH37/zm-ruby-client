@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ZM
+module Zm
   module Client
     module ModGroupContact
       def members

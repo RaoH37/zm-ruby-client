@@ -52,16 +52,17 @@ module Zm
         @parent.zimbra_attributes.all_account_attrs_writable_names
       end
 
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = AccountJsnsBuilder.new(self)
-      end
+      has_jsns_builder
 
       def batch
         return @batch if defined? @batch
 
         @batch = BatchRequest.new(soap_account_connector)
+      end
+
+      def empty_dumpster!
+        soap_request = Zm::SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::EMPTY_DUMPSTER_REQUEST)
+        soap_connector.invoke(soap_request)
       end
 
       private

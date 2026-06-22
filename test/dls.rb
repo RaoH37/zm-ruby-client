@@ -2,7 +2,7 @@ require 'minitest/autorun'
 
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 
-require './lib/zm/client'
+require 'zm-ruby-client'
 
 class TestDistributionList < Minitest::Test
 
@@ -96,6 +96,7 @@ class TestDistributionList < Minitest::Test
   def test_remove_members
     name = distribution_lists.all.sample&.name
     return if name.nil?
+
     distribution_list = @admin.distribution_lists.attrs('description').find_by name: name
     assert distribution_list.members.remove!(@fixture_distribution_lists['dls']['unittest']['members'])
   end

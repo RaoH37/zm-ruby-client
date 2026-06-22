@@ -5,7 +5,7 @@ require 'yaml'
 
 $LOAD_PATH.unshift File.expand_path("#{File.dirname(__FILE__)}/../lib")
 
-require './lib/zm/client'
+require 'zm-ruby-client'
 
 class TestAccount < Minitest::Test
   def setup

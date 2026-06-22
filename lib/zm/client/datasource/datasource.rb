@@ -5,6 +5,8 @@ module Zm
     # class account data source
     class DataSource < Base::Object
       include SoapRequest::RequestMethodsMailbox
+      extend Relationship
+      has_jsns_builder
 
       TYPES = %i[cal caldav yab gal imap pop3 rss unknown].freeze
 
@@ -48,14 +50,6 @@ module Zm
 
       def build_rename(*args)
         raise NotImplementedError
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = DataSourceJsnsBuilder.new(self)
       end
     end
   end

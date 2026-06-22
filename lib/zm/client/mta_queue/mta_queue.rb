@@ -4,6 +4,7 @@ module Zm
   module Client
     class MtaQueue < Base::Object
       extend Relationship
+      has_jsns_builder
       include Zm::Utils::HasSoapAdminConnector
 
       attr_accessor :name, :n
@@ -30,14 +31,6 @@ module Zm
 
       def requeue!(ids)
         sac.invoke(jsns_builder.to_jsns(Zm::Client::MtaQueueAction::REQUEUE, ids))
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = MtaQueueJsnsBuilder.new(self)
       end
     end
   end
