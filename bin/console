@@ -9,10 +9,14 @@ puts "Zm::Client.version=#{Zm::Client.version}"
 
 require 'get_process_mem'
 @mem = GetProcessMem.new
+puts @mem.mb
 
 config_path = './test/fixtures/config.yml'
 config = Zm::Client::ClusterConfig.new(config_path)
 @cluster = Zm::Client::Cluster.new(config)
+puts @mem.mb
+# @cluster.login
+# @domain = @cluster.domains.all.last
 
 require 'irb'
 IRB.start(__FILE__)
