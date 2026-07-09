@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class factory [datasources]
-    class DataSourceBuilder < Base::ObjectsBuilder
+    class DataSourcesBuilder < Base::ObjectsBuilder
       def make
         return [] if json_items.nil?
 

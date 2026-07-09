@@ -8,8 +8,8 @@ module Zm
         super
         @child_class = Message
         @builder_class = MessagesBuilder
-        @type = SoapConstants::MESSAGE
-        @sort_by = SoapConstants::DATE_DESC
+        @type = SoapRequest::SoapConstants::MESSAGE
+        @sort_by = SoapRequest::SoapConstants::DATE_DESC
       end
 
       def find_each(offset: 0, limit: 500, secure: true, &block)

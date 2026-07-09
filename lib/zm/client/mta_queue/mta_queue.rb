@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'zm/client/mta_queue_item'
-
 module Zm
   module Client
     class MtaQueue < Base::Object
-      include HasSoapAdminConnector
+      extend Relationship
+      has_jsns_builder
+      include Zm::Utils::HasSoapAdminConnector
 
       attr_accessor :name, :n
 
@@ -15,11 +15,7 @@ module Zm
         @parent
       end
 
-      def items
-        return @items if defined? @items
-
-        @items = MtaQueueItemsCollection.new self
-      end
+      has_many :items, klass: :'Zm::Client::MtaQueueItemsCollection'
 
       def hold!(ids)
         sac.invoke(jsns_builder.to_jsns(Zm::Client::MtaQueueAction::HOLD, ids))
@@ -35,14 +31,6 @@ module Zm
 
       def requeue!(ids)
         sac.invoke(jsns_builder.to_jsns(Zm::Client::MtaQueueAction::REQUEUE, ids))
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = MtaQueueJsnsBuilder.new(self)
       end
     end
   end

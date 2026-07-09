@@ -13,9 +13,9 @@ module Zm
       end
 
       def build_query
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_ACCOUNT_MEMBERSHIP_REQUEST)
-        node_account = SoapElement.create(SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapConstants::BY, SoapConstants::ID)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_ACCOUNT_MEMBERSHIP_REQUEST)
+        node_account = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
                                   .add_content(@parent.id)
         soap_request.add_node(node_account)
         soap_request

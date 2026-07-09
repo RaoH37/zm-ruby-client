@@ -15,7 +15,7 @@ module Zm
       end
 
       def build_query
-        SoapElement.mail(SoapMailConstants::GET_SEARCH_FOLDER_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_SEARCH_FOLDER_REQUEST)
       end
     end
   end

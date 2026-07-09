@@ -1,46 +1,19 @@
 # frozen_string_literal: true
 
-require 'zm/client/distributionlist/distributionlist_aliases_collection'
-require 'zm/client/distributionlist/distributionlist_members_collection'
-require 'zm/client/distributionlist/distributionlist_owners_collection'
-require 'zm/client/distributionlist/distributionlist_aces_collection'
-
 module Zm
   module Client
     # objectClass: zimbraDistributionList
     class DistributionList < Base::Object
-      include HasSoapAdminConnector
-      include RequestMethodsAdmin
+      extend Relationship
+      has_jsns_builder
+      include Zm::Utils::HasSoapAdminConnector
+      include SoapRequest::RequestMethodsAdmin
 
-      def aliases
-        return @aliases if defined? @aliases
-
-        @aliases = DistributionListAliasesCollection.new(self)
-      end
-
-      def members
-        return @members if defined? @members
-
-        @members = DistributionListMembersCollection.new(self)
-      end
-
-      def owners
-        return @owners if defined? @owners
-
-        @owners = DistributionListOwnersCollection.new(self)
-      end
-
-      def memberships
-        return @memberships if defined? @memberships
-
-        @memberships = DlsMembershipCollection.new(self)
-      end
-
-      def aces
-        return @aces if defined? @aces
-
-        @aces = DistributionListAcesCollection.new(self)
-      end
+      has_many :aliases, klass: :'Zm::Client::DistributionListAliasesCollection'
+      has_many :members, klass: :'Zm::Client::DistributionListMembersCollection'
+      has_many :owners, klass: :'Zm::Client::DistributionListOwnersCollection'
+      has_many :memberships, klass: :'Zm::Client::DlsMembershipCollection'
+      has_many :aces, klass: :'Zm::Client::DistributionListAcesCollection'
 
       def create!
         resp = sac.invoke(build_create)
@@ -48,7 +21,7 @@ module Zm
       end
 
       def local_transport
-        raise Zm::Client::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
+        raise Zm::Error::ZmError, 'zimbraMailHost is null' if zimbraMailHost.nil?
 
         "lmtp:#{zimbraMailHost}:7025"
       end
@@ -60,35 +33,29 @@ module Zm
       def local_transport?
         return false unless zimbraMailTransport
 
-        zimbraMailTransport.start_with?(SoapConstants::LMTP)
+        zimbraMailTransport.start_with?(SoapRequest::SoapConstants::LMTP)
       end
 
       def external_transport?
         return false unless zimbraMailTransport
 
-        zimbraMailTransport.start_with?(SoapConstants::SMTP)
+        zimbraMailTransport.start_with?(SoapRequest::SoapConstants::SMTP)
       end
 
       def hide_in_gal?
-        zimbraHideInGal == SoapConstants::TRUE
+        zimbraHideInGal == SoapRequest::SoapConstants::TRUE
       end
 
       def group?
-        zimbraMailStatus == SoapConstants::DISABLED
+        zimbraMailStatus == SoapRequest::SoapConstants::DISABLED
       end
 
       def mailing_list?
-        zimbraMailStatus == SoapConstants::ENABLED
+        zimbraMailStatus == SoapRequest::SoapConstants::ENABLED
       end
 
       def attrs_write
         @parent.zimbra_attributes.all_distributionlist_attrs_writable_names
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = DistributionListJsnsBuilder.new(self)
       end
     end
   end

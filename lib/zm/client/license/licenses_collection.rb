@@ -9,7 +9,7 @@ module Zm
       end
 
       def find
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_LICENSE_REQUEST)
+        soap_request = Zm::SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_LICENSE_REQUEST)
         entry = @parent.soap_admin_connector.invoke(soap_request)[:GetLicenseResponse][:license].first
         LicenseJsnsInitializer.create(@parent, entry)
       end

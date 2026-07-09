@@ -2,9 +2,7 @@
 
 module Zm
   module Client
-    class Message
-      # Collection recipients
-      class Recipients
+    class MessageRecipients
         attr_reader :all
 
         def initialize
@@ -56,4 +54,3 @@ module Zm
       end
     end
   end
-end

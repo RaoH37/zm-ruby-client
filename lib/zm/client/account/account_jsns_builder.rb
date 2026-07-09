@@ -15,7 +15,7 @@ module Zm
         }
         req.compact!
 
-        soap_request = SoapElement.admin(SoapAdminConstants::CREATE_ACCOUNT_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::CREATE_ACCOUNT_REQUEST)
                                   .add_attributes(req)
 
         add_soap_request_nodes(soap_request)
@@ -32,15 +32,15 @@ module Zm
       end
 
       def add_soap_request_node(soap_request, key, value)
-        node_attr = SoapElement.create(SoapConstants::A)
-                               .add_attribute(SoapConstants::N, key)
+        node_attr = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::A)
+                               .add_attribute(SoapRequest::SoapConstants::N, key)
                                .add_content(value)
         soap_request.add_node(node_attr)
       end
 
       def to_update
-        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_ACCOUNT_REQUEST)
-                                  .add_attribute(SoapConstants::ID, @item.id)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::MODIFY_ACCOUNT_REQUEST)
+                                  .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
 
         add_soap_request_nodes(soap_request)
 
@@ -48,8 +48,8 @@ module Zm
       end
 
       def to_patch(hash)
-        soap_request = SoapElement.admin(SoapAdminConstants::MODIFY_ACCOUNT_REQUEST)
-                                  .add_attribute(SoapConstants::ID, @item.id)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::MODIFY_ACCOUNT_REQUEST)
+                                  .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
 
         hash.each do |key, values|
           values = [values] unless values.is_a?(Array)
@@ -62,12 +62,12 @@ module Zm
       end
 
       def to_delete
-        SoapElement.admin(SoapAdminConstants::DELETE_ACCOUNT_REQUEST)
-                   .add_attribute(SoapConstants::ID, @item.id)
+        SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::DELETE_ACCOUNT_REQUEST)
+                   .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
       end
 
       def to_rename(new_name)
-        SoapElement.admin(SoapAdminConstants::RENAME_ACCOUNT_REQUEST)
+        SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::RENAME_ACCOUNT_REQUEST)
                    .add_attributes({ id: @item.id, newName: new_name })
       end
 

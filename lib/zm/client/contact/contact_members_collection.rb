@@ -11,7 +11,7 @@ module Zm
       end
 
       def add(new_member)
-        return false unless new_member.is_a?(Zm::Client::ConcatMember)
+        return false unless new_member.is_a?(Zm::Client::ContactMember)
 
         current_member = @all.find { |m| m.type == new_member.type && m.value == new_member.value }
 
@@ -21,7 +21,7 @@ module Zm
           return true
         end
 
-        if current_member.op == Zm::Client::ConcatMember::DEL
+        if current_member.op == Zm::Client::ContactMember::DEL
           current_member.add!
           return true
         end
@@ -30,7 +30,7 @@ module Zm
       end
 
       def remove(new_member)
-        return false unless new_member.is_a?(Zm::Client::ConcatMember)
+        return false unless new_member.is_a?(Zm::Client::ContactMember)
 
         current_member = @all.find { |m| m.type == new_member.type && m.value == new_member.value }
         return false if current_member.nil?

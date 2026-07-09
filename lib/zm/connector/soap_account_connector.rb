@@ -1,0 +1,73 @@
+# frozen_string_literal: true
+
+module Zm
+  module Connector
+    class SoapAccountConnector < SoapBaseConnector
+      class << self
+        def create(config)
+          new(
+            config.zimbra_public_url
+          ).tap do |trans|
+            trans.logger = config.logger
+            trans.cache = config.cache
+            trans.timeout = config.timeout
+          end
+        end
+      end
+
+      def token
+        context.to_hash[:authToken]
+      end
+
+      def token=(value)
+        context.token(value)
+      end
+
+      def initialize(url)
+        super(url, SoapRequest::SoapAccountConstants::ACCOUNT_SERVICE_URI)
+      end
+
+      def auth_preauth(content, by, expires, domainkey)
+        ts = (Time.now.to_i * 1000)
+        preauth = compute_preauth(content, by, ts, expires, domainkey)
+
+        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::AUTH_REQUEST)
+        node_account = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                               .add_attribute(SoapRequest::SoapConstants::BY, by)
+                                               .add_content(content)
+        soap_request.add_node(node_account)
+        node_preauth = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::PREAUTH)
+                                               .add_attribute(SoapRequest::SoapConstants::TIMESTAMP, ts)
+                                               .add_attribute(SoapRequest::SoapConstants::EXPIRES, expires)
+                                               .add_content(preauth)
+        soap_request.add_node(node_preauth)
+
+        do_login(soap_request)
+      end
+
+      def auth_password(content, by, password)
+        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::AUTH_REQUEST)
+        node_account = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                               .add_attribute(SoapRequest::SoapConstants::BY, by)
+                                               .add_content(content)
+        soap_request.add_node(node_account)
+        soap_request.add_attribute('password', password)
+
+        do_login(soap_request)
+      end
+
+      def do_login(soap_request)
+        invoke(soap_request)[:AuthResponse][:authToken].first[:_content]
+      end
+
+      private
+
+      def compute_preauth(content, by, ts, expires, domain_key)
+        data = "#{content}|#{by}|#{expires}|#{ts}"
+        digest = OpenSSL::Digest.new('sha1')
+        hmac = OpenSSL::HMAC.hexdigest(digest, domain_key, data)
+        hmac.to_s
+      end
+    end
+  end
+end

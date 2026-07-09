@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
-module GroupContact
-  def members
-    return @members if defined? @members
+module Zm
+  module Client
+    module ModGroupContact
+      def members
+        return @members if defined? @members
 
-    @members = Zm::Client::ContactMembersCollection.new(self)
-  end
+        @members = Zm::Client::ContactMembersCollection.new(self)
+      end
 
-  def jsns_builder
-    return @jsns_builder if defined? @jsns_builder
+      def jsns_builder
+        return @jsns_builder if defined? @jsns_builder
 
-    @jsns_builder = Zm::Client::GroupContactJsnsBuilder.new(self)
+        @jsns_builder = Zm::Client::GroupContactJsnsBuilder.new(self)
+      end
+    end
   end
 end

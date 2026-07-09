@@ -4,7 +4,9 @@ module Zm
   module Client
     # objectClass: zimbraCalendarResource
     class Resource < Base::MailboxObject
-      include RequestMethodsAdmin
+      include SoapRequest::RequestMethodsAdmin
+
+      has_jsns_builder
 
       LOCATION = 'Location'
       EQUIPMENT = 'Equipment'
@@ -25,12 +27,6 @@ module Zm
 
       def equipment?
         zimbraCalResType == EQUIPMENT
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = ResourceJsnsBuilder.new(self)
       end
     end
   end

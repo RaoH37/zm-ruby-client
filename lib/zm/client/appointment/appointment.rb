@@ -4,16 +4,20 @@ module Zm
   module Client
     # class for account appointment
     class Appointment < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
+      extend Zm::Relationship
+      has_jsns_builder
 
       attr_accessor :uid, :name, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
-                    :calItemId, :apptId, :invId, :rev, :fb, :transp
+                    :calItemId, :apptId, :invId, :rev, :fb, :transp, :recur, :s, :ms
       attr_reader :recipients, :attendees, :body
 
       alias description desc
+      alias recurrent recur
+      alias size s
 
       def initialize(parent)
         @parent = parent
@@ -41,12 +45,12 @@ module Zm
       end
 
       def build_create
-        SoapElement.mail(SoapMailConstants::CREATE_APPOINTMENT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_APPOINTMENT_REQUEST)
                    .add_attributes(jsns_builder.to_jsns)
       end
 
       def build_modify
-        SoapElement.mail(SoapMailConstants::MODIFY_APPOINTMENT_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_APPOINTMENT_REQUEST)
                    .add_attributes(jsns_builder.to_update)
       end
 
@@ -63,9 +67,9 @@ module Zm
       end
 
       def reload!
-        jsns = { m: { id: id, html: SoapUtils::ON } }
+        jsns = { m: { id: id, html: Zm::Utils::SearchUtils::ON } }
 
-        soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)
         rep = @parent.soap_connector.invoke(soap_request)
         entry = rep[:GetMsgResponse][:m].first
@@ -147,11 +151,15 @@ module Zm
         end
       end
 
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = AppointmentJsnsBuilder.new(self)
+      class BodyMail
+        attr_accessor :text, :html
       end
+
+      # def jsns_builder
+      #   return @jsns_builder if defined? @jsns_builder
+      #
+      #   @jsns_builder = AppointmentJsnsBuilder.new(self)
+      # end
     end
   end
 end

@@ -6,7 +6,7 @@ module Zm
     class DataSourcesCollection < Base::AccountObjectsCollection
       def initialize(parent)
         @child_class = DataSource
-        @builder_class = DataSourceBuilder
+        @builder_class = DataSourcesBuilder
         super
       end
 
@@ -15,7 +15,7 @@ module Zm
       end
 
       def build_query
-        SoapElement.mail(SoapMailConstants::GET_DATA_SOURCES_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_DATA_SOURCES_REQUEST)
       end
     end
   end

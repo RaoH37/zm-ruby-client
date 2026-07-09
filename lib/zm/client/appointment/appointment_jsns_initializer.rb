@@ -31,6 +31,10 @@ module Zm
         @appointment.tn = @json.delete(:tn)
         @appointment.l = @json.delete(:l)
         @appointment.uid = @json.delete(:uid)
+        @appointment.recur = @json.delete(:recur) || false
+        @appointment.s = @json.delete(:s).to_i
+        @appointment.ms = @json.delete(:ms).to_i
+        @appointment.rev = @json.delete(:rev).to_i
 
         if inv.nil?
           init_from_search
@@ -108,7 +112,7 @@ module Zm
       end
 
       def comp
-        raise Zm::Client::ZmError, 'invalid appointment received' if inv[:comp].nil?
+        raise Zm::Error::ZmError, 'invalid appointment received' if inv[:comp].nil?
 
         @comp ||= inv[:comp].first
       end

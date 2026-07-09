@@ -2,12 +2,14 @@
 
 module Zm
   module Client
-    # class account tag
+    # class account Contact
     class Contact < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
+      extend Zm::Relationship
+      has_jsns_builder
 
       GROUP_PATTERN = 'group'
 
@@ -19,7 +21,7 @@ module Zm
                     :maidenName, :middleName, :mobilePhone, :namePrefix, :nameSuffix, :nickname, :notes,
                     :otherCity, :otherCountry, :otherFax, :otherPhone, :otherPostalCode, :otherState,
                     :otherStreet, :otherURL, :pager, :workCity, :workCountry, :workFax, :workPhone,
-                    :workPostalCode, :workState, :workStreet, :workURL, :image, :name, :type,
+                    :workPostalCode, :workState, :workStreet, :workURL, :image, :name, :type, :fileAs,
                     :tn, :shared_account_id, :shared_folder_account_id
 
       def initialize(parent)
@@ -60,13 +62,13 @@ module Zm
         raise NotImplementedError
       end
 
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = ContactJsnsBuilder.new(self)
-      end
+      # private
+      #
+      # def jsns_builder
+      #   return @jsns_builder if defined? @jsns_builder
+      #
+      #   @jsns_builder = ContactJsnsBuilder.new(self)
+      # end
     end
   end
 end

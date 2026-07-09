@@ -15,7 +15,7 @@ module Zm
       end
 
       def build_query
-        SoapElement.mail(SoapMailConstants::GET_FILTER_RULES_REQUEST)
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_FILTER_RULES_REQUEST)
       end
     end
   end

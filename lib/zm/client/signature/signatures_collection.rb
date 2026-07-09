@@ -15,7 +15,7 @@ module Zm
       end
 
       def build_query
-        SoapElement.account(SoapAccountConstants::GET_SIGNATURES_REQUEST)
+        SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_SIGNATURES_REQUEST)
       end
     end
   end

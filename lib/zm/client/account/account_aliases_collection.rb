@@ -23,7 +23,7 @@ module Zm
       end
 
       def build_add(email)
-        soap_request = SoapElement.admin(SoapAdminConstants::ADD_ACCOUNT_ALIAS_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::ADD_ACCOUNT_ALIAS_REQUEST)
         soap_request.add_attributes({ id: @parent.id, alias: email })
         soap_request
       end
@@ -38,7 +38,7 @@ module Zm
       end
 
       def build_remove(email)
-        soap_request = SoapElement.admin(SoapAdminConstants::REMOVE_ACCOUNT_ALIAS_REQUEST)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::REMOVE_ACCOUNT_ALIAS_REQUEST)
         soap_request.add_attributes({ id: @parent.id, alias: email })
         soap_request
       end

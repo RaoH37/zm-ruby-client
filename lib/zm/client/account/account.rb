@@ -1,22 +1,14 @@
 # frozen_string_literal: true
 
-require 'zm/client/account/account_aliases_collection'
-
 module Zm
   module Client
     # objectClass: zimbraAccount
     class Account < Base::MailboxObject
-      include RequestMethodsAdmin
+      include SoapRequest::RequestMethodsAdmin
 
       # #################################################################
       # Associations
       # #################################################################
-
-      def aliases
-        return @aliases if defined? @aliases
-
-        @aliases = AccountAliasesCollection.new(self)
-      end
 
       def cos
         return @cos if defined? @cos
@@ -45,12 +37,12 @@ module Zm
       end
 
       def build_flush_cache
-        soap_request = SoapElement.admin(SoapAdminConstants::FLUSH_CACHE_REQUEST)
-        node_cache = SoapElement.create('cache')
-                                .add_attributes({ type: SoapConstants::ACCOUNT, allServers: SoapUtils::ON })
+        soap_request = Zm::SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::FLUSH_CACHE_REQUEST)
+        node_cache = Zm::SoapRequest::SoapElement.create('cache')
+                                .add_attributes({ type: Zm::SoapRequest::SoapConstants::ACCOUNT, allServers: Zm::Utils::SearchUtils::ON })
         soap_request.add_node(node_cache)
-        node_entry = SoapElement.create('entry')
-                                .add_attribute(SoapConstants::BY, SoapConstants::ID)
+        node_entry = Zm::SoapRequest::SoapElement.create('entry')
+                                .add_attribute(Zm::SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
                                 .add_content(@id)
         node_cache.add_node(node_entry)
         soap_request
@@ -60,16 +52,17 @@ module Zm
         @parent.zimbra_attributes.all_account_attrs_writable_names
       end
 
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = AccountJsnsBuilder.new(self)
-      end
+      has_jsns_builder
 
       def batch
         return @batch if defined? @batch
 
         @batch = BatchRequest.new(soap_account_connector)
+      end
+
+      def empty_dumpster!
+        soap_request = Zm::SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::EMPTY_DUMPSTER_REQUEST)
+        soap_connector.invoke(soap_request)
       end
 
       private

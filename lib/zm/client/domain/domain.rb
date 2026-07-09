@@ -4,32 +4,21 @@ module Zm
   module Client
     # objectClass: zimbraDomain
     class Domain < Base::Object
-      include HasSoapAdminConnector
-      include RequestMethodsAdmin
+      extend Zm::Relationship
+      has_jsns_builder
+      include Zm::Utils::HasSoapAdminConnector
+      include SoapRequest::RequestMethodsAdmin
 
       def create!
         resp = sac.invoke(build_create)
         @id = resp[:CreateDomainResponse][:domain].first[:id]
       end
 
-      def accounts
-        return @accounts if defined? @accounts
+      has_many :accounts, klass: :'Zm::Client::DomainAccountsCollection'
+      has_many :distribution_lists, klass: :'Zm::Client::DomainDistributionListsCollection'
+      alias distributionlists distribution_lists
 
-        @accounts = DomainAccountsCollection.new(self)
-      end
-
-      def distributionlists
-        return @distributionlists if defined? @distributionlists
-
-        @distributionlists = DomainDistributionListsCollection.new(self)
-      end
-      alias distribution_lists distributionlists
-
-      def resources
-        return @resources if defined? @resources
-
-        @resources = DomainResourcesCollection.new(self)
-      end
+      has_many :resources, klass: :'Zm::Client::DomainResourcesCollection'
 
       def cos
         return nil if zimbraDomainDefaultCOSId.nil?
@@ -57,12 +46,6 @@ module Zm
         return if matches.first.nil?
 
         @DKIMPublicTxt = matches.first.first.strip
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = DomainJsnsBuilder.new(self)
       end
     end
   end

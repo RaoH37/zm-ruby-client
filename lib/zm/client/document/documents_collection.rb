@@ -10,8 +10,8 @@ module Zm
         super
         @child_class = Document
         @builder_class = DocumentsBuilder
-        @type = SoapConstants::DOCUMENT
-        @sort_by = SoapConstants::DATE_ASC
+        @type = SoapRequest::SoapConstants::DOCUMENT
+        @sort_by = SoapRequest::SoapConstants::DATE_ASC
       end
 
       def find_each(offset: 0, limit: 500, &block)

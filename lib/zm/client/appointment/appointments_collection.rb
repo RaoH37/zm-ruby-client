@@ -8,14 +8,14 @@ module Zm
         super
         @child_class = Appointment
         @builder_class = AppointmentsBuilder
-        @type = SoapConstants::APPOINTMENT
-        @sort_by = SoapConstants::DATE_ASC
+        @type = SoapRequest::SoapConstants::APPOINTMENT
+        @sort_by = SoapRequest::SoapConstants::DATE_ASC
       end
 
       def find(id)
-        jsns = { m: { id: id, html: SoapUtils::ON } }
+        jsns = { m: { id: id, html: Zm::Utils::SearchUtils::ON } }
 
-        soap_request = SoapElement.mail(SoapMailConstants::GET_MSG_REQUEST)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)
         rep = @parent.soap_connector.invoke(soap_request)
         entry = rep[:GetMsgResponse][:m].first
@@ -23,10 +23,13 @@ module Zm
         AppointmentJsnsInitializer.new(@parent, entry).create
       end
 
-      def find_each(offset: 0, limit: 500, &block)
-        (Time.at(0).year..(Time.now.year + 10)).each do |year|
-          @start_at ||= Time.new(year, 1, 1).to_i * 1000
-          @end_at ||= Time.new(year, 12, 31).to_i * 1000
+      def find_each(offset: 0, limit: 500, start_year: nil, end_year: nil, &block)
+        start_year ||= Time.now.year - 10
+        end_year ||= Time.now.year + 10
+
+        (start_year..end_year).each do |year|
+          @start_at = Time.new(year, 1, 1).to_i * 1000
+          @end_at = Time.new(year, 12, 31).to_i * 1000
           @more = true
           @offset = offset
           @limit = limit

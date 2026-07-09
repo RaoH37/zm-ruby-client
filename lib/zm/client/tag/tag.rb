@@ -4,8 +4,10 @@ module Zm
   module Client
     # class account tag
     class Tag < Base::Object
-      include RequestMethodsMailbox
+      include SoapRequest::RequestMethodsMailbox
       include MailboxItemConcern
+      extend Relationship
+      has_jsns_builder
 
       attr_accessor :name, :color, :rgb
 
@@ -14,14 +16,6 @@ module Zm
         json = rep[:CreateTagResponse][:tag].first
         TagJsnsInitializer.update(self, json)
         id
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = TagJsnsBuilder.new(self)
       end
     end
   end

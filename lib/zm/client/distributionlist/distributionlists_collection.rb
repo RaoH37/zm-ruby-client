@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = DistributionList
         @builder_class = DistributionListsBuilder
-        @search_type = SearchType::DL
+        @search_type = :distributionlists
         super
       end
 
@@ -19,12 +19,12 @@ module Zm
       end
 
       def build_find_by(hash)
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_DISTRIBUTION_LIST_REQUEST)
-        node_dl = SoapElement.create(SoapConstants::DL)
-                             .add_attribute(SoapConstants::BY, hash.keys.first)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_DISTRIBUTION_LIST_REQUEST)
+        node_dl = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::DL)
+                             .add_attribute(SoapRequest::SoapConstants::BY, hash.keys.first)
                              .add_content(hash.values.first)
         soap_request.add_node(node_dl)
-        soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma)
+        soap_request.add_attribute(SoapRequest::SoapConstants::ATTRS, attrs_comma)
         soap_request
       end
 
@@ -32,7 +32,15 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = SearchType::Attributes::DL.dup
+        @attrs = %w[
+          displayName
+          zimbraId
+          zimbraMailHost
+          uid
+          description
+          zimbraMailStatus
+          zimbraMailAlias
+        ]
       end
     end
   end

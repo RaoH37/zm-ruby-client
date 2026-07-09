@@ -22,8 +22,8 @@ module Zm
           content.each do |c|
             next if c[:type].nil?
 
-            item.txt = c[:_content] if c[:type] == ContentType::TEXT
-            item.html = c[:_content] if c[:type] == ContentType::HTML
+            item.txt = c[:_content] if c[:type] == Zm::Utils::ContentType::TEXT
+            item.html = c[:_content] if c[:type] == Zm::Utils::ContentType::HTML
           end
 
           item

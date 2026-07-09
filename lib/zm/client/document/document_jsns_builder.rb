@@ -3,11 +3,11 @@
 module Zm
   module Client
     # class for account document
-    class DocumentJsnsBuilder < BaseAccountJsnsBuilder
+    class DocumentJsnsBuilder < Base::BaseAccountJsnsBuilder
       def to_delete
         attrs = {
           op: :delete,
-          comp: SoapUtils::OFF,
+          comp: Zm::Utils::SearchUtils::OFF,
           id: @item.id
         }
 

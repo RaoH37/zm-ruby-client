@@ -20,12 +20,12 @@ module Zm
       end
 
       def build_find_by(hash)
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_SERVER_REQUEST)
-        node_server = SoapElement.create(SoapConstants::SERVER)
-                                 .add_attribute(SoapConstants::BY, hash.keys.first)
+        soap_request = Zm::SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_SERVER_REQUEST)
+        node_server = Zm::SoapRequest::SoapElement.create(Zm::SoapRequest::SoapConstants::SERVER)
+                                 .add_attribute(Zm::SoapRequest::SoapConstants::BY, hash.keys.first)
                                  .add_content(hash.values.first)
         soap_request.add_node(node_server)
-        soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma) unless @attrs.nil?
+        soap_request.add_attribute(Zm::SoapRequest::SoapConstants::ATTRS, attrs_comma) unless @attrs.nil?
         soap_request
       end
 
@@ -39,8 +39,8 @@ module Zm
       end
 
       def build_query
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_ALL_SERVERS_REQUEST)
-        soap_request.add_attribute(SoapConstants::SERVICE, @service) unless @service.nil?
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_ALL_SERVERS_REQUEST)
+        soap_request.add_attribute(SoapRequest::SoapConstants::SERVICE, @service) unless @service.nil?
         soap_request
       end
     end

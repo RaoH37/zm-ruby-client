@@ -2,6 +2,7 @@
 
 module Zm
   module Client
+    module Base
     class MailboxInfosCollection
       def initialize(parent)
         @parent = parent
@@ -49,15 +50,15 @@ module Zm
       def zimbraMailHost!
         return if @parent.name.nil? && @parent.id.nil?
 
-        soap_request = SoapElement.account(SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
+        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
 
         node_entry = if @parent.id
-                       SoapElement.create(SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapConstants::BY, SoapConstants::ID)
+                       SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
                                   .add_content(@parent.id)
                      else
-                       SoapElement.create(SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapConstants::BY, SoapConstants::NAME)
+                       SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                  .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::NAME)
                                   .add_content(@parent.name)
                      end
 
@@ -75,7 +76,7 @@ module Zm
       end
 
       def make_query
-        soap_request = SoapElement.account(SoapAccountConstants::GET_INFO_REQUEST)
+        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_INFO_REQUEST)
                                   .add_attributes(jsns)
         @parent.soap_connector.invoke(soap_request)
       end
@@ -95,4 +96,5 @@ module Zm
       end
     end
   end
+end
 end

@@ -7,7 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Resource
         @builder_class = ResourcesBuilder
-        @search_type = SearchType::RESOURCE
+        @search_type = :resources
         super
       end
 
@@ -19,13 +19,13 @@ module Zm
       end
 
       def build_find_by(hash)
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_CALENDAR_RESOURCE_REQUEST)
-        node_res = SoapElement.create(SoapConstants::CAL_RESOURCE)
-                              .add_attribute(SoapConstants::BY, hash.keys.first)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_CALENDAR_RESOURCE_REQUEST)
+        node_res = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::CAL_RESOURCE)
+                              .add_attribute(SoapRequest::SoapConstants::BY, hash.keys.first)
                               .add_content(hash.values.first)
         soap_request.add_node(node_res)
-        soap_request.add_attribute(SoapConstants::ATTRS, attrs_comma)
-        soap_request.add_attribute(SoapConstants::APPLY_COS, @apply_cos)
+        soap_request.add_attribute(SoapRequest::SoapConstants::ATTRS, attrs_comma)
+        soap_request.add_attribute(SoapRequest::SoapConstants::APPLY_COS, @apply_cos)
         soap_request
       end
 
@@ -33,7 +33,20 @@ module Zm
 
       def reset_query_params
         super
-        @attrs = SearchType::Attributes::RESOURCE.dup
+        @attrs = %w[
+          displayName
+          zimbraId
+          zimbraMailHost
+          uid
+          zimbraAccountStatus
+          description
+          zimbraCalResType
+          zimbraIsDelegatedAdminAccount
+          zimbraIsAdminAccount
+          zimbraIsSystemResource
+          zimbraIsSystemAccount
+          zimbraIsExternalVirtualAccount
+        ]
       end
     end
   end

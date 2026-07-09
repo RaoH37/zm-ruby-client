@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class for account appointment
-    class AppointmentJsnsBuilder < BaseAccountJsnsBuilder
+    class AppointmentJsnsBuilder < Base::BaseAccountJsnsBuilder
       def to_jsns
         {
           m: {
@@ -22,7 +22,7 @@ module Zm
 
       def to_update
         jsns = to_jsns
-        jsns[:comp] = SoapUtils::OFF
+        jsns[:comp] = Zm::Utils::SearchUtils::OFF
         jsns[:id] = @item.id
         jsns[:m][:inv][:uid] = @item.uid
         jsns
@@ -43,18 +43,18 @@ module Zm
       def body_to_jsns
         [
           {
-            ct: ContentPart::ALTERNATIVE,
+            ct: Zm::Utils::ContentPart::ALTERNATIVE,
             mp: [body_text_jsns, body_html_jsns]
           }
         ]
       end
 
       def body_text_jsns
-        { ct: ContentType::TEXT, content: { _content: @item.body.text } }
+        { ct: Zm::Utils::ContentType::TEXT, content: { _content: @item.body.text } }
       end
 
       def body_html_jsns
-        { ct: ContentType::HTML, content: { _content: @item.body.html } }
+        { ct: Zm::Utils::ContentType::HTML, content: { _content: @item.body.html } }
       end
 
       def comp_to_jsns

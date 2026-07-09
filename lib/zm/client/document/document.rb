@@ -4,9 +4,11 @@ module Zm
   module Client
     # class for account document
     class Document < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
-      include RequestMethodsMailbox
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
+      extend Relationship
+      has_jsns_builder
 
       attr_accessor :id, :uuid, :name, :s, :d, :l, :luuid, :ms, :mdver, :md, :rev, :f, :t, :meta, :ct,
                     :descEnabled, :ver, :leb, :cr, :cd, :acl, :loid, :sf, :tn
@@ -46,14 +48,6 @@ module Zm
       def download(dest_file_path)
         uploader = @parent.build_uploader
         uploader.download_file(dest_file_path, id, nil)
-      end
-
-      private
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = DocumentJsnsBuilder.new(self)
       end
     end
   end

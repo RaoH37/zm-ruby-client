@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 module Zm
   module Client
     # class config for cluster connection
@@ -78,6 +76,7 @@ module Zm
       end
 
       def init_from_yml(file_config_path)
+        require 'yaml'
         YAML.safe_load_file(file_config_path, symbolize_names: true)
       end
 

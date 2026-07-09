@@ -76,7 +76,7 @@ module Zm
           #   end
           # end
 
-          item.extend(DocumentFolder) if item.view == Zm::Client::FolderView::DOCUMENT
+          item.extend(ModDocumentFolder) if item.view == Zm::Client::FolderView::DOCUMENT
 
           item
         end

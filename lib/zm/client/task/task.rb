@@ -4,8 +4,8 @@ module Zm
   module Client
     # class for account task
     class Task < Base::Object
-      include BelongsToFolder
-      include BelongsToTag
+      include Zm::Utils::BelongsToFolder
+      include Zm::Utils::BelongsToTag
 
       attr_accessor :uid, :priority, :ptst, :percentComplete, :name, :loc, :alarm, :isOrg,
                     :id, :invId, :compNum, :l, :status, :class, :allDay, :f, :tn, :t, :rev,

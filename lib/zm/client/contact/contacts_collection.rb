@@ -7,8 +7,8 @@ module Zm
       def initialize(parent)
         super
         @child_class = Contact
-        @builder_class = ContactBuilder
-        @type = SoapConstants::CONTACT
+        @builder_class = ContactsBuilder
+        @type = SoapRequest::SoapConstants::CONTACT
         @folder_ids = [FolderDefault::CONTACTS.id]
       end
     end

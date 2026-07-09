@@ -4,6 +4,9 @@ module Zm
   module Client
     # class account ace
     class Ace < Base::Object
+      extend Zm::Relationship
+      has_jsns_builder
+
       GT_USER = 'usr'
       GT_GROUP = 'grp'
       GT_DOMAIN = 'dom'
@@ -23,12 +26,6 @@ module Zm
       def delete!
         @parent.soap_connector.invoke(jsns_builder.to_delete)
         true
-      end
-
-      def jsns_builder
-        return @jsns_builder if defined? @jsns_builder
-
-        @jsns_builder = AceJsnsBuilder.new(self)
       end
     end
   end

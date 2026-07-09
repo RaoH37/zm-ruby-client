@@ -25,7 +25,7 @@ module Zm
       end
 
       def find(queue_name)
-        raise ZmError, 'Unknown queue name' unless Zm::Client::MtaQueueName::ALL.include?(queue_name)
+        raise Zm::Error::ZmError, 'Unknown queue name' unless Zm::Client::MtaQueueName::ALL.include?(queue_name)
 
         all! if @queues_h.empty?
         @queues_h[queue_name]
@@ -34,8 +34,8 @@ module Zm
       private
 
       def make_query
-        soap_request = SoapElement.admin(SoapAdminConstants::GET_MAIL_QUEUE_INFO_REQUEST)
-        node_server = SoapElement.create('server').add_attribute(SoapConstants::NAME, @parent.name)
+        soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_MAIL_QUEUE_INFO_REQUEST)
+        node_server = SoapRequest::SoapElement.create('server').add_attribute(SoapRequest::SoapConstants::NAME, @parent.name)
         soap_request.add_node(node_server)
         sac.invoke(soap_request)
       end
