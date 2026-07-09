@@ -1,5 +1,11 @@
 # Changelog
 
+## Released [3.1.]
+
+### [3.1.0] 2026-01
+
+- [Changed] Add secure option in messages find_each method
+
 ## Released [3.0.0]
 
 ### [3.0.0] 2025-12(27)
