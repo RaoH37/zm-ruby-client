@@ -4,6 +4,7 @@
 
 ### [3.1.0] 2026-07
 
+- [Added] Add massive update and delete in admin collection classes
 - [Changed] Replace require by autoload to reduce memory usage
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method
