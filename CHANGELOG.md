@@ -2,8 +2,10 @@
 
 ## Released [3.1.]
 
-### [3.1.0] 2026-01
+### [3.1.0] 2026-07
 
+- [Changed] Replace require by autoload to reduce memory usage
+- [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method
 
 ## Released [3.0.0]
