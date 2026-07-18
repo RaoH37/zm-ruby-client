@@ -150,6 +150,25 @@ module Zm
         soap_request
       end
 
+      def export_contacts(csvfmt: nil, csvlocale: nil, csvsep: nil)
+        @parent.soap_connector
+               .invoke(build_export_contacts(csvfmt:, csvlocale:, csvsep:))
+               .dig(:ExportContactsResponse, :content)
+      end
+
+      def build_export_contacts(csvfmt: nil, csvlocale: nil, csvsep: nil)
+        attrs = {
+          l: id,
+          ct: SoapRequest::SoapConstants::CSV,
+          csvfmt:,
+          csvlocale:,
+          csvsep:
+        }
+        attrs.compact!
+
+        SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::EXPORT_CONTACTS_REQUEST).add_attributes(attrs)
+      end
+
       def download(dest_file_path, fmt: nil)
         uploader = @parent.build_uploader
         uploader.download_folder(dest_file_path, id, fmt:)
