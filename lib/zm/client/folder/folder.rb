@@ -10,7 +10,7 @@ module Zm
 
       attr_accessor :type, :uuid, :name, :absFolderPath, :url, :luuid, :f, :view, :rev, :ms,
                     :webOfflineSyncDays, :activesyncdisabled, :n, :s, :i4ms, :i4next, :zid, :rid, :ruuid,
-                    :owner, :reminder, :acl, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders
+                    :owner, :reminder, :itemCount, :broken, :deletable, :color, :rgb, :fb, :folders
 
       alias nb_messages n
       alias nb_items n
@@ -37,6 +37,7 @@ module Zm
 
         @grants = FolderGrantsCollection.new(self)
       end
+      alias acl grants
 
       def retention_policies
         return @retention_policies if defined? @retention_policies
