@@ -35,7 +35,6 @@ module Zm
           item.ruuid = json.delete(:ruuid)
           item.owner = json.delete(:owner)
           item.reminder = json.delete(:reminder)
-          item.acl = json.delete(:acl)
           item.itemCount = json.delete(:itemCount)
           item.broken = json.delete(:broken)
           item.deletable = json.delete(:deletable)
@@ -43,17 +42,7 @@ module Zm
           item.rgb = json.delete(:rgb)
           item.fb = json.delete(:fb)
 
-          grants = json.dig(:acl, :grant)
-          if grants.is_a?(Array)
-            grants.each do |grant|
-              item.grants.create(
-                grant.delete(:zid),
-                grant.delete(:gt),
-                grant.delete(:perm),
-                grant.delete(:d)
-              )
-            end
-          end
+          update_grants(item, json)
 
           if (policies = json.fetch(:retentionPolicy, []).first).is_a?(Array)
             policies.each do |policy, v|
@@ -66,19 +55,29 @@ module Zm
             end
           end
 
-          # if json[:retentionPolicy].is_a?(Array)
-          #   json[:retentionPolicy].first.each do |policy, v|
-          #     next if v.first[:policy].nil?
-          #
-          #     type = v.first[:policy].first[:type]
-          #     lifetime = v.first[:policy].first[:lifetime]
-          #     item.retention_policies.create(policy, lifetime, type)
-          #   end
-          # end
-
           item.extend(ModDocumentFolder) if item.view == Zm::Client::FolderView::DOCUMENT
 
           item
+        end
+
+        private
+
+        def update_grants(item, json)
+          acl = json.delete(:acl)
+          return unless acl.is_a?(Hash)
+
+          grants = acl[:grant]
+          grants = [grants] unless grants.is_a?(Array)
+          grants.compact!
+
+          grants.each do |grant|
+            item.grants.create(
+              grant.delete(:zid),
+              grant.delete(:gt),
+              grant.delete(:perm),
+              grant.delete(:d)
+            )
+          end
         end
       end
     end
