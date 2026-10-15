@@ -8,6 +8,8 @@
 - [Changed] Replace require by autoload to reduce memory usage
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method
+- [Changed] Require Ruby 3.3 minimum
+- [Changed] Add csv and logger dependencies, remove bundler dependency, pin dependency major versions
 
 ## Released [3.0.0]
 

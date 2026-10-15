@@ -8,4 +8,5 @@ group :development do
   gem "solargraph"
   gem "yard"
   gem "benchmark-ips"
+  gem "get_process_mem"
 end

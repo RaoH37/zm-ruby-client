@@ -8,7 +8,7 @@ Author: Maxime Désécot <maxime.desecot@gmail.com>
 
 OS: Linux distribution LTS
 
-Language: Ruby3.2+
+Language: Ruby3.3+
 
 ```bash
 gem install zm-ruby-client
