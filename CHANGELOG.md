@@ -10,6 +10,7 @@
 - [Changed] Add secure option in messages find_each method
 - [Changed] Require Ruby 3.3 minimum
 - [Changed] Add csv and logger dependencies, remove bundler dependency, pin dependency major versions
+- [Fixed]   Fix default zimbra attributes file path in ClusterConfig
 
 ## Released [3.0.0]
 

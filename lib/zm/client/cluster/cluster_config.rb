@@ -166,7 +166,7 @@ module Zm
       end
 
       def zimbra_attributes_path
-        @zimbra_attributes_path ||= "#{File.dirname(__FILE__)}../../../modules/common/zimbra-attrs.csv"
+        @zimbra_attributes_path ||= File.expand_path('../../modules/common/zimbra-attrs.csv', __dir__)
       end
 
       def zimbra_attributes_path=(path)
