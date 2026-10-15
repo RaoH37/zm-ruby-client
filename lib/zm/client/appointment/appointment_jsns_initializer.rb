@@ -35,6 +35,7 @@ module Zm
         @appointment.s = @json.delete(:s).to_i
         @appointment.ms = @json.delete(:ms).to_i
         @appointment.rev = @json.delete(:rev).to_i
+        @appointment.f = @json.delete(:f) || ''
 
         if inv.nil?
           init_from_search

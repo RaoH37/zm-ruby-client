@@ -12,7 +12,7 @@ module Zm
       has_jsns_builder
 
       attr_accessor :uid, :name, :desc, :start_at, :dur, :end_at, :tn, :allDay, :organizer, :timezone,
-                    :calItemId, :apptId, :invId, :rev, :fb, :transp, :recur, :s, :ms
+                    :calItemId, :apptId, :invId, :rev, :fb, :transp, :recur, :s, :ms, :f
       attr_reader :recipients, :attendees, :body
 
       alias description desc
@@ -30,9 +30,20 @@ module Zm
         yield(self) if block_given?
       end
 
+      def flags
+        return @flags if defined? @flags
+
+        @flags = f.chars
+      end
+
       def download(dest_file_path, fmt: 'ics')
         uploader = @parent.build_uploader
         uploader.download_file(dest_file_path, id, FolderView::APPOINTMENT, fmt:)
+      end
+
+      def read
+        uploader = @parent.build_uploader
+        uploader.read_file(id, FolderView::APPOINTMENT, fmt: 'ics')
       end
 
       def create!
