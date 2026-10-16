@@ -3,7 +3,7 @@
 module Zm
   module Client
     # class factory [tags]
-    class TagBuilder < Base::ObjectsBuilder
+    class TagsBuilder < Base::ObjectsBuilder
       def initialize(parent, json)
         super
         @json_item_key = :tag

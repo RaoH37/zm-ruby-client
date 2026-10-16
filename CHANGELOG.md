@@ -11,6 +11,10 @@
 - [Changed] Require Ruby 3.3 minimum
 - [Changed] Add csv and logger dependencies, remove bundler dependency, pin dependency major versions
 - [Fixed]   Fix default zimbra attributes file path in ClusterConfig
+- [Fixed]   Remove duplicated Recipient class in MessageRecipients
+- [Fixed]   Rename TagBuilder to TagsBuilder to match autoload (account tags raised NameError)
+- [Fixed]   Remove duplicated attribute accessors in SearchFolder
+- [Changed] Fix indentation in several collection classes
 
 ## Released [3.0.0]
 

@@ -26,15 +26,13 @@ module Zm
           def formatted_json(json)
             return [] if json[:a].nil?
 
-            json[:a].reject! { |n| n[:n].nil? }
-            json_map = json[:a].map { |n| [n[:n], n[:_content]] }.freeze
+            hash_multivalued = json[:a].each_with_object({}) do |n, h|
+              next if n[:n].nil?
 
-            hash_multivalued = json_map.each_with_object({}) do |(k, v), h|
-              h[k] ||= []
-              h[k].push(v)
+              (h[n[:n]] ||= []) << n[:_content]
             end
 
-            hash_multivalued.transform_values do |v|
+            hash_multivalued.transform_values! do |v|
               v.length == 1 ? v.first : v
             end
           end

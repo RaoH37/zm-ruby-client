@@ -12,7 +12,7 @@ module Zm
         @sort_by = SoapRequest::SoapConstants::DATE_DESC
       end
 
-      def find_each(offset: 0, limit: 500, secure: true, &block)
+      def find_each(offset: 0, limit: 500, secure: true, &)
         @more = true
         @offset = offset
         @limit = limit
@@ -20,7 +20,7 @@ module Zm
         if secure
           while @more
             begin
-              build_response.each { |item| block.call(item) }
+              build_response.each(&)
             rescue StandardError => e
               logger.error e.message
             end
@@ -29,7 +29,7 @@ module Zm
           end
         else
           while @more
-            build_response.each { |item| block.call(item) }
+            build_response.each(&)
             @offset += @limit
           end
         end

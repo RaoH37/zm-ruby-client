@@ -15,7 +15,7 @@ module Zm
                 packer: ->(entry) { entry.pack.to_msgpack },
                 unpacker: lambda { |data|
                   value, expires_at, version = MessagePack.unpack(data)
-                  new(Marshal.load(value), version: version, expires_at: expires_at)
+                  new(Marshal.load(value), version:, expires_at:)
                 }
               )
             end

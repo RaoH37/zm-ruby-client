@@ -14,7 +14,7 @@ module Zm
         @sort_by = 'taskDueAsc'
       end
 
-      def find_each(offset: 0, limit: 500, &block)
+      def find_each(offset: 0, limit: 500, &)
         (Time.at(0).year..(Time.now.year + 10)).each do |year|
           @start_at = Time.new(year, 1, 1)
           @end_at = Time.new(year, 12, 31)
@@ -23,7 +23,7 @@ module Zm
           @limit = limit
 
           while @more
-            build_response.each { |item| block.call(item) }
+            build_response.each(&)
             @offset += @limit
           end
         end

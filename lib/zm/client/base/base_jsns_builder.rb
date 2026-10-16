@@ -15,7 +15,7 @@ module Zm
         def to_jsns
           {
             name: @item.name,
-            a: instance_variables_array.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
+            a: instance_variables_array.flat_map(&A_ARRAY_PROC).map(&A_NODE_PROC)
           }
         end
 
@@ -24,14 +24,14 @@ module Zm
         def to_update
           {
             id: @item.id,
-            a: instance_variables_array.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
+            a: instance_variables_array.flat_map(&A_ARRAY_PROC).map(&A_NODE_PROC)
           }
         end
 
         def to_patch(hash)
           {
             id: @item.id,
-            a: hash.map(&A_ARRAY_PROC).flatten(1).map(&A_NODE_PROC)
+            a: hash.flat_map(&A_ARRAY_PROC).map(&A_NODE_PROC)
           }
         end
 

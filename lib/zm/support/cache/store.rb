@@ -64,7 +64,7 @@ module Zm
           key = normalize_key(name, options)
           version = normalize_version(options)
 
-          entry = Entry.new(value, **options, version: version)
+          entry = Entry.new(value, **options, version:)
           write_entry(key, entry, **options)
         end
 
@@ -177,7 +177,7 @@ module Zm
 
           value = yield
 
-          entry = Entry.new(value, **options, version: version)
+          entry = Entry.new(value, **options, version:)
           write_entry(key, entry, **options)
           value
         end

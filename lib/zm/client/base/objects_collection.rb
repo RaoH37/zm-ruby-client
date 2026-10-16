@@ -17,7 +17,7 @@ module Zm
         end
 
         def find(id)
-          find_by(id: id)
+          find_by(id:)
         end
 
         def first

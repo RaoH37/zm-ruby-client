@@ -36,7 +36,7 @@ module Zm
         {
           cn: {
             id: @item.id,
-            a: hash.map(&Utils::A_ARRAY_PROC).flatten(1).map(&Utils::A_NODE_PROC)
+            a: hash.flat_map(&Utils::A_ARRAY_PROC).map(&Utils::A_NODE_PROC)
           }
         }
 

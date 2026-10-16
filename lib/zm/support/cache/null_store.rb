@@ -6,8 +6,8 @@ module Zm
       class NullStore < Store
         Cache.register_storage(:null_store, self)
 
-        def fetch(_name, _options = nil, &block)
-          block.call
+        def fetch(_name, _options = nil)
+          yield
         end
 
         def read(_name, _options = nil)

@@ -114,8 +114,8 @@ module Zm
 
       def http_options(url)
         {
-          url: url,
-          headers: headers,
+          url:,
+          headers:,
           request: {
             timeout: @timeout
           },

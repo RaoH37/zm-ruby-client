@@ -78,7 +78,7 @@ module Zm
       end
 
       def reload!
-        jsns = { m: { id: id, html: Zm::Utils::SearchUtils::ON } }
+        jsns = { m: { id:, html: Zm::Utils::SearchUtils::ON } }
 
         soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)

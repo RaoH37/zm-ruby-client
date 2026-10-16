@@ -14,13 +14,13 @@ module Zm
         @sort_by = SoapRequest::SoapConstants::DATE_ASC
       end
 
-      def find_each(offset: 0, limit: 500, &block)
+      def find_each(offset: 0, limit: 500, &)
         @more = true
         @offset = offset
         @limit = limit
 
         while @more
-          build_response.each { |item| block.call(item) }
+          build_response.each(&)
           @offset += @limit
         end
       end

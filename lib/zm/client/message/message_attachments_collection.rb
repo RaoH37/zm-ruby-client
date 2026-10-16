@@ -3,50 +3,50 @@
 module Zm
   module Client
     class MessageAttachmentsCollection
-        include Zm::Utils::MissingMethodStaticCollection
+      include Zm::Utils::MissingMethodStaticCollection
 
-        attr_reader :all
+      attr_reader :all
 
-        def initialize
-          @all = []
-        end
-
-        def add(attachment)
-          return unless attachment.is_a?(Attachment)
-
-          @all.push(attachment)
-        end
+      def initialize
+        @all = []
       end
 
-      # class attachment for email
-      class Attachment
-        attr_accessor :aid, :part, :mid, :ct, :s, :filename, :ci, :cd
+      def add(attachment)
+        return unless attachment.is_a?(Attachment)
 
-        def initialize(parent)
-          @parent = parent
-          yield(self) if block_given?
-        end
+        @all.push(attachment)
+      end
+    end
 
-        def download(dest_file_path)
-          h = {
-            id: @parent.id,
-            part: part,
-            auth: 'qp',
-            zauthtoken: account.token,
-            disp: 'a'
-          }
+    # class attachment for email
+    class Attachment
+      attr_accessor :aid, :part, :mid, :ct, :s, :filename, :ci, :cd
 
-          url = account.home_url
+      def initialize(parent)
+        @parent = parent
+        yield(self) if block_given?
+      end
 
-          url << '?' << h.map { |k, v| "#{k}=#{v}" }.join('&')
+      def download(dest_file_path)
+        h = {
+          id: @parent.id,
+          part:,
+          auth: 'qp',
+          zauthtoken: account.token,
+          disp: 'a'
+        }
 
-          uploader = @parent.build_uploader
-          uploader.download_file_with_url(url, dest_file_path)
-        end
+        url = account.home_url
 
-        def account
-          @parent.parent
-        end
+        url << '?' << h.map { |k, v| "#{k}=#{v}" }.join('&')
+
+        uploader = @parent.build_uploader
+        uploader.download_file_with_url(url, dest_file_path)
+      end
+
+      def account
+        @parent.parent
       end
     end
   end
+end

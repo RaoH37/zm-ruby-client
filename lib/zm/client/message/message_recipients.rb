@@ -3,54 +3,33 @@
 module Zm
   module Client
     class MessageRecipients
-        attr_reader :all
+      attr_reader :all
 
-        def initialize
-          @all = []
-        end
-
-        def add(recipient)
-          return unless recipient.is_a?(Zm::Client::Recipient)
-
-          @all.push(recipient)
-        end
-
-        def to
-          @all.select { |r| r.field == Zm::Client::Recipient::TO }
-        end
-
-        def cc
-          @all.select { |r| r.field == Zm::Client::Recipient::CC }
-        end
-
-        def bcc
-          @all.select { |r| r.field == Zm::Client::Recipient::BCC }
-        end
-
-        def from
-          @all.select { |r| r.field == Zm::Client::Recipient::FROM }
-        end
+      def initialize
+        @all = []
       end
 
-      # Class one recipient for email
-      class Recipient
-        FROM = :f
-        TO = :t
-        CC = :c
-        BCC = :b
+      def add(recipient)
+        return unless recipient.is_a?(Zm::Client::Recipient)
 
-        attr_accessor :field, :email
-        attr_writer :display_name
+        @all.push(recipient)
+      end
 
-        def initialize(field, email, display_name = nil)
-          @email = email
-          @field = field.to_sym
-          @display_name = display_name
-        end
+      def to
+        @all.select { |r| r.field == Zm::Client::Recipient::TO }
+      end
 
-        def display_name
-          @display_name || "#{@email} (#{@display_name})"
-        end
+      def cc
+        @all.select { |r| r.field == Zm::Client::Recipient::CC }
+      end
+
+      def bcc
+        @all.select { |r| r.field == Zm::Client::Recipient::BCC }
+      end
+
+      def from
+        @all.select { |r| r.field == Zm::Client::Recipient::FROM }
       end
     end
   end
+end

@@ -10,3 +10,8 @@ group :development do
   gem "benchmark-ips"
   gem "get_process_mem"
 end
+
+group :test do
+  gem "minitest", "~> 5.20"
+  gem "rake", "~> 13.1"
+end

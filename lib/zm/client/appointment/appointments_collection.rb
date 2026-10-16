@@ -13,7 +13,7 @@ module Zm
       end
 
       def find(id)
-        jsns = { m: { id: id, html: Zm::Utils::SearchUtils::ON } }
+        jsns = { m: { id:, html: Zm::Utils::SearchUtils::ON } }
 
         soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::GET_MSG_REQUEST)
                                   .add_attributes(jsns)
@@ -23,7 +23,7 @@ module Zm
         AppointmentJsnsInitializer.new(@parent, entry).create
       end
 
-      def find_each(offset: 0, limit: 500, start_year: nil, end_year: nil, &block)
+      def find_each(offset: 0, limit: 500, start_year: nil, end_year: nil, &)
         start_year ||= Time.now.year - 10
         end_year ||= Time.now.year + 10
 
@@ -35,7 +35,7 @@ module Zm
           @limit = limit
 
           while @more
-            build_response.each { |item| block.call(item) }
+            build_response.each(&)
             @offset += @limit
           end
         end

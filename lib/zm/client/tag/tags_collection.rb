@@ -6,7 +6,7 @@ module Zm
     class TagsCollection < Base::AccountObjectsCollection
       def initialize(parent)
         @child_class = Tag
-        @builder_class = TagBuilder
+        @builder_class = TagsBuilder
         super
       end
 

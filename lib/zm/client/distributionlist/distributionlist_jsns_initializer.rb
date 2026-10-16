@@ -16,12 +16,12 @@ module Zm
           end
 
           if json[:dlm].is_a?(Array)
-            item.members.all = json[:dlm].map { |a| a[:_content] }.compact
+            item.members.all = json[:dlm].filter_map { |a| a[:_content] }
           elsif !item.zimbraMailForwardingAddress.empty?
             item.members.all = item.zimbraMailForwardingAddress
           end
 
-          item.owners.all = json[:owners].first[:owner].map { |a| a[:name] }.compact if json[:owners].is_a?(Array)
+          item.owners.all = json[:owners].first[:owner].filter_map { |a| a[:name] } if json[:owners].is_a?(Array)
 
           item
         end

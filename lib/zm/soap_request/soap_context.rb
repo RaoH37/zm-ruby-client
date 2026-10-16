@@ -26,7 +26,7 @@ module Zm
       end
 
       def account(by, value)
-        @account = { by: by, _content: value }
+        @account = { by:, _content: value }
         self
       end
 

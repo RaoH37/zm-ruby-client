@@ -3,98 +3,98 @@
 module Zm
   module Client
     module Base
-    class MailboxInfosCollection
-      def initialize(parent)
-        @parent = parent
-        @sections = []
-        @rights = []
-      end
+      class MailboxInfosCollection
+        def initialize(parent)
+          @parent = parent
+          @sections = []
+          @rights = []
+        end
 
-      def all
-        build_response
-      end
-      alias all! all
+        def all
+          build_response
+        end
+        alias all! all
 
-      def clear
-        reset_query_params
-      end
+        def clear
+          reset_query_params
+        end
 
-      def sections(*entries)
-        entries.flatten!
-        @sections += entries
-        self
-      end
+        def sections(*entries)
+          entries.flatten!
+          @sections += entries
+          self
+        end
 
-      def rights(*entries)
-        entries.flatten!
-        @rights += entries
-        self
-      end
+        def rights(*entries)
+          entries.flatten!
+          @rights += entries
+          self
+        end
 
-      def read
-        reset_query_params
-        @sections = ['mbox']
-        rep = build_response
-        @parent.id = rep[:id]
-        @parent.used = rep[:used]
-        @parent.public_url = rep[:publicURL]
-        @parent.zimbraCOSId = rep[:cos][:id]
-        @parent.home_url = rep[:rest]
-        rep
-      end
+        def read
+          reset_query_params
+          @sections = ['mbox']
+          rep = build_response
+          @parent.id = rep[:id]
+          @parent.used = rep[:used]
+          @parent.public_url = rep[:publicURL]
+          @parent.zimbraCOSId = rep[:cos][:id]
+          @parent.home_url = rep[:rest]
+          rep
+        end
 
-      def zimbraMailHost
-        @zimbraMailHost || zimbraMailHost!
-      end
+        def zimbraMailHost
+          @zimbraMailHost || zimbraMailHost!
+        end
 
-      def zimbraMailHost!
-        return if @parent.name.nil? && @parent.id.nil?
+        def zimbraMailHost!
+          return if @parent.name.nil? && @parent.id.nil?
 
-        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
+          soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_ACCOUNT_INFO_REQUEST)
 
-        node_entry = if @parent.id
-                       SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
-                                  .add_content(@parent.id)
-                     else
-                       SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
-                                  .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::NAME)
-                                  .add_content(@parent.name)
-                     end
+          node_entry = if @parent.id
+                         SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                                 .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
+                                                 .add_content(@parent.id)
+                       else
+                         SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACCOUNT)
+                                                 .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::NAME)
+                                                 .add_content(@parent.name)
+                       end
 
-        soap_request.add_node(node_entry)
+          soap_request.add_node(node_entry)
 
-        @zimbraMailHost = @parent.soap_connector
-                                 .invoke(soap_request)
-                                 .dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
-      end
+          @zimbraMailHost = @parent.soap_connector
+                                   .invoke(soap_request)
+                                   .dig(:GetAccountInfoResponse, :_attrs, :zimbraMailHost)
+        end
 
-      private
+        private
 
-      def build_response
-        make_query[:GetInfoResponse]
-      end
+        def build_response
+          make_query[:GetInfoResponse]
+        end
 
-      def make_query
-        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_INFO_REQUEST)
-                                  .add_attributes(jsns)
-        @parent.soap_connector.invoke(soap_request)
-      end
+        def make_query
+          soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_INFO_REQUEST)
+                                                 .add_attributes(jsns)
+          @parent.soap_connector.invoke(soap_request)
+        end
 
-      def jsns
-        h = {
-          rights: @rights.join(','),
-          sections: @sections.join(',')
-        }
-        h.compact!
-        h
-      end
+        def jsns
+          h = {
+            rights: @rights.join(','),
+            sections: @sections.join(',')
+          }
+          h.compact!
+          h
+        end
 
-      def reset_query_params
-        @sections.clear
-        @rights.clear
+        def reset_query_params
+          @sections.clear
+          @rights.clear
+        end
       end
     end
   end
-end
 end

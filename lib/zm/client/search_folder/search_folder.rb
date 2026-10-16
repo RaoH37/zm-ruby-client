@@ -10,8 +10,7 @@ module Zm
       has_jsns_builder
 
       attr_accessor :uuid, :deletable, :name, :absFolderPath, :luuid, :color, :rgb, :rev, :ms,
-                    :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types,
-                    :name, :color, :rgb, :query, :sortBy
+                    :webOfflineSyncDays, :activesyncdisabled, :query, :sortBy, :types
 
       def initialize(parent)
         @l = FolderDefault::ROOT.id

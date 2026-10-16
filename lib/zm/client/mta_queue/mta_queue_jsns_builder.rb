@@ -14,7 +14,7 @@ module Zm
         soap_request.add_node(node_server)
         node_queue = SoapRequest::SoapElement.create('queue')
         node_server.add_node(node_queue)
-        node_action = SoapRequest::SoapElement.create('action').add_attributes({ op: op, by: :id }).add_content(ids.join(','))
+        node_action = SoapRequest::SoapElement.create('action').add_attributes({ op:, by: :id }).add_content(ids.join(','))
         node_queue.add_node(node_action)
 
         soap_request
@@ -31,7 +31,7 @@ module Zm
         soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_MAIL_QUEUE_REQUEST)
         node_server = SoapRequest::SoapElement.create('server').add_attribute(SoapRequest::SoapConstants::NAME, @item.server.name)
         soap_request.add_node(node_server)
-        node_queue = SoapRequest::SoapElement.create('queue').add_attributes({ name: @item.mta_queue.name, scan: 1, query: query })
+        node_queue = SoapRequest::SoapElement.create('queue').add_attributes({ name: @item.mta_queue.name, scan: 1, query: })
         node_server.add_node(node_queue)
 
         soap_request

@@ -3,65 +3,65 @@
 module Zm
   module Client
     class AccountObjectTagsCollection
-        def initialize(parent)
-          @parent = parent
+      def initialize(parent)
+        @parent = parent
+      end
+
+      def all
+        return @all if defined? @all
+
+        @all = @parent.tn.to_s.split(',')
+      end
+
+      def add!(*new_tags)
+        new_tags.flatten!
+        Utils.map_format(new_tags, String, :name)
+        return false if new_tags.delete_if { |tag_name| all.include?(tag_name) }.empty?
+
+        new_tags.each do |tag_name|
+          attrs = {
+            op: :tag,
+            id: @parent.id,
+            tn: tag_name
+          }
+
+          do_action(attrs)
         end
 
-        def all
-          return @all if defined? @all
+        @all += new_tags
+        update_parent
+      end
 
-          @all = @parent.tn.to_s.split(',')
+      def remove!(*tag_names)
+        tag_names.flatten!
+        Utils.map_format(tag_names, String, :name)
+        return false if tag_names.delete_if { |tag_name| !all.include?(tag_name) }.empty?
+
+        tag_names.each do |tag_name|
+          attrs = {
+            op: '!tag',
+            id: @parent.id,
+            tn: tag_name
+          }
+
+          do_action(attrs)
         end
 
-        def add!(*new_tags)
-          new_tags.flatten!
-          Utils.map_format(new_tags, String, :name)
-          return false if new_tags.delete_if { |tag_name| all.include?(tag_name) }.empty?
+        @all -= tag_names
+        update_parent
+      end
 
-          new_tags.each do |tag_name|
-            attrs = {
-              op: :tag,
-              id: @parent.id,
-              tn: tag_name
-            }
+      def update_parent
+        @parent.tn = @all.join(',')
+      end
 
-            do_action(attrs)
-          end
+      def do_action(attrs)
+        soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ITEM_ACTION_REQUEST)
+        node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
+        soap_request.add_node(node_action)
 
-          @all += new_tags
-          update_parent
-        end
-
-        def remove!(*tag_names)
-          tag_names.flatten!
-          Utils.map_format(tag_names, String, :name)
-          return false if tag_names.delete_if { |tag_name| !all.include?(tag_name) }.empty?
-
-          tag_names.each do |tag_name|
-            attrs = {
-              op: '!tag',
-              id: @parent.id,
-              tn: tag_name
-            }
-
-            do_action(attrs)
-          end
-
-          @all -= tag_names
-          update_parent
-        end
-
-        def update_parent
-          @parent.tn = @all.join(',')
-        end
-
-        def do_action(attrs)
-          soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ITEM_ACTION_REQUEST)
-          node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION).add_attributes(attrs)
-          soap_request.add_node(node_action)
-
-          @parent.parent.soap_connector.invoke(soap_request)
-        end
+        @parent.parent.soap_connector.invoke(soap_request)
       end
     end
   end
+end

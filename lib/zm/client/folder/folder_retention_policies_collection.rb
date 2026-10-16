@@ -25,11 +25,15 @@ module Zm
       end
 
       def save!
-        @parent.soap_connector.invoke(jsns_builder.to_retentionpolicy)
+        soap_connector.invoke(jsns_builder.to_retentionpolicy)
         true
       end
 
       private
+
+      def soap_connector
+        @parent.parent.soap_connector
+      end
 
       def jsns_builder
         return @jsns_builder if defined? @jsns_builder

@@ -22,7 +22,7 @@ module Zm
         }
         folder.compact!
 
-        attrs = { folder: folder }
+        attrs = { folder: }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_FOLDER_REQUEST)
                    .add_attributes(attrs)
@@ -50,7 +50,7 @@ module Zm
           action.delete(:l)
         end
 
-        attrs = { action: action }
+        attrs = { action: }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
@@ -62,14 +62,14 @@ module Zm
           id: @item.id
         }.merge(options)
 
-        attrs = { action: action }
+        attrs = { action: }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)
       end
 
       def to_retentionpolicy
-        retentionpolicy = @item.retention_policies.all.map { |rp| retentionpolicy_jsns(rp) }.reduce({}, :merge)
+        retentionpolicy = @item.retention_policies.all.each_with_object({}) { |rp, h| h.merge!(retentionpolicy_jsns(rp)) }
 
         attrs = {
           action: {
@@ -90,7 +90,7 @@ module Zm
           recursive: false
         }
 
-        attrs = { action: action }
+        attrs = { action: }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::FOLDER_ACTION_REQUEST)
                    .add_attributes(attrs)

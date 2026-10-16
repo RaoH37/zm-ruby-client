@@ -3,72 +3,72 @@
 module Zm
   module Client
     module Base
-    class MailboxPrefsCollection
-      def initialize(parent)
-        @parent = parent
-        @preferences = []
-      end
+      class MailboxPrefsCollection
+        def initialize(parent)
+          @parent = parent
+          @preferences = []
+        end
 
-      def all
-        build_response
-      end
-      alias all! all
+        def all
+          build_response
+        end
+        alias all! all
 
-      def clear
-        reset_query_params
-      end
+        def clear
+          reset_query_params
+        end
 
-      def preferences(*entries)
-        entries.flatten!
-        @preferences += entries
-        self
-      end
+        def preferences(*entries)
+          entries.flatten!
+          @preferences += entries
+          self
+        end
 
-      def update!(hash)
-        # The JSON version is different:
-        # {
-        #   ModifyPrefsRequest: {
-        #     "_attrs": {
-        #       "prefName1": "prefValue1",
-        #       "prefName2": "prefValue2"
-        #       "+nameOfMulitValuedPref3": "addedPrefValue3",
-        #       "-nameOfMulitValuedPref4": "removedPrefValue4",
-        #       "nameOfMulitValuedPref5": ["prefValue5one","prefValue5two"],
-        #       ...
-        #     },
-        #     _jsns: "urn:zimbraAccount"
-        #   }
-        # }
+        def update!(hash)
+          # The JSON version is different:
+          # {
+          #   ModifyPrefsRequest: {
+          #     "_attrs": {
+          #       "prefName1": "prefValue1",
+          #       "prefName2": "prefValue2"
+          #       "+nameOfMulitValuedPref3": "addedPrefValue3",
+          #       "-nameOfMulitValuedPref4": "removedPrefValue4",
+          #       "nameOfMulitValuedPref5": ["prefValue5one","prefValue5two"],
+          #       ...
+          #     },
+          #     _jsns: "urn:zimbraAccount"
+          #   }
+          # }
 
-        req = {
-          _attrs: hash
-        }
+          req = {
+            _attrs: hash
+          }
 
-        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::MODIFY_PREFS_REQUEST).add_attributes(req)
-        @parent.soap_connector.invoke(soap_request)
-      end
+          soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::MODIFY_PREFS_REQUEST).add_attributes(req)
+          @parent.soap_connector.invoke(soap_request)
+        end
 
-      private
+        private
 
-      def build_response
-        make_query.dig(:GetPrefsResponse, :_attrs)
-      end
+        def build_response
+          make_query.dig(:GetPrefsResponse, :_attrs)
+        end
 
-      def make_query
-        soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_PREFS_REQUEST).add_attributes(jsns)
-        @parent.soap_connector.invoke(soap_request)
-      end
+        def make_query
+          soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::GET_PREFS_REQUEST).add_attributes(jsns)
+          @parent.soap_connector.invoke(soap_request)
+        end
 
-      def jsns
-        return nil if @preferences.empty?
+        def jsns
+          return nil if @preferences.empty?
 
-        { prefs: @preferences.map { |name| { name: name } } }
-      end
+          { prefs: @preferences.map { |name| { name: } } }
+        end
 
-      def reset_query_params
-        @preferences.clear
+        def reset_query_params
+          @preferences.clear
+        end
       end
     end
   end
-end
 end

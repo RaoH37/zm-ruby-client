@@ -1,0 +1,28 @@
+# frozen_string_literal: true
+
+require_relative 'integration_helper'
+
+class ClusterZimbraAttributesIntegrationTest < ZmTest::IntegrationTest
+
+  def setup
+    @config = Zm::Client::ClusterConfig.new('./test/fixtures/config.yml')
+    @admin = Zm::Client::Cluster.new(@config)
+  end
+
+  def test_all
+    assert @admin.zimbra_attributes.all.is_a?(Array)
+  end
+
+  def test_not_empty
+    assert !@admin.zimbra_attributes.all.empty?
+  end
+
+  def test_all_account
+    assert !@admin.zimbra_attributes.all_account_attrs.empty?
+  end
+
+  def test_first
+    attr = @admin.zimbra_attributes.all.first
+    assert attr.is_a?(Zm::Client::Base::ZimbraAttribute)
+  end
+end

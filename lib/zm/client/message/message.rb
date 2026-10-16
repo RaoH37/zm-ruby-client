@@ -70,7 +70,7 @@ module Zm
 
         attrs.select! { |k| authorized_keys.include?(k) }
 
-        attrs.merge!({ op: :update, id: id })
+        attrs.merge!({ op: :update, id: })
 
         attrs.compact!
 

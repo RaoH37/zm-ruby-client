@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+require_relative 'integration_helper'
+
+class SharesIntegrationTest < ZmTest::IntegrationTest
+
+  def setup
+    @admin = Zm::Client::Cluster.new(Zm::Client::ClusterConfig.new('./test/fixtures/config.yml'))
+    @admin.login
+
+    @fixture_accounts = YAML.load(File.read('./test/fixtures/accounts.yml'))
+  end
+
+  def test_all
+    account = @admin.accounts.find_by name: @fixture_accounts['accounts']['maxime']['email']
+    account.login
+    assert account.shares.all.is_a?(Array)
+    assert account.shares.all.any?
+  end
+end

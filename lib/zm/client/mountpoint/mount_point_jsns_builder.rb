@@ -22,7 +22,7 @@ module Zm
         }
         link.compact!
 
-        attrs = { link: link }
+        attrs = { link: }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_MOUNTPOINT_REQUEST)
                    .add_attributes(attrs)

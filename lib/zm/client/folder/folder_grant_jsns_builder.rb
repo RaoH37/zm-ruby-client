@@ -19,7 +19,7 @@ module Zm
           action: {
             op: :grant,
             id: @item.folder_id,
-            grant: grant
+            grant:
           }
         }
 

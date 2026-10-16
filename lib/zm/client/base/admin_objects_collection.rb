@@ -61,7 +61,7 @@ module Zm
           self
         end
 
-        def find_each(offset: 0, limit: 1_000, &block)
+        def find_each(offset: 0, limit: 1_000, &)
           previous_persistent = @persistent.dup
           @persistent = true
 
@@ -73,7 +73,7 @@ module Zm
           @limit = limit
 
           while @offset < total
-            build_response.each { |item| block.call(item) }
+            build_response.each(&)
             @offset += @limit
           end
 

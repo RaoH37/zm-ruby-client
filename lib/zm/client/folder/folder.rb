@@ -114,14 +114,14 @@ module Zm
       def build_add_message(eml, d = nil, f = nil, tn = nil)
         m = {
           l: id,
-          d: d,
-          f: f,
-          tn: tn,
+          d:,
+          f:,
+          tn:,
           content: { _content: eml }
         }
         m.compact!
 
-        attrs = { m: m }
+        attrs = { m: }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ADD_MSG_REQUEST)
                    .add_attributes(attrs)

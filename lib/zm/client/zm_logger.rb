@@ -5,7 +5,7 @@ require 'logger'
 module Zm
   module Client
     class ZmLogger < ::Logger
-      def initialize(*args, **kwargs)
+      def initialize(*, **)
         super
         @formatter ||= ZmFormatter.new
       end

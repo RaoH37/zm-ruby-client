@@ -50,7 +50,7 @@ module Zm
                              .add_content(@parent.id)
         soap_request.add_node(node_dl)
         node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION)
-                                 .add_attributes({ op: op, owner: jsns_owners(emails) })
+                                 .add_attributes({ op:, owner: jsns_owners(emails) })
         soap_request.add_node(node_action)
         soap_request
       end
