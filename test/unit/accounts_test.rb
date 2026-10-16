@@ -93,4 +93,83 @@ class AccountsTest < ZmTest::UnitTest
     ], nodes
     assert_equal 'new', account.description
   end
+
+  def test_update_accepts_keyword_attributes
+    @fake.on(:ModifyAccountRequest, { ModifyAccountResponse: { account: [] } })
+    account = @cluster.accounts.new { |acc| acc.id = 'a1b2' }
+
+    assert account.update!(description: 'new', update_attributes: false)
+
+    assert_equal [{ n: 'description', _content: 'new' }], attr_nodes(@fake.last_request(:ModifyAccountRequest).body)
+    assert_nil account.description
+  end
+
+  def test_update_does_not_mutate_given_hash
+    @fake.on(:ModifyAccountRequest, { ModifyAccountResponse: { account: [] } })
+    account = @cluster.accounts.new { |acc| acc.id = 'a1b2' }
+    attributes = { description: 'new', unknownAttribute: 'x' }
+
+    account.update!(attributes)
+
+    assert_equal({ description: 'new', unknownAttribute: 'x' }, attributes)
+  end
+
+  def test_local_transport_updates_mail_transport
+    @fake.on(:ModifyAccountRequest, { ModifyAccountResponse: { account: [] } })
+    account = @cluster.accounts.new do |acc|
+      acc.id = 'a1b2'
+      acc.zimbraMailHost = 'mbox1.domain.tld'
+    end
+
+    account.local_transport!
+
+    assert_equal [{ n: 'zimbraMailTransport', _content: 'lmtp:mbox1.domain.tld:7025' }],
+                 attr_nodes(@fake.last_request(:ModifyAccountRequest).body)
+  end
+
+  def test_update_all_accepts_keyword_attributes
+    search_accounts('a@domain.tld', 'b@domain.tld')
+    @fake.on(:ModifyAccountRequest, { ModifyAccountResponse: { account: [] } })
+
+    @cluster.accounts.where('(mail=*@domain.tld)').update_all!(zimbraAccountStatus: 'locked')
+
+    modify_requests = @fake.requests.select { |request| request.name == 'ModifyAccountRequest' }
+    assert_equal 2, modify_requests.size
+    assert(modify_requests.all? { |r| attr_nodes(r.body) == [{ n: 'zimbraAccountStatus', _content: 'locked' }] })
+  end
+
+  def test_update_all_continues_on_soap_error
+    search_accounts('a@domain.tld', 'b@domain.tld')
+    @fake.fault(:ModifyAccountRequest, code: 'service.FAILURE')
+
+    accounts = @cluster.accounts.update_all!({ description: 'x' })
+
+    assert_equal(2, @fake.requests.count { |request| request.name == 'ModifyAccountRequest' })
+    refute(accounts.any?(&:updated?))
+  end
+
+  def test_update_all_stops_on_soap_error
+    search_accounts('a@domain.tld', 'b@domain.tld')
+    @fake.fault(:ModifyAccountRequest, code: 'service.FAILURE')
+
+    @cluster.accounts.update_all!({ description: 'x' }, onerror: 'stop')
+
+    assert_equal(1, @fake.requests.count { |request| request.name == 'ModifyAccountRequest' })
+  end
+
+  def test_delete_all_continues_on_soap_error
+    search_accounts('a@domain.tld', 'b@domain.tld')
+    @fake.fault(:DeleteAccountRequest, code: 'service.FAILURE')
+
+    @cluster.accounts.delete_all!
+
+    assert_equal(2, @fake.requests.count { |request| request.name == 'DeleteAccountRequest' })
+  end
+
+  private
+
+  def search_accounts(*names)
+    accounts = names.map { |name| ZmTest::FakeData.account(name:) }
+    @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { account: accounts, num: accounts.size } })
+  end
 end

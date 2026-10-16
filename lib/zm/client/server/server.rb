@@ -11,7 +11,8 @@ module Zm
       has_many :backups, klass: :'Zm::Client::BackupsCollection'
       has_many :accounts, klass: :'Zm::Client::ServerAccountsCollection'
 
-      def update!(hash, update_attributes: true)
+      def update!(hash = nil, update_attributes: true, **attrs)
+        hash = hash.nil? ? attrs : hash.merge(attrs)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
         do_update!(hash)

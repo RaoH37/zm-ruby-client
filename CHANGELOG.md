@@ -14,6 +14,8 @@
 - [Fixed]   Remove duplicated Recipient class in MessageRecipients
 - [Fixed]   Rename TagBuilder to TagsBuilder to match autoload (account tags raised NameError)
 - [Fixed]   Remove duplicated attribute accessors in SearchFolder
+- [Fixed]   Accept keyword attributes in admin update!, update_all! and mass_update! (local_transport! raised ArgumentError)
+- [Fixed]   Rescue Zm::Error::SoapError in mass_update! and mass_delete! (onerror option raised NameError)
 - [Changed] Fix indentation in several collection classes
 
 ## Released [3.0.0]

@@ -18,7 +18,8 @@ module Zm
         jsns_builder.to_update
       end
 
-      def update!(hash, update_attributes: true)
+      def update!(hash = nil, update_attributes: true, **attrs)
+        hash = hash.nil? ? attrs : hash.merge(attrs)
         return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
 
         do_update!(hash)

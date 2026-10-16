@@ -94,16 +94,17 @@ module Zm
                      .add_attributes(jsns)
         end
 
-        def update_all!(hash, onerror: ONERRORS.first, update_attributes: true)
-          mass_update!(build_response, hash, onerror:, update_attributes:)
+        def update_all!(hash = nil, onerror: ONERRORS.first, update_attributes: true, **attrs)
+          mass_update!(build_response, hash, onerror:, update_attributes:, **attrs)
         end
 
-        def mass_update!(items, hash, onerror: ONERRORS.first, update_attributes: true)
+        def mass_update!(items, hash = nil, onerror: ONERRORS.first, update_attributes: true, **attrs)
+          hash = hash.nil? ? attrs : hash.merge(attrs)
           format_mass_items_parameter(items)
 
           items.each do |item|
             item.update!(hash, update_attributes:)
-          rescue Zm::Client::SoapError => e
+          rescue Zm::Error::SoapError => e
             @parent.logger.error e.message
             @parent.logger.debug e.backtrace.join("\n")
 
@@ -117,12 +118,12 @@ module Zm
           mass_delete!(build_response, onerror:)
         end
 
-        def mass_delete!(items, onerror:)
+        def mass_delete!(items, onerror: ONERRORS.first)
           format_mass_items_parameter(items)
 
           items.each do |item|
             item.delete!
-          rescue Zm::Client::SoapError => e
+          rescue Zm::Error::SoapError => e
             @parent.logger.error e.message
             @parent.logger.debug e.backtrace.join("\n")
 
