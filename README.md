@@ -4,12 +4,15 @@
 ![Ruby](https://img.shields.io/badge/ruby-3.3%2B-CC342D)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
-**Drive Zimbra and Carbonio from Ruby the way ActiveRecord drives your database.**
+**Zimbra and Carbonio in plain Ruby: code that reads like what it does.**
 
-No XML, no SOAP envelopes, no token juggling: just collections and objects with the methods you already know,
-`find_by`, `where`, `save!`, `update!`, `delete!`.
+```ruby
+cluster.accounts.find_by(name: 'john@domain.tld').update!(zimbraAccountStatus: 'locked')
+```
 
-- **Familiar**: ActiveRecord-style API with chainable queries.
+No XML, no SOAP envelopes, no token juggling. Read the line out loud, that's what it does.
+
+- **Readable**: short verbs (`find_by`, `where`, `save!`, `update!`, `delete!`) and chainable queries.
 - **Complete**: admin side (accounts, domains, COS, distribution lists, servers…) and mailbox side
   (messages, folders, contacts, calendars, tags, shares…), over both SOAP and REST.
 - **Lightweight**: Ruby 3.3+, few dependencies, code autoloaded on demand.
@@ -73,7 +76,7 @@ account.messages.where('is:unread from:boss@domain.tld').all.each do |message|
 end
 ```
 
-**Create things the way you create records.**
+**Create anything with a block.**
 
 ```ruby
 folder = account.folders.new do |f|
