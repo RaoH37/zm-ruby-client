@@ -4,6 +4,7 @@
 
 ### [3.1.0] 2026-07
 
+- [Added]   Add RBS signatures for the public API in sig/ (cluster, config, errors, admin objects and collections, mailbox entry points), rake rbs:validate and rbs:test tasks
 - [Added] Add massive update and delete in admin collection classes
 - [Added] Add optional TLS certificate verification in ClusterConfig (ssl_verify, ssl_ca_file, ssl_ca_path), disabled by default
 - [Changed] Cache only read SOAP requests (Get*, Search*, Count*): write and auth requests are no longer replayed from cache

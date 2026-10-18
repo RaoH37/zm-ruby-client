@@ -1,0 +1,191 @@
+module Zm
+  module Client
+    module Base
+      class Object
+        attr_accessor parent: untyped
+        attr_accessor token: untyped
+        attr_accessor name: String?
+        attr_accessor id: String?
+        attr_accessor updated: bool
+
+        def initialize: (untyped parent) ?{ (self) -> void } -> void
+
+        def recorded?: () -> bool
+        def updated?: () -> bool
+        def save!: () -> untyped
+        def clone: () ?{ (self) -> void } -> self
+        def logger: () -> ::Logger
+        def update_attribute: (Symbol | String key, untyped value) -> void
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+
+      # Collections are generic in signatures only: T is the type of the objects they build.
+      class ObjectsCollection[T]
+        attr_reader parent: untyped
+
+        def new: () ?{ (T) -> void } -> T
+        def find: (String id) -> T
+        def first: () -> T?
+        def all: () -> Array[T]
+        alias all! all
+
+        def per_page: (Integer? limit) -> self
+        alias limit per_page
+        def page: (Integer? offset) -> self
+        alias offset page
+        def order: (untyped sort_by, ?Integer sort_ascending) -> self
+
+        # Delegated to all through method_missing.
+        def each: () { (T) -> void } -> Array[T]
+        def map: [U] () { (T) -> U } -> Array[U]
+        def select: () { (T) -> boolish } -> Array[T]
+        def length: () -> Integer
+
+        def logger: () -> ::Logger
+      end
+
+      class AdminObjectsCollection[T] < ObjectsCollection[T]
+        ONERRORS: Array[String]
+
+        type onerror = "continue" | "stop"
+
+        def initialize: (untyped parent) -> void
+
+        def find_by: (Hash[Symbol, String] hash) -> T
+        def find_by!: (Hash[Symbol, String] hash) -> T
+        def find_by_or_nil: (Hash[Symbol, String] hash, ?singleton(StandardError) error_handler) -> T?
+
+        def ldap: () -> self
+        def where: (String ldap_query) -> self
+        def attrs: (*(String | Symbol | Array[String | Symbol]) attributes) -> self
+        def count: () -> Integer
+        def clear: () -> self
+
+        def find_each: (?offset: Integer, ?limit: Integer) { (T) -> void } -> void
+
+        def update_all!: (?Hash[Symbol, untyped]? hash, ?onerror: onerror, ?update_attributes: bool, **untyped attrs)
+                       -> Array[T]
+        def mass_update!: (Array[T | String] items, ?Hash[Symbol, untyped]? hash, ?onerror: onerror,
+                           ?update_attributes: bool, **untyped attrs) -> Array[T]
+        def delete_all!: (?onerror: onerror) -> Array[T]
+        def mass_delete!: (Array[T | String] items, ?onerror: onerror) -> Array[T]
+      end
+
+      class AccountObjectsCollection[T] < ObjectsCollection[T]
+        def initialize: (untyped parent) -> void
+      end
+
+      class AccountSearchObjectsCollection[T] < AccountObjectsCollection[T]
+        attr_accessor more: bool
+
+        def find: (String id) -> T
+        def start_at: (Time | Date start_at) -> self
+        def end_at: (Time | Date end_at) -> self
+        def folders: (*(Folder | Array[Folder]) folders) -> self
+        def folder_ids: (*(String | Array[String]) folder_ids) -> self
+        def where: (String query) -> self
+        def order: (String sort_by) -> self
+        def ids: () -> Array[String]
+        def reset: () -> void
+        def delete_all: (Array[String] ids) -> untyped
+      end
+
+      class ZimbraAttribute
+        attr_reader name: String
+        attr_reader type: String?
+        attr_reader objects_scope: Array[String]
+
+        def immutable?: () -> bool
+      end
+
+      class ZimbraAttributesCollection
+        attr_reader path: String
+        attr_reader all: Array[ZimbraAttribute]
+
+        def self.shared: (Cluster parent) -> ZimbraAttributesCollection
+
+        def initialize: (Cluster parent) -> void
+
+        def all_account_attrs: () -> Array[ZimbraAttribute]
+        def all_account_attrs_writable_names: () -> Array[String]
+        def all_cos_attrs: () -> Array[ZimbraAttribute]
+        def all_cos_attrs_writable_names: () -> Array[String]
+        def all_domain_attrs: () -> Array[ZimbraAttribute]
+        def all_domain_attrs_writable_names: () -> Array[String]
+        def all_server_attrs: () -> Array[ZimbraAttribute]
+        def all_server_attrs_writable_names: () -> Array[String]
+        def all_distributionlist_attrs: () -> Array[ZimbraAttribute]
+        def all_distributionlist_attrs_writable_names: () -> Array[String]
+        def all_resource_attrs: () -> Array[ZimbraAttribute]
+        def all_resource_attrs_writable_names: () -> Array[String]
+      end
+
+      class MailboxObject < Object
+        attr_accessor home_url: String?
+        attr_accessor public_url: String?
+        attr_accessor password: String?
+        attr_writer used: Integer
+        attr_writer domain_key: String?
+
+        def soap_account_connector: () -> Connector::SoapAccountConnector
+        def soap_connector: () -> Connector::SoapBaseConnector
+        def soap_admin_connector: () -> Connector::SoapAdminConnector
+        alias sac soap_admin_connector
+
+        def domain_name: () -> String
+        def used: () -> Integer?
+        def used!: () -> Integer?
+        def mbxid: () -> Integer?
+        def mbxid!: () -> Integer?
+
+        def token: () -> Token?
+        def token=: (String value) -> void
+        def logged?: () -> bool
+        def alive?: () -> bool
+        def logged_and_alive?: () -> bool
+        def domain_key: () -> String?
+
+        # Delegate auth when the cluster is logged, else password or preauth.
+        def login: () -> void
+        def account_login: () -> void
+        def account_login_preauth: (?Integer expires) -> void
+        def account_login_password: () -> void
+        def admin_login: () -> void
+
+        def password!: (?String? new_password) -> (String | false)
+        def local_transport: () -> String
+        def local_transport!: () -> untyped
+        def is_local_transport?: () -> bool
+        def is_external_transport?: () -> bool
+        def last_logon: () -> Time?
+
+        def build_uploader: () -> Upload
+        def rest_url: () -> String
+
+        def aliases: () -> AccountAliasesCollection
+        def infos: () -> MailboxInfosCollection
+        def prefs: () -> MailboxPrefsCollection
+        def messages: () -> MessagesCollection
+        def folders: () -> FoldersCollection
+        def mount_points: () -> MountPointsCollection
+        alias mountpoints mount_points
+        def search_folders: () -> SearchFoldersCollection
+        def identities: () -> IdentitiesCollection
+        def shares: () -> SharesCollection
+        def contacts: () -> ContactsCollection
+        def appointments: () -> AppointmentsCollection
+        def tags: () -> TagsCollection
+        def tasks: () -> TasksCollection
+        def aces: () -> AcesCollection
+        alias rights aces
+        def signatures: () -> SignaturesCollection
+        def documents: () -> DocumentsCollection
+        def memberships: () -> AccountDlsMembershipCollection
+        def dls_owner: () -> AccountDlsOwnerCollection
+        def filter_rules: () -> FilterRulesCollection
+        def outgoing_filter_rules: () -> OutgoingFilterRulesCollection
+        def data_sources: () -> DataSourcesCollection
+      end
+    end
+  end
+end

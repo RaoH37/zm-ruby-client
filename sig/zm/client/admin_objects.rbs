@@ -1,0 +1,261 @@
+module Zm
+  module SoapRequest
+    class SoapElement
+    end
+
+    module RequestMethodsAdmin
+      def delete!: () -> nil
+      def modify!: () -> true
+      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
+      def rename!: (String new_name) -> String
+
+      def build_create: () -> SoapElement
+      def build_modify: () -> SoapElement
+      def build_delete: () -> SoapElement
+      def build_rename: (String new_name) -> SoapElement
+    end
+  end
+
+  module Client
+    class Account < Base::MailboxObject
+      include SoapRequest::RequestMethodsAdmin
+
+      def cos: () -> Cos?
+      def create!: () -> String
+      def created_at: () -> Time?
+      def flush_cache!: () -> true
+      def attrs_write: () -> Array[String]
+      def batch: () -> BatchRequest
+      def empty_dumpster!: () -> untyped
+    end
+
+    class AccountsCollection < Base::AdminObjectsCollection[Account]
+      def quotas: (?domain_name: String?, ?target_server_id: String?) -> Array[untyped]?
+    end
+
+    class AccountAliasesCollection
+      def initialize: (Account parent) -> void
+
+      def all: () -> Array[String]
+      def add!: (String email) -> bool
+      def remove!: (String email) -> bool
+    end
+
+    class Resource < Base::MailboxObject
+      include SoapRequest::RequestMethodsAdmin
+
+      LOCATION: String
+      EQUIPMENT: String
+      TYPES: Array[String]
+
+      def create!: () -> String
+      def attrs_write: () -> Array[String]
+      def location?: () -> bool
+      def equipment?: () -> bool
+    end
+
+    class ResourcesCollection < Base::AdminObjectsCollection[Resource]
+    end
+
+    class Domain < Base::Object
+      include SoapRequest::RequestMethodsAdmin
+
+      def create!: () -> String
+      def cos: () -> Cos?
+      def attrs_write: () -> Array[String]
+      def DKIMPublicTxt: () -> String?
+
+      def accounts: () -> DomainAccountsCollection
+      def resources: () -> DomainResourcesCollection
+      def distribution_lists: () -> DomainDistributionListsCollection
+      alias distributionlists distribution_lists
+    end
+
+    class DomainsCollection < Base::AdminObjectsCollection[Domain]
+    end
+
+    class DomainAccountsCollection < AccountsCollection
+    end
+
+    class DomainResourcesCollection < ResourcesCollection
+    end
+
+    class DomainDistributionListsCollection < DistributionListsCollection
+    end
+
+    class Cos < Base::Object
+      def create!: () -> String
+      def modify!: () -> true
+      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
+      def delete!: () -> nil
+      def clone!: (String new_name) -> String
+      def attrs_write: () -> Array[String]
+
+      def servers: () -> CosServersCollection
+      def domains: () -> CosDomainsCollection
+      def accounts: () -> CosAccountsCollection
+    end
+
+    class CosServersCollection
+      def initialize: (Cos parent) -> void
+
+      def all: () -> Array[Server]
+      alias all! all
+      def add!: (*(Server | Array[Server]) servers) -> bool
+      def remove!: (*(Server | Array[Server]) servers) -> bool
+    end
+
+    class CosDomainsCollection < DomainsCollection
+    end
+
+    class CosAccountsCollection < AccountsCollection
+    end
+
+    class CosesCollection < Base::AdminObjectsCollection[Cos]
+      def clone!: (String new_name) ?{ (Cos) -> void } -> String
+    end
+
+    class Server < Base::Object
+      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
+      def mailboxes: () -> Array[Hash[Symbol, untyped]]?
+
+      def mta_queues: () -> MtaQueuesCollection
+      def backups: () -> BackupsCollection
+      def accounts: () -> ServerAccountsCollection
+    end
+
+    class MtaQueue < Base::Object
+      attr_accessor n: Integer?
+      alias nb_items n
+
+      def server: () -> Server
+      def hold!: (Array[String] ids) -> untyped
+      def release!: (Array[String] ids) -> untyped
+      def delete!: (Array[String] ids) -> untyped
+      def requeue!: (Array[String] ids) -> untyped
+    end
+
+    class MtaQueuesCollection < Base::ObjectsCollection[MtaQueue]
+      # The known queues without querying the server.
+      def defaults: () -> Array[MtaQueue]
+      def defaults!: () -> Array[MtaQueue]
+      # Raises Zm::Error::ZmError on an unknown queue name.
+      def find: (String queue_name) -> MtaQueue?
+    end
+
+    class Backup < Base::Object
+      attr_accessor label: String?
+      attr_accessor type: String?
+      attr_accessor aborted: bool?
+      attr_accessor start: Integer?
+      attr_accessor end: Integer?
+      attr_accessor minRedoSeq: Integer?
+      attr_accessor maxRedoSeq: Integer?
+      attr_accessor live: bool?
+      attr_accessor accounts: untyped
+      alias name label
+
+      def server: () -> Server
+      def start_at: () -> Time?
+      def end_at: () -> Time?
+      def full?: () -> bool
+      def incremental?: () -> bool
+    end
+
+    class BackupsCollection < Base::ObjectsCollection[Backup]
+    end
+
+    class ServerAccountsCollection < AccountsCollection
+    end
+
+    class ServersCollection < Base::AdminObjectsCollection[Server]
+      # Filters servers by enabled service (mailbox, mta, proxy...).
+      def where: (String service) -> self
+    end
+
+    class DistributionList < Base::Object
+      include SoapRequest::RequestMethodsAdmin
+
+      def create!: () -> String
+      def local_transport: () -> String
+      def local_transport!: () -> bool
+      def local_transport?: () -> bool
+      def external_transport?: () -> bool
+      def hide_in_gal?: () -> bool
+      def group?: () -> bool
+      def mailing_list?: () -> bool
+      def attrs_write: () -> Array[String]
+
+      def aliases: () -> DistributionListAliasesCollection
+      def members: () -> DistributionListMembersCollection
+      def owners: () -> DistributionListOwnersCollection
+      def memberships: () -> DlsMembershipCollection
+      def aces: () -> DistributionListAcesCollection
+    end
+
+    class DistributionListsCollection < Base::AdminObjectsCollection[DistributionList]
+    end
+
+    class DistributionListAliasesCollection
+      def initialize: (DistributionList parent) -> void
+
+      def all: () -> Array[String]
+      def add!: (String email) -> bool
+      def remove!: (String email) -> bool
+    end
+
+    class DistributionListMembersCollection
+      attr_accessor all: Array[String]
+
+      def initialize: (DistributionList parent) -> void
+
+      # Raises ArgumentError on nil, non-String or blank email.
+      def add!: (String | Array[String] emails) -> bool
+      def remove!: (String | Array[String] emails) -> bool
+    end
+
+    class DistributionListOwnersCollection
+      attr_accessor all: Array[String]
+
+      def initialize: (DistributionList parent) -> void
+
+      def add!: (*(String | Array[String]) emails) -> bool
+      def remove!: (*(String | Array[String]) emails) -> bool
+    end
+
+    class DlMembership < Data
+      attr_reader name: String
+      attr_reader id: String
+      attr_reader via: String?
+    end
+
+    class DlsMembershipCollection < Base::ObjectsCollection[DlMembership]
+    end
+
+    class DistributionListAcesCollection
+      class DistributionListAce < Data
+        attr_reader zimbra_id: String
+        attr_reader type: String
+        attr_reader right: String?
+      end
+
+      def initialize: (DistributionList parent) -> void
+
+      def all: () -> Array[DistributionListAce]
+    end
+
+    class Upload
+      def initialize: (String base_url, String token, ?is_token_admin: bool, **untyped rest_options) ?{ (Upload) -> void } -> void
+
+      def download_file: (String dest_file_path, String file_id, String? type, ?fmt: String?) -> nil
+      def read_file: (String file_id, String? type, ?fmt: String?) -> String
+      def download_files: (String dest_file_path, Array[String] file_ids, String? type, ?fmt: String?) -> nil
+      def download_attachment: (String dest_file_path, String message_id, String part) -> nil
+      def download_folder: (String dest_file_path, String folder_id, ?fmt: String?) -> nil
+      def send_file: (String src_file_path, String folder_id, ?fmt: String?, ?type: String?, ?resolve: String?) -> String
+      def upload_attachment: (String src_file_path) -> String
+      def download_file_with_url: (String url, String dest_file_path) -> nil
+      def same_origin?: (String url) -> bool
+    end
+  end
+end

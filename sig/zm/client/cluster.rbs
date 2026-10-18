@@ -1,0 +1,152 @@
+module Zm
+  module Client
+    type cache_store = [Symbol] | [Symbol, Hash[Symbol, untyped]]
+
+    # Anything Logger can write to: a file path, $stdout, a StringIO...
+    interface _LogDevice
+      def write: (*untyped) -> untyped
+      def close: () -> untyped
+    end
+    type count_object_type = :userAccount | :account | :alias | :dl | :domain | :cos | :server | :calresource
+                           | :internalUserAccount
+
+    class ClusterConfig
+      BASE_URL_REGEX: Regexp
+
+      attr_reader zimbra_admin_url: String?
+      attr_reader zimbra_public_url: String?
+      attr_writer logger: ::Logger
+      attr_writer colorize_logging: bool
+      attr_accessor zimbra_admin_login: String?
+      attr_accessor zimbra_admin_password: String?
+      attr_accessor domains: Array[ClusterConfigDomain]
+      attr_accessor zimbra_version: String
+      attr_accessor log_path: String | _LogDevice
+      attr_accessor timeout: Integer
+      attr_accessor ssl_verify: bool
+      attr_accessor ssl_ca_file: String?
+      attr_accessor ssl_ca_path: String?
+
+      def initialize: (?(String | Hash[Symbol, untyped])? parameters) ?{ (ClusterConfig) -> void } -> void
+
+      def cache: () -> Support::Cache::Store
+      def cache_store: () -> cache_store
+      def cache_store=: (cache_store options) -> void
+      def ssl_options: () -> Hash[Symbol, untyped]
+
+      def zimbra_admin_url=: (String url) -> void
+      def zimbra_public_url=: (String url) -> void
+
+      def find_domain: (String domain_name) -> ClusterConfigDomain?
+      def domain_key: (String domain_name) -> String?
+      def has_admin_credentials?: () -> bool
+
+      def zimbra_attributes_path: () -> String
+      def zimbra_attributes_path=: (String path) -> void
+
+      def logger: () -> ::Logger
+      def log_level=: (Integer level) -> void
+    end
+
+    class ClusterConfigDomain < Data
+      attr_reader name: String
+      attr_reader key: String?
+
+      def self.new: (String name, String? key) -> instance
+                  | (name: String, key: String?) -> instance
+    end
+
+    class ClusterConfigError < StandardError
+    end
+
+    class Cluster
+      attr_reader soap_admin_connector: Connector::SoapAdminConnector
+      attr_reader config: ClusterConfig
+      attr_reader zimbra_attributes: Base::ZimbraAttributesCollection
+      attr_reader type: String?
+      attr_reader version: String?
+      attr_reader release: String?
+      attr_reader buildDate: String?
+      attr_reader host: String?
+      attr_reader majorversion: String?
+      attr_reader minorversion: String?
+      attr_reader microversion: String?
+
+      def initialize: (ClusterConfig config) -> void
+
+      def has_admin_credentials?: () -> bool
+      def token: () -> Token?
+      def token=: (String value) -> void
+
+      # Raises ClusterConfigError without admin credentials, Zm::Error::AuthError on bad credentials.
+      def login: () -> void
+      def logged?: () -> bool
+      def alive?: () -> bool
+      def logged_and_alive?: () -> bool
+
+      def license: () -> License?
+
+      def domains: () -> DomainsCollection
+      def accounts: () -> AccountsCollection
+      def resources: () -> ResourcesCollection
+      def servers: () -> ServersCollection
+      def coses: () -> CosesCollection
+      def distribution_lists: () -> DistributionListsCollection
+      alias distributionlists distribution_lists
+
+      def domain_key: (String domain_name) -> String?
+      def count_object: (count_object_type type) -> Integer
+      def email_exist?: (String email) -> bool
+      def infos!: () -> void
+      def logger: () -> ::Logger
+      def batch: () -> BatchRequest
+    end
+
+    class Token
+      def initialize: (String str) -> void
+
+      def to_s: () -> String
+      def decoded: () -> String
+      def metadatas: () -> Hash[String, String?]
+      def zimbra_id: () -> String?
+      def admin?: () -> bool
+      def server_version: () -> String?
+      def expire_at: () -> Time
+      def expired?: () -> bool
+    end
+
+    class License < Base::Object
+    end
+
+    class BatchRequest
+      ONERRORS: Array[String]
+
+      attr_reader requests: Array[untyped]
+
+      def initialize: (Connector::SoapBaseConnector connector) -> void
+      def invoke: (?onerror: "continue" | "stop") -> Array[untyped]
+    end
+  end
+
+  module Connector
+    class SoapBaseConnector
+    end
+
+    class SoapAdminConnector < SoapBaseConnector
+    end
+
+    class SoapAccountConnector < SoapBaseConnector
+    end
+  end
+
+  module Support
+    module Cache
+      class Store
+      end
+
+      def self.registered_storage: () -> Hash[Symbol, Symbol | singleton(Store)]
+      def self.register_storage: (Symbol key, Symbol | singleton(Store) klass) -> void
+      def self.storage: (Symbol key) -> singleton(Store)?
+    end
+  end
+end

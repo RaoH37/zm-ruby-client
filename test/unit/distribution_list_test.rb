@@ -64,6 +64,8 @@ class DistributionListTest < ZmTest::UnitTest
   end
 
   def test_members_add_with_nil_raises_before_any_request
+    skip 'calls are ill-typed on purpose' if ENV['RBS_TEST_TARGET']
+
     assert_raises(ArgumentError) { @dl.members.add!(['john@domain.tld', nil]) }
     assert_raises(ArgumentError) { @dl.members.add!(nil) }
     assert_raises(ArgumentError) { @dl.members.remove!(nil) }
