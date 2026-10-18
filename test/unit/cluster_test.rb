@@ -82,4 +82,28 @@ class ClusterTest < ZmTest::UnitTest
 
     refute cluster.alive?
   end
+
+  def test_zimbra_attributes_are_shared_between_clusters
+    first = Zm::Client::Cluster.new(build_config)
+    second = Zm::Client::Cluster.new(build_config)
+
+    assert_same first.zimbra_attributes, second.zimbra_attributes
+    refute first.zimbra_attributes.instance_variable_defined?(:@parent)
+    assert Zm::Client::Account.method_defined?(:zimbraMailHost=)
+  end
+
+  def test_zimbra_attributes_are_loaded_per_file
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'attrs.csv')
+      File.write(path, "name,optionalIn,flags,requiredIn,cardinality,callback,immutable,type,value,max,min,since\n" \
+                       "zmTestOnlyAttr,account,,,,,,string,,,,\n")
+      config = build_config
+      config.zimbra_attributes_path = path
+
+      attributes = Zm::Client::Cluster.new(config).zimbra_attributes
+
+      refute_same Zm::Client::Cluster.new(build_config).zimbra_attributes, attributes
+      assert_equal ['zmTestOnlyAttr'], attributes.all_account_attrs_writable_names
+    end
+  end
 end

@@ -13,8 +13,7 @@ module Zm
         @config = config
         @version = config.zimbra_version
 
-        @zimbra_attributes = Base::ZimbraAttributesCollection.new(self)
-        @zimbra_attributes.set_methods
+        @zimbra_attributes = Base::ZimbraAttributesCollection.shared(self)
 
         @soap_admin_connector = Zm::Connector::SoapAdminConnector.create(@config)
       end

@@ -8,22 +8,37 @@ module Zm
       class ZimbraAttributesCollection
         include Zm::Utils::MissingMethodStaticCollection
 
-        attr_reader :all_versioned
+        MUTEX = Mutex.new
+        CSV_OPTIONS = {
+          headers: true, skip_blanks: true, strip: true, header_converters: ->(header) { header.to_sym }
+        }.freeze
+
+        class << self
+          def shared(parent)
+            path = File.expand_path(parent.config.zimbra_attributes_path)
+            MUTEX.synchronize { shared_instances[path] ||= new(parent).tap(&:set_methods) }
+          end
+
+          def load_attributes(path)
+            CSV.open(path, **CSV_OPTIONS).map do |attr|
+              attr_h = attr.to_h
+              attr_h.compact!
+              ZimbraAttribute.new(**attr_h)
+            end.freeze
+          end
+
+          private
+
+          def shared_instances
+            @shared_instances ||= {}
+          end
+        end
+
+        attr_reader :all_versioned, :path
 
         def initialize(parent)
-          @parent = parent
-
-          @all = CSV.open(
-            File.expand_path(@parent.config.zimbra_attributes_path),
-            headers: true,
-            skip_blanks: true,
-            strip: true,
-            header_converters: ->(header) { header.to_sym }
-          ).map do |attr|
-            attr_h = attr.to_h
-            attr_h.compact!
-            ZimbraAttribute.new(**attr_h)
-          end.freeze
+          @path = File.expand_path(parent.config.zimbra_attributes_path)
+          @all = self.class.load_attributes(@path)
         end
 
         def set_methods

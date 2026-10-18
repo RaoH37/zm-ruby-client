@@ -17,6 +17,8 @@
 - [Fixed]   Server#mailboxes and AccountsCollection#quotas left the target server set on the cluster admin connector
 - [Fixed]   MessagesCollection#find_each(secure: true) looped forever when the search request failed
 - [Changed] Replace require by autoload to reduce memory usage
+- [Changed] Share the Zimbra attributes catalog between clusters using the same attributes file (CSV parsed and accessors defined once)
+- [Changed] Reduce allocations when building objects from SOAP responses (about 90% fewer for accounts)
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method
 - [Changed] Require Ruby 3.3 minimum
