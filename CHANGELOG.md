@@ -13,6 +13,9 @@
 - [Fixed]   REST download and read error messages were always empty (streamed body), error pages are no longer written to the destination file
 - [Fixed]   Alias, distribution list member and owner add!/remove! raised FrozenError on frozen emails and mutated the given strings
 - [Changed] Utils.format_email raises ArgumentError on nil, non-String or blank email instead of NoMethodError
+- [Fixed]   Delegated account connector shared the cluster SOAP context: every following admin request carried the account header
+- [Fixed]   Server#mailboxes and AccountsCollection#quotas left the target server set on the cluster admin connector
+- [Fixed]   MessagesCollection#find_each(secure: true) looped forever when the search request failed
 - [Changed] Replace require by autoload to reduce memory usage
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method

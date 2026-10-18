@@ -10,9 +10,19 @@ module Zm
         @account = nil
       end
 
+      def initialize_copy(source)
+        super
+        @source = source
+        @token = nil
+      end
+
       def token(str)
         @token = str
         self
+      end
+
+      def auth_token
+        @token || @source&.auth_token
       end
 
       def user_agent(str)
@@ -32,7 +42,7 @@ module Zm
 
       def to_hash
         h = {
-          authToken: @token,
+          authToken: auth_token,
           userAgent: { name: @user_agent },
           account: @account,
           targetServer: @target_server

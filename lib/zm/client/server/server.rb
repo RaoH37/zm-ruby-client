@@ -30,8 +30,7 @@ module Zm
 
       def mailboxes
         soap_request = Zm::SoapRequest::SoapElement.admin(SoapRequest::SoapAdminConstants::GET_ALL_MAILBOXES_REQUEST)
-        @parent.soap_admin_connector.context.target_server(@id)
-        @parent.soap_admin_connector.invoke(soap_request).dig(:GetAllMailboxesResponse, :mbox)
+        @parent.soap_admin_connector.target_invoke(soap_request, @id).dig(:GetAllMailboxesResponse, :mbox)
       end
     end
   end

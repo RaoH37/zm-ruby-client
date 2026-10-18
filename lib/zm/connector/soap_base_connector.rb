@@ -27,6 +27,11 @@ module Zm
         @context = Zm::SoapRequest::SoapContext.new
       end
 
+      def initialize_copy(source)
+        super
+        @context = @context.dup
+      end
+
       def verbose!
         @verbose = true
       end

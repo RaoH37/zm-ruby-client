@@ -32,11 +32,7 @@ module Zm
       def quotas(domain_name: @domain_name, target_server_id: @target_server_id)
         return nil if domain_name.nil? && target_server_id.nil?
 
-        if target_server_id.nil?
-          @all_servers = Zm::Utils::SearchUtils::ON
-        else
-          sac.context.target_server(target_server_id)
-        end
+        @all_servers = Zm::Utils::SearchUtils::ON if target_server_id.nil?
 
         jsns = {
           domain: domain_name,
@@ -51,9 +47,7 @@ module Zm
 
         soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_QUOTA_USAGE_REQUEST)
                                   .add_attributes(jsns)
-        json = sac.invoke(soap_request)
-
-        sac.context.target_server(nil) unless target_server_id.nil?
+        json = target_server_id.nil? ? sac.invoke(soap_request) : sac.target_invoke(soap_request, target_server_id)
 
         reset_query_params
         @builder_class.new(@parent, json).make

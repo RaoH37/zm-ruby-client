@@ -17,25 +17,29 @@ module Zm
         @offset = offset
         @limit = limit
 
-        if secure
-          while @more
-            begin
-              build_response.each(&)
-            rescue StandardError => e
-              logger.error e.message
-            end
+        while @more
+          items = secure ? secure_build_response : build_response
+          break if items.nil?
 
-            @offset += @limit
-          end
-        else
-          while @more
-            build_response.each(&)
-            @offset += @limit
-          end
+          secure ? secure_each(items, &) : items.each(&)
+          @offset += @limit
         end
       end
 
       private
+
+      def secure_build_response
+        build_response
+      rescue StandardError => e
+        logger.error "Messages search stopped at offset #{@offset}: #{e.message}"
+        nil
+      end
+
+      def secure_each(items, &)
+        items.each(&)
+      rescue StandardError => e
+        logger.error e.message
+      end
 
       def build_options
         options = super
