@@ -3,6 +3,8 @@
 module Zm
   module Connector
     class SoapBaseConnector
+      include NetworkErrorHandler
+
       BASESPACE = 'urn:zimbra'
       HTTP_HEADERS = {
         'Content-Type' => 'application/json; charset=utf-8',
@@ -83,7 +85,7 @@ module Zm
 
       def post(json_body, error_handler)
         @logger.debug 'Load from remote'
-        response = http_client.post(@soap_path, json_body)
+        response = handle_network_errors { http_client.post(@soap_path, json_body) }
         @logger.debug { Zm::Utils::LogFilter.filter(response.body) }
 
         raise(error_handler, error_body(response)) if response.status >= 400

@@ -9,6 +9,7 @@
 - [Changed] Cache only read SOAP requests (Get*, Search*, Count*): write and auth requests are no longer replayed from cache
 - [Changed] Store cache entries with msgpack only (no Marshal), cache files created with 0600 and directories with 0700: existing cache entries are ignored
 - [Fixed]   Mask passwords, preauth and auth tokens in debug and verbose HTTP logs
+- [Changed] Raise Zm::Error::ConnectionError (original Faraday error as cause) on connection failure, timeout and SSL error instead of Faraday errors
 - [Changed] Replace require by autoload to reduce memory usage
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method

@@ -8,5 +8,6 @@ module Zm
     autoload :SoapAdminConnector, 'zm/connector/soap_admin_connector'
     autoload :SoapAccountConnector, 'zm/connector/soap_account_connector'
     autoload :RestConnector, 'zm/connector/rest_connector'
+    autoload :NetworkErrorHandler, 'zm/connector/network_error_handler'
   end
 end

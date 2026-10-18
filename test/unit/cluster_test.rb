@@ -34,10 +34,15 @@ class ClusterTest < ZmTest::UnitTest
     assert_empty @fake.requests
   end
 
-  def test_login_propagates_network_errors
-    @fake.network_error(:AuthRequest)
+  def test_login_raises_connection_error_on_network_errors
+    [Faraday::ConnectionFailed.new('refused'), Faraday::TimeoutError.new('timeout'), Faraday::SSLError.new('cert')]
+      .each do |network_error|
+        @fake.network_error(:AuthRequest, network_error)
 
-    assert_raises(Faraday::ConnectionFailed) { Zm::Client::Cluster.new(build_config).login }
+        error = assert_raises(Zm::Error::ConnectionError) { Zm::Client::Cluster.new(build_config).login }
+        assert_instance_of network_error.class, error.cause
+        assert_includes error.message, network_error.class.name
+      end
   end
 
   def test_non_json_error_response_raises_soap_error

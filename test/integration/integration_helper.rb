@@ -13,6 +13,7 @@ module ZmTest
     CONFIG_PATH = File.join(FIXTURES_PATH, 'config.yml')
 
     NETWORK_ERRORS = [
+      Zm::Error::ConnectionError,
       Faraday::ConnectionFailed,
       Faraday::TimeoutError,
       Faraday::SSLError,

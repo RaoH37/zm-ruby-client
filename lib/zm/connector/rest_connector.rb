@@ -6,6 +6,8 @@ require 'uri'
 module Zm
   module Connector
     class RestConnector
+      include NetworkErrorHandler
+
       attr_reader :verbose, :timeout
       attr_writer :cookies
 
@@ -22,36 +24,23 @@ module Zm
       def download(download_url, dest_file_path)
         url, path = split_url(download_url)
 
-        conn = conn_get(url)
-
-        response = nil
-
-        File.open(dest_file_path, 'wb') do |f|
-          response = conn.get(path) do |request|
-            request.options.on_data = proc do |chunk, _, _|
-              f.write chunk
-            end
-          end
+        response = File.open(dest_file_path, 'wb') do |f|
+          stream_get(url, path) { |chunk| f.write(chunk) }
         end
 
-        return unless response.status >= 400
+        return if response.status < 400
 
-        FileUtils.rm_f(dest_file_path)
         raise Zm::Error::RestError, "Download failure: #{response.body} (status=#{response.status})"
+      rescue Zm::Error::ConnectionError, Zm::Error::RestError
+        FileUtils.rm_f(dest_file_path)
+        raise
       end
 
       def read(download_url)
         url, path = split_url(download_url)
 
-        conn = conn_get(url)
-
         data = +''
-
-        response = conn.get(path) do |request|
-          request.options.on_data = proc do |chunk, _, _|
-            data.concat(chunk)
-          end
-        end
+        response = stream_get(url, path) { |chunk| data.concat(chunk) }
 
         if response.status >= 400
           raise Zm::Error::RestError, "Download failure: #{response.body} (status=#{response.status})"
@@ -69,12 +58,22 @@ module Zm
         end
 
         payload = { file: Faraday::Multipart::FilePart.new(src_file_path, nil) }
-        response = conn.post(path, payload)
+        response = handle_network_errors { conn.post(path, payload) }
 
         upload_return(response, failure_message: "Upload failure ! #{src_file_path}")
       end
 
       private
+
+      def stream_get(url, path, &on_chunk)
+        conn = conn_get(url)
+
+        handle_network_errors do
+          conn.get(path) do |request|
+            request.options.on_data = proc { |chunk, _, _| on_chunk.call(chunk) }
+          end
+        end
+      end
 
       def conn_get(url)
         Faraday.new(**http_options(url)) do |faraday|
