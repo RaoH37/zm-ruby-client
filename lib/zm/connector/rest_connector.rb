@@ -24,13 +24,11 @@ module Zm
       def download(download_url, dest_file_path)
         url, path = split_url(download_url)
 
-        response = File.open(dest_file_path, 'wb') do |f|
+        File.open(dest_file_path, 'wb') do |f|
           stream_get(url, path) { |chunk| f.write(chunk) }
         end
 
-        return if response.status < 400
-
-        raise Zm::Error::RestError, "Download failure: #{response.body} (status=#{response.status})"
+        nil
       rescue Zm::Error::ConnectionError, Zm::Error::RestError
         FileUtils.rm_f(dest_file_path)
         raise
@@ -40,12 +38,7 @@ module Zm
         url, path = split_url(download_url)
 
         data = +''
-        response = stream_get(url, path) { |chunk| data.concat(chunk) }
-
-        if response.status >= 400
-          raise Zm::Error::RestError, "Download failure: #{response.body} (status=#{response.status})"
-        end
-
+        stream_get(url, path) { |chunk| data.concat(chunk) }
         data
       end
 
@@ -65,14 +58,25 @@ module Zm
 
       private
 
-      def stream_get(url, path, &on_chunk)
-        conn = conn_get(url)
+      def stream_get(url, path)
+        error_body = +''
 
-        handle_network_errors do
-          conn.get(path) do |request|
-            request.options.on_data = proc { |chunk, _, _| on_chunk.call(chunk) }
+        response = handle_network_errors do
+          conn_get(url).get(path) do |request|
+            request.options.on_data = proc do |chunk, _, env|
+              env.status.to_i >= 400 ? error_body.concat(chunk) : yield(chunk)
+            end
           end
         end
+
+        return response if response.status < 400
+
+        raise Zm::Error::RestError, download_failure_message(response, error_body)
+      end
+
+      def download_failure_message(response, error_body)
+        body = error_body.empty? ? response.body.to_s : error_body
+        "Download failure: #{extract_title(body) || body[0, 200]} (status=#{response.status})"
       end
 
       def conn_get(url)
