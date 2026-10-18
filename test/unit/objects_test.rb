@@ -73,4 +73,26 @@ class ObjectsTest < Minitest::Test
       assert_raises(ArgumentError) { Zm::Client::Utils.format_email(value) }
     end
   end
+
+  def test_zimbra_attribute_keeps_used_columns_only
+    attribute = Zm::Client::Base::ZimbraAttribute.new(
+      name: 'zimbraMailHost', optionalIn: 'account,cos', requiredIn: 'server', immutable: '1', type: 'string',
+      flags: 'accountInfo', cardinality: 'single', since: '8.0.0'
+    )
+
+    assert_equal %w[account cos server], attribute.objects_scope
+    assert attribute.is_account_scoped?
+    refute attribute.is_domain_scoped?
+    assert attribute.immutable?
+    assert_same(-'string', attribute.type)
+    refute_respond_to attribute, :flags
+  end
+
+  def test_zimbra_attribute_without_scope
+    attribute = Zm::Client::Base::ZimbraAttribute.new(name: 'cn')
+
+    assert_empty attribute.objects_scope
+    refute attribute.immutable?
+    assert_nil attribute.type
+  end
 end

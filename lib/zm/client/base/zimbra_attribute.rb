@@ -4,31 +4,17 @@ module Zm
   module Client
     module Base
       class ZimbraAttribute
-        attr_reader :name, :optionalIn, :flags, :requiredIn, :cardinality, :callback, :immutable, :type, :value, :max,
-                    :min, :since
+        attr_reader :name, :type, :objects_scope
 
-        def initialize(name: nil, optionalIn: nil, flags: nil, requiredIn: nil, cardinality: nil, callback: nil,
-                       immutable: nil, type: nil, value: nil, max: nil, min: nil, since: nil)
+        def initialize(name: nil, optionalIn: nil, requiredIn: nil, immutable: nil, type: nil, **)
           @name = name
-          @optionalIn = optionalIn.to_s.split(',')
-          @flags = flags
-          @requiredIn = requiredIn.to_s.split(',')
-          @cardinality = cardinality
-          @callback = callback
-          @immutable = immutable
-          @type = type
-          @value = value
-          @max = max
-          @min = min
-          @since = since
+          @type = type && -type
+          @immutable = immutable == '1'
+          @objects_scope = (optionalIn.to_s.split(',') + requiredIn.to_s.split(',')).map!(&:-@).freeze
         end
 
         def immutable?
-          immutable == '1'
-        end
-
-        def objects_scope
-          @objects_scope ||= (optionalIn + requiredIn).freeze
+          @immutable
         end
 
         def is_account_scoped?
