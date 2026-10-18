@@ -14,6 +14,13 @@ namespace :test do
     t.test_files = FileList['test/integration/**/*_test.rb']
     t.warning = false
   end
+
+  desc 'Run the CRUD tests against a real server (ZIMBRA_ADMIN_URL, ZIMBRA_ADMIN_LOGIN, ZIMBRA_ADMIN_PASSWORD)'
+  Rake::TestTask.new(:live) do |t|
+    t.libs << 'test'
+    t.test_files = FileList['test/live/**/*_test.rb']
+    t.warning = false
+  end
 end
 
 RBS_OPTIONS = %w[-I sig -r logger -r date].freeze

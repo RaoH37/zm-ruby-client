@@ -4,19 +4,17 @@ module Zm
   module Client
     # class for account contact jsns builder
     class GroupContactJsnsBuilder < Base::BaseAccountJsnsBuilder
-      EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[@id @name @parent @l @type @tn @jsns_builder].freeze
-
       def to_jsns
-        {
+        jsns = {
           cn: {
             a: instance_variables_array.map(&Utils::A_NODE_PROC),
-            l: @item.folder_id || Zm::Client::FolderDefault::CONTACTS.id,
-            m: members_node
+            l: @item.l || Zm::Client::FolderDefault::CONTACTS.id,
+            m: new_members_node
           }
         }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::CREATE_CONTACT_REQUEST)
-                   .add_attributes(jsns)
+                                .add_attributes(jsns)
       end
 
       def to_update
@@ -29,11 +27,11 @@ module Zm
         }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_CONTACT_REQUEST)
-                   .add_attributes(jsns)
+                                .add_attributes(jsns)
       end
 
       def to_patch(hash)
-        {
+        jsns = {
           cn: {
             id: @item.id,
             a: hash.flat_map(&Utils::A_ARRAY_PROC).map(&Utils::A_NODE_PROC)
@@ -41,10 +39,16 @@ module Zm
         }
 
         SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::MODIFY_CONTACT_REQUEST)
-                   .add_attributes(jsns)
+                                .add_attributes(jsns)
       end
 
       alias to_create to_jsns
+
+      def new_members_node
+        @item.members.all.reject { |m| m.op == ContactMember::DEL }.map do |m|
+          { type: m.type, value: m.value }
+        end
+      end
 
       def members_node
         @item.members.all.reject(&:current?).map do |m|

@@ -27,7 +27,9 @@ module Zm
 
         def clone
           obj = super
-          obj.remove_instance_variable(:@id)
+          obj.remove_instance_variable(:@id) if obj.instance_variable_defined?(:@id)
+          obj.remove_instance_variable(:@jsns_builder) if obj.instance_variable_defined?(:@jsns_builder)
+          obj.remove_dependents_of(self)
           yield(obj) if block_given?
           obj
         end
@@ -63,6 +65,16 @@ module Zm
           keys = instance_variables.dup
           keys.delete(:@parent)
           keys.map { |key| [key, instance_variable_get(key)] }
+        end
+
+        protected
+
+        def remove_dependents_of(item)
+          instance_variables.each do |key|
+            next if key == :@parent
+
+            remove_instance_variable(key) if instance_variable_get(key).instance_variable_get(:@parent).equal?(item)
+          end
         end
       end
     end

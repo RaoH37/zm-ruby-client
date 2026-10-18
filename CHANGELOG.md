@@ -4,6 +4,12 @@
 
 ### [3.1.0] 2026-07
 
+- [Added]   Add live CRUD tests (accounts, account folders, appointments, contacts, identities, messages, signatures and tags, resources, distribution lists, domains, coses) against a real server in test/live, rake test:live task configured by ZIMBRA_ADMIN_URL, ZIMBRA_ADMIN_LOGIN and ZIMBRA_ADMIN_PASSWORD
+- [Fixed]   ContactJsnsBuilder no longer sends internal instance variables (updated, token, tags, folder, shared account ids) as contact attributes
+- [Fixed]   GroupContactJsnsBuilder: to_create and to_patch raised NameError, the folder is read from l, members are sent without op on creation
+- [Fixed]   MessageFlagsCollection: read!, unread!, flag! and unflag! raised NoMethodError (soap_connector called on the message instead of its account)
+- [Changed] MessageFlagsCollection: read!, unread!, flag! and unflag! update the message flags (f) after the request
+- [Fixed]   Base::Object#clone: the copy no longer shares the memoized jsns builder and collections of the original (a clone of a created identity or cos sent the original name), and no longer raises when the original has no id
 - [Added]   Add RBS signatures for the public API in sig/ (cluster, config, errors, admin objects and collections, mailbox entry points), rake rbs:validate and rbs:test tasks
 - [Added] Add massive update and delete in admin collection classes
 - [Added] Add optional TLS certificate verification in ClusterConfig (ssl_verify, ssl_ca_file, ssl_ca_path), disabled by default

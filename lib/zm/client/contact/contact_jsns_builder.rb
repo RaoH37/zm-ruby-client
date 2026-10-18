@@ -4,7 +4,10 @@ module Zm
   module Client
     # class for account contact jsns builder
     class ContactJsnsBuilder < Base::BaseAccountJsnsBuilder
-      EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[@id @name @parent @l @type @tn @jsns_builder].freeze
+      EXCLUDE_INSTANCE_VARIABLE_KEYS = %i[
+        @id @name @parent @l @type @tn @jsns_builder @updated @token @tags @folder
+        @shared_account_id @shared_folder_account_id
+      ].freeze
 
       def to_jsns
         jsns = {

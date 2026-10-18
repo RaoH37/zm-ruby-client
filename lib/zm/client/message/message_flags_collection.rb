@@ -69,7 +69,7 @@ module Zm
       # actions
 
       def unread!
-        @parent.soap_connector.invoke(build_unread)
+        apply(build_unread, 'u', true)
       end
 
       def build_unread
@@ -77,7 +77,7 @@ module Zm
       end
 
       def read!
-        @parent.soap_connector.invoke(build_read)
+        apply(build_read, 'u', false)
       end
 
       def build_read
@@ -85,7 +85,7 @@ module Zm
       end
 
       def unflag!
-        @parent.soap_connector.invoke(build_unflag)
+        apply(build_unflag, 'f', false)
       end
 
       def build_unflag
@@ -93,7 +93,7 @@ module Zm
       end
 
       def flag!
-        @parent.soap_connector.invoke(build_flag)
+        apply(build_flag, 'f', true)
       end
 
       def build_flag
@@ -101,6 +101,23 @@ module Zm
       end
 
       private
+
+      def soap_connector
+        @parent.parent.soap_connector
+      end
+
+      def apply(soap_request, flag, enabled)
+        response = soap_connector.invoke(soap_request)
+
+        if enabled
+          all << flag unless all.include?(flag)
+        else
+          all.delete(flag)
+        end
+        @parent.f = all.join
+
+        response
+      end
 
       def build(attrs)
         soap_request = SoapRequest::SoapElement.mail(SoapRequest::SoapMailConstants::ITEM_ACTION_REQUEST)
