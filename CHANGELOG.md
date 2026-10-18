@@ -26,6 +26,7 @@
 - [Added]   Add Zm::Support::Cache.storage(key), registered_storage may now hold constant names (Symbol) instead of classes
 - [Fixed]   Autoload ClusterConfigError and ClusterConfigDomain (NameError when referenced before ClusterConfig was loaded)
 - [Fixed]   Autoload Attachment and DlMembership (NameError when referenced before their collection was loaded)
+- [Fixed]   Require time explicitly: Time.parse (created_at, last_logon, appointments) only worked because csv loaded it
 - [Fixed]   DistributionListMembersCollection add!/remove! raise ArgumentError on nil instead of returning false
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method

@@ -166,13 +166,6 @@ class AccountsTest < ZmTest::UnitTest
     assert_equal(2, @fake.requests.count { |request| request.name == 'DeleteAccountRequest' })
   end
 
-  private
-
-  def search_accounts(*names)
-    accounts = names.map { |name| ZmTest::FakeData.account(name:) }
-    @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { account: accounts, num: accounts.size } })
-  end
-
   def test_aliases_add_accepts_frozen_email
     @fake.on(:AddAccountAliasRequest, { AddAccountAliasResponse: {} })
     account = @cluster.accounts.new do |a|
@@ -185,5 +178,25 @@ class AccountsTest < ZmTest::UnitTest
     assert_equal 'alias@domain.tld', @fake.last_request(:AddAccountAliasRequest).body[:alias]
     assert_includes account.aliases.all, 'alias@domain.tld'
     refute account.aliases.add!('ALIAS@domain.tld')
+  end
+
+  def test_created_at_and_last_logon_parse_ldap_timestamps
+    @fake.on(:GetAccountRequest) do
+      account = ZmTest::FakeData.account(name: 'user@domain.tld', zimbraCreateTimestamp: '20240102030405Z',
+                                         zimbraLastLogonTimestamp: '20250607080910Z')
+      { GetAccountResponse: { account: [account] } }
+    end
+
+    account = @cluster.accounts.find_by(name: 'user@domain.tld')
+
+    assert_equal Time.utc(2024, 1, 2, 3, 4, 5), account.created_at
+    assert_equal Time.utc(2025, 6, 7, 8, 9, 10), account.last_logon
+  end
+
+  private
+
+  def search_accounts(*names)
+    accounts = names.map { |name| ZmTest::FakeData.account(name:) }
+    @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { account: accounts, num: accounts.size } })
   end
 end

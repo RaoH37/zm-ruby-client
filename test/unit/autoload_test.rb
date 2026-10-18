@@ -9,6 +9,7 @@ class AutoloadTest < Minitest::Test
   # Runs in a fresh process: other tests may already have loaded the constants.
   SCRIPT = <<~RUBY
     require 'zm-ruby-client'
+    puts 'Time.parse is not available' unless Time.respond_to?(:parse)
     namespaces = [Zm, Zm::Client, Zm::Client::Base, Zm::Utils, Zm::Connector, Zm::Error, Zm::Support,
                   Zm::Support::Cache, Zm::SoapRequest]
     undeclared = namespaces.flat_map do |namespace|
@@ -23,6 +24,6 @@ class AutoloadTest < Minitest::Test
     output, status = Open3.capture2e(RbConfig.ruby, '-I', LIB_PATH, '-e', SCRIPT)
 
     assert status.success?, output
-    assert_empty output.split("\n"), 'constants defined without their own autoload'
+    assert_empty output.split("\n"), 'constants defined without their own autoload or missing stdlib'
   end
 end
