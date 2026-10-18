@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.email    = 'maxime.desecot@gmail.com'
   s.homepage = 'https://github.com/RaoH37/zm-ruby-client'
 
-  s.files         = Dir['lib/**/*.{rb,csv,json}'] + %w[VERSION README.md CHANGELOG.md LICENSE]
+  s.files         = Dir['lib/**/*.{rb,csv}'] + %w[VERSION README.md CHANGELOG.md LICENSE]
   s.require_paths = ['lib']
 
   s.add_dependency 'csv', '~> 3.2'

@@ -34,7 +34,7 @@ module Zm
           end
         end
 
-        attr_reader :all_versioned, :path
+        attr_reader :path
 
         def initialize(parent)
           @path = File.expand_path(parent.config.zimbra_attributes_path)

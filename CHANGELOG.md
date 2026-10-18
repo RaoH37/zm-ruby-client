@@ -20,6 +20,7 @@
 - [Changed] Share the Zimbra attributes catalog between clusters using the same attributes file (CSV parsed and accessors defined once)
 - [Changed] ZimbraAttribute keeps only name, type, immutable? and objects_scope (catalog memory reduced by about 65%): optionalIn, requiredIn, flags, cardinality, callback, value, max, min and since readers removed
 - [Removed] Remove unused zimbra-attrs.json file from the gem
+- [Removed] Remove ZimbraAttributesCollection#all_versioned (never set, always nil)
 - [Changed] Reduce allocations when building objects from SOAP responses (about 90% fewer for accounts)
 - [Changed] Autoload cache stores and msgpack: the default null_store no longer loads msgpack and FileStore (about 1.2 MB less)
 - [Added]   Add Zm::Support::Cache.storage(key), registered_storage may now hold constant names (Symbol) instead of classes
