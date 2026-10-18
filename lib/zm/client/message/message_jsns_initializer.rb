@@ -56,7 +56,7 @@ module Zm
         end
 
         def update_attachment(item, json)
-          pj = Zm::Client::Message::Attachment.new(self)
+          pj = Attachment.new(item)
           pj.mid  = json.delete(:mid)
           pj.aid  = json.delete(:aid)
           pj.ct   = json.delete(:ct)

@@ -13,7 +13,7 @@ module Zm
 
       AUTHORIZED_FOLDER_FMT = %w[zip tgz ics csv tar xml json rss atom html ifb].freeze
 
-      AUTHORIZED_PARAMS = %i[charset auth fmt id list types emptyname disp resolve query meta csvfmt].freeze
+      AUTHORIZED_PARAMS = %i[charset auth fmt id part list types emptyname disp resolve query meta csvfmt].freeze
 
       AUTHORIZED_RESOLVE = %w[replace modify reset skip].freeze
 
@@ -67,6 +67,11 @@ module Zm
         raise Zm::Error::RestError, 'Invalid fmt type' if type.nil? && fmt.nil?
 
         remote_url = download_files_url(fmt, type, file_ids)
+        @rest_connector.download(remote_url, dest_file_path)
+      end
+
+      def download_attachment(dest_file_path, message_id, part)
+        remote_url = download_attachment_url(message_id, part)
         @rest_connector.download(remote_url, dest_file_path)
       end
 
@@ -142,6 +147,12 @@ module Zm
 
       def download_file_url(fmt, type, id)
         h = build_params(fmt:, types: type, id:)
+
+        format_url(@base_url, format_url_params(h))
+      end
+
+      def download_attachment_url(message_id, part)
+        h = build_params(id: message_id, part:)
 
         format_url(@base_url, format_url_params(h))
       end

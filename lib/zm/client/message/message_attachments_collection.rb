@@ -28,18 +28,7 @@ module Zm
       end
 
       def download(dest_file_path)
-        h = {
-          id: @parent.id,
-          part:,
-          auth: 'qp',
-          zauthtoken: account.token,
-          disp: 'a'
-        }
-
-        url = "#{account.home_url}?#{URI.encode_www_form(h)}"
-
-        uploader = @parent.build_uploader
-        uploader.download_file_with_url(url, dest_file_path)
+        account.build_uploader.download_attachment(dest_file_path, @parent.id, part)
       end
 
       def account

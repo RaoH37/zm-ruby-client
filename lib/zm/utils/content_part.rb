@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ZM
+module Zm
   module Utils
     module ContentPart
       ALTERNATIVE = 'multipart/alternative'
