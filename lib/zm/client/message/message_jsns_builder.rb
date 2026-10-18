@@ -4,10 +4,6 @@ module Zm
   module Client
     # class for account message jsns builder
     class MessageJsnsBuilder < Base::BaseAccountJsnsBuilder
-      def initialize(item)
-        @item = item
-      end
-
       def to_jsns
         jsns = {
           id: @item.id,

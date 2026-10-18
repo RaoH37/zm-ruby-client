@@ -17,14 +17,13 @@ module Zm
       alias size s
 
       def initialize(parent)
-        @parent = parent
         @subject = ''
 
         @recipients = MessageRecipients.new
         @body = Body.new
         @attachments = MessageAttachmentsCollection.new
 
-        yield(self) if block_given?
+        super
       end
 
       def download(dest_file_path, fmt: 'eml')

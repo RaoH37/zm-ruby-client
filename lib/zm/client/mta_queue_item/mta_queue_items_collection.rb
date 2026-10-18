@@ -7,6 +7,7 @@ module Zm
       attr_reader :offset, :limit, :fields
 
       def initialize(parent)
+        super()
         @parent = parent
         reset_query_params
       end

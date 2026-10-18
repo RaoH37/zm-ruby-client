@@ -6,6 +6,7 @@ module Zm
       # Collection AccountObjectsCollection
       class AccountObjectsCollection < ObjectsCollection
         def initialize(parent)
+          super()
           @parent = parent
         end
       end

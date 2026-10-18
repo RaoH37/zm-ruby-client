@@ -21,8 +21,8 @@ module Zm
       def build_find_by(hash)
         soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::GET_DISTRIBUTION_LIST_REQUEST)
         node_dl = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::DL)
-                             .add_attribute(SoapRequest::SoapConstants::BY, hash.keys.first)
-                             .add_content(hash.values.first)
+                                          .add_attribute(SoapRequest::SoapConstants::BY, hash.keys.first)
+                                          .add_content(hash.values.first)
         soap_request.add_node(node_dl)
         soap_request.add_attribute(SoapRequest::SoapConstants::ATTRS, attrs_comma)
         soap_request

@@ -5,6 +5,7 @@ module Zm
     # collection of shares
     class SharesCollection < Base::ObjectsCollection
       def initialize(parent)
+        super()
         @parent = parent
         reset_query_params
       end

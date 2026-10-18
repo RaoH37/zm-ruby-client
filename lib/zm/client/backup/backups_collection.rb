@@ -5,6 +5,7 @@ module Zm
     # Collection Backups
     class BackupsCollection < Base::ObjectsCollection
       def initialize(parent)
+        super()
         @parent = parent
       end
 

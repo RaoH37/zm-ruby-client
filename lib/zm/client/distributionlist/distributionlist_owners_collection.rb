@@ -43,14 +43,14 @@ module Zm
         jsns('removeOwners', emails)
       end
 
-      def jsns(op, emails)
+      def jsns(operation, emails)
         soap_request = SoapRequest::SoapElement.account(Zm::SoapRequest::SoapAccountConstants::DISTRIBUTION_LIST_ACTION_REQUEST)
         node_dl = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::DL)
-                             .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
-                             .add_content(@parent.id)
+                                          .add_attribute(SoapRequest::SoapConstants::BY, SoapRequest::SoapConstants::ID)
+                                          .add_content(@parent.id)
         soap_request.add_node(node_dl)
         node_action = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::ACTION)
-                                 .add_attributes({ op:, owner: jsns_owners(emails) })
+                                              .add_attributes({ op: operation, owner: jsns_owners(emails) })
         soap_request.add_node(node_action)
         soap_request
       end

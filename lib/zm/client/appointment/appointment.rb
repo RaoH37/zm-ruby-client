@@ -20,14 +20,13 @@ module Zm
       alias size s
 
       def initialize(parent)
-        @parent = parent
         @recipients = Recipients.new
         @body = BodyMail.new
         @attendees = Attendees.new
         @allDay = false
         @timezone = 'Europe/Berlin'
 
-        yield(self) if block_given?
+        super
       end
 
       def flags

@@ -5,6 +5,7 @@ module Zm
     # Collection Account dls membership
     class AccountDlsOwnerCollection < Base::ObjectsCollection
       def initialize(parent)
+        super()
         @parent = parent
       end
 

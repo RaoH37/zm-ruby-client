@@ -8,6 +8,7 @@ module Zm
         ONERRORS = %w[continue stop].freeze
 
         def initialize(parent)
+          super()
           @parent = parent
           @persistent = false
           reset_query_params

@@ -16,3 +16,6 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Exclude:
     - 'test/**/*'
+
+Naming/PredicateMethod:
+  AllowBangMethods: true

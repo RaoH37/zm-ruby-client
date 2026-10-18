@@ -5,6 +5,7 @@ module Zm
     # objectClass: zimbraDistributionList
     class DistributionList < Base::Object
       extend Relationship
+
       has_jsns_builder
       include Zm::Utils::HasSoapAdminConnector
       include SoapRequest::RequestMethodsAdmin
