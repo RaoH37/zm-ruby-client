@@ -4,6 +4,12 @@ module Zm
   module Support
     module Cache
       class Store
+        class << self
+          def valid_options?(options)
+            options.is_a?(Hash)
+          end
+        end
+
         attr_reader :options
         attr_writer :logger
 

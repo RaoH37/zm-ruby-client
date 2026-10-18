@@ -9,7 +9,7 @@ module Zm
         Cache.register_storage(:file_store, self)
 
         class << self
-          def test_required_options(options)
+          def valid_options?(options)
             options.key?(:cache_path)
           end
         end

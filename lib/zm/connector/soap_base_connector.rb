@@ -38,9 +38,9 @@ module Zm
 
       def target_invoke(soap_element, target_id, error_handler = Zm::Error::SoapError)
         @context.target_server(target_id)
-        resp = invoke(soap_element, error_handler)
+        invoke(soap_element, error_handler)
+      ensure
         @context.target_server(nil)
-        resp
       end
 
       def http_client!

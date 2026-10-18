@@ -57,6 +57,46 @@ class ClusterConfigTest < ZmTest::UnitTest
     end
   end
 
+  def test_cache_is_memoized
+    config = build_config
+
+    assert_same config.cache, config.cache
+  end
+
+  def test_cache_store_does_not_mutate_argument
+    Dir.mktmpdir do |dir|
+      options = [:file_store, { cache_path: dir }]
+      build_config.cache_store = options
+
+      assert_equal [:file_store, { cache_path: dir }], options
+    end
+  end
+
+  def test_cache_store_resets_cache
+    Dir.mktmpdir do |dir|
+      config = build_config
+      config.cache
+      config.cache_store = :file_store, { cache_path: dir }
+
+      assert_instance_of Zm::Support::Cache::FileStore, config.cache
+    end
+  end
+
+  def test_null_cache_store_is_accepted
+    config = build_config
+    config.cache_store = [:null_store]
+
+    assert_instance_of Zm::Support::Cache::NullStore, config.cache
+  end
+
+  def test_unknown_cache_store_raises
+    assert_raises(Zm::Client::ClusterConfigError) { build_config.cache_store = :unknown_store, {} }
+  end
+
+  def test_file_store_without_cache_path_raises
+    assert_raises(Zm::Client::ClusterConfigError) { build_config.cache_store = :file_store, {} }
+  end
+
   def test_zimbra_attributes_are_loaded_from_csv
     attributes = Zm::Client::Cluster.new(build_config).zimbra_attributes
 
