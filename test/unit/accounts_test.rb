@@ -172,4 +172,18 @@ class AccountsTest < ZmTest::UnitTest
     accounts = names.map { |name| ZmTest::FakeData.account(name:) }
     @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { account: accounts, num: accounts.size } })
   end
+
+  def test_aliases_add_accepts_frozen_email
+    @fake.on(:AddAccountAliasRequest, { AddAccountAliasResponse: {} })
+    account = @cluster.accounts.new do |a|
+      a.id = 'account-id'
+      a.name = 'user@domain.tld'
+    end
+
+    assert account.aliases.add!(' Alias@Domain.tld')
+
+    assert_equal 'alias@domain.tld', @fake.last_request(:AddAccountAliasRequest).body[:alias]
+    assert_includes account.aliases.all, 'alias@domain.tld'
+    refute account.aliases.add!('ALIAS@domain.tld')
+  end
 end

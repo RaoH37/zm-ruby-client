@@ -12,9 +12,7 @@ module Zm
       end
 
       def add!(*emails)
-        emails.flatten!
-        emails.each { |email| Utils.format_email(email) }
-        emails.delete_if { |email| @all.include?(email) }
+        emails = format_emails(emails).reject { |email| @all.include?(email) }
         return false if emails.empty?
 
         @parent.sac.invoke(build_add(emails))
@@ -28,9 +26,7 @@ module Zm
       end
 
       def remove!(*emails)
-        emails.flatten!
-        emails.each { |email| Utils.format_email(email) }
-        emails.delete_if { |email| !@all.include?(email) }
+        emails = format_emails(emails).select { |email| @all.include?(email) }
         return false if emails.empty?
 
         @parent.sac.invoke(build_remove(emails))
@@ -56,6 +52,10 @@ module Zm
       end
 
       private
+
+      def format_emails(emails)
+        emails.flatten.map { |email| Utils.format_email(email) }.uniq
+      end
 
       def jsns_owners(emails)
         emails.map { |email| { by: :name, type: :usr, _content: email } }

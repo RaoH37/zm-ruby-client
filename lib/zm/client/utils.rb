@@ -10,9 +10,7 @@ module Zm
 
       class << self
         def format_email(email)
-          email.strip!
-          email.downcase!
-          email
+          email.strip.downcase
         end
 
         # TODO: chercher - remplacer toutes les occurrences dans le code

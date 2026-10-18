@@ -13,7 +13,8 @@ module Zm
       end
 
       def add!(email)
-        return false if @all.include?(Utils.format_email(email))
+        email = Utils.format_email(email)
+        return false if @all.include?(email)
 
         @parent.sac.invoke(build_add(email))
 
@@ -28,7 +29,8 @@ module Zm
       end
 
       def remove!(email)
-        return false unless @all.include?(Utils.format_email(email))
+        email = Utils.format_email(email)
+        return false unless @all.include?(email)
 
         @parent.sac.invoke(build_remove(email))
 

@@ -59,4 +59,12 @@ class ObjectsTest < Minitest::Test
     assert_equal 'abc', token.zimbra_id
     assert_nil token.metadatas['broken']
   end
+
+  def test_format_email_does_not_mutate_argument
+    email = +' John@Domain.TLD '
+
+    assert_equal 'john@domain.tld', Zm::Client::Utils.format_email(email)
+    assert_equal ' John@Domain.TLD ', email
+    assert_equal 'john@domain.tld', Zm::Client::Utils.format_email('John@domain.tld')
+  end
 end
