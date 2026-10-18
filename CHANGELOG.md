@@ -22,6 +22,8 @@
 - [Changed] Autoload cache stores and msgpack: the default null_store no longer loads msgpack and FileStore (about 1.2 MB less)
 - [Added]   Add Zm::Support::Cache.storage(key), registered_storage may now hold constant names (Symbol) instead of classes
 - [Fixed]   Autoload ClusterConfigError and ClusterConfigDomain (NameError when referenced before ClusterConfig was loaded)
+- [Fixed]   Autoload Attachment and DlMembership (NameError when referenced before their collection was loaded)
+- [Fixed]   DistributionListMembersCollection add!/remove! raise ArgumentError on nil instead of returning false
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method
 - [Changed] Require Ruby 3.3 minimum

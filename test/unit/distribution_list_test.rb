@@ -23,6 +23,10 @@ class DistributionListTest < ZmTest::UnitTest
     assert_equal ' John@Domain.tld ', emails.first
   end
 
+  def test_members_add_with_empty_list_returns_false
+    refute @dl.members.add!([])
+  end
+
   def test_members_add_skips_existing_members
     @dl.members.all = ['john@domain.tld']
 
@@ -61,6 +65,9 @@ class DistributionListTest < ZmTest::UnitTest
 
   def test_members_add_with_nil_raises_before_any_request
     assert_raises(ArgumentError) { @dl.members.add!(['john@domain.tld', nil]) }
+    assert_raises(ArgumentError) { @dl.members.add!(nil) }
+    assert_raises(ArgumentError) { @dl.members.remove!(nil) }
+    assert_raises(ArgumentError) { @dl.owners.add!(nil) }
     assert_raises(ArgumentError) { @dl.aliases.add!(nil) }
     assert_empty(@fake.requests.reject { |r| r.name == 'AuthRequest' })
   end

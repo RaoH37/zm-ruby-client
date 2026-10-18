@@ -52,7 +52,7 @@ module Zm
       private
 
       def format_emails(emails)
-        Array(emails).flatten.map { |email| Utils.format_email(email) }.uniq
+        [emails].flatten.map { |email| Utils.format_email(email) }.uniq
       end
     end
   end
