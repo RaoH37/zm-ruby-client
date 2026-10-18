@@ -27,7 +27,7 @@ module Zm
       end
 
       def cache
-        @cache ||= Zm::Support::Cache.registered_storage[cache_store_key]
+        @cache ||= Zm::Support::Cache.storage(cache_store_key)
                                      .new(**cache_store_options)
                                      .tap do |store|
                                        store.logger = logger
@@ -49,7 +49,7 @@ module Zm
       def cache_store=(options)
         store_key, store_options = options
         store_options ||= {}
-        store_class = Zm::Support::Cache.registered_storage[store_key]
+        store_class = Zm::Support::Cache.storage(store_key)
 
         raise ClusterConfigError, 'invalid cache_store' unless store_class&.valid_options?(store_options)
 

@@ -4,8 +4,6 @@ module Zm
   module Support
     module Cache
       class NullStore < Store
-        Cache.register_storage(:null_store, self)
-
         def fetch(_name, _options = nil)
           yield
         end

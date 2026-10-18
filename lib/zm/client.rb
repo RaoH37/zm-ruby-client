@@ -20,6 +20,8 @@ module Zm
     autoload :MailboxItemID, 'zm/client/mailbox/mailbox_item_id'
 
     autoload :ClusterConfig, 'zm/client/cluster/cluster_config'
+    autoload :ClusterConfigDomain, 'zm/client/cluster/cluster_config'
+    autoload :ClusterConfigError, 'zm/client/cluster/cluster_config'
     autoload :Cluster, 'zm/client/cluster/cluster'
 
     autoload :Server, 'zm/client/server/server'

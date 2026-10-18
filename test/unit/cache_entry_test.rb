@@ -4,8 +4,18 @@ require_relative '../test_helper'
 
 class CacheEntryTest < Minitest::Test
   def test_registered_storages
-    assert_equal Zm::Support::Cache::NullStore, Zm::Support::Cache.registered_storage[:null_store]
-    assert_equal Zm::Support::Cache::FileStore, Zm::Support::Cache.registered_storage[:file_store]
+    assert_equal Zm::Support::Cache::NullStore, Zm::Support::Cache.storage(:null_store)
+    assert_equal Zm::Support::Cache::FileStore, Zm::Support::Cache.storage(:file_store)
+    assert_nil Zm::Support::Cache.storage(:unknown_store)
+  end
+
+  def test_custom_storage_registration
+    custom = Class.new(Zm::Support::Cache::NullStore)
+    Zm::Support::Cache.register_storage(:custom_store, custom)
+
+    assert_equal custom, Zm::Support::Cache.storage(:custom_store)
+  ensure
+    Zm::Support::Cache.registered_storage.delete(:custom_store)
   end
 
   def test_cache_entry_without_expires_at

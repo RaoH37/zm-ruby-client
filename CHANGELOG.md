@@ -19,6 +19,9 @@
 - [Changed] Replace require by autoload to reduce memory usage
 - [Changed] Share the Zimbra attributes catalog between clusters using the same attributes file (CSV parsed and accessors defined once)
 - [Changed] Reduce allocations when building objects from SOAP responses (about 90% fewer for accounts)
+- [Changed] Autoload cache stores and msgpack: the default null_store no longer loads msgpack and FileStore (about 1.2 MB less)
+- [Added]   Add Zm::Support::Cache.storage(key), registered_storage may now hold constant names (Symbol) instead of classes
+- [Fixed]   Autoload ClusterConfigError and ClusterConfigDomain (NameError when referenced before ClusterConfig was loaded)
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method
 - [Changed] Require Ruby 3.3 minimum

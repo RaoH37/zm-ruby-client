@@ -6,8 +6,6 @@ module Zm
   module Support
     module Cache
       class FileStore < Store
-        Cache.register_storage(:file_store, self)
-
         class << self
           def valid_options?(options)
             options.key?(:cache_path)

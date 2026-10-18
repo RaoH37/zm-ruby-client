@@ -15,7 +15,6 @@ module Zm
 
         def initialize(options = {})
           @options = options
-          @coder = Cache::Entry.factory
           @logger = nil
         end
 
@@ -187,12 +186,16 @@ module Zm
           value
         end
 
+        def coder
+          @coder ||= Entry.factory
+        end
+
         def serialize_entry(entry, **)
-          @coder.dump(entry)
+          coder.dump(entry)
         end
 
         def deserialize_entry(payload, **)
-          @coder.load(payload)
+          coder.load(payload)
         rescue DeserializationError, MessagePack::UnpackError, EOFError
           nil
         end
