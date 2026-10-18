@@ -10,7 +10,12 @@ module Zm
 
       class << self
         def format_email(email)
-          email.strip.downcase
+          raise ArgumentError, "email must be a String, got #{email.class}" unless email.is_a?(String)
+
+          formatted = email.strip.downcase
+          raise ArgumentError, 'email must not be empty' if formatted.empty?
+
+          formatted
         end
 
         # TODO: chercher - remplacer toutes les occurrences dans le code

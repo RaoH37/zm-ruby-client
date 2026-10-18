@@ -58,4 +58,10 @@ class DistributionListTest < ZmTest::UnitTest
     assert_equal 'alias@domain.tld', @fake.last_request(:AddDistributionListAliasRequest).body[:alias]
     assert_includes @dl.aliases.all, 'alias@domain.tld'
   end
+
+  def test_members_add_with_nil_raises_before_any_request
+    assert_raises(ArgumentError) { @dl.members.add!(['john@domain.tld', nil]) }
+    assert_raises(ArgumentError) { @dl.aliases.add!(nil) }
+    assert_empty(@fake.requests.reject { |r| r.name == 'AuthRequest' })
+  end
 end

@@ -67,4 +67,10 @@ class ObjectsTest < Minitest::Test
     assert_equal ' John@Domain.TLD ', email
     assert_equal 'john@domain.tld', Zm::Client::Utils.format_email('John@domain.tld')
   end
+
+  def test_format_email_rejects_invalid_values
+    [nil, :symbol, 42, '', '   '].each do |value|
+      assert_raises(ArgumentError) { Zm::Client::Utils.format_email(value) }
+    end
+  end
 end
