@@ -1,10 +1,103 @@
 module Zm
+  module SoapRequest
+    # CRUD shared by mailbox items, the request goes through the mailbox SOAP connector.
+    module RequestMethodsMailbox
+      def modify!: () -> true
+      def update!: (Hash[Symbol, untyped] hash) -> bool
+      def rename!: (String new_name) -> (String | false)
+      # false when the item has no id.
+      def delete!: () -> untyped
+
+      def build_create: () -> SoapElement
+      def build_modify: () -> SoapElement
+      def build_rename: (String new_name) -> SoapElement
+      def build_delete: () -> SoapElement
+    end
+  end
+
+  module Utils
+    module BelongsToFolder
+      def folder=: (Client::Folder? folder) -> void
+      def folder: () -> Client::Folder?
+      def folder!: () -> Client::Folder?
+      # nil when the item is already in this folder.
+      def move!: (Client::Folder | String new_folder_id) -> String?
+      def trash!: () -> untyped
+    end
+
+    module BelongsToTag
+      def tags: () -> Client::AccountObjectTagsCollection
+    end
+  end
+
   module Client
+    # Mailbox item ids may be prefixed by the mailbox id ("mailbox_id:item_id").
+    module MailboxItemConcern
+      def id=: (String | Integer remote_id) -> void
+      def id: () -> String?
+      def mailbox_id: () -> String?
+      def l=: ((String | Integer)? remote_l) -> void
+      def l: () -> String?
+    end
+
+    class MailboxItemID < Data
+      attr_reader item_id: String
+      attr_reader mailbox_id: String?
+    end
+
+    class AccountObjectTagsCollection
+      def initialize: (untyped parent) -> void
+
+      def all: () -> Array[String]
+      # Returns the new tag list (comma separated) or false when nothing changed.
+      def add!: (*(String | Tag | Array[String | Tag]) new_tags) -> (String | false)
+      def remove!: (*(String | Tag | Array[String | Tag]) tag_names) -> (String | false)
+    end
+
+    # ##########################################################################
+    # Messages
+    # ##########################################################################
+
     class Message < Base::Object
+      include Utils::BelongsToFolder
+      include Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
+      include MailboxItemConcern
+
+      attr_accessor d: Integer?
+      attr_accessor f: String?
+      attr_accessor su: String?
+      attr_accessor fr: String?
+      attr_accessor autoSendTime: Integer?
+      attr_accessor mid: String?
+      attr_accessor idnt: String?
+      attr_accessor tn: String?
+      attr_accessor subject: String
+      attr_accessor s: Integer?
+      attr_reader recipients: MessageRecipients
       attr_reader attachments: MessageAttachmentsCollection
+      attr_reader body: Message::Body
+      alias size s
 
       def download: (String dest_file_path, ?fmt: String) -> nil
       def read: () -> String
+      def date: () -> Time
+      def flags: () -> MessageFlagsCollection
+
+      # Only l, rgb, color, f and tn can be updated.
+      def update!: (Hash[Symbol, untyped] attrs) -> untyped
+      def spam!: () -> untyped
+      def unspam!: () -> untyped
+      def send!: () -> untyped
+
+      def create!: (*untyped) -> bot
+      def modify!: (*untyped) -> bot
+      def rename!: (*untyped) -> bot
+
+      class Body
+        attr_accessor text: String?
+        attr_accessor html: String?
+      end
     end
 
     class MessagesCollection < Base::AccountSearchObjectsCollection[Message]
@@ -12,8 +105,63 @@ module Zm
       def find_each: (?offset: Integer, ?limit: Integer, ?secure: bool) { (Message) -> void } -> void
     end
 
+    class Recipient
+      FROM: Symbol
+      TO: Symbol
+      CC: Symbol
+      BCC: Symbol
+
+      attr_accessor field: Symbol
+      attr_accessor email: String
+      attr_accessor display_name: String?
+
+      def initialize: (Symbol | String field, String email, ?String? display_name) -> void
+    end
+
+    class MessageRecipients
+      attr_reader all: Array[Recipient]
+
+      def initialize: () -> void
+
+      def add: (untyped recipient) -> Array[Recipient]?
+      def to: () -> Array[Recipient]
+      def cc: () -> Array[Recipient]
+      def bcc: () -> Array[Recipient]
+      def from: () -> Array[Recipient]
+    end
+
+    class MessageFlagsCollection
+      def initialize: (Message parent) -> void
+
+      def all: () -> Array[String]
+
+      def unread?: () -> bool
+      def flagged?: () -> bool
+      def attachment?: () -> bool
+      def replied: () -> bool
+      def sent_by_me?: () -> bool
+      def forwarded?: () -> bool
+      def calendar_invite?: () -> bool
+      def draft?: () -> bool
+      def imap_deleted?: () -> bool
+      def notification?: () -> bool
+      def urgent?: () -> bool
+      def low_priority?: () -> bool
+      def priority?: () -> bool
+
+      def unread!: () -> untyped
+      def read!: () -> untyped
+      def unflag!: () -> untyped
+      def flag!: () -> untyped
+      def build_unread: () -> SoapRequest::SoapElement
+      def build_read: () -> SoapRequest::SoapElement
+      def build_unflag: () -> SoapRequest::SoapElement
+      def build_flag: () -> SoapRequest::SoapElement
+    end
+
     class MessageAttachmentsCollection
       def all: () -> Array[Attachment]
+      def add: (Attachment attachment) -> Array[Attachment]?
     end
 
     class Attachment
@@ -30,83 +178,551 @@ module Zm
       def account: () -> Account
     end
 
+    # ##########################################################################
+    # Folders
+    # ##########################################################################
+
     class Folder < Base::Object
+      include Utils::BelongsToFolder
+      include SoapRequest::RequestMethodsMailbox
+      include MailboxItemConcern
+
+      attr_accessor type: Symbol | String
+      attr_accessor uuid: String?
+      attr_accessor absFolderPath: String?
+      attr_accessor url: String?
+      attr_accessor luuid: String?
+      attr_accessor f: String?
+      attr_accessor view: String?
+      attr_accessor rev: Integer?
+      attr_accessor ms: Integer?
+      attr_accessor webOfflineSyncDays: Integer?
+      attr_accessor activesyncdisabled: bool?
+      attr_accessor n: Integer?
+      attr_accessor s: Integer?
+      attr_accessor i4ms: Integer?
+      attr_accessor i4next: Integer?
+      attr_accessor zid: String?
+      attr_accessor rid: String?
+      attr_accessor ruuid: String?
+      attr_accessor owner: String?
+      attr_accessor reminder: bool?
+      attr_accessor itemCount: Integer?
+      attr_accessor broken: bool?
+      attr_accessor deletable: bool?
+      attr_accessor color: Integer?
+      attr_accessor rgb: String?
+      attr_accessor fb: String?
+      attr_accessor folders: Array[Folder]
+      alias nb_messages n
+      alias nb_items n
+      alias size s
+
+      # Parent folder id, the root folder id when unknown.
+      def l: () -> String
+      alias folder_id l
+
+      def grants: () -> FolderGrantsCollection
+      alias acl grants
+      def retention_policies: () -> FolderRetentionPoliciesCollection
+
+      def is_immutable?: () -> bool
+      def to_query: () -> String
+      def create!: () -> String?
+      def color!: () -> true
+      def reload!: () -> true
+      def empty?: () -> bool
+      # false when the folder was already empty.
+      def empty!: () -> (Integer | false)
+      alias clear empty!
+      # false for system folders or a folder without id.
+      def delete!: () -> untyped
+      def remove_flag!: (String pattern) -> bool
+
+      def add_message: (String eml, ?Integer? d, ?String? f, ?String? tn) -> untyped
+      def add_appointments: (String ics) -> untyped
+      def add_contacts: (String csv) -> untyped
+      def export_contacts: (?csvfmt: String?, ?csvlocale: String?, ?csvsep: String?) -> String?
+
       def download: (String dest_file_path, ?fmt: String?) -> nil
       def upload: (String src_file_path, ?fmt: String?, ?resolve: String?) -> String
-      def export_contacts: (?csvfmt: String?, ?csvlocale: String?, ?csvsep: String?) -> untyped
     end
 
     class FoldersCollection < Base::AccountObjectsCollection[Folder]
+      attr_accessor view: String?
+      attr_accessor tr: untyped
+      attr_accessor visible: untyped
+      attr_accessor needGranteeName: untyped
+      attr_accessor depth: Integer?
+
+      # Sends a GetFolderRequest and returns the reloaded folder.
+      def find: (String | Integer id) -> Folder
+      def root: () -> Folder
+      def where: (?view: String?, ?tr: untyped) -> self
+      def ids: () -> Array[String]
+      def clear: () -> void
+
+      # Restrict all to the folders of one view.
+      def message: () -> self
+      def contact: () -> self
+      def appointment: () -> self
+      def task: () -> self
+      def document: () -> self
+    end
+
+    class FolderGrant
+      GT_USER: String
+      GT_GROUP: String
+      GT_DOMAIN: String
+      GT_PUB: String
+      GT_GUEST: String
+      GT_KEY: String
+
+      attr_reader parent: FolderGrantsCollection
+      attr_reader folder_id: String?
+      attr_accessor zid: String?
+      attr_accessor gt: String?
+      attr_accessor perm: String?
+      attr_accessor d: String?
+      attr_accessor expiry: Integer?
+      attr_accessor key: String?
+
+      def initialize: (FolderGrantsCollection parent, String? zid, String? gt, String? perm, String? d) -> void
+
+      def is_account?: () -> bool
+      def is_dom?: () -> bool
+      def is_dl?: () -> bool
+      def is_public?: () -> bool
+      def is_external?: () -> bool
+      def is_key?: () -> bool
+      def save!: () -> untyped
+      def delete!: () -> FolderGrant?
+      def to_h: () -> Hash[Symbol, untyped]
+    end
+
+    class FolderGrantsCollection
+      attr_reader parent: Folder
+      attr_reader all: Array[FolderGrant]
+
+      def initialize: (Folder parent) -> void
+
+      def new: (String? zid, String? gt, String? perm, String? d) -> FolderGrant
+      def new_from_object: (Account | Resource | DistributionList | Domain item, String perm) -> FolderGrant
+      def create: (String? zid, String? gt, String? perm, String? d) -> FolderGrant
+      def create_from_object: (Account | Resource | DistributionList | Domain item, String perm) -> FolderGrant
+      def add: (FolderGrant fg) -> Array[FolderGrant]
+
+      # Delegated to all through method_missing.
+      def each: () { (FolderGrant) -> void } -> Array[FolderGrant]
+      def map: [U] () { (FolderGrant) -> U } -> Array[U]
+      def select: () { (FolderGrant) -> boolish } -> Array[FolderGrant]
+      def length: () -> Integer
+    end
+
+    class FolderRetentionPolicy
+      attr_accessor type: Symbol | String
+      attr_accessor policy: Symbol | String
+      attr_accessor lifetime: String?
+
+      def initialize: (FolderRetentionPoliciesCollection parent, Symbol | String policy, String? lifetime,
+                       Symbol | String type) -> void
+
+      def keep?: () -> bool
+      def purge?: () -> bool
+    end
+
+    class FolderRetentionPoliciesCollection
+      attr_reader all: Array[FolderRetentionPolicy]
+
+      def initialize: (Folder parent) -> void
+
+      def new: (Symbol | String policy, String? lifetime, Symbol | String type) -> FolderRetentionPolicy
+      def create: (Symbol | String policy, String? lifetime, Symbol | String type) -> Array[FolderRetentionPolicy]
+      def add: (FolderRetentionPolicy retention_policy) -> Array[FolderRetentionPolicy]
+      def save!: () -> true
+
+      # Delegated to all through method_missing.
+      def each: () { (FolderRetentionPolicy) -> void } -> Array[FolderRetentionPolicy]
+      def map: [U] () { (FolderRetentionPolicy) -> U } -> Array[U]
+      def select: () { (FolderRetentionPolicy) -> boolish } -> Array[FolderRetentionPolicy]
+      def length: () -> Integer
     end
 
     class MountPoint < Base::Object
+      include Utils::BelongsToFolder
+      include SoapRequest::RequestMethodsMailbox
+      include MailboxItemConcern
+
+      def create!: () -> String?
+      def color!: () -> true
+
+      def modify!: () -> bot
+      def update!: (*untyped) -> bot
+      def reload!: () -> bot
     end
 
     class MountPointsCollection < Base::AccountObjectsCollection[MountPoint]
+      attr_reader root: MountPoint?
+      attr_accessor view: String?
+      attr_accessor tr: untyped
+      attr_accessor visible: untyped
+      attr_accessor needGranteeName: untyped
+      attr_accessor depth: Integer?
+
+      def where: (?view: String?, ?tr: untyped) -> self
+      def clear: () -> void
     end
 
     class SearchFolder < Base::Object
+      include SoapRequest::RequestMethodsMailbox
+      include MailboxItemConcern
+
+      # Returns the internal MailboxItemID, not the id string like other create! methods.
+      def create!: () -> MailboxItemID?
+      def color!: () -> true
+
+      def update!: (*untyped) -> bot
     end
 
     class SearchFoldersCollection < Base::AccountObjectsCollection[SearchFolder]
     end
 
-    class Identity < Base::Object
-    end
-
-    class IdentitiesCollection < Base::AccountObjectsCollection[Identity]
-    end
-
-    class Share < Base::Object
-    end
-
-    class SharesCollection < Base::ObjectsCollection[Share]
-    end
+    # ##########################################################################
+    # Contacts, calendar, tasks, documents
+    # ##########################################################################
 
     class Contact < Base::Object
+      include Utils::BelongsToFolder
+      include Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
+      include MailboxItemConcern
+
+      GROUP_PATTERN: String
+
+      attr_accessor anniversary: String?
+      attr_accessor assistantPhone: String?
+      attr_accessor birthday: String?
+      attr_accessor callbackPhone: String?
+      attr_accessor carPhone: String?
+      attr_accessor company: String?
+      attr_accessor companyPhone: String?
+      attr_accessor custom1: String?
+      attr_accessor department: String?
+      attr_accessor email: String?
+      attr_accessor email2: String?
+      attr_accessor email3: String?
+      attr_accessor email4: String?
+      attr_accessor email5: String?
+      attr_accessor email6: String?
+      attr_accessor email7: String?
+      attr_accessor firstName: String?
+      attr_accessor fullName: String?
+      attr_accessor homeCity: String?
+      attr_accessor homeCountry: String?
+      attr_accessor homeFax: String?
+      attr_accessor homePhone: String?
+      attr_accessor homePostalCode: String?
+      attr_accessor homeState: String?
+      attr_accessor homeStreet: String?
+      attr_accessor homeURL: String?
+      attr_accessor imAddress1: String?
+      attr_accessor imAddress2: String?
+      attr_accessor imAddress3: String?
+      attr_accessor imAddress4: String?
+      attr_accessor imAddress5: String?
+      attr_accessor jobTitle: String?
+      attr_accessor lastName: String?
+      attr_accessor maidenName: String?
+      attr_accessor middleName: String?
+      attr_accessor mobilePhone: String?
+      attr_accessor namePrefix: String?
+      attr_accessor nameSuffix: String?
+      attr_accessor nickname: String?
+      attr_accessor notes: String?
+      attr_accessor otherCity: String?
+      attr_accessor otherCountry: String?
+      attr_accessor otherFax: String?
+      attr_accessor otherPhone: String?
+      attr_accessor otherPostalCode: String?
+      attr_accessor otherState: String?
+      attr_accessor otherStreet: String?
+      attr_accessor otherURL: String?
+      attr_accessor pager: String?
+      attr_accessor workCity: String?
+      attr_accessor workCountry: String?
+      attr_accessor workFax: String?
+      attr_accessor workPhone: String?
+      attr_accessor workPostalCode: String?
+      attr_accessor workState: String?
+      attr_accessor workStreet: String?
+      attr_accessor workURL: String?
+      attr_accessor image: String?
+      attr_accessor type: String?
+      attr_accessor fileAs: String?
+      attr_accessor tn: String?
+      attr_accessor shared_account_id: String?
+      attr_accessor shared_folder_account_id: String?
+
+      def group?: () -> bool
+      def emails: () -> Array[String]
+      def add_custom_property: (Symbol | String key, untyped value) -> untyped
+      def create!: () -> String?
+
+      def rename!: (*untyped) -> bot
+      def reload!: () -> bot
     end
 
     class ContactsCollection < Base::AccountSearchObjectsCollection[Contact]
     end
 
     class Appointment < Base::Object
+      include Utils::BelongsToFolder
+      include Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
+      include MailboxItemConcern
+
+      attr_accessor uid: String?
+      attr_accessor desc: String?
+      attr_accessor start_at: Time?
+      attr_accessor dur: Integer?
+      attr_accessor end_at: Time?
+      attr_accessor tn: String?
+      attr_accessor allDay: bool
+      attr_accessor organizer: Appointment::Organizer?
+      attr_accessor timezone: String
+      attr_accessor calItemId: String?
+      attr_accessor apptId: String?
+      attr_accessor invId: String?
+      attr_accessor rev: Integer?
+      attr_accessor fb: String?
+      attr_accessor transp: String?
+      attr_accessor recur: untyped
+      attr_accessor s: Integer?
+      attr_accessor ms: Integer?
+      attr_accessor f: String?
+      attr_reader recipients: Recipients
+      attr_reader attendees: Appointment::Attendees
+      attr_reader body: Appointment::BodyMail
+      alias description desc
+      alias recurrent recur
+      alias size s
+
+      def flags: () -> Array[String]
+      def download: (String dest_file_path, ?fmt: String) -> nil
+      def read: () -> String
+      def create!: () -> String?
+      def reload!: () -> untyped
+
+      # Set the free/busy status locally, call modify! to save it.
+      def free!: () -> String
+      def busy!: () -> String
+      def must_confirm!: () -> String
+      def out_of_office!: () -> String
+
+      def update!: (*untyped) -> bot
+      def rename!: (*untyped) -> bot
+
+      class Organizer
+        attr_accessor email: String
+        attr_accessor display_name: String?
+
+        def initialize: (String email, ?String? display_name) -> void
+      end
+
+      class Attendee
+        attr_accessor email: String
+        attr_accessor display_name: String?
+        attr_accessor role: String
+        attr_accessor ptst: String
+        attr_accessor rsvp: Integer | bool
+
+        def initialize: (String email, ?String? display_name, ?String role, ?String ptst, ?Integer | bool rsvp)
+                      -> void
+      end
+
+      class Attendees
+        def initialize: () -> void
+
+        def map: [U] () { (Attendee) -> U } -> Array[U]
+        def add: (untyped attendee) -> Array[Attendee]?
+        def del: (Attendee | String attendee) -> untyped
+        def clear: () -> Array[Attendee]
+      end
+
+      class BodyMail
+        attr_accessor text: String?
+        attr_accessor html: String?
+      end
+    end
+
+    class Recipients
+      def initialize: () -> void
+
+      def map: [U] () { (Recipient) -> U } -> Array[U]
+      def add: (untyped recipient) -> Array[Recipient]?
+      def del: (Recipient | String recipient) -> untyped
+      def clear: () -> Array[Recipient]
+      def to: () -> Array[Recipient]
+      def cc: () -> Array[Recipient]
+      def bcc: () -> Array[Recipient]
+      def from: () -> Array[Recipient]
     end
 
     class AppointmentsCollection < Base::AccountSearchObjectsCollection[Appointment]
+      # Searches year by year, from 10 years ago to 10 years ahead by default.
+      def find_each: (?offset: Integer, ?limit: Integer, ?start_year: Integer?, ?end_year: Integer?)
+                       { (Appointment) -> void } -> void
     end
 
+    class Task < Base::Object
+      include Utils::BelongsToFolder
+      include Utils::BelongsToTag
+
+      def download: (String dest_file_path, ?fmt: String) -> nil
+
+      def create!: () -> bot
+      def modify!: () -> bot
+      def update!: (*untyped) -> bot
+      def rename!: (*untyped) -> bot
+      def reload!: () -> bot
+      def delete!: () -> bot
+    end
+
+    class TasksCollection < Base::AccountSearchObjectsCollection[Task]
+      def find_each: (?offset: Integer, ?limit: Integer) { (Task) -> void } -> void
+    end
+
+    class Document < Base::Object
+      include Utils::BelongsToFolder
+      include Utils::BelongsToTag
+      include SoapRequest::RequestMethodsMailbox
+
+      def download: (String dest_file_path) -> nil
+
+      def create!: () -> bot
+      def modify!: () -> bot
+      def update!: (*untyped) -> bot
+      def rename!: (*untyped) -> bot
+      def reload!: () -> bot
+    end
+
+    class DocumentsCollection < Base::AccountSearchObjectsCollection[Document]
+      def find_each: (?offset: Integer, ?limit: Integer) { (Document) -> void } -> void
+    end
+
+    # ##########################################################################
+    # Settings
+    # ##########################################################################
+
     class Tag < Base::Object
+      include SoapRequest::RequestMethodsMailbox
+      include MailboxItemConcern
+
+      attr_accessor color: Integer?
+      attr_accessor rgb: String?
+
+      def create!: () -> String?
     end
 
     class TagsCollection < Base::AccountObjectsCollection[Tag]
     end
 
-    class Task < Base::Object
+    class Identity < Base::Object
+      include SoapRequest::RequestMethodsMailbox
+
+      def create!: () -> String?
+      def rename!: (*untyped) -> bot
     end
 
-    class TasksCollection < Base::AccountSearchObjectsCollection[Task]
-    end
-
-    class Ace < Base::Object
-    end
-
-    class AcesCollection < Base::AccountObjectsCollection[Ace]
+    class IdentitiesCollection < Base::AccountObjectsCollection[Identity]
     end
 
     class Signature < Base::Object
+      include SoapRequest::RequestMethodsMailbox
+
+      attr_accessor txt: String?
+      attr_accessor html: String?
+
+      def create!: () -> String
+      def type: () -> String
+      def html?: () -> bool
+      def txt?: () -> bool
+      def content: () -> String
+
+      def update!: (*untyped) -> bot
     end
 
     class SignaturesCollection < Base::AccountObjectsCollection[Signature]
     end
 
-    class Document < Base::Object
-      def download: (String dest_file_path) -> nil
+    class DataSource < Base::Object
+      include SoapRequest::RequestMethodsMailbox
+
+      def initialize: (untyped parent, String data_source_type) -> void
+
+      def create!: () -> bot
+      def modify!: () -> bot
+      def rename!: (*untyped) -> bot
     end
 
-    class DocumentsCollection < Base::AccountSearchObjectsCollection[Document]
+    class DataSourcesCollection < Base::AccountObjectsCollection[DataSource]
+    end
+
+    class Ace < Base::Object
+      GT_USER: String
+      GT_GROUP: String
+      GT_DOMAIN: String
+      GT_PUB: String
+      GT_KEY: String
+
+      attr_accessor zid: String?
+      attr_accessor gt: String?
+      attr_accessor right: String?
+      attr_accessor d: String?
+    end
+
+    class AcesCollection < Base::AccountObjectsCollection[Ace]
+      attr_reader rights: Array[String]
+
+      def new_from_object: (Account | Resource | DistributionList | Domain item, String right) -> Ace
+      def create_from_object: (Account | Resource | DistributionList | Domain item, String right) -> Ace
+      def add: (Ace ace) -> Array[Ace]
+      def where: (*(String | Array[String]) rights) -> self
+    end
+
+    class Share < Base::Object
+      attr_accessor ownerId: String?
+      attr_accessor ownerEmail: String?
+      attr_accessor ownerName: String?
+      attr_accessor folderId: String?
+      attr_accessor folderUuid: String?
+      attr_accessor folderPath: String?
+      attr_accessor view: String?
+      attr_accessor rights: String?
+      attr_accessor granteeType: String?
+      attr_accessor granteeId: String?
+      attr_accessor granteeName: String?
+      attr_accessor mid: String?
+
+      def mountpoints: () -> ShareMountPointsCollection
+    end
+
+    class ShareMountPointsCollection
+      def initialize: (Share share) -> void
+
+      def new: () -> MountPoint
+      def all: () -> Array[MountPoint]
+      alias all! all
+    end
+
+    class SharesCollection < Base::ObjectsCollection[Share]
+      def where: (?owner_name: String?) -> self
     end
 
     class FilterRule < Base::Object
+      attr_accessor active: bool?
+      attr_accessor filterTests: untyped
+      attr_accessor filterActions: untyped
     end
 
     class FilterRulesCollection < Base::AccountObjectsCollection[FilterRule]
@@ -115,16 +731,36 @@ module Zm
     class OutgoingFilterRulesCollection < FilterRulesCollection
     end
 
-    class DataSource < Base::Object
-    end
-
-    class DataSourcesCollection < Base::AccountObjectsCollection[DataSource]
-    end
-
     class AccountDlsMembershipCollection < Base::ObjectsCollection[DistributionList]
     end
 
     class AccountDlsOwnerCollection < Base::ObjectsCollection[DistributionList]
+    end
+
+    module Base
+      class MailboxPrefsCollection
+        def initialize: (MailboxObject parent) -> void
+
+        def all: () -> Hash[Symbol, untyped]?
+        alias all! all
+        def clear: () -> void
+        def preferences: (*(String | Array[String]) entries) -> self
+        def update!: (Hash[Symbol | String, untyped] hash) -> untyped
+      end
+
+      class MailboxInfosCollection
+        def initialize: (MailboxObject parent) -> void
+
+        def all: () -> Hash[Symbol, untyped]
+        alias all! all
+        def clear: () -> void
+        def sections: (*(String | Array[String]) entries) -> self
+        def rights: (*(String | Array[String]) entries) -> self
+        # Reads the mbox section and fills id, used, public_url, zimbraCOSId and home_url on the mailbox.
+        def read: () -> Hash[Symbol, untyped]
+        def zimbraMailHost: () -> String?
+        def zimbraMailHost!: () -> String?
+      end
     end
   end
 end

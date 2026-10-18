@@ -186,12 +186,6 @@ module Zm
         def outgoing_filter_rules: () -> OutgoingFilterRulesCollection
         def data_sources: () -> DataSourcesCollection
       end
-
-      class MailboxInfosCollection
-      end
-
-      class MailboxPrefsCollection
-      end
     end
   end
 end

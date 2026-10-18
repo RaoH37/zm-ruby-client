@@ -97,6 +97,12 @@ module Zm
     end
 
     class CosServersCollection
+      def initialize: (Cos parent) -> void
+
+      def all: () -> Array[Server]
+      alias all! all
+      def add!: (*(Server | Array[Server]) servers) -> bool
+      def remove!: (*(Server | Array[Server]) servers) -> bool
     end
 
     class CosDomainsCollection < DomainsCollection
@@ -119,12 +125,41 @@ module Zm
     end
 
     class MtaQueue < Base::Object
+      attr_accessor n: Integer?
+      alias nb_items n
+
+      def server: () -> Server
+      def hold!: (Array[String] ids) -> untyped
+      def release!: (Array[String] ids) -> untyped
+      def delete!: (Array[String] ids) -> untyped
+      def requeue!: (Array[String] ids) -> untyped
     end
 
     class MtaQueuesCollection < Base::ObjectsCollection[MtaQueue]
+      # The known queues without querying the server.
+      def defaults: () -> Array[MtaQueue]
+      def defaults!: () -> Array[MtaQueue]
+      # Raises Zm::Error::ZmError on an unknown queue name.
+      def find: (String queue_name) -> MtaQueue?
     end
 
     class Backup < Base::Object
+      attr_accessor label: String?
+      attr_accessor type: String?
+      attr_accessor aborted: bool?
+      attr_accessor start: Integer?
+      attr_accessor end: Integer?
+      attr_accessor minRedoSeq: Integer?
+      attr_accessor maxRedoSeq: Integer?
+      attr_accessor live: bool?
+      attr_accessor accounts: untyped
+      alias name label
+
+      def server: () -> Server
+      def start_at: () -> Time?
+      def end_at: () -> Time?
+      def full?: () -> bool
+      def incremental?: () -> bool
     end
 
     class BackupsCollection < Base::ObjectsCollection[Backup]
