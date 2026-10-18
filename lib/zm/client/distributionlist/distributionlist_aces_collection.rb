@@ -2,11 +2,11 @@
 
 module Zm
   module Client
-
     # Collection Account Aliases
     class DistributionListAcesCollection
       include Zm::Utils::MissingMethodStaticCollection
-      DistributionListAce = Struct.new(:zimbra_id, :type, :right)
+
+      DistributionListAce = Data.define(:zimbra_id, :type, :right)
 
       def initialize(parent)
         @parent = parent
@@ -23,7 +23,7 @@ module Zm
 
         @all = zimbra_aces.map do |str|
           parts = str.split(/\s+/)
-          DistributionListAce.new(parts[0], parts[1], parts[2])
+          DistributionListAce.new(zimbra_id: parts[0], type: parts[1], right: parts[2])
         end
       end
     end
