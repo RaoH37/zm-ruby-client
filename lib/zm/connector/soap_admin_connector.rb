@@ -11,6 +11,7 @@ module Zm
             trans.logger = config.logger
             trans.cache = config.cache
             trans.timeout = config.timeout
+            trans.ssl_options = config.ssl_options
           end
         end
       end

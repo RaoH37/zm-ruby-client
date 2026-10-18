@@ -9,7 +9,8 @@ module Zm
       attr_reader :zimbra_admin_url, :zimbra_public_url
       attr_writer :logger, :colorize_logging
       attr_accessor :zimbra_admin_login, :zimbra_admin_password,
-                    :domains, :zimbra_version, :log_path, :timeout
+                    :domains, :zimbra_version, :log_path, :timeout,
+                    :ssl_verify, :ssl_ca_file, :ssl_ca_path
 
       def initialize(parameters = nil)
         @domains = []
@@ -18,6 +19,7 @@ module Zm
         @log_level = Logger::INFO
         @colorize_logging = false
         @timeout = 300
+        @ssl_verify = false
 
         init_from_parameters(parameters)
 
@@ -99,7 +101,27 @@ module Zm
           @timeout = p_timeout.to_i
         end
 
+        init_ssl_from_parameters(parameters)
+
         init_domains_from_parameters(parameters)
+      end
+
+      def init_ssl_from_parameters(parameters)
+        @ssl_verify = parameters.delete(:ssl_verify) == true if parameters.key?(:ssl_verify)
+        @ssl_ca_file = parameters.delete(:ssl_ca_file) if parameters.key?(:ssl_ca_file)
+        @ssl_ca_path = parameters.delete(:ssl_ca_path) if parameters.key?(:ssl_ca_path)
+      end
+
+      def ssl_options
+        return Zm::Connector::SSL_VERIFY_NONE unless @ssl_verify
+
+        {
+          verify: true,
+          verify_hostname: true,
+          verify_mode: OpenSSL::SSL::VERIFY_PEER,
+          ca_file: @ssl_ca_file,
+          ca_path: @ssl_ca_path
+        }.compact
       end
 
       def init_domains_from_parameters(parameters)

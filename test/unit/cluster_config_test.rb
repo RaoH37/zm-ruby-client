@@ -97,6 +97,38 @@ class ClusterConfigTest < ZmTest::UnitTest
     assert_raises(Zm::Client::ClusterConfigError) { build_config.cache_store = :file_store, {} }
   end
 
+  def test_ssl_verification_is_disabled_by_default
+    config = build_config
+
+    refute config.ssl_verify
+    assert_equal Zm::Connector::SSL_VERIFY_NONE, config.ssl_options
+  end
+
+  def test_ssl_verification_from_parameters
+    config = build_config(ssl_verify: true, ssl_ca_file: '/etc/ssl/zimbra.pem')
+
+    assert_equal({ verify: true, verify_hostname: true, verify_mode: OpenSSL::SSL::VERIFY_PEER,
+                   ca_file: '/etc/ssl/zimbra.pem' }, config.ssl_options)
+  end
+
+  def test_ssl_verify_only_accepts_true
+    refute build_config(ssl_verify: 'false').ssl_verify
+  end
+
+  def test_connectors_use_ssl_options
+    config = build_config(ssl_verify: true)
+    cluster = Zm::Client::Cluster.new(config)
+    account = cluster.accounts.new { |a| a.name = 'user@domain.tld' }
+
+    assert cluster.soap_admin_connector.http_client!.ssl.verify?
+    assert account.soap_account_connector.http_client!.ssl.verify?
+    assert_equal config.ssl_options, account.rest_options[:ssl_options]
+  end
+
+  def test_connectors_skip_ssl_verification_by_default
+    refute Zm::Client::Cluster.new(build_config).soap_admin_connector.http_client!.ssl.verify?
+  end
+
   def test_zimbra_attributes_are_loaded_from_csv
     attributes = Zm::Client::Cluster.new(build_config).zimbra_attributes
 

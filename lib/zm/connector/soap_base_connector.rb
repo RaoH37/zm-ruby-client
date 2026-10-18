@@ -10,17 +10,13 @@ module Zm
       }.freeze
 
       attr_reader :context
-      attr_writer :logger, :cache, :timeout
+      attr_writer :logger, :cache, :timeout, :ssl_options
 
       def initialize(url, soap_path)
         @verbose = false
         @timeout = 300
 
-        @ssl_options = {
-          verify: false,
-          verify_hostname: false,
-          verify_mode: OpenSSL::SSL::VERIFY_NONE
-        }
+        @ssl_options = SSL_VERIFY_NONE
 
         @url = url
         @soap_path = soap_path

@@ -9,15 +9,10 @@ module Zm
       attr_reader :verbose, :timeout
       attr_writer :cookies
 
-      def initialize(verbose: false, timeout: 300)
+      def initialize(verbose: false, timeout: 300, ssl_options: SSL_VERIFY_NONE)
         @verbose = verbose
         @timeout = timeout
-
-        @ssl_options = {
-          verify: false,
-          verify_hostname: false,
-          verify_mode: OpenSSL::SSL::VERIFY_NONE
-        }
+        @ssl_options = ssl_options
 
         @cookies = nil
 

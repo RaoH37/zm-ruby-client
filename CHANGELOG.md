@@ -5,6 +5,7 @@
 ### [3.1.0] 2026-07
 
 - [Added] Add massive update and delete in admin collection classes
+- [Added] Add optional TLS certificate verification in ClusterConfig (ssl_verify, ssl_ca_file, ssl_ca_path), disabled by default
 - [Changed] Replace require by autoload to reduce memory usage
 - [Changed] Change code structure files
 - [Changed] Add secure option in messages find_each method

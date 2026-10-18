@@ -247,7 +247,8 @@ module Zm
           if soap_config
             {
               timeout: soap_config.timeout,
-              verbose: soap_config.logger.debug?
+              verbose: soap_config.logger.debug?,
+              ssl_options: soap_config.ssl_options
             }
           else
             {}

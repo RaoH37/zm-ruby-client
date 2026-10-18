@@ -40,6 +40,13 @@ cluster.login
 
 Prefer a file? `Zm::Client::ClusterConfig.new('config.json')` (or `.yml`), see [examples/config.json](examples/config.json).
 
+TLS certificates are not verified by default. To enable verification:
+
+```ruby
+cc.ssl_verify  = true
+cc.ssl_ca_file = '/etc/ssl/certs/zimbra-ca.pem' # optional, for a private CA (or ssl_ca_path)
+```
+
 ## Feel the difference
 
 **Find an account, change it.**
