@@ -8,7 +8,7 @@ class MessageTest < ZmTest::UnitTest
       id: '257', e: [],
       mp: [{ cd: 'attachment', ct: 'application/pdf', part: '2', filename: 'doc.pdf', s: 1024 }]
     }
-    account = Object.new
+    account = Zm::Client::Account.new(nil)
     message = Zm::Client::MessageJsnsInitializer.create(account, json)
     attachment = message.attachments.all.first
 

@@ -1,0 +1,23 @@
+module Zm
+  module Error
+    class ZmError < StandardError
+    end
+
+    class SoapError < StandardError
+      attr_reader reason: String?
+      attr_reader code: String?
+
+      def initialize: (Hash[Symbol, untyped] soapbody) -> void
+    end
+
+    class AuthError < SoapError
+    end
+
+    class RestError < StandardError
+    end
+
+    # Raised on connection failure, timeout or SSL error, the Faraday error is kept as cause.
+    class ConnectionError < ZmError
+    end
+  end
+end

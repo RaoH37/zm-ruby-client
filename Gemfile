@@ -9,6 +9,7 @@ group :development do
   gem "yard"
   gem "benchmark-ips"
   gem "get_process_mem"
+  gem "rbs"
 end
 
 group :test do

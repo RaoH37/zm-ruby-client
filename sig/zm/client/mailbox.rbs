@@ -1,0 +1,130 @@
+module Zm
+  module Client
+    class Message < Base::Object
+      attr_reader attachments: MessageAttachmentsCollection
+
+      def download: (String dest_file_path, ?fmt: String) -> nil
+      def read: () -> String
+    end
+
+    class MessagesCollection < Base::AccountSearchObjectsCollection[Message]
+      # With secure: true, errors raised by the block are logged and the search stops on a request error.
+      def find_each: (?offset: Integer, ?limit: Integer, ?secure: bool) { (Message) -> void } -> void
+    end
+
+    class MessageAttachmentsCollection
+      def all: () -> Array[Attachment]
+    end
+
+    class Attachment
+      attr_accessor aid: String?
+      attr_accessor part: String?
+      attr_accessor mid: String?
+      attr_accessor ct: String?
+      attr_accessor s: Integer?
+      attr_accessor filename: String?
+      attr_accessor ci: String?
+      attr_accessor cd: String?
+
+      def download: (String dest_file_path) -> nil
+      def account: () -> Account
+    end
+
+    class Folder < Base::Object
+      def download: (String dest_file_path, ?fmt: String?) -> nil
+      def upload: (String src_file_path, ?fmt: String?, ?resolve: String?) -> String
+      def export_contacts: (?csvfmt: String?, ?csvlocale: String?, ?csvsep: String?) -> untyped
+    end
+
+    class FoldersCollection < Base::AccountObjectsCollection[Folder]
+    end
+
+    class MountPoint < Base::Object
+    end
+
+    class MountPointsCollection < Base::AccountObjectsCollection[MountPoint]
+    end
+
+    class SearchFolder < Base::Object
+    end
+
+    class SearchFoldersCollection < Base::AccountObjectsCollection[SearchFolder]
+    end
+
+    class Identity < Base::Object
+    end
+
+    class IdentitiesCollection < Base::AccountObjectsCollection[Identity]
+    end
+
+    class Share < Base::Object
+    end
+
+    class SharesCollection < Base::ObjectsCollection[Share]
+    end
+
+    class Contact < Base::Object
+    end
+
+    class ContactsCollection < Base::AccountSearchObjectsCollection[Contact]
+    end
+
+    class Appointment < Base::Object
+    end
+
+    class AppointmentsCollection < Base::AccountSearchObjectsCollection[Appointment]
+    end
+
+    class Tag < Base::Object
+    end
+
+    class TagsCollection < Base::AccountObjectsCollection[Tag]
+    end
+
+    class Task < Base::Object
+    end
+
+    class TasksCollection < Base::AccountSearchObjectsCollection[Task]
+    end
+
+    class Ace < Base::Object
+    end
+
+    class AcesCollection < Base::AccountObjectsCollection[Ace]
+    end
+
+    class Signature < Base::Object
+    end
+
+    class SignaturesCollection < Base::AccountObjectsCollection[Signature]
+    end
+
+    class Document < Base::Object
+      def download: (String dest_file_path) -> nil
+    end
+
+    class DocumentsCollection < Base::AccountSearchObjectsCollection[Document]
+    end
+
+    class FilterRule < Base::Object
+    end
+
+    class FilterRulesCollection < Base::AccountObjectsCollection[FilterRule]
+    end
+
+    class OutgoingFilterRulesCollection < FilterRulesCollection
+    end
+
+    class DataSource < Base::Object
+    end
+
+    class DataSourcesCollection < Base::AccountObjectsCollection[DataSource]
+    end
+
+    class AccountDlsMembershipCollection < Base::ObjectsCollection[DistributionList]
+    end
+
+    class AccountDlsOwnerCollection < Base::ObjectsCollection[DistributionList]
+    end
+  end
+end
