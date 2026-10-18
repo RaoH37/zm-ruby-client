@@ -54,7 +54,7 @@ module Zm
         def read_serialized_entry(key, **)
           File.binread(key) if File.exist?(key)
         rescue StandardError => e
-          warn "FileStoreError (#{e}): #{e.message}"
+          @logger&.error "FileStoreError (#{e}): #{e.message}"
           nil
         end
 

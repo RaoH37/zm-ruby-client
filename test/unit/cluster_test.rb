@@ -40,6 +40,22 @@ class ClusterTest < ZmTest::UnitTest
     assert_raises(Faraday::ConnectionFailed) { Zm::Client::Cluster.new(build_config).login }
   end
 
+  def test_non_json_error_response_raises_soap_error
+    @fake.on(:AuthRequest) { [502, '<html><title>Bad Gateway</title></html>'] }
+
+    error = assert_raises(Zm::Error::AuthError) { Zm::Client::Cluster.new(build_config).login }
+    assert_equal 'HTTP 502', error.reason
+  end
+
+  def test_target_invoke_resets_target_server_on_error
+    cluster = logged_cluster
+    @fake.fault(:NoOpRequest, code: 'service.FAILURE')
+    soap_request = Zm::SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::NO_OP_REQUEST)
+
+    assert_raises(Zm::Error::SoapError) { cluster.soap_admin_connector.target_invoke(soap_request, 'server-id') }
+    assert_nil cluster.soap_admin_connector.context.to_hash[:targetServer]
+  end
+
   def test_expired_token_is_not_logged
     cluster = Zm::Client::Cluster.new(build_config)
     cluster.token = ZmTest::FakeData.token(expires_in: -60)

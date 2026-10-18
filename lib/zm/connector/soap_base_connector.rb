@@ -74,18 +74,18 @@ module Zm
           response = http_client.post(@soap_path, json_body)
           @logger.debug response.body
 
-          raise(error_handler, JSON.parse(response.body, symbolize_names: true)) if response.status >= 400
+          raise(error_handler, error_body(response)) if response.status >= 400
 
           response.body
         end
 
         JSON.parse(json_response, symbolize_names: true)
+      end
 
-        # rescue Faraday::ConnectionFailed, SocketError => error
-        #   @logger.error "SoapConnectorError (#{error.class}): #{error.message}"
-        #   # raise error
-        #   {}
-        #   nil
+      def error_body(response)
+        JSON.parse(response.body, symbolize_names: true)
+      rescue JSON::ParserError, TypeError
+        { Body: { Fault: { Reason: { Text: "HTTP #{response.status}" }, Detail: { Error: { Code: 'HTTP_ERROR' } } } } }
       end
 
       def envelope(soap_element)

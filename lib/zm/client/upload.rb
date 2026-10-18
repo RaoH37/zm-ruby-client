@@ -110,7 +110,7 @@ module Zm
       end
 
       def format_url_params(params)
-        params.map { |k, v| "#{k}=#{v}" }.join('&')
+        URI.encode_www_form(params)
       end
 
       def format_url(url, str_params)
@@ -120,8 +120,18 @@ module Zm
       end
 
       def download_file_with_url(url, dest_file_path)
-        url = File.join(@base_url, url) unless url.start_with?('http')
+        url = File.join(@base_url, url) unless url.start_with?('http://', 'https://')
+        raise Zm::Error::RestError, 'url does not match base_url origin' unless same_origin?(url)
+
         @rest_connector.download(url, dest_file_path)
+      end
+
+      def same_origin?(url)
+        uri = URI(url)
+        base_uri = URI(@base_url)
+        uri.scheme == base_uri.scheme && uri.host == base_uri.host && uri.port == base_uri.port
+      rescue URI::InvalidURIError
+        false
       end
 
       def download_folder_url(folder_id, fmt)
@@ -153,7 +163,7 @@ module Zm
           fmt: 'extended,raw'
         }
 
-        File.join(@base_url, 'service/upload') << '?' << format_url_params(h)
+        format_url(File.join(@base_url, 'service/upload'), format_url_params(h))
       end
     end
   end

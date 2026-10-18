@@ -21,7 +21,10 @@ module Zm
       def metadatas
         return @metadatas if defined? @metadatas
 
-        @metadatas = decoded.split(';').to_h { |part| part.split(/=\d+:/) }.freeze
+        @metadatas = decoded.split(';').each_with_object({}) do |part, h|
+          key, value = part.split(/=\d+:/, 2)
+          h[key] = value
+        end.freeze
       end
 
       def zimbra_id

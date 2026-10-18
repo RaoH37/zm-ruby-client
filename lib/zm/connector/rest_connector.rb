@@ -103,7 +103,7 @@ module Zm
       def split_url(url)
         uri = URI(url)
         url = "#{uri.scheme}://#{uri.host}:#{uri.port}"
-        path = [uri.path, uri.query].join('?')
+        path = uri.query ? "#{uri.path}?#{uri.query}" : uri.path
 
         [url, path]
       end

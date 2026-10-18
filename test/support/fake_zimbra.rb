@@ -51,6 +51,8 @@ module ZmTest
       end
 
       status, response_body = normalize(handler.call(request))
+      return [status, { 'Content-Type' => 'text/html' }, response_body] if response_body.is_a?(String)
+
       [status, { 'Content-Type' => 'application/json' }, JSON.generate({ Header: {}, Body: response_body })]
     end
 

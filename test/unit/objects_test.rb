@@ -51,4 +51,12 @@ class ObjectsTest < Minitest::Test
     refute token.expired?
     assert_equal '10.1.0', token.server_version
   end
+
+  def test_token_metadatas_ignore_malformed_parts
+    encoded = 'id=3:abc;broken;exp=1:0'.unpack1('H*')
+    token = Zm::Client::Token.new("0_hmac_#{encoded}")
+
+    assert_equal 'abc', token.zimbra_id
+    assert_nil token.metadatas['broken']
+  end
 end

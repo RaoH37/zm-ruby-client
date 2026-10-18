@@ -36,7 +36,7 @@ module Zm
           disp: 'a'
         }
 
-        url = "#{account.home_url}?#{h.map { |k, v| "#{k}=#{v}" }.join('&')}"
+        url = "#{account.home_url}?#{URI.encode_www_form(h)}"
 
         uploader = @parent.build_uploader
         uploader.download_file_with_url(url, dest_file_path)

@@ -16,7 +16,6 @@ module Zm
         def initialize(options = {})
           @options = options
           @coder = Cache::Entry.factory
-          @digest = OpenSSL::Digest.new('sha256')
           @logger = nil
         end
 
@@ -120,9 +119,9 @@ module Zm
                       end
 
           if namespace
-            @digest.hexdigest("#{namespace}:#{key}")
+            OpenSSL::Digest::SHA256.hexdigest("#{namespace}:#{key}")
           else
-            @digest.hexdigest(key)
+            OpenSSL::Digest::SHA256.hexdigest(key)
           end
         end
 
