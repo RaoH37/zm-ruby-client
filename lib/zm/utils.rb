@@ -11,5 +11,6 @@ module Zm
     autoload :ContentPart,  'zm/utils/content_part'
     autoload :ContentType,  'zm/utils/content_type'
     autoload :SearchUtils,  'zm/utils/search_utils'
+    autoload :LogFilter, 'zm/utils/log_filter'
   end
 end

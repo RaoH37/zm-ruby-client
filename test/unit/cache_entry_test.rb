@@ -44,4 +44,16 @@ class CacheEntryTest < Minitest::Test
     restored_entry = Zm::Support::Cache::Entry.factory.load(dumped_entry)
     assert entry.value == restored_entry.value
   end
+
+  def test_legacy_marshal_entry_is_ignored
+    Dir.mktmpdir do |dir|
+      store = Zm::Support::Cache::FileStore.new(cache_path: dir)
+      store.write('key', 'value')
+      path = Dir.glob(File.join(dir, '**', '*')).find { |f| File.file?(f) }
+      legacy = MessagePack::ExtensionValue.new(0x01, [Marshal.dump('value')].to_msgpack).to_msgpack
+      File.binwrite(path, legacy)
+
+      assert_nil store.read('key')
+    end
+  end
 end

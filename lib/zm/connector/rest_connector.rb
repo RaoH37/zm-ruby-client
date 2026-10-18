@@ -65,7 +65,7 @@ module Zm
 
         conn = Faraday.new(**http_options(url)) do |faraday|
           faraday.request :multipart
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+          add_logger(faraday)
         end
 
         payload = { file: Faraday::Multipart::FilePart.new(src_file_path, nil) }
@@ -78,7 +78,15 @@ module Zm
 
       def conn_get(url)
         Faraday.new(**http_options(url)) do |faraday|
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+          add_logger(faraday)
+        end
+      end
+
+      def add_logger(faraday)
+        return unless @verbose
+
+        faraday.response(:logger, nil, { headers: true, bodies: true, errors: true }) do |formatter|
+          Zm::Utils::LogFilter.apply(formatter)
         end
       end
 

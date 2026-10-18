@@ -193,7 +193,7 @@ module Zm
 
         def deserialize_entry(payload, **)
           @coder.load(payload)
-        rescue DeserializationError
+        rescue DeserializationError, MessagePack::UnpackError, EOFError
           nil
         end
       end

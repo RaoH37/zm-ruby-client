@@ -10,12 +10,12 @@ module Zm
           def factory
             @factory ||= MessagePack::Factory.new.tap do |msgpack_factory|
               msgpack_factory.register_type(
-                0x01,
+                0x02,
                 self,
                 packer: ->(entry) { entry.pack.to_msgpack },
                 unpacker: lambda { |data|
                   value, expires_at, version = MessagePack.unpack(data)
-                  new(Marshal.load(value), version:, expires_at:)
+                  new(value, version:, expires_at:)
                 }
               )
             end
@@ -49,7 +49,7 @@ module Zm
         end
 
         def pack
-          members = [Marshal.dump(@value), @expires_at, @version]
+          members = [@value, @expires_at, @version]
           members.pop while !members.empty? && members.last.nil?
           members
         end

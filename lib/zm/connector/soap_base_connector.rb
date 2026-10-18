@@ -8,6 +8,7 @@ module Zm
         'Content-Type' => 'application/json; charset=utf-8',
         'User-Agent' => 'ZmRubyClient'
       }.freeze
+      CACHEABLE_REQUEST_REGEX = /\A(?:Get|Search|Count)\w*Request\z/
 
       attr_reader :context
       attr_writer :logger, :cache, :timeout, :ssl_options
@@ -29,7 +30,7 @@ module Zm
       end
 
       def invoke(soap_element, error_handler = Zm::Error::SoapError)
-        do_request(envelope(soap_element), error_handler)[:Body]
+        do_request(envelope(soap_element), error_handler, cacheable: cacheable?(soap_element))[:Body]
       end
 
       def target_invoke(soap_element, target_id, error_handler = Zm::Error::SoapError)
@@ -49,33 +50,45 @@ module Zm
           ssl: @ssl_options
         ) do |faraday|
           faraday.request :json
-          faraday.response :logger, nil, { headers: true, bodies: true, errors: true } if @verbose
+          if @verbose
+            faraday.response(:logger, nil, { headers: true, bodies: true, errors: true }) do |formatter|
+              Zm::Utils::LogFilter.apply(formatter)
+            end
+          end
         end
       end
 
       private
 
+      def cacheable?(soap_element)
+        CACHEABLE_REQUEST_REGEX.match?(soap_element.name)
+      end
+
       def http_client
         @http_client || http_client!
       end
 
-      def do_request(body, error_handler = Zm::Error::SoapError)
+      def do_request(body, error_handler = Zm::Error::SoapError, cacheable: false)
         json_body = body.to_json
-        @logger.debug json_body
+        @logger.debug { Zm::Utils::LogFilter.filter(json_body) }
 
-        # cache json response
-        # no cache if response raise
-        json_response = @cache.fetch(json_body) do
-          @logger.debug 'Load from remote'
-          response = http_client.post(@soap_path, json_body)
-          @logger.debug response.body
-
-          raise(error_handler, error_body(response)) if response.status >= 400
-
-          response.body
-        end
+        json_response = if cacheable
+                          @cache.fetch(json_body) { post(json_body, error_handler) }
+                        else
+                          post(json_body, error_handler)
+                        end
 
         JSON.parse(json_response, symbolize_names: true)
+      end
+
+      def post(json_body, error_handler)
+        @logger.debug 'Load from remote'
+        response = http_client.post(@soap_path, json_body)
+        @logger.debug { Zm::Utils::LogFilter.filter(response.body) }
+
+        raise(error_handler, error_body(response)) if response.status >= 400
+
+        response.body
       end
 
       def error_body(response)

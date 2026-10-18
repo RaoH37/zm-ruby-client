@@ -64,7 +64,7 @@ module Zm
 
         def write_serialized_entry(key, payload, **)
           ensure_cache_path(File.dirname(key))
-          File.write(key, payload)
+          File.open(key, 'wb', 0o600) { |f| f.write(payload) }
           true
         end
 
@@ -120,7 +120,7 @@ module Zm
         end
 
         def ensure_cache_path(path)
-          FileUtils.makedirs(path)
+          FileUtils.makedirs(path, mode: 0o700)
         end
 
         def search_dir(dir, &callback)
