@@ -3,6 +3,29 @@
 require_relative '../test_helper'
 
 class ClusterTest < ZmTest::UnitTest
+  def test_count_object_accepts_symbol_and_string
+    @fake.on(:CountObjectsRequest, { CountObjectsResponse: { num: 42 } })
+    cluster = logged_cluster
+
+    assert_equal 42, cluster.count_object(:account)
+    assert_equal 42, cluster.count_object('calresource')
+    assert_equal(%w[account calresource], @fake.requests.select { |r| r.name == 'CountObjectsRequest' }
+                                                  .map { |r| r.body[:type] })
+  end
+
+  def test_count_object_rejects_unknown_type_before_any_request
+    cluster = logged_cluster
+
+    assert_raises(Zm::Error::ZmError) { cluster.count_object('mailbox') }
+    assert_nil @fake.last_request(:CountObjectsRequest)
+  end
+
+  def test_count_object_rejects_nil
+    skip 'calls are ill-typed on purpose' if ENV['RBS_TEST_TARGET']
+
+    assert_raises(Zm::Error::ZmError) { logged_cluster.count_object(nil) }
+  end
+
   def test_login_sends_credentials_and_stores_token
     auth_token = ZmTest::FakeData.token
     @fake.on(:AuthRequest, ZmTest::FakeData.auth_response(auth_token))

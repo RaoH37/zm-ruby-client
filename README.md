@@ -108,6 +108,46 @@ cluster.email_exist?('john@domain.tld')               # => true
 cluster.accounts.where('(mail=*@domain.tld)').count   # => 1250
 ```
 
+## Type signatures
+
+RBS signatures for the public API are shipped in `sig/`. [rbs collection](https://github.com/ruby/rbs) picks them up
+from the installed gem, for use with [Steep](https://github.com/soutaro/steep) or your editor:
+
+```bash
+bundle exec rbs collection install
+```
+
+## Upgrading from 3.0
+
+3.1 requires Ruby 3.3, moves the error classes to `Zm::Error` (`rescue Zm::Error::SoapError`) and raises
+`Zm::Error::ConnectionError` on network failures. The 3.0 names (`Zm::Client::SoapError`…) still work but print a
+deprecation warning: they will be removed in 4.0. See the [upgrade notes](CHANGELOG.md#upgrading-from-30) for the
+full list.
+
+## Development
+
+```bash
+bundle install
+bundle exec rake test          # offline unit tests, no server needed
+bundle exec rake rbs:validate  # check the RBS signatures
+bundle exec rake rbs:test      # unit tests with RBS runtime type checking
+bundle exec rubocop
+```
+
+**Live tests** run real CRUD operations (accounts, domains, COS, distribution lists, resources, and the folders,
+messages, contacts, appointments, tags, signatures and identities of an account) against a Zimbra or Carbonio server:
+
+```bash
+ZIMBRA_ADMIN_URL=https://mail.domain.tld:7071 \
+ZIMBRA_ADMIN_LOGIN=admin@domain.tld \
+ZIMBRA_ADMIN_PASSWORD=secret \
+bundle exec rake test:live
+```
+
+Each test creates its own data (accounts, lists and resources in a temporary `zmlive-*.test` domain) and deletes it
+afterwards, even when the test fails. They are skipped when a variable is missing. Set `ZIMBRA_LOG_PATH=/dev/stdout`
+to see the SOAP requests. Use a test server: the tests need full admin rights and create and delete domains.
+
 ## Learn more
 
 - [examples/](examples): ready-to-run scripts

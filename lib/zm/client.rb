@@ -4,6 +4,9 @@ require 'zm/client/version'
 
 module Zm
   module Client
+    autoload :DeprecatedConstants, 'zm/client/deprecated_constants'
+    extend DeprecatedConstants
+
     autoload :Utils, 'zm/client/utils'
     autoload :ZmLogger, 'zm/client/zm_logger'
     autoload :Token, 'zm/client/token'

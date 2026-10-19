@@ -6,6 +6,8 @@ module Zm
     class Cluster
       extend Zm::Relationship
 
+      COUNT_OBJECT_TYPES = %i[userAccount account alias dl domain cos server calresource internalUserAccount].freeze
+
       attr_reader :soap_admin_connector, :config, :zimbra_attributes, :type, :version, :release, :buildDate, :host,
                   :majorversion, :minorversion, :microversion
 
@@ -90,8 +92,8 @@ module Zm
       end
 
       def count_object(type)
-        authorized_types = [:userAccount, :account, :alias, :dl, :domain, :cos, :server, :calresource, :internalUserAccount]
-        raise Zm::Error::ZmError, 'Unknown object type' unless authorized_types.include?(type)
+        type = type.to_sym if type.is_a?(String)
+        raise Zm::Error::ZmError, 'Unknown object type' unless COUNT_OBJECT_TYPES.include?(type)
 
         soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::COUNT_OBJECTS_REQUEST)
         soap_request.add_attribute('type', type)
