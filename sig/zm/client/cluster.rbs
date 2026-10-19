@@ -41,7 +41,8 @@ module Zm
       def domain_key: (String domain_name) -> String?
       def has_admin_credentials?: () -> bool
 
-      def zimbra_attributes_path: () -> String
+      # deprecated, removed in 4.0
+      def zimbra_attributes_path: () -> nil
       def zimbra_attributes_path=: (String path) -> void
 
       def logger: () -> ::Logger
@@ -62,7 +63,6 @@ module Zm
     class Cluster
       attr_reader soap_admin_connector: Connector::SoapAdminConnector
       attr_reader config: ClusterConfig
-      attr_reader zimbra_attributes: Base::ZimbraAttributesCollection
       attr_reader type: String?
       attr_reader version: String?
       attr_reader release: String?
@@ -80,6 +80,9 @@ module Zm
 
       # Raises ClusterConfigError without admin credentials, Zm::Error::AuthError on bad credentials.
       def login: () -> void
+      # deprecated, removed in 4.0
+      def zimbra_attributes: () -> Base::ZimbraAttributesCollection
+
       def logged?: () -> bool
       def alive?: () -> bool
       def logged_and_alive?: () -> bool

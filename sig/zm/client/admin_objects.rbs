@@ -18,6 +18,8 @@ module Zm
 
   module Client
     class Account < Base::MailboxObject
+      extend Base::HasZimbraAttributes
+
       include SoapRequest::RequestMethodsAdmin
 
       def cos: () -> Cos?
@@ -42,6 +44,8 @@ module Zm
     end
 
     class Resource < Base::MailboxObject
+      extend Base::HasZimbraAttributes
+
       include SoapRequest::RequestMethodsAdmin
 
       LOCATION: String
@@ -58,6 +62,8 @@ module Zm
     end
 
     class Domain < Base::Object
+      extend Base::HasZimbraAttributes
+
       include SoapRequest::RequestMethodsAdmin
 
       def create!: () -> String
@@ -84,6 +90,8 @@ module Zm
     end
 
     class Cos < Base::Object
+      extend Base::HasZimbraAttributes
+
       def create!: () -> String
       def modify!: () -> true
       def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
@@ -116,6 +124,9 @@ module Zm
     end
 
     class Server < Base::Object
+      extend Base::HasZimbraAttributes
+
+      def attrs_write: () -> Array[String]
       def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
       def mailboxes: () -> Array[Hash[Symbol, untyped]]?
 
@@ -174,6 +185,8 @@ module Zm
     end
 
     class DistributionList < Base::Object
+      extend Base::HasZimbraAttributes
+
       include SoapRequest::RequestMethodsAdmin
 
       def create!: () -> String

@@ -14,10 +14,9 @@ Gem::Specification.new do |s|
   s.email    = 'maxime.desecot@gmail.com'
   s.homepage = 'https://github.com/RaoH37/zm-ruby-client'
 
-  s.files         = Dir['lib/**/*.{rb,csv}'] + Dir['sig/**/*.rbs'] + %w[VERSION README.md CHANGELOG.md LICENSE]
+  s.files         = Dir['lib/**/*.rb'] + Dir['sig/**/*.rbs'] + %w[VERSION README.md CHANGELOG.md LICENSE]
   s.require_paths = ['lib']
 
-  s.add_dependency 'csv', '~> 3.2'
   s.add_dependency 'faraday', '~> 2.14'
   s.add_dependency 'faraday-multipart', '~> 1.1'
   s.add_dependency 'logger', '~> 1.6'

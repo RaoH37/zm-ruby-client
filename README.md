@@ -101,6 +101,13 @@ account.folders.find(2).download('inbox.tgz')    # Inbox backup
 account.folders.find(7).export_contacts          # Contacts, as CSV
 ```
 
+**Bring your own LDAP attributes.**
+
+```ruby
+Zm::Client::Account.zimbra_attr :employeeNumber
+account.update!(employeeNumber: '42')
+```
+
 **Ask quick questions.**
 
 ```ruby
@@ -116,6 +123,12 @@ from the installed gem, for use with [Steep](https://github.com/soutaro/steep) o
 ```bash
 bundle exec rbs collection install
 ```
+
+## Upgrading from 3.1
+
+3.2 no longer reads the Zimbra attributes from a CSV file: they are declared in each class (`zimbra_attr`) and
+available without a `Cluster`. `Cluster#zimbra_attributes` and `ClusterConfig#zimbra_attributes_path=` are deprecated
+and will be removed in 4.0. See the [upgrade notes](CHANGELOG.md#upgrading-from-31).
 
 ## Upgrading from 3.0
 

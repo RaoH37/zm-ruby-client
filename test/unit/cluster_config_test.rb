@@ -39,10 +39,6 @@ class ClusterConfigTest < ZmTest::UnitTest
     assert_raises(Zm::Client::ClusterConfigError) { Zm::Client::ClusterConfig.new('config.txt') }
   end
 
-  def test_default_zimbra_attributes_file_exists
-    assert File.exist?(build_config.zimbra_attributes_path)
-  end
-
   def test_default_cache_is_null_store
     assert_instance_of Zm::Support::Cache::NullStore, build_config.cache
   end
@@ -127,14 +123,5 @@ class ClusterConfigTest < ZmTest::UnitTest
 
   def test_connectors_skip_ssl_verification_by_default
     refute Zm::Client::Cluster.new(build_config).soap_admin_connector.http_client!.ssl.verify?
-  end
-
-  def test_zimbra_attributes_are_loaded_from_csv
-    attributes = Zm::Client::Cluster.new(build_config).zimbra_attributes
-
-    refute_empty attributes.all_account_attrs
-    refute_empty attributes.all_domain_attrs
-    refute_empty attributes.all_distributionlist_attrs
-    assert_kind_of Hash, attributes.all_account_attr_types_h
   end
 end

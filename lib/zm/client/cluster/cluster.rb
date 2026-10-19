@@ -8,16 +8,20 @@ module Zm
 
       COUNT_OBJECT_TYPES = %i[userAccount account alias dl domain cos server calresource internalUserAccount].freeze
 
-      attr_reader :soap_admin_connector, :config, :zimbra_attributes, :type, :version, :release, :buildDate, :host,
+      attr_reader :soap_admin_connector, :config, :type, :version, :release, :buildDate, :host,
                   :majorversion, :minorversion, :microversion
 
       def initialize(config)
         @config = config
         @version = config.zimbra_version
 
-        @zimbra_attributes = Base::ZimbraAttributesCollection.shared(self)
-
         @soap_admin_connector = Zm::Connector::SoapAdminConnector.create(@config)
+      end
+
+      def zimbra_attributes
+        Deprecation.warn_once('Zm::Client::Cluster#zimbra_attributes',
+                              'use the class methods zimbra_attrs and attrs_write (Zm::Client::Account.attrs_write)')
+        Base::ZimbraAttributesCollection.shared
       end
 
       def has_admin_credentials?

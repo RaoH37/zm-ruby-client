@@ -1,201 +1,78 @@
 # frozen_string_literal: true
 
-require 'csv'
-
 module Zm
   module Client
     module Base
+      # deprecated: attributes are declared in each class with zimbra_attr, will be removed in 4.0
       class ZimbraAttributesCollection
         include Zm::Utils::MissingMethodStaticCollection
 
         MUTEX = Mutex.new
-        CSV_OPTIONS = {
-          headers: true, skip_blanks: true, strip: true, header_converters: ->(header) { header.to_sym }
+        OBJECTS = {
+          account: [:Account, 'account'],
+          cos: [:Cos, 'cos'],
+          domain: [:Domain, 'domain'],
+          server: [:Server, 'server'],
+          distributionlist: [:DistributionList, 'distributionList'],
+          resource: [:Resource, 'calendarResource']
         }.freeze
 
         class << self
-          def shared(parent)
-            path = File.expand_path(parent.config.zimbra_attributes_path)
-            MUTEX.synchronize { shared_instances[path] ||= new(parent).tap(&:set_methods) }
-          end
-
-          def load_attributes(path)
-            CSV.open(path, **CSV_OPTIONS).map do |attr|
-              attr_h = attr.to_h
-              attr_h.compact!
-              ZimbraAttribute.new(**attr_h)
-            end.freeze
-          end
-
-          private
-
-          def shared_instances
-            @shared_instances ||= {}
+          def shared(_parent = nil)
+            MUTEX.synchronize { @shared ||= new }
           end
         end
 
-        attr_reader :path
-
-        def initialize(parent)
-          @path = File.expand_path(parent.config.zimbra_attributes_path)
-          @all = self.class.load_attributes(@path)
+        def initialize(_parent = nil)
+          readonly = readonly_names
+          @all = object_scopes.map { |name, scope| build_attribute(name, scope, readonly.include?(name)) }.freeze
+          @by_name = @all.to_h { |attr| [attr.name, attr] }
+          @by_object = {}
         end
 
-        def set_methods
-          set_server_methods
-          set_cos_methods
-          set_domain_methods
-          set_account_methods
-          set_distributionlist_methods
-          set_resource_methods
+        def path
+          nil
         end
 
-        # ###############################
-        # Cos
-        # ###############################
+        def set_methods; end
 
-        def all_cos_attrs
-          @all_cos_attrs ||= @all.select(&:is_cos_scoped?).freeze
+        OBJECTS.each do |object, (class_name, _scope)|
+          define_method(:"all_#{object}_attrs") do
+            @by_object[object] ||= Client.const_get(class_name).zimbra_attrs.map { |name| @by_name[name.name] }.freeze
+          end
+
+          define_method(:"all_#{object}_attrs_writable") do
+            send(:"all_#{object}_attrs").reject(&:immutable?)
+          end
+
+          define_method(:"all_#{object}_attrs_writable_names") { Client.const_get(class_name).attrs_write }
+
+          define_method(:"all_#{object}_attrs_types_h") do
+            send(:"all_#{object}_attrs").to_h { |attr| [attr.name, attr.type] }
+          end
+
+          define_method(:"set_#{object}_methods") { nil }
         end
 
-        def all_cos_attrs_writable
-          @all_cos_attrs_writable ||= all_cos_attrs.reject(&:immutable?).freeze
+        alias all_account_attr_types_h all_account_attrs_types_h
+        alias all_cos_attr_types_h all_cos_attrs_types_h
+        alias all_domain_attr_types_h all_domain_attrs_types_h
+        alias all_server_attr_types_h all_server_attrs_types_h
+
+        private
+
+        def object_scopes
+          OBJECTS.each_value.with_object(Hash.new { |hash, name| hash[name] = [] }) do |(class_name, scope), scopes|
+            Client.const_get(class_name).zimbra_attrs.each { |name| scopes[name] << scope }
+          end
         end
 
-        def all_cos_attrs_writable_names
-          @all_cos_attrs_writable_names ||= all_cos_attrs_writable.map(&:name).freeze
+        def readonly_names
+          OBJECTS.each_value.flat_map { |class_name, _scope| Client.const_get(class_name).zimbra_attrs_readonly }.to_set
         end
 
-        def all_cos_attr_types_h
-          @all_cos_attr_types_h ||= all_cos_attrs.to_h { |attr| [attr.name, attr.type] }.freeze
-        end
-
-        def set_cos_methods
-          Cos.attr_accessor(*all_cos_attrs.map { |attr| attr.name.to_sym })
-        end
-
-        # ###############################
-        # Server
-        # ###############################
-
-        def all_server_attrs
-          @all_server_attrs ||= @all.select(&:is_server_scoped?).freeze
-        end
-
-        def all_server_attrs_writable
-          @all_server_attrs_writable ||= all_server_attrs.reject(&:immutable?).freeze
-        end
-
-        def all_server_attrs_writable_names
-          @all_server_attrs_writable_names ||= all_server_attrs_writable.map(&:name).freeze
-        end
-
-        def all_server_attr_types_h
-          @all_server_attr_types_h ||= all_server_attrs.to_h { |attr| [attr.name, attr.type] }.freeze
-        end
-
-        def set_server_methods
-          Server.attr_accessor(*all_server_attrs.map { |attr| attr.name.to_sym })
-        end
-
-        # ###############################
-        # Domain
-        # ###############################
-
-        def all_domain_attrs
-          @all_domain_attrs ||= @all.select(&:is_domain_scoped?).freeze
-        end
-
-        def all_domain_attrs_writable
-          @all_domain_attrs_writable ||= all_domain_attrs.reject(&:immutable?).freeze
-        end
-
-        def all_domain_attrs_writable_names
-          @all_domain_attrs_writable_names ||= all_domain_attrs_writable.map(&:name).freeze
-        end
-
-        def all_domain_attr_types_h
-          @all_domain_attr_types_h ||= all_domain_attrs.to_h { |attr| [attr.name, attr.type] }.freeze
-        end
-
-        def set_domain_methods
-          Domain.attr_accessor(*all_domain_attrs.map { |attr| attr.name.to_sym })
-        end
-
-        # ###############################
-        # Account
-        # ###############################
-
-        def all_account_attrs
-          @all_account_attrs ||= @all.select { |attr| attr.is_account_scoped? || attr.is_mailRecipient_scoped? }.freeze
-        end
-
-        def all_account_attrs_writable
-          @all_account_attrs_writable ||= all_account_attrs.reject(&:immutable?).freeze
-        end
-
-        def all_account_attrs_writable_names
-          @all_account_attrs_writable_names ||= all_account_attrs_writable.map(&:name).freeze
-        end
-
-        def all_account_attr_types_h
-          @all_account_attr_types_h ||= all_account_attrs.to_h { |attr| [attr.name, attr.type] }.freeze
-        end
-
-        def set_account_methods
-          Account.attr_accessor(*all_account_attrs.map { |attr| attr.name.to_sym })
-        end
-
-        # ###############################
-        # Distribution List
-        # ###############################
-
-        def all_distributionlist_attrs
-          @all_distributionlist_attrs ||= @all.select do |attr|
-            attr.is_distributionList_scoped? || attr.is_group_scoped? || attr.is_groupDynamicUnit_scoped? || attr.is_groupStaticUnit_scoped?
-          end.freeze
-        end
-
-        def all_distributionlist_attrs_writable
-          @all_distributionlist_attrs_writable ||= all_distributionlist_attrs.reject(&:immutable?).freeze
-        end
-
-        def all_distributionlist_attrs_writable_names
-          @all_distributionlist_attrs_writable_names ||= all_distributionlist_attrs_writable.map(&:name).freeze
-        end
-
-        def all_distributionlist_attrs_types_h
-          @all_distributionlist_attrs_types_h ||= all_distributionlist_attrs.to_h do |attr|
-            [attr.name, attr.type]
-          end.freeze
-        end
-
-        def set_distributionlist_methods
-          DistributionList.attr_accessor(*all_distributionlist_attrs.map { |attr| attr.name.to_sym })
-        end
-
-        # ###############################
-        # Calendar Resource
-        # ###############################
-
-        def all_resource_attrs
-          @all_resource_attrs ||= @all.select(&:is_calendarResource_scoped?).freeze
-        end
-
-        def all_resource_attrs_writable
-          @all_resource_attrs_writable ||= all_resource_attrs.reject(&:immutable?).freeze
-        end
-
-        def all_resource_attrs_writable_names
-          @all_resource_attrs_writable_names ||= all_resource_attrs_writable.map(&:name).freeze
-        end
-
-        def all_resource_attrs_types_h
-          @all_resource_attrs_types_h ||= all_resource_attrs.to_h { |attr| [attr.name, attr.type] }.freeze
-        end
-
-        def set_resource_methods
-          Resource.attr_accessor(*all_resource_attrs.map { |attr| attr.name.to_sym })
+        def build_attribute(name, scope, immutable)
+          ZimbraAttribute.new(name: name.name, optionalIn: scope.join(','), immutable: immutable ? '1' : nil)
         end
       end
     end

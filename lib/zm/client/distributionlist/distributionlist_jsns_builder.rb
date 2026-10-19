@@ -40,7 +40,7 @@ module Zm
       end
 
       def attrs_only_set_h
-        selected_attrs = @item.attrs_write.map { |a| Utils.arrow_name_sym(a) }
+        selected_attrs = @item.class.attrs_write_ivars
         attrs_only_set = @item.instance_variables & selected_attrs
 
         arr = attrs_only_set.map do |name|

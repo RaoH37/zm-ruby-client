@@ -5,6 +5,7 @@ require 'zm/client/version'
 module Zm
   module Client
     autoload :DeprecatedConstants, 'zm/client/deprecated_constants'
+    autoload :Deprecation, 'zm/client/deprecation'
     extend DeprecatedConstants
 
     autoload :Utils, 'zm/client/utils'
@@ -221,6 +222,7 @@ module Zm
       autoload :AccountSearchObjectsCollection, 'zm/client/base/account_search_objects_collection'
       autoload :ZimbraAttributesCollection, 'zm/client/base/zimbra_attributes_collection'
       autoload :ZimbraAttribute, 'zm/client/base/zimbra_attribute'
+      autoload :HasZimbraAttributes, 'zm/client/base/has_zimbra_attributes'
       autoload :Object, 'zm/client/base/object'
       autoload :MailboxObject, 'zm/client/base/mailbox_object'
       autoload :MailboxInfosCollection, 'zm/client/base/mailbox_infos_collection'

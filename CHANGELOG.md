@@ -1,5 +1,32 @@
 # Changelog
 
+## Unreleased [3.2.0]
+
+### [3.2.0]
+
+#### Upgrading from 3.1
+
+- **The Zimbra attributes are declared in the classes.** `Account`, `Resource`, `Cos`, `Domain`, `Server` and
+  `DistributionList` declare their attributes with `zimbra_attr` (the list of the removed
+  `zimbra-attrs.csv`): the accessors exist as soon as the class is loaded, without creating a `Cluster`.
+- **Custom attributes:** a custom CSV file (`zimbra_attributes_path=`) is replaced by `zimbra_attr`, for example
+  `Zm::Client::Account.zimbra_attr :employeeNumber` (`readonly: true` for an attribute that must never be sent).
+- **Deprecated, removed in 4.0:** `Cluster#zimbra_attributes` (rebuilt from the classes, the attribute `type` is
+  always nil), `ClusterConfig#zimbra_attributes_path` (returns nil) and `ClusterConfig#zimbra_attributes_path=`
+  (ignored) print a warning on first use. `Base::ZimbraAttributesCollection` and `Base::ZimbraAttribute` go with them.
+  Use `Zm::Client::Account.zimbra_attrs`, `zimbra_attrs_readonly` and `attrs_write` instead.
+- **The `csv` gem is no longer a dependency.**
+
+#### Changes
+
+- [Changed] Declare the Zimbra attributes of Account, Resource, Cos, Domain, Server and DistributionList in the classes with zimbra_attr
+- [Added]   Add Base::HasZimbraAttributes: zimbra_attr, zimbra_attrs, zimbra_attrs_writable, zimbra_attrs_readonly, attrs_write and attrs_write_ivars class methods, Server#attrs_write
+- [Changed] Cluster.new no longer parses the attributes CSV file nor defines accessors
+- [Changed] Jsns builders reuse the memoized attrs_write_ivars instead of mapping attrs_write on every request
+- [Removed] Remove zimbra-attrs.csv and the csv dependency
+- [Deprecated] Cluster#zimbra_attributes, ClusterConfig#zimbra_attributes_path and zimbra_attributes_path=, Base::ZimbraAttributesCollection and Base::ZimbraAttribute, removed in 4.0
+- [Removed] Remove the zimbra attributes integration tests (covered by unit tests)
+
 ## Released [3.1.0]
 
 ### [3.1.0] 2026-07

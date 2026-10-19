@@ -10,8 +10,15 @@ Metrics/AbcSize:
     - 'test/**/*'
 
 Metrics/ClassLength:
+  CountAsOne: ['array']
   Exclude:
     - 'test/**/*'
+
+Metrics/CollectionLiteralLength:
+  Exclude:
+    - 'lib/zm/client/account/account.rb'
+    - 'lib/zm/client/cos/cos.rb'
+    - 'lib/zm/client/resource/resource.rb'
 
 Metrics/MethodLength:
   Exclude:

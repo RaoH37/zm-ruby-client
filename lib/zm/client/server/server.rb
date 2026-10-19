@@ -6,6 +6,11 @@ module Zm
     class Server < Base::Object
       extend Relationship
       include Zm::Utils::HasSoapAdminConnector
+      extend Base::HasZimbraAttributes
+
+      zimbra_attr %i[cn description zimbraNotes zimbraLocale zimbraACE zimbraServiceEnabled]
+
+      zimbra_attr %i[zimbraId zimbraCreateTimestamp], readonly: true
 
       has_many :mta_queues, klass: :'Zm::Client::MtaQueuesCollection'
       has_many :backups, klass: :'Zm::Client::BackupsCollection'

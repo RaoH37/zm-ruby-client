@@ -187,13 +187,13 @@ module Zm
       end
 
       def zimbra_attributes_path
-        @zimbra_attributes_path ||= File.expand_path('../../modules/common/zimbra-attrs.csv', __dir__)
+        Deprecation.warn_once('Zm::Client::ClusterConfig#zimbra_attributes_path', 'it always returns nil')
+        nil
       end
 
-      def zimbra_attributes_path=(path)
-        raise ClusterConfigError, 'no valid attributes file' unless File.exist?(path)
-
-        @zimbra_attributes_path = path
+      def zimbra_attributes_path=(_path)
+        Deprecation.warn_once('Zm::Client::ClusterConfig#zimbra_attributes_path=',
+                              'declare custom attributes with zimbra_attr (Zm::Client::Account.zimbra_attr :myAttr)')
       end
 
       def logger

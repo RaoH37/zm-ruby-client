@@ -8,6 +8,51 @@ module Zm
       has_jsns_builder
       include Zm::Utils::HasSoapAdminConnector
       include SoapRequest::RequestMethodsAdmin
+      extend Base::HasZimbraAttributes
+
+      zimbra_attr %i[
+        description zimbraNotes zimbraMailStatus zimbraPrefTimeZoneId zimbraMailTransport zimbraLocale zimbraPrefSkin
+        zimbraAvailableSkin zimbraFreebusyExchangeURL zimbraFreebusyExchangeAuthUsername
+        zimbraFreebusyExchangeAuthPassword zimbraFreebusyExchangeUserOrg zimbraFreebusyExchangeAuthScheme
+        zimbraFreebusyExchangeCachedIntervalStart zimbraFreebusyExchangeCachedInterval zimbraACE
+        zimbraReverseProxyUseExternalRoute zimbraExternalPop3Port zimbraExternalPop3SSLPort zimbraExternalImapPort
+        zimbraExternalImapSSLPort zimbraExternalPop3Hostname zimbraExternalPop3SSLHostname zimbraExternalImapHostname
+        zimbraExternalImapSSLHostname zimbraPrefSpellIgnoreWord zimbraPrefMailTrustedSenderList
+        zimbraMailTrustedSenderListMaxNumEntries zimbraFeatureCalendarReminderDeviceEmailEnabled
+        zimbraCalendarLocationDisabledFields zimbraExternalSharingEnabled zimbraExternalShareWhitelistDomain
+        zimbraExternalShareDomainWhitelistEnabled zimbraStandardClientCustomPrefTabsEnabled
+        zimbraStandardClientCustomPrefTab zimbraInternalSendersDomain zimbraFileUploadMaxSizePerFile
+        zimbraPublicSharingEnabled zimbraUCServiceId zimbraPrefColorMessagesEnabled zimbraMobileMetadataMaxSizeEnabled
+        zimbraMobileItemsToTrackPerFolderMaxSize zimbraForceClearCookies zimbraFeatureDistributionListFolderEnabled
+        zimbraFeatureSocialEnabled zimbraFeatureSocialExternalEnabled zimbraFeatureSocialExternalURL
+        zimbraFeatureSocialName zimbraCommunityAPIClientID zimbraCommunityAPIClientSecret zimbraCommunityUsernameMapping
+        zimbraCommunityBaseURL zimbraCommunityHomeURL zimbraPrefShowChatsFolderInMail
+        zimbraZimletUserPropertiesMaxNumEntries zimbraExportMaxDays zimbraSieveRejectMailEnabled
+        zimbraSieveNotifyActionRFCCompliant zimbraAdminSieveScriptBefore zimbraAdminSieveScriptAfter
+        zimbraAdminOutgoingSieveScriptBefore zimbraAdminOutgoingSieveScriptAfter zimbraSieveRequireControlEnabled
+        zimbraSieveEditHeaderEnabled zimbraSieveImmutableHeaders zimbraPreAuthKey zimbraGalAccountId
+        zimbraGalAlwaysIncludeLocalCalendarResources zimbraGalAutoCompleteLdapFilter zimbraGalGroupIndicatorEnabled
+        zimbraGalInternalSearchBase zimbraGalLdapAttrMap zimbraGalLdapPageSize zimbraGalLdapValueMap zimbraGalMaxResults
+        zimbraGalMode zimbraGalSyncLdapPageSize zimbraGalSyncMaxConcurrentClients zimbraGalSyncSizeLimit
+        zimbraGalSyncTimestampFormat zimbraGalTokenizeAutoCompleteKey zimbraGalTokenizeSearchKey
+        zimbraLdapGalSyncDisabled zimbraGalLdapBindDn zimbraGalLdapBindPassword zimbraGalLdapFilter
+        zimbraGalLdapSearchBase zimbraGalLdapURL zimbraDomainDefaultCOSId zimbraPublicServiceHostname
+        zimbraPublicServiceProtocol zimbraAdminConsoleCatchAllAddressEnabled zimbraAdminConsoleDNSCheckEnabled
+        zimbraAdminConsoleLDAPAuthEnabled zimbraAdminConsoleSkinEnabled zimbraAggregateQuotaLastUsage zimbraAuthMech
+        zimbraAutoProvBatchSize zimbraAutoProvNotificationBody zimbraAutoProvNotificationSubject zimbraBasicAuthRealm
+        zimbraChatConversationAuditEnabled zimbraDomainAggregateQuota zimbraDomainAggregateQuotaPolicy
+        zimbraDomainAggregateQuotaWarnPercent zimbraDomainMandatoryMailSignatureEnabled zimbraDomainStatus
+        zimbraExternalShareInvitationUrlExpiration zimbraFreebusyExchangeServerType
+        zimbraInternalSharingCrossDomainEnabled zimbraMailDomainQuota zimbraMailSSLClientCertPrincipalMap
+        zimbraReverseProxyClientCertMode zimbraReverseProxyExternalRouteIncludeOriginalAuthusername
+        zimbraSkinLogoAppBanner zimbraSkinLogoLoginBanner zimbraSkinLogoURL zimbraWebClientMaxInputBufferLength
+        zimbraWebClientStaySignedInDisabled zimbraWebClientSupportedHelps zimbraZimletDataSensitiveInMixedModeDisabled
+        DKIMDomain DKIMIdentity DKIMKey DKIMPublicKey DKIMSelector zimbraShowClientTOS
+      ]
+
+      zimbra_attr %i[
+        zimbraId zimbraCreateTimestamp zimbraGalDefinitionLastModifiedTime zimbraDomainName zimbraDomainType
+      ], readonly: true
 
       def create!
         resp = sac.invoke(build_create)
@@ -26,10 +71,6 @@ module Zm
         return @cos if defined? @cos
 
         @cos = @parent.coses.find_by(id: zimbraDomainDefaultCOSId)
-      end
-
-      def attrs_write
-        @parent.zimbra_attributes.all_domain_attrs_writable_names
       end
 
       def DKIMPublicTxt

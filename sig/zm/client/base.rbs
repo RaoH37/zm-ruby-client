@@ -98,13 +98,24 @@ module Zm
         def immutable?: () -> bool
       end
 
+      module HasZimbraAttributes
+        def zimbra_attr: (*(Symbol | String | Array[Symbol | String]) names, ?readonly: bool) -> Array[Symbol]
+        def zimbra_attrs: () -> Array[Symbol]
+        def zimbra_attrs_writable: () -> Array[Symbol]
+        def zimbra_attrs_readonly: () -> Array[Symbol]
+        def attrs_write: () -> Array[String]
+        def attrs_write_ivars: () -> Array[Symbol]
+      end
+
+      # deprecated, removed in 4.0
       class ZimbraAttributesCollection
-        attr_reader path: String
         attr_reader all: Array[ZimbraAttribute]
 
-        def self.shared: (Cluster parent) -> ZimbraAttributesCollection
+        def self.shared: (?Cluster? parent) -> ZimbraAttributesCollection
 
-        def initialize: (Cluster parent) -> void
+        def initialize: (?Cluster? parent) -> void
+
+        def path: () -> nil
 
         def all_account_attrs: () -> Array[ZimbraAttribute]
         def all_account_attrs_writable_names: () -> Array[String]

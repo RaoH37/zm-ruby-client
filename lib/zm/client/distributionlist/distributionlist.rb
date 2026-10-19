@@ -9,6 +9,16 @@ module Zm
       has_jsns_builder
       include Zm::Utils::HasSoapAdminConnector
       include SoapRequest::RequestMethodsAdmin
+      extend Base::HasZimbraAttributes
+
+      zimbra_attr %i[
+        cn description displayName zimbraMailHost zimbraNotes zimbraMailForwardingAddress zimbraMailStatus
+        zimbraPrefReplyToAddress zimbraLocale zimbraHideInGal zimbraPrefReplyToDisplay zimbraPrefReplyToEnabled
+        zimbraACE zimbraAdminConsoleUIComponents zimbraPrefAllowAddressForDelegatedSender
+        zimbraDistributionListSendShareMessageToNewMembers
+      ]
+
+      zimbra_attr %i[mail uid zimbraId zimbraMailAlias zimbraCreateTimestamp], readonly: true
 
       has_many :aliases, klass: :'Zm::Client::DistributionListAliasesCollection'
       has_many :members, klass: :'Zm::Client::DistributionListMembersCollection'
@@ -53,10 +63,6 @@ module Zm
 
       def mailing_list?
         zimbraMailStatus == SoapRequest::SoapConstants::ENABLED
-      end
-
-      def attrs_write
-        @parent.zimbra_attributes.all_distributionlist_attrs_writable_names
       end
     end
   end
