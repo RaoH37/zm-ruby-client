@@ -40,6 +40,7 @@
 - [Removed] Remove the zimbra attributes integration tests (covered by unit tests)
 - [Changed] modify! of Account, Resource, Cos, Domain and DistributionList sends only the changed writable attributes, sends no request without change and clears the attributes set to nil or empty
 - [Added]   modify!(force: true) sends every writable attribute set on the object, changed or not
+- [Fixed]   Server#update! raised NoMethodError (do_update! was missing), it sends a ModifyServerRequest
 - [Changed] update! of Account, Resource, Cos, Domain, DistributionList and Server sends only the Zimbra attributes whose value differs from the object, update!(force: true) sends them all
 - [Added]   Changes tracking of the writable Zimbra attributes: zimbra_attrs_changed, zimbra_attrs_changed?, zimbra_attr_changed?, zimbra_attr_will_change! and clear_zimbra_attrs_changes, Base::HasZimbraAttributes.zimbra_attrs_ivars
 - [Changed] Jsns initializers set the Zimbra attributes directly instead of calling their setter
