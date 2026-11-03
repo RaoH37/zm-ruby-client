@@ -16,9 +16,9 @@ module Zm
       has_many :backups, klass: :'Zm::Client::BackupsCollection'
       has_many :accounts, klass: :'Zm::Client::ServerAccountsCollection'
 
-      def update!(hash = nil, update_attributes: true, **attrs)
+      def update!(hash = nil, update_attributes: true, force: false, **attrs)
         hash = hash.nil? ? attrs : hash.merge(attrs)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+        return false if zimbra_attrs_to_update(hash, force).empty?
 
         do_update!(hash)
 
@@ -30,6 +30,7 @@ module Zm
       def do_update_attributes(hash)
         hash.each do |key, value|
           update_attribute(key, value)
+          forget_zimbra_attr_change(key)
         end
       end
 

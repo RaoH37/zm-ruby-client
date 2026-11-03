@@ -4,6 +4,8 @@ module Zm
   module Client
     # class for resource jsns builder
     class ResourceJsnsBuilder
+      include Base::ZimbraAttrsJsns
+
       def initialize(item)
         @item = item
       end
@@ -30,11 +32,11 @@ module Zm
         soap_request
       end
 
-      def to_update
+      def to_update(force: false)
         soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::MODIFY_CALENDAR_RESOURCE_REQUEST)
                                   .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
 
-        attrs_only_set_h.each do |key, values|
+        attrs_to_update_h(force).each do |key, values|
           values.each do |value|
             node_attr = SoapRequest::SoapElement.create(SoapRequest::SoapConstants::A)
                                    .add_attribute(SoapRequest::SoapConstants::N, key)
@@ -66,20 +68,6 @@ module Zm
       def to_delete
         SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::DELETE_CALENDAR_RESOURCE_REQUEST)
                    .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
-      end
-
-      def attrs_only_set_h
-        selected_attrs = @item.class.attrs_write_ivars
-        attrs_only_set = @item.instance_variables & selected_attrs
-
-        arr = attrs_only_set.map do |name|
-          n = name.to_s[1..]
-          values = @item.instance_variable_get(name)
-          values = [values] unless values.is_a?(Array)
-          [n, values]
-        end
-
-        arr.to_h
       end
     end
   end

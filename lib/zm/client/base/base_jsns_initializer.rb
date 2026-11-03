@@ -19,8 +19,11 @@ module Zm
             item.id = json.delete(:id)
             item.name = json.delete(:name)
 
+            ivars = item.class.zimbra_attrs_ivars if item.class.respond_to?(:zimbra_attrs_ivars)
+
             formatted_json(json).each do |k, v|
-              valorise(item, k, v)
+              ivar = ivars&.[](k)
+              ivar ? item.instance_variable_set(ivar, convert_json_string_value(v)) : valorise(item, k, v)
             end
 
             item

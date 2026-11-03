@@ -224,6 +224,7 @@ module Zm
 
       def create!
         resp = sac.invoke(build_create)
+        clear_zimbra_attrs_changes
         @id = resp[:CreateCalendarResourceResponse][:calresource].first[:id]
       end
 

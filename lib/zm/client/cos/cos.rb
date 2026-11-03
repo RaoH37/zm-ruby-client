@@ -180,18 +180,21 @@ module Zm
 
       zimbra_attr %i[zimbraId zimbraCreateTimestamp], readonly: true
 
-      def modify!
-        sac.invoke(build_modify)
+      def modify!(force: false)
+        return false unless force || zimbra_attrs_changed?
+
+        sac.invoke(build_modify(force:))
+        clear_zimbra_attrs_changes
         true
       end
 
-      def build_modify
-        jsns_builder.to_update
+      def build_modify(force: false)
+        jsns_builder.to_update(force:)
       end
 
-      def update!(hash = nil, update_attributes: true, **attrs)
+      def update!(hash = nil, update_attributes: true, force: false, **attrs)
         hash = hash.nil? ? attrs : hash.merge(attrs)
-        return false if hash.delete_if { |k, v| v.nil? || !respond_to?(k) }.empty?
+        return false if zimbra_attrs_to_update(hash, force).empty?
 
         do_update!(hash)
 
@@ -203,12 +206,14 @@ module Zm
       def do_update_attributes(hash)
         hash.each do |key, value|
           update_attribute(key, value)
+          forget_zimbra_attr_change(key)
         end
       end
 
       def create!
         resp = sac.invoke(build_create)
 
+        clear_zimbra_attrs_changes
         @id = resp[:CreateCosResponse][:cos].first[:id]
       end
 

@@ -108,6 +108,23 @@ Zm::Client::Account.zimbra_attr :employeeNumber
 account.update!(employeeNumber: '42')
 ```
 
+**Send only what changed.**
+
+```ruby
+account = cluster.accounts.find_by(name: 'john@domain.tld')
+account.displayName = 'John Doe'
+account.save!                                      # ModifyAccountRequest with displayName only
+
+account.zimbraMailForwardingAddress << 'jane@domain.tld'
+account.zimbra_attr_will_change!(:zimbraMailForwardingAddress)  # in-place change: flag it
+account.save!
+
+account.modify!(force: true)                       # every attribute set on the object, changed or not
+
+account.update!(displayName: 'John Doe', description: 'Sales')  # description only: displayName is unchanged
+account.update!(displayName: 'John Doe', force: true)           # sent anyway
+```
+
 **Ask quick questions.**
 
 ```ruby
@@ -128,7 +145,8 @@ bundle exec rbs collection install
 
 3.2 no longer reads the Zimbra attributes from a CSV file: they are declared in each class (`zimbra_attr`) and
 available without a `Cluster`. `Cluster#zimbra_attributes` and `ClusterConfig#zimbra_attributes_path=` are deprecated
-and will be removed in 4.0. See the [upgrade notes](CHANGELOG.md#upgrading-from-31).
+and will be removed in 4.0. `modify!` (and `save!` on a recorded object) of an admin object now sends only the
+attributes changed through their setter. See the [upgrade notes](CHANGELOG.md#upgrading-from-31).
 
 ## Upgrading from 3.0
 

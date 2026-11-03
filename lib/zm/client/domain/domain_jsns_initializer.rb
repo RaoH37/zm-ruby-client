@@ -10,10 +10,17 @@ module Zm
         def update(item, json)
           item = super
 
-          item.zimbraGalAccountId = [item.zimbraGalAccountId] if item.zimbraGalAccountId.is_a?(String)
-          item.zimbraGalLdapAttrMap = [item.zimbraGalLdapAttrMap] if item.zimbraGalLdapAttrMap.is_a?(String)
+          wrap_string(item, :@zimbraGalAccountId)
+          wrap_string(item, :@zimbraGalLdapAttrMap)
 
           item
+        end
+
+        private
+
+        def wrap_string(item, ivar)
+          value = item.instance_variable_get(ivar)
+          item.instance_variable_set(ivar, [value]) if value.is_a?(String)
         end
       end
     end

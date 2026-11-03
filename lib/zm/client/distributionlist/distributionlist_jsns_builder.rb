@@ -4,6 +4,8 @@ module Zm
   module Client
     # class for distribution list jsns builder
     class DistributionListJsnsBuilder
+      include Base::ZimbraAttrsJsns
+
       def initialize(item)
         @item = item
       end
@@ -15,11 +17,11 @@ module Zm
         add_attr_nodes(soap_request, attrs_only_set_h)
       end
 
-      def to_update
+      def to_update(force: false)
         soap_request = SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::MODIFY_DISTRIBUTION_LIST_REQUEST)
                                                .add_attribute(SoapRequest::SoapConstants::ID, @item.id)
 
-        add_attr_nodes(soap_request, attrs_only_set_h)
+        add_attr_nodes(soap_request, attrs_to_update_h(force))
       end
 
       def to_patch(hash)
@@ -37,20 +39,6 @@ module Zm
       def to_rename(new_name)
         SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::RENAME_DISTRIBUTION_LIST_REQUEST)
                                 .add_attributes({ id: @item.id, newName: new_name })
-      end
-
-      def attrs_only_set_h
-        selected_attrs = @item.class.attrs_write_ivars
-        attrs_only_set = @item.instance_variables & selected_attrs
-
-        arr = attrs_only_set.map do |name|
-          n = name.to_s[1..]
-          values = @item.instance_variable_get(name)
-          values = [values] unless values.is_a?(Array)
-          [n, values]
-        end
-
-        arr.to_h
       end
 
       private
