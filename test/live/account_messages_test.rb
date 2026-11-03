@@ -5,7 +5,7 @@ require_relative 'live_helper'
 class AccountMessagesLiveTest < ZmTest::LiveTest
   def add_message(subject = unique_name('subject'), folder_id: Zm::Client::FolderDefault::INBOX.id)
     folder = account.folders.new { |f| f.id = folder_id }
-    folder.add_message(eml(subject:)).dig(:AddMsgResponse, :m, 0, :id).to_s.split(':').last
+    folder.add_message(eml(subject:)).id.to_s.split(':').last
   end
 
   def find_message(id)

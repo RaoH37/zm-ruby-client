@@ -1,5 +1,14 @@
 # Changelog
 
+## Released [3.1.1]
+
+### [3.1.1] 2026-11
+
+#### Changes
+
+- [Changed] Folder#add_message returns a Zm::Client::Message built from AddMsgResponse instead of the raw SOAP response
+- [Fixed]   MessageJsnsInitializer no longer raises NoMethodError when the response has no recipients (e)
+
 ## Released [3.1.0]
 
 ### [3.1.0] 2026-07

@@ -239,7 +239,7 @@ module Zm
       def delete!: () -> untyped
       def remove_flag!: (String pattern) -> bool
 
-      def add_message: (String eml, ?Integer? d, ?String? f, ?String? tn) -> untyped
+      def add_message: (String eml, ?Integer? d, ?String? f, ?String? tn) -> Message
       def add_appointments: (String ics) -> untyped
       def add_contacts: (String csv) -> untyped
       def export_contacts: (?csvfmt: String?, ?csvlocale: String?, ?csvsep: String?) -> String?

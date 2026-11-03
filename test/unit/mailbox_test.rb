@@ -73,4 +73,17 @@ class MailboxTest < ZmTest::UnitTest
                    purge: { policy: { lifetime: '365d', type: 'user' } } },
                  action[:retentionPolicy])
   end
+
+  def test_folder_add_message_returns_message
+    @fake.on(:AddMsgRequest, { AddMsgResponse: { m: [{ id: '258', l: '257', d: 1_700_000_000_000, su: 'Hello' }] } })
+    folder = @account.folders.new { |f| f.id = 257 }
+
+    message = folder.add_message('eml content')
+
+    assert_instance_of Zm::Client::Message, message
+    assert_same @account, message.parent
+    assert_equal '258', message.id
+    assert_equal 'Hello', message.su
+    assert_equal({ l: '257', content: { _content: 'eml content' } }, @fake.last_request(:AddMsgRequest).body[:m])
+  end
 end
