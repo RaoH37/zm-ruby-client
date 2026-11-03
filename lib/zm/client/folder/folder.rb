@@ -108,7 +108,8 @@ module Zm
       end
 
       def add_message(eml, d = nil, f = nil, tn = nil)
-        @parent.soap_connector.invoke(build_add_message(eml, d, f, tn))
+        json = @parent.soap_connector.invoke(build_add_message(eml, d, f, tn))[:AddMsgResponse][:m].first
+        MessageJsnsInitializer.create(@parent, json)
       end
 
       def build_add_message(eml, d = nil, f = nil, tn = nil)

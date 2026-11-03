@@ -24,7 +24,7 @@ module Zm
           item.tn = json.delete(:tn)
           item.s = json.delete(:s)
 
-          json[:e].each do |e|
+          json[:e]&.each do |e|
             recipient = Recipient.new(e.delete(:t), e.delete(:a), e.delete(:p))
             item.recipients.add(recipient)
           end

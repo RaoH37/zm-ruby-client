@@ -27,6 +27,15 @@
 - [Deprecated] Cluster#zimbra_attributes, ClusterConfig#zimbra_attributes_path and zimbra_attributes_path=, Base::ZimbraAttributesCollection and Base::ZimbraAttribute, removed in 4.0
 - [Removed] Remove the zimbra attributes integration tests (covered by unit tests)
 
+## Released [3.1.1]
+
+### [3.1.1] 2026-11
+
+#### Changes
+
+- [Changed] Folder#add_message returns a Zm::Client::Message built from AddMsgResponse instead of the raw SOAP response
+- [Fixed]   MessageJsnsInitializer no longer raises NoMethodError when the response has no recipients (e)
+
 ## Released [3.1.0]
 
 ### [3.1.0] 2026-07
