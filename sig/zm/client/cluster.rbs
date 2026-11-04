@@ -12,6 +12,7 @@ module Zm
 
     class ClusterConfig
       BASE_URL_REGEX: Regexp
+      ZIMBRA_VERSION_ADVICE: String
 
       attr_reader zimbra_admin_url: String?
       attr_reader zimbra_public_url: String?
@@ -20,7 +21,6 @@ module Zm
       attr_accessor zimbra_admin_login: String?
       attr_accessor zimbra_admin_password: String?
       attr_accessor domains: Array[ClusterConfigDomain]
-      attr_accessor zimbra_version: String
       attr_accessor log_path: String | _LogDevice
       attr_accessor timeout: Integer
       attr_accessor ssl_verify: bool
@@ -44,6 +44,8 @@ module Zm
       # deprecated, removed in 4.0
       def zimbra_attributes_path: () -> nil
       def zimbra_attributes_path=: (String path) -> void
+      def zimbra_version: () -> String
+      def zimbra_version=: (String version) -> void
 
       def logger: () -> ::Logger
       def log_level=: (Integer level) -> void

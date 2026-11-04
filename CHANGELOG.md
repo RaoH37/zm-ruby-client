@@ -16,6 +16,9 @@
   (ignored) print a warning on first use. `Base::ZimbraAttributesCollection` and `Base::ZimbraAttribute` go with them.
   Use `Zm::Client::Account.zimbra_attrs`, `zimbra_attrs_readonly` and `attrs_write` instead.
 - **The `csv` gem is no longer a dependency.**
+- **`ClusterConfig#zimbra_version` is deprecated, removed in 4.0.** It was not used by the gem. The accessor and the
+  `zimbra_version` parameter print a warning on first use. `Cluster#version` no longer starts with this value (`8.8.15`
+  by default): it is `nil` until `Cluster#infos!` reads the server version.
 - **`modify!` sends only the changed attributes.** On `Account`, `Resource`, `Cos`, `Domain` and `DistributionList`,
   `modify!` (and `save!` on a recorded object) sends only the writable attributes assigned through their setter since
   the object was loaded, created or modified, instead of every attribute set on the object. Without change it sends no
@@ -43,6 +46,8 @@
 - [Fixed]   Server#update! raised NoMethodError (do_update! was missing), it sends a ModifyServerRequest
 - [Changed] update! of Account, Resource, Cos, Domain, DistributionList and Server sends only the Zimbra attributes whose value differs from the object, update!(force: true) sends them all
 - [Added]   Changes tracking of the writable Zimbra attributes: zimbra_attrs_changed, zimbra_attrs_changed?, zimbra_attr_changed?, zimbra_attr_will_change! and clear_zimbra_attrs_changes, Base::HasZimbraAttributes.zimbra_attrs_ivars
+- [Deprecated] ClusterConfig#zimbra_version, zimbra_version= and the zimbra_version parameter, not used, removed in 4.0
+- [Changed] Cluster#version is nil until Cluster#infos! instead of ClusterConfig#zimbra_version
 - [Changed] Jsns initializers set the Zimbra attributes directly instead of calling their setter
 - [Changed] Account, Resource, Cos, Domain and DistributionList jsns builders share Base::ZimbraAttrsJsns
 

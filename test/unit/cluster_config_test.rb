@@ -124,4 +124,29 @@ class ClusterConfigTest < ZmTest::UnitTest
   def test_connectors_skip_ssl_verification_by_default
     refute Zm::Client::Cluster.new(build_config).soap_admin_connector.http_client!.ssl.verify?
   end
+
+  def test_deprecated_zimbra_version
+    config = build_config
+
+    _, err = capture_io do
+      config.zimbra_version = '10.1.0'
+
+      assert_equal '10.1.0', config.zimbra_version
+    end
+
+    assert_match(/ClusterConfig#zimbra_version= is deprecated/, err)
+    assert_match(/ClusterConfig#zimbra_version is deprecated/, err)
+  end
+
+  def test_deprecated_zimbra_version_parameter
+    _, err = capture_io { build_config(zimbra_version: '10.1.0') }
+
+    assert_match(/zimbra_version parameter of Zm::Client::ClusterConfig is deprecated/, err)
+  end
+
+  def test_cluster_version_is_nil_before_infos
+    _, err = capture_io { assert_nil Zm::Client::Cluster.new(build_config).version }
+
+    assert_empty err
+  end
 end
