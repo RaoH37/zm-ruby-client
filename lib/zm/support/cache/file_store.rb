@@ -15,6 +15,7 @@ module Zm
         attr_reader :cache_path
 
         GITKEEP_FILES = %w[.gitkeep .keep].freeze
+        KEY_PART_REGEX = /.{1,8}/
 
         def initialize(**options)
           @cache_path = options.delete(:cache_path).to_s
@@ -85,17 +86,7 @@ module Zm
 
         # Translate a key into a file path.
         def normalize_key(key, options)
-          key = super
-
-          fpaths = []
-
-          while key.length > 8
-            chars = key.chars
-            fpaths << chars.shift(8).join
-            key = chars.join
-          end
-
-          File.join(cache_path, *fpaths, key)
+          File.join(cache_path, *super.scan(KEY_PART_REGEX))
         end
 
         # Translate a file path into a key.

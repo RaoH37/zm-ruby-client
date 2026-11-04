@@ -19,14 +19,42 @@ module Zm
             item.id = json.delete(:id)
             item.name = json.delete(:name)
 
-            ivars = item.class.zimbra_attrs_ivars if item.class.respond_to?(:zimbra_attrs_ivars)
+            nodes = json[:a]
+            return item if nodes.nil?
 
-            formatted_json(json).each do |k, v|
-              ivar = ivars&.[](k)
-              ivar ? item.instance_variable_set(ivar, convert_json_string_value(v)) : valorise(item, k, v)
-            end
+            ivars = item.class.zimbra_attrs_ivars if item.class.respond_to?(:zimbra_attrs_ivars)
+            each_attribute(nodes) { |key, value| assign(item, ivars, key, value) }
 
             item
+          end
+
+          # Zimbra sends the values of a multi-valued attribute one after the other
+          def each_attribute(nodes)
+            key = value = nil
+            multi = false
+
+            nodes.each do |node|
+              name = node[:n]
+              next if name.nil?
+
+              if name == key
+                value = [value] unless multi
+                multi = true
+                value << node[:_content]
+              else
+                yield(key, value) unless key.nil?
+                key = name
+                value = node[:_content]
+                multi = false
+              end
+            end
+
+            yield(key, value) unless key.nil?
+          end
+
+          def assign(item, ivars, key, value)
+            ivar = ivars&.[](key)
+            ivar ? item.instance_variable_set(ivar, convert_json_string_value(value)) : valorise(item, key, value)
           end
 
           def formatted_json(json)

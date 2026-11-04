@@ -26,4 +26,21 @@ class AutoloadTest < Minitest::Test
     assert status.success?, output
     assert_empty output.split("\n"), 'constants defined without their own autoload or missing stdlib'
   end
+
+  LAZY_SCRIPT = <<~RUBY
+    require 'zm-ruby-client'
+    loaded = -> { [defined?(Faraday), defined?(OpenSSL)].map { |constant| !constant.nil? } }
+    puts "require: \#{loaded.call}"
+    config = Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071', log_path: File::NULL)
+    puts "config: \#{loaded.call}"
+    Zm::Client::Cluster.new(config)
+    puts "cluster: \#{loaded.call}"
+  RUBY
+
+  def test_faraday_and_openssl_are_loaded_with_the_first_connector
+    output, status = Open3.capture2e(RbConfig.ruby, '-I', LIB_PATH, '-e', LAZY_SCRIPT)
+
+    assert status.success?, output
+    assert_equal ['require: [false, false]', 'config: [false, false]', 'cluster: [true, true]'], output.split("\n")
+  end
 end

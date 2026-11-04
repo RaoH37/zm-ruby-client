@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'uri'
+
 module Zm
   module Client
     # class for upload mailbox file

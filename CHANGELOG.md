@@ -55,6 +55,15 @@
 - [Fixed]   AccountSearchObjectsCollection#ids (messages.ids...) always returned [], ObjectsBuilder#ids read a :Body key already removed by invoke
 - [Fixed]   ContactJsnsInitializer keeps the custom contact attributes as instance variables (sent back by save!) instead of losing them, no more NoMethodError raised and rescued for every contact
 - [Fixed]   AdminObjectsCollection#find_each keeps the query params (ldap, order, attrs...) for its pages instead of resetting them with count
+- [Fixed]   SoapBaseConnector#target_invoke no longer changes the shared SoapContext, the target server is set in the request only (concurrent requests of other threads could be sent to the target server)
+- [Changed] BaseJsnsInitializer reads the attributes of the response in one pass without building an intermediate Hash (about 25% faster, half the allocations)
+- [Changed] Cluster#domain_key memoizes the domain keys read from the server (one GetDomainRequest per domain instead of one per preauth login)
+- [Added]   Cluster#clear_domain_keys
+- [Changed] LogFilter.filter masks the secrets in one pass with a single regexp instead of four (about 2 times faster, half the memory on large debug logs)
+- [Changed] FileStore#normalize_key splits the key with scan (about 4 times faster, 22 allocations per key instead of 329), the cache paths are unchanged
+- [Changed] faraday and openssl are no longer required with the gem but with the first connector, require 'zm-ruby-client' takes about 12 ms and 1 MB instead of 90 ms and 13 MB
+- [Added]   Zm::Connector::SSL_VERIFY_PEER
+- [Changed] Cache keys are hashed with Digest::SHA256 instead of OpenSSL::Digest::SHA256 (same keys)
 
 ## Released [3.1.1]
 

@@ -13,6 +13,7 @@ module Zm
 
       def initialize(config)
         @config = config
+        @domain_keys = {}
 
         @soap_admin_connector = Zm::Connector::SoapAdminConnector.create(@config)
       end
@@ -87,11 +88,14 @@ module Zm
       alias distributionlists distribution_lists
 
       def domain_key(domain_name)
-        if logged?
-          find_domain_key(domain_name)
-        else
-          @config.domain_key(domain_name)
-        end
+        return @config.domain_key(domain_name) unless logged?
+
+        @domain_keys.fetch(domain_name) { @domain_keys[domain_name] = find_domain_key(domain_name) }
+      end
+
+      def clear_domain_keys
+        @domain_keys.clear
+        self
       end
 
       def count_object(type)

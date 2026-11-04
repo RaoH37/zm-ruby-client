@@ -84,6 +84,47 @@ class ClusterTest < ZmTest::UnitTest
     assert_nil cluster.soap_admin_connector.context.to_hash[:targetServer]
   end
 
+  def test_target_invoke_does_not_leak_the_target_server_between_threads
+    cluster = logged_cluster
+    connector = cluster.soap_admin_connector
+    @fake.on(:NoOpRequest) do |request|
+      sleep 0.001
+      { NoOpResponse: { target: request.header.dig(:context, :targetServer) } }
+    end
+    soap_request = -> { Zm::SoapRequest::SoapElement.admin(Zm::SoapRequest::SoapAdminConstants::NO_OP_REQUEST) }
+
+    results = Array.new(8) do |i|
+      Thread.new do
+        Array.new(10) do
+          target = i.even? ? "server-#{i}" : nil
+          response = target ? connector.target_invoke(soap_request.call, target) : connector.invoke(soap_request.call)
+          [target, response[:NoOpResponse][:target]]
+        end
+      end
+    end.flat_map(&:value)
+
+    assert_equal 80, results.size
+    results.each { |expected, sent| assert_equal expected, sent }
+    assert_nil connector.context.to_hash[:targetServer]
+  end
+
+  def test_domain_key_is_read_once_per_domain
+    cluster = logged_cluster
+    @fake.on(:GetDomainRequest) do |request|
+      name = request.body[:domain][:_content]
+      { GetDomainResponse: { domain: [{ name:, id: name, a: [{ n: 'zimbraPreAuthKey', _content: "key-#{name}" }] }] } }
+    end
+
+    keys = %w[a.tld b.tld a.tld b.tld].map { |domain| cluster.domain_key(domain) }
+
+    assert_equal %w[key-a.tld key-b.tld key-a.tld key-b.tld], keys
+    assert_equal(2, @fake.requests.count { |r| r.name == 'GetDomainRequest' })
+
+    cluster.clear_domain_keys.domain_key('a.tld')
+
+    assert_equal(3, @fake.requests.count { |r| r.name == 'GetDomainRequest' })
+  end
+
   def test_expired_token_is_not_logged
     cluster = Zm::Client::Cluster.new(build_config)
     cluster.token = ZmTest::FakeData.token(expires_in: -60)

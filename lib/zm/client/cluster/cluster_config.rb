@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'logger'
+
 module Zm
   module Client
     # class config for cluster connection
@@ -117,13 +119,7 @@ module Zm
       def ssl_options
         return Zm::Connector::SSL_VERIFY_NONE unless @ssl_verify
 
-        {
-          verify: true,
-          verify_hostname: true,
-          verify_mode: OpenSSL::SSL::VERIFY_PEER,
-          ca_file: @ssl_ca_file,
-          ca_path: @ssl_ca_path
-        }.compact
+        Zm::Connector::SSL_VERIFY_PEER.merge(ca_file: @ssl_ca_file, ca_path: @ssl_ca_path).compact
       end
 
       def init_domains_from_parameters(parameters)

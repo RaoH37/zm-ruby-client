@@ -40,12 +40,12 @@ module Zm
         self
       end
 
-      def to_hash
+      def to_hash(target_server = nil)
         h = {
           authToken: auth_token,
           userAgent: { name: @user_agent },
           account: @account,
-          targetServer: @target_server
+          targetServer: target_server || @target_server
         }
         h.compact!
         h
