@@ -8,10 +8,19 @@ module Zm
       def initialize(*, **)
         super
         @formatter ||= ZmFormatter.new
+        @colorize = false
       end
 
       def colorize!
-        extend(ZmLoggerColorized)
+        self.colorize = true
+      end
+
+      def colorize=(value)
+        @colorize = value ? true : false
+      end
+
+      def colorize?
+        @colorize
       end
 
       def log_path=(log_path)
@@ -28,7 +37,8 @@ module Zm
         end
       end
 
-      module ZmLoggerColorized
+      # ANSI colors of the log messages
+      module ZmLoggerColors
         # ANSI sequence modes
         MODES = {
           clear: 0,
@@ -76,6 +86,20 @@ module Zm
         def colorize_message(severity, str)
           "#{severity_color(severity)}#{str}#{mode_code(:clear)}"
         end
+      end
+
+      include ZmLoggerColors
+
+      private
+
+      def format_message(severity, datetime, progname, msg)
+        message = super
+        @colorize ? colorize_message(severity, message) : message
+      end
+
+      # colorizes every message, kept for the loggers extended with it
+      module ZmLoggerColorized
+        include ZmLoggerColors
 
         def format_message(severity, datetime, progname, msg)
           colorize_message(

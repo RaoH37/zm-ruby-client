@@ -10,7 +10,7 @@ module Zm
       ZIMBRA_VERSION_ADVICE = 'it is not used, call Cluster#infos! to read the server version with Cluster#version'
 
       attr_reader :zimbra_admin_url, :zimbra_public_url, :log_path
-      attr_writer :logger, :colorize_logging
+      attr_writer :logger
       attr_accessor :zimbra_admin_login, :zimbra_admin_password,
                     :domains, :timeout,
                     :ssl_verify, :ssl_ca_file, :ssl_ca_path
@@ -222,13 +222,18 @@ module Zm
 
         @logger = ZmLogger.new(@log_path).tap do |log|
           log.level = @log_level
-          log.colorize! if @colorize_logging
+          log.colorize = @colorize_logging
         end
       end
 
       def log_path=(path)
         @log_path = path
         @logger.log_path = path if defined?(@logger) && @logger.is_a?(ZmLogger)
+      end
+
+      def colorize_logging=(value)
+        @colorize_logging = value
+        @logger.colorize = value if defined?(@logger) && @logger.is_a?(ZmLogger)
       end
 
       def log_level=(level)

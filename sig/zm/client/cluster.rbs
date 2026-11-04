@@ -17,7 +17,7 @@ module Zm
       attr_reader zimbra_admin_url: String?
       attr_reader zimbra_public_url: String?
       attr_writer logger: ::Logger
-      attr_writer colorize_logging: bool
+      def colorize_logging=: (bool value) -> void
       attr_accessor zimbra_admin_login: String?
       attr_accessor zimbra_admin_password: String?
       attr_accessor domains: Array[ClusterConfigDomain]

@@ -61,7 +61,7 @@ class ClusterConfigTest < ZmTest::UnitTest
                                            log_level: Logger::DEBUG, colorize_logging: true)
 
     assert_equal Logger::DEBUG, config.logger.level
-    assert_kind_of Zm::Client::ZmLogger::ZmLoggerColorized, config.logger
+    assert_predicate config.logger, :colorize?
   end
 
   def test_log_level_and_colorize_logging_from_yaml_file
@@ -73,7 +73,7 @@ class ClusterConfigTest < ZmTest::UnitTest
       logger = Zm::Client::ClusterConfig.new(path).logger
 
       assert_equal Logger::WARN, logger.level
-      refute_kind_of Zm::Client::ZmLogger::ZmLoggerColorized, logger
+      refute_predicate logger, :colorize?
     end
   end
 
@@ -81,7 +81,7 @@ class ClusterConfigTest < ZmTest::UnitTest
     logger = build_config.logger
 
     assert_equal Logger::INFO, logger.level
-    refute_kind_of Zm::Client::ZmLogger::ZmLoggerColorized, logger
+    refute_predicate logger, :colorize?
   end
 
   def test_log_level_setter_accepts_a_name
@@ -151,6 +151,31 @@ class ClusterConfigTest < ZmTest::UnitTest
     config.logger.info('custom')
 
     assert_includes io.string, 'custom'
+  end
+
+  def test_colorize_logging_change_on_the_existing_logger
+    io = StringIO.new
+    config = Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071', log_path: io)
+    logger = config.logger
+    logger.info('plain')
+
+    config.colorize_logging = true
+    logger.info('colored')
+    config.colorize_logging = false
+    logger.info('plain again')
+
+    green = Zm::Client::ZmLogger::ZmLoggerColors::GREEN
+    assert_equal 1, io.string.scan(green).size
+    assert_match(/#{Regexp.escape(green)}[^\n]*colored\n/, io.string)
+    refute_match(/#{Regexp.escape(green)}[^\n]*plain/, io.string)
+  end
+
+  def test_colorized_module_still_colorizes_when_extended
+    io = StringIO.new
+    logger = Zm::Client::ZmLogger.new(io).extend(Zm::Client::ZmLogger::ZmLoggerColorized)
+    logger.warn('extended')
+
+    assert io.string.start_with?(Zm::Client::ZmLogger::ZmLoggerColorized::YELLOW)
   end
 
   def test_log_path_defaults_to_stdout

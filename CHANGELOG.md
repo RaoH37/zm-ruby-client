@@ -70,6 +70,9 @@
 - [Fixed]   ClusterConfig.new and init_from_h no longer empty the given Hash (a frozen Hash raised FrozenError)
 - [Fixed]   ClusterConfig#log_path= redirects the logger already created (and used by the connectors and the cache) instead of being ignored, nil or File::NULL disable the logs, only a file opened by the logger is closed
 - [Added]   ZmLogger#log_path=
+- [Fixed]   ClusterConfig#colorize_logging= turns the colors on or off on the logger already created instead of being ignored
+- [Changed] ZmLogger#colorize! sets a flag instead of extending the logger with ZmLogger::ZmLoggerColorized (still available), the colors can be turned off
+- [Added]   ZmLogger#colorize=, ZmLogger#colorize?, ZmLogger::ZmLoggerColors
 
 ## Released [3.1.1]
 
