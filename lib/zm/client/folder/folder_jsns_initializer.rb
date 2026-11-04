@@ -12,7 +12,8 @@ module Zm
         end
 
         def update(item, json)
-          item.type = json.delete(:type)
+          type = json.delete(:type)
+          item.type = type unless type.nil?
           item.id = json.delete(:id)
           item.uuid = json.delete(:uuid)
           item.name = json.delete(:name)

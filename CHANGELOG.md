@@ -51,6 +51,7 @@
 - [Changed] Jsns initializers set the Zimbra attributes directly instead of calling their setter
 - [Changed] Account, Resource, Cos, Domain and DistributionList jsns builders share Base::ZimbraAttrsJsns
 - [Fixed]   FoldersBuilder computes absFolderPath from the parent folder when GetFolderResponse has none (old Zimbra versions)
+- [Fixed]   FolderJsnsInitializer keeps the :folder type when the response has no type instead of setting it to nil
 
 ## Released [3.1.1]
 

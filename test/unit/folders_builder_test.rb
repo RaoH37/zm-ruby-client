@@ -9,13 +9,13 @@ class FoldersBuilderTest < ZmTest::UnitTest
   end
 
   def test_abs_folder_path_is_computed_when_missing
-    root = { id: '1', type: 'folder', name: 'USER_ROOT', folder: [
-      { id: '2', type: 'folder', name: 'Inbox', view: 'message', folder: [
-        { id: '257', type: 'folder', name: 'projects', view: 'message', folder: [
-          { id: '258', type: 'folder', name: '2026', view: 'message' }
+    root = { id: '1', name: 'USER_ROOT', folder: [
+      { id: '2', name: 'Inbox', view: 'message', folder: [
+        { id: '257', name: 'projects', view: 'message', folder: [
+          { id: '258', name: '2026', view: 'message' }
         ] }
       ] },
-      { id: '16', type: 'folder', name: 'Briefcase', view: 'document' }
+      { id: '16', name: 'Briefcase', view: 'document' }
     ] }
     @fake.on(:GetFolderRequest, { GetFolderResponse: { folder: [root] } })
 
@@ -27,9 +27,9 @@ class FoldersBuilderTest < ZmTest::UnitTest
   end
 
   def test_abs_folder_path_from_the_response_is_kept
-    root = { id: '1', type: 'folder', name: 'USER_ROOT', absFolderPath: '/', folder: [
-      { id: '257', type: 'folder', name: 'projects', absFolderPath: '/renamed', view: 'message', folder: [
-        { id: '258', type: 'folder', name: '2026', view: 'message' }
+    root = { id: '1', name: 'USER_ROOT', absFolderPath: '/', folder: [
+      { id: '257', name: 'projects', absFolderPath: '/renamed', view: 'message', folder: [
+        { id: '258', name: '2026', view: 'message' }
       ] }
     ] }
     @fake.on(:GetFolderRequest, { GetFolderResponse: { folder: [root] } })
@@ -37,5 +37,11 @@ class FoldersBuilderTest < ZmTest::UnitTest
     folders = @account.folders.all
 
     assert_equal %w[/ /renamed /renamed/2026], folders.map(&:absFolderPath)
+  end
+
+  def test_type_defaults_to_folder_when_missing
+    @fake.on(:GetFolderRequest, { GetFolderResponse: { folder: [{ id: '1', name: 'USER_ROOT' }] } })
+
+    assert_equal [:folder], @account.folders.all.map(&:type)
   end
 end
