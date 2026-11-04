@@ -2,7 +2,8 @@
 
 module Zm
   module Connector
-    SSL_VERIFY_NONE = { verify: false, verify_hostname: false, verify_mode: OpenSSL::SSL::VERIFY_NONE }.freeze
+    autoload :SSL_VERIFY_NONE, 'zm/connector/ssl'
+    autoload :SSL_VERIFY_PEER, 'zm/connector/ssl'
 
     autoload :SoapBaseConnector, 'zm/connector/soap_base_connector'
     autoload :SoapAdminConnector, 'zm/connector/soap_admin_connector'

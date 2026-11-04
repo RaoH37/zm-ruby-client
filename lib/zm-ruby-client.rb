@@ -2,8 +2,6 @@
 
 require 'date'
 require 'time'
-require 'faraday'
-require 'openssl'
 require 'json'
 
 require 'zm/error'

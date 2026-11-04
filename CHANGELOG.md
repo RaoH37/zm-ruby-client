@@ -59,6 +59,11 @@
 - [Changed] BaseJsnsInitializer reads the attributes of the response in one pass without building an intermediate Hash (about 25% faster, half the allocations)
 - [Changed] Cluster#domain_key memoizes the domain keys read from the server (one GetDomainRequest per domain instead of one per preauth login)
 - [Added]   Cluster#clear_domain_keys
+- [Changed] LogFilter.filter masks the secrets in one pass with a single regexp instead of four (about 2 times faster, half the memory on large debug logs)
+- [Changed] FileStore#normalize_key splits the key with scan (about 4 times faster, 22 allocations per key instead of 329), the cache paths are unchanged
+- [Changed] faraday and openssl are no longer required with the gem but with the first connector, require 'zm-ruby-client' takes about 12 ms and 1 MB instead of 90 ms and 13 MB
+- [Added]   Zm::Connector::SSL_VERIFY_PEER
+- [Changed] Cache keys are hashed with Digest::SHA256 instead of OpenSSL::Digest::SHA256 (same keys)
 
 ## Released [3.1.1]
 

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'faraday'
+
 module Zm
   module Connector
     class SoapBaseConnector

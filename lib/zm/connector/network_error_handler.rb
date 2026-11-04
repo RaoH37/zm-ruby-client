@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'faraday'
+
 module Zm
   module Connector
     # convert Faraday network errors into Zm::Error::ConnectionError, the original error is kept as cause

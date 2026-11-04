@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest'
+
 module Zm
   module Support
     module Cache
@@ -118,9 +120,9 @@ module Zm
                       end
 
           if namespace
-            OpenSSL::Digest::SHA256.hexdigest("#{namespace}:#{key}")
+            Digest::SHA256.hexdigest("#{namespace}:#{key}")
           else
-            OpenSSL::Digest::SHA256.hexdigest(key)
+            Digest::SHA256.hexdigest(key)
           end
         end
 

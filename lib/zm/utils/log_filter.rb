@@ -7,19 +7,27 @@ module Zm
       FILTERED = '[FILTERED]'
       JSON_STRING = '"(?:[^"\\\\]|\\\\.)*"'
 
-      PATTERNS = [
-        [/("(?:password|newPassword|authToken)":)#{JSON_STRING}/o, "\\1\"#{FILTERED}\""],
-        [/("(?:authToken|preauth)":\[?\{[^}]*?"_content":)#{JSON_STRING}/o, "\\1\"#{FILTERED}\""],
-        [/("n":"(?:userPassword|zimbraPreAuthKey)","_content":)#{JSON_STRING}/o, "\\1\"#{FILTERED}\""],
-        [/(ZM_(?:ADMIN_)?AUTH_TOKEN=)[^;\s"]+/, "\\1#{FILTERED}"]
+      JSON_SECRET_KEYS = [
+        '"(?:password|newPassword|authToken)":',
+        '"(?:authToken|preauth)":\\[?\\{[^}]*?"_content":',
+        '"n":"(?:userPassword|zimbraPreAuthKey)","_content":'
       ].freeze
+      COOKIE_SECRET = 'ZM_(?:ADMIN_)?AUTH_TOKEN='
+
+      PATTERNS = [
+        *JSON_SECRET_KEYS.map { |key| [/(#{key})#{JSON_STRING}/, "\\1\"#{FILTERED}\""] },
+        [/(#{COOKIE_SECRET})[^;\s"]+/o, "\\1#{FILTERED}"]
+      ].freeze
+
+      FILTER_REGEX = /((?:#{JSON_SECRET_KEYS.join('|')})")(?:[^"\\]|\\.)*(")|(#{COOKIE_SECRET})[^;\s"]+/o
+      FILTER_REPLACEMENT = "\\1\\3#{FILTERED}\\2".freeze
 
       module_function
 
       def filter(str)
         return str if str.nil?
 
-        PATTERNS.inject(str) { |result, (pattern, replacement)| result.gsub(pattern, replacement) }
+        str.gsub(FILTER_REGEX, FILTER_REPLACEMENT)
       end
 
       def apply(formatter)
