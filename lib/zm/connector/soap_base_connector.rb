@@ -37,14 +37,11 @@ module Zm
       end
 
       def invoke(soap_element, error_handler = Zm::Error::SoapError)
-        do_request(envelope(soap_element), error_handler, cacheable: cacheable?(soap_element))[:Body]
+        request(soap_element, error_handler)
       end
 
       def target_invoke(soap_element, target_id, error_handler = Zm::Error::SoapError)
-        @context.target_server(target_id)
-        invoke(soap_element, error_handler)
-      ensure
-        @context.target_server(nil)
+        request(soap_element, error_handler, target_id)
       end
 
       def http_client!
@@ -66,6 +63,11 @@ module Zm
       end
 
       private
+
+      def request(soap_element, error_handler, target_server = nil)
+        body = envelope(soap_element, target_server)
+        do_request(body, error_handler, cacheable: cacheable?(soap_element))[:Body]
+      end
 
       def cacheable?(soap_element)
         CACHEABLE_REQUEST_REGEX.match?(soap_element.name)
@@ -104,10 +106,10 @@ module Zm
         { Body: { Fault: { Reason: { Text: "HTTP #{response.status}" }, Detail: { Error: { Code: 'HTTP_ERROR' } } } } }
       end
 
-      def envelope(soap_element)
+      def envelope(soap_element, target_server = nil)
         {
           Body: soap_element.to_hash,
-          Header: { context: context.to_hash, _jsns: BASESPACE }
+          Header: { context: context.to_hash(target_server), _jsns: BASESPACE }
         }
       end
     end

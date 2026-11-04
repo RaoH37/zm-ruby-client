@@ -100,6 +100,7 @@ module Zm
       alias distributionlists distribution_lists
 
       def domain_key: (String domain_name) -> String?
+      def clear_domain_keys: () -> self
       def count_object: (count_object_type | String type) -> Integer
       def email_exist?: (String email) -> bool
       def infos!: () -> void

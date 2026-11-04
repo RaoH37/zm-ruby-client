@@ -55,6 +55,10 @@
 - [Fixed]   AccountSearchObjectsCollection#ids (messages.ids...) always returned [], ObjectsBuilder#ids read a :Body key already removed by invoke
 - [Fixed]   ContactJsnsInitializer keeps the custom contact attributes as instance variables (sent back by save!) instead of losing them, no more NoMethodError raised and rescued for every contact
 - [Fixed]   AdminObjectsCollection#find_each keeps the query params (ldap, order, attrs...) for its pages instead of resetting them with count
+- [Fixed]   SoapBaseConnector#target_invoke no longer changes the shared SoapContext, the target server is set in the request only (concurrent requests of other threads could be sent to the target server)
+- [Changed] BaseJsnsInitializer reads the attributes of the response in one pass without building an intermediate Hash (about 25% faster, half the allocations)
+- [Changed] Cluster#domain_key memoizes the domain keys read from the server (one GetDomainRequest per domain instead of one per preauth login)
+- [Added]   Cluster#clear_domain_keys
 
 ## Released [3.1.1]
 
