@@ -48,7 +48,7 @@ module Zm
       def zimbra_version=: (String version) -> void
 
       def logger: () -> ::Logger
-      def log_level=: (Integer level) -> void
+      def log_level=: (Integer | String | Symbol level) -> void
     end
 
     class ClusterConfigDomain < Data

@@ -114,6 +114,8 @@ module Zm
 
       def init_log_from_parameters(parameters)
         @log_path = parameters.delete(:log_path) if parameters.key?(:log_path)
+        @log_level = Logger::Severity.coerce(parameters.delete(:log_level)) if parameters.key?(:log_level)
+        @colorize_logging = parameters.delete(:colorize_logging) == true if parameters.key?(:colorize_logging)
       end
 
       def init_ssl_from_parameters(parameters)
@@ -220,6 +222,7 @@ module Zm
       end
 
       def log_level=(level)
+        level = Logger::Severity.coerce(level)
         return if level == @log_level
 
         logger.level = @log_level = level

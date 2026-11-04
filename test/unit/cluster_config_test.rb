@@ -56,6 +56,45 @@ class ClusterConfigTest < ZmTest::UnitTest
     end
   end
 
+  def test_log_level_and_colorize_logging_from_parameters
+    config = Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071', log_path: File::NULL,
+                                           log_level: Logger::DEBUG, colorize_logging: true)
+
+    assert_equal Logger::DEBUG, config.logger.level
+    assert_kind_of Zm::Client::ZmLogger::ZmLoggerColorized, config.logger
+  end
+
+  def test_log_level_and_colorize_logging_from_yaml_file
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'config.yml')
+      File.write(path, { 'zimbra_admin_url' => 'https://zimbra.test:7071', 'log_path' => File::NULL,
+                         'log_level' => 'warn', 'colorize_logging' => 'yes' }.to_yaml)
+
+      logger = Zm::Client::ClusterConfig.new(path).logger
+
+      assert_equal Logger::WARN, logger.level
+      refute_kind_of Zm::Client::ZmLogger::ZmLoggerColorized, logger
+    end
+  end
+
+  def test_log_level_defaults_to_info_without_colors
+    logger = build_config.logger
+
+    assert_equal Logger::INFO, logger.level
+    refute_kind_of Zm::Client::ZmLogger::ZmLoggerColorized, logger
+  end
+
+  def test_log_level_setter_accepts_a_name
+    config = build_config
+    config.log_level = :debug
+
+    assert_equal Logger::DEBUG, config.logger.level
+  end
+
+  def test_invalid_log_level_raises
+    assert_raises(ArgumentError) { build_config(log_level: 'verbose') }
+  end
+
   def test_log_path_defaults_to_stdout
     assert_same $stdout, Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071').log_path
   end

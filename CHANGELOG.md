@@ -65,6 +65,8 @@
 - [Added]   Zm::Connector::SSL_VERIFY_PEER
 - [Changed] Cache keys are hashed with Digest::SHA256 instead of OpenSSL::Digest::SHA256 (same keys)
 - [Fixed]   ClusterConfig reads log_path from the Hash or the config file, it was ignored and the logs went to $stdout
+- [Added]   ClusterConfig reads log_level (Integer, or a name such as 'debug' or :warn) and colorize_logging (true only) from the Hash or the config file
+- [Changed] ClusterConfig#log_level= accepts a level name ('debug', :warn) and raises ArgumentError for an invalid level
 
 ## Released [3.1.1]
 
