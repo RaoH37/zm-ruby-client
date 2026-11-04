@@ -52,6 +52,9 @@
 - [Changed] Account, Resource, Cos, Domain and DistributionList jsns builders share Base::ZimbraAttrsJsns
 - [Fixed]   FoldersBuilder computes absFolderPath from the parent folder when GetFolderResponse has none (old Zimbra versions)
 - [Fixed]   FolderJsnsInitializer keeps the :folder type when the response has no type instead of setting it to nil
+- [Fixed]   AccountSearchObjectsCollection#ids (messages.ids...) always returned [], ObjectsBuilder#ids read a :Body key already removed by invoke
+- [Fixed]   ContactJsnsInitializer keeps the custom contact attributes as instance variables (sent back by save!) instead of losing them, no more NoMethodError raised and rescued for every contact
+- [Fixed]   AdminObjectsCollection#find_each keeps the query params (ldap, order, attrs...) for its pages instead of resetting them with count
 
 ## Released [3.1.1]
 

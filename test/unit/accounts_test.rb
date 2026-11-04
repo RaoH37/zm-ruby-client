@@ -193,6 +193,25 @@ class AccountsTest < ZmTest::UnitTest
     assert_equal Time.utc(2025, 6, 7, 8, 9, 10), account.last_logon
   end
 
+  def test_find_each_keeps_the_query_params_after_count
+    @fake.on(:SearchDirectoryRequest) do |request|
+      next { SearchDirectoryResponse: { num: 2 } } if request.body[:countOnly] == 1
+
+      offset = request.body[:offset].to_i
+      { SearchDirectoryResponse: { account: [ZmTest::FakeData.account(name: "user#{offset}@domain.tld")], num: 2 } }
+    end
+
+    names = []
+    @cluster.accounts.ldap.order('name', 0).attrs('zimbraId').find_each(limit: 1) { |account| names << account.name }
+
+    assert_equal %w[user0@domain.tld user1@domain.tld], names
+    pages = @fake.requests.select { |r| r.name == 'SearchDirectoryRequest' && r.body[:countOnly].zero? }
+    assert_equal 2, pages.size
+    pages.each do |page|
+      assert_equal [0, 'name', 0, 'zimbraId'], page.body.values_at(:applyCos, :sortBy, :sortAscending, :attrs)
+    end
+  end
+
   private
 
   def search_accounts(*names)

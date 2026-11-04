@@ -11,7 +11,7 @@ module Zm
         end
 
         def ids
-          @json.dig(:Body, json_key, :hit)&.map { |s| s[:id] } || []
+          @json.dig(json_key, :hit)&.map { |s| s[:id] } || []
         end
 
         private
