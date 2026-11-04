@@ -41,6 +41,29 @@ class ContactTest < ZmTest::UnitTest
 
     assert_equal 'myValue', contact_attrs(contact.jsns_builder.to_jsns)['myKey']
   end
+
+  def test_custom_properties_from_the_response_are_kept
+    contact = Zm::Client::ContactJsnsInitializer.create(logged_account, contact_json)
+
+    assert_equal 'Live', contact.firstName
+    assert_equal 'myValue', contact.instance_variable_get(:@myKey)
+    refute_includes contact.instance_variables.map(&:name), '@bad-key'
+    refute_respond_to contact, :myKey
+    assert_equal({ 'firstName' => 'Live', 'myKey' => 'myValue' }, contact_attrs(contact.jsns_builder.to_update))
+  end
+
+  def test_custom_properties_do_not_override_internal_variables
+    contact = Zm::Client::ContactJsnsInitializer.create(logged_account, contact_json(tags: 'x', jsns_builder: 'y'))
+
+    refute_equal 'x', contact.instance_variable_get(:@tags)
+    refute_equal 'y', contact.instance_variable_get(:@jsns_builder)
+  end
+
+  private
+
+  def contact_json(**extra)
+    { id: '257', l: '7', fileAsStr: 'Live', _attrs: { firstName: 'Live', myKey: 'myValue', 'bad-key': 'z', **extra } }
+  end
 end
 
 class GroupContactTest < ZmTest::UnitTest

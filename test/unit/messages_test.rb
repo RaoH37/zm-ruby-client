@@ -39,6 +39,13 @@ class MessagesTest < ZmTest::UnitTest
     assert_raises(Zm::Error::SoapError) { @account.messages.find_each(secure: false) { nil } }
   end
 
+  def test_ids_reads_the_search_hits
+    @fake.on(:SearchRequest, { SearchResponse: { hit: [{ id: '257' }, { id: '258' }], more: false } })
+
+    assert_equal %w[257 258], @account.messages.ids
+    assert_equal 'IDS', @fake.last_request(:SearchRequest).body[:resultMode]
+  end
+
   private
 
   def message_json(id)

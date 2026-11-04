@@ -4,6 +4,9 @@ module Zm
   module Client
     # class for account contact
     class ContactJsnsInitializer
+      SETTERS = Hash.new { |h, name| h[name] = :"#{name}=" }
+      CUSTOM_KEY_REGEX = /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
+
       class << self
         def create(parent, json)
           item = Contact.new(parent)
@@ -16,10 +19,7 @@ module Zm
           item.name = json.delete(:fileAsStr)
           item.tn   = json.delete(:tn)
 
-          if json[:_attrs].is_a?(Hash)
-            make_custom_keys(json[:_attrs], item)
-            init_by_attrs(json[:_attrs], item)
-          end
+          init_by_attrs(json[:_attrs], item) if json[:_attrs].is_a?(Hash)
 
           if item.group?
             item.extend(Zm::Client::ModGroupContact)
@@ -29,20 +29,20 @@ module Zm
           item
         end
 
-        def make_custom_keys(attrs, item)
-          custom_keys = attrs.keys - item.all_instance_variable_keys
-          return if custom_keys.empty?
+        def init_by_attrs(attrs, item)
+          attrs.each do |key, value|
+            setter = SETTERS[key]
 
-          item.class.attr_accessor(*custom_keys)
-        rescue StandardError => _e
-          nil
+            if item.respond_to?(setter)
+              item.public_send(setter, value)
+            elsif custom_key?(key)
+              item.add_custom_property(key, value)
+            end
+          end
         end
 
-        def init_by_attrs(attrs, item)
-          attrs.each do |k, v|
-            m = Utils.equals_name(k)
-            item.send(m, v) if item.respond_to?(m)
-          end
+        def custom_key?(key)
+          CUSTOM_KEY_REGEX.match?(key) && !ContactJsnsBuilder::EXCLUDE_INSTANCE_VARIABLE_KEYS.include?(:"@#{key}")
         end
 
         def init_members_from_json(m, item)

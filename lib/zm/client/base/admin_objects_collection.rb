@@ -63,12 +63,10 @@ module Zm
         end
 
         def find_each(offset: 0, limit: 1_000, &)
-          previous_persistent = @persistent.dup
+          previous_persistent = @persistent
           @persistent = true
 
-          _attrs = @attrs
-          total = count
-          @attrs = _attrs
+          total = dup.count
 
           @offset = offset
           @limit = limit
