@@ -108,6 +108,51 @@ class ClusterConfigTest < ZmTest::UnitTest
                  [config.zimbra_admin_url, config.timeout, config.domain_key('domain.tld')]
   end
 
+  def test_log_path_change_redirects_the_existing_logger
+    first = StringIO.new
+    second = StringIO.new
+    config = Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071', log_path: first)
+    connector = Zm::Client::Cluster.new(config).soap_admin_connector
+    logger = config.logger
+    logger.info('before')
+
+    config.log_path = second
+    connector.instance_variable_get(:@logger).info('after')
+
+    assert_same logger, config.logger
+    assert_same second, config.log_path
+    refute_predicate first, :closed?
+    assert_includes first.string, 'before'
+    refute_includes first.string, 'after'
+    assert_includes second.string, 'after'
+  end
+
+  def test_log_path_change_to_a_file_and_to_nil
+    Dir.mktmpdir do |dir|
+      config = Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071', log_path: nil)
+      config.logger.info('lost')
+      log_path = File.join(dir, 'zm.log')
+
+      config.log_path = log_path
+      config.logger.info('in the file')
+      config.log_path = nil
+      config.logger.info('lost again')
+
+      assert_equal(['in the file'], File.readlines(log_path).filter_map { |line| line[/ : (.*)$/, 1] })
+    end
+  end
+
+  def test_log_path_change_keeps_a_custom_logger
+    io = StringIO.new
+    config = build_config
+    config.logger = Logger.new(io)
+
+    config.log_path = File::NULL
+    config.logger.info('custom')
+
+    assert_includes io.string, 'custom'
+  end
+
   def test_log_path_defaults_to_stdout
     assert_same $stdout, Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071').log_path
   end

@@ -14,6 +14,12 @@ module Zm
         extend(ZmLoggerColorized)
       end
 
+      def log_path=(log_path)
+        previous = @logdev
+        @logdev = log_path.nil? || log_path == File::NULL ? nil : ::Logger::LogDevice.new(log_path)
+        previous.close if previous&.filename
+      end
+
       class ZmFormatter < ::Logger::Formatter
         Format = "[%s] %5s : %s\n"
 

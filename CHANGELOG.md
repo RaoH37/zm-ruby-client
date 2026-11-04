@@ -68,6 +68,8 @@
 - [Added]   ClusterConfig reads log_level (Integer, or a name such as 'debug' or :warn) and colorize_logging (true only) from the Hash or the config file
 - [Changed] ClusterConfig#log_level= accepts a level name ('debug', :warn) and raises ArgumentError for an invalid level
 - [Fixed]   ClusterConfig.new and init_from_h no longer empty the given Hash (a frozen Hash raised FrozenError)
+- [Fixed]   ClusterConfig#log_path= redirects the logger already created (and used by the connectors and the cache) instead of being ignored, nil or File::NULL disable the logs, only a file opened by the logger is closed
+- [Added]   ZmLogger#log_path=
 
 ## Released [3.1.1]
 

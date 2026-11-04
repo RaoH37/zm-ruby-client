@@ -21,7 +21,8 @@ module Zm
       attr_accessor zimbra_admin_login: String?
       attr_accessor zimbra_admin_password: String?
       attr_accessor domains: Array[ClusterConfigDomain]
-      attr_accessor log_path: String | _LogDevice
+      attr_reader log_path: String | _LogDevice | nil
+      def log_path=: (String | _LogDevice | nil path) -> void
       attr_accessor timeout: Integer
       attr_accessor ssl_verify: bool
       attr_accessor ssl_ca_file: String?
