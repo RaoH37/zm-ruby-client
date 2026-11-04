@@ -50,6 +50,7 @@
 - [Changed] Cluster#version is nil until Cluster#infos! instead of ClusterConfig#zimbra_version
 - [Changed] Jsns initializers set the Zimbra attributes directly instead of calling their setter
 - [Changed] Account, Resource, Cos, Domain and DistributionList jsns builders share Base::ZimbraAttrsJsns
+- [Fixed]   FoldersBuilder computes absFolderPath from the parent folder when GetFolderResponse has none (old Zimbra versions)
 
 ## Released [3.1.1]
 
