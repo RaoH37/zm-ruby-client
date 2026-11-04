@@ -64,6 +64,7 @@
 - [Changed] faraday and openssl are no longer required with the gem but with the first connector, require 'zm-ruby-client' takes about 12 ms and 1 MB instead of 90 ms and 13 MB
 - [Added]   Zm::Connector::SSL_VERIFY_PEER
 - [Changed] Cache keys are hashed with Digest::SHA256 instead of OpenSSL::Digest::SHA256 (same keys)
+- [Fixed]   ClusterConfig reads log_path from the Hash or the config file, it was ignored and the logs went to $stdout
 
 ## Released [3.1.1]
 

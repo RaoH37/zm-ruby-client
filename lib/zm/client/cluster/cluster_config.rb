@@ -107,7 +107,13 @@ module Zm
 
         init_ssl_from_parameters(parameters)
 
+        init_log_from_parameters(parameters)
+
         init_domains_from_parameters(parameters)
+      end
+
+      def init_log_from_parameters(parameters)
+        @log_path = parameters.delete(:log_path) if parameters.key?(:log_path)
       end
 
       def init_ssl_from_parameters(parameters)

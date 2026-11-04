@@ -35,6 +35,31 @@ class ClusterConfigTest < ZmTest::UnitTest
     end
   end
 
+  def test_log_path_from_parameters
+    io = StringIO.new
+    config = Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071', log_path: io)
+    config.logger.info('logged in the given device')
+
+    assert_same io, config.log_path
+    assert_includes io.string, 'logged in the given device'
+  end
+
+  def test_log_path_from_yaml_file
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'config.yml')
+      log_path = File.join(dir, 'zm.log')
+      File.write(path, { 'zimbra_admin_url' => 'https://zimbra.test:7071', 'log_path' => log_path }.to_yaml)
+
+      Zm::Client::ClusterConfig.new(path).logger.info('logged in the file')
+
+      assert_includes File.read(log_path), 'logged in the file'
+    end
+  end
+
+  def test_log_path_defaults_to_stdout
+    assert_same $stdout, Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071').log_path
+  end
+
   def test_invalid_file_extension_raises
     assert_raises(Zm::Client::ClusterConfigError) { Zm::Client::ClusterConfig.new('config.txt') }
   end
