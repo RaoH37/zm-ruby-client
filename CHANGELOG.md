@@ -67,6 +67,7 @@
 - [Fixed]   ClusterConfig reads log_path from the Hash or the config file, it was ignored and the logs went to $stdout
 - [Added]   ClusterConfig reads log_level (Integer, or a name such as 'debug' or :warn) and colorize_logging (true only) from the Hash or the config file
 - [Changed] ClusterConfig#log_level= accepts a level name ('debug', :warn) and raises ArgumentError for an invalid level
+- [Fixed]   ClusterConfig.new and init_from_h no longer empty the given Hash (a frozen Hash raised FrozenError)
 
 ## Released [3.1.1]
 

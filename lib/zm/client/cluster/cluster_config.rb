@@ -89,6 +89,7 @@ module Zm
       end
 
       def init_from_h(parameters)
+        parameters = parameters.dup
         @zimbra_admin_login = parameters.delete(:zimbra_admin_login)
         @zimbra_admin_password = parameters.delete(:zimbra_admin_password)
 
@@ -96,10 +97,7 @@ module Zm
 
         init_public_url_from_parameters(parameters)
 
-        if (version = parameters.delete(:zimbra_version))
-          Deprecation.warn_once('the zimbra_version parameter of Zm::Client::ClusterConfig', ZIMBRA_VERSION_ADVICE)
-          @zimbra_version = version
-        end
+        init_zimbra_version_from_parameters(parameters)
 
         if (p_timeout = parameters.delete(:timeout))
           @timeout = p_timeout.to_i
@@ -110,6 +108,13 @@ module Zm
         init_log_from_parameters(parameters)
 
         init_domains_from_parameters(parameters)
+      end
+
+      def init_zimbra_version_from_parameters(parameters)
+        return unless (version = parameters.delete(:zimbra_version))
+
+        Deprecation.warn_once('the zimbra_version parameter of Zm::Client::ClusterConfig', ZIMBRA_VERSION_ADVICE)
+        @zimbra_version = version
       end
 
       def init_log_from_parameters(parameters)

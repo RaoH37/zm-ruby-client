@@ -95,6 +95,19 @@ class ClusterConfigTest < ZmTest::UnitTest
     assert_raises(ArgumentError) { build_config(log_level: 'verbose') }
   end
 
+  def test_parameters_hash_is_not_changed
+    parameters = { zimbra_admin_url: 'https://zimbra.test:7071', zimbra_admin_login: 'admin@domain.tld',
+                   zimbra_admin_password: 'secret', timeout: 30, log_path: File::NULL,
+                   domains: [{ name: 'domain.tld', key: 'k' }] }
+    expected = Marshal.load(Marshal.dump(parameters))
+
+    config = Zm::Client::ClusterConfig.new(parameters.freeze)
+
+    assert_equal expected, parameters
+    assert_equal ['https://zimbra.test:7071', 30, 'k'],
+                 [config.zimbra_admin_url, config.timeout, config.domain_key('domain.tld')]
+  end
+
   def test_log_path_defaults_to_stdout
     assert_same $stdout, Zm::Client::ClusterConfig.new(zimbra_admin_url: 'https://zimbra.test:7071').log_path
   end
