@@ -5,12 +5,12 @@ module Zm
 
     module RequestMethodsAdmin
       def delete!: () -> nil
-      def modify!: () -> true
-      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
+      def modify!: (?force: bool) -> bool
+      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, ?force: bool, **untyped attrs) -> bool
       def rename!: (String new_name) -> String
 
       def build_create: () -> SoapElement
-      def build_modify: () -> SoapElement
+      def build_modify: (?force: bool) -> SoapElement
       def build_delete: () -> SoapElement
       def build_rename: (String new_name) -> SoapElement
     end
@@ -19,6 +19,7 @@ module Zm
   module Client
     class Account < Base::MailboxObject
       extend Base::HasZimbraAttributes
+      include Base::HasZimbraAttributes::InstanceMethods
 
       include SoapRequest::RequestMethodsAdmin
 
@@ -26,7 +27,6 @@ module Zm
       def create!: () -> String
       def created_at: () -> Time?
       def flush_cache!: () -> true
-      def attrs_write: () -> Array[String]
       def batch: () -> BatchRequest
       def empty_dumpster!: () -> untyped
     end
@@ -45,6 +45,7 @@ module Zm
 
     class Resource < Base::MailboxObject
       extend Base::HasZimbraAttributes
+      include Base::HasZimbraAttributes::InstanceMethods
 
       include SoapRequest::RequestMethodsAdmin
 
@@ -53,7 +54,6 @@ module Zm
       TYPES: Array[String]
 
       def create!: () -> String
-      def attrs_write: () -> Array[String]
       def location?: () -> bool
       def equipment?: () -> bool
     end
@@ -63,12 +63,12 @@ module Zm
 
     class Domain < Base::Object
       extend Base::HasZimbraAttributes
+      include Base::HasZimbraAttributes::InstanceMethods
 
       include SoapRequest::RequestMethodsAdmin
 
       def create!: () -> String
       def cos: () -> Cos?
-      def attrs_write: () -> Array[String]
       def DKIMPublicTxt: () -> String?
 
       def accounts: () -> DomainAccountsCollection
@@ -91,13 +91,13 @@ module Zm
 
     class Cos < Base::Object
       extend Base::HasZimbraAttributes
+      include Base::HasZimbraAttributes::InstanceMethods
 
       def create!: () -> String
-      def modify!: () -> true
-      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
+      def modify!: (?force: bool) -> bool
+      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, ?force: bool, **untyped attrs) -> bool
       def delete!: () -> nil
       def clone!: (String new_name) -> String
-      def attrs_write: () -> Array[String]
 
       def servers: () -> CosServersCollection
       def domains: () -> CosDomainsCollection
@@ -125,9 +125,9 @@ module Zm
 
     class Server < Base::Object
       extend Base::HasZimbraAttributes
+      include Base::HasZimbraAttributes::InstanceMethods
 
-      def attrs_write: () -> Array[String]
-      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, **untyped attrs) -> bool
+      def update!: (?Hash[Symbol, untyped]? hash, ?update_attributes: bool, ?force: bool, **untyped attrs) -> bool
       def mailboxes: () -> Array[Hash[Symbol, untyped]]?
 
       def mta_queues: () -> MtaQueuesCollection
@@ -186,6 +186,7 @@ module Zm
 
     class DistributionList < Base::Object
       extend Base::HasZimbraAttributes
+      include Base::HasZimbraAttributes::InstanceMethods
 
       include SoapRequest::RequestMethodsAdmin
 
@@ -197,7 +198,6 @@ module Zm
       def hide_in_gal?: () -> bool
       def group?: () -> bool
       def mailing_list?: () -> bool
-      def attrs_write: () -> Array[String]
 
       def aliases: () -> DistributionListAliasesCollection
       def members: () -> DistributionListMembersCollection

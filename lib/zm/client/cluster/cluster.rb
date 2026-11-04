@@ -13,7 +13,6 @@ module Zm
 
       def initialize(config)
         @config = config
-        @version = config.zimbra_version
 
         @soap_admin_connector = Zm::Connector::SoapAdminConnector.create(@config)
       end

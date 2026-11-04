@@ -105,6 +105,33 @@ module Zm
         def zimbra_attrs_readonly: () -> Array[Symbol]
         def attrs_write: () -> Array[String]
         def attrs_write_ivars: () -> Array[Symbol]
+        def zimbra_attrs_ivars: () -> Hash[String, Symbol]
+
+        module InstanceMethods
+          EMPTY_CHANGES: Array[Symbol]
+
+          def attrs_write: () -> Array[String]
+          def zimbra_attrs_changed: () -> Array[Symbol]
+          def zimbra_attrs_changed?: () -> bool
+          def zimbra_attr_changed?: (Symbol | String name) -> bool
+          def zimbra_attr_will_change!: (Symbol | String name) -> self
+          def clear_zimbra_attrs_changes: () -> self
+
+          private
+
+          def zimbra_attrs_to_update: (Hash[Symbol | String, untyped] hash, bool force) -> Hash[Symbol | String, untyped]
+          def zimbra_attr_unchanged?: (Symbol | String key, untyped value) -> bool
+          def same_zimbra_values?: (untyped current, untyped value) -> bool
+          def forget_zimbra_attr_change: (Symbol | String key) -> void
+        end
+      end
+
+      module ZimbraAttrsJsns
+        CLEARED_VALUES: Array[String]
+
+        def attrs_only_set_h: () -> Hash[String, Array[untyped]]
+        def attrs_changed_h: () -> Hash[String, Array[untyped]]
+        def attrs_to_update_h: (bool force) -> Hash[String, Array[untyped]]
       end
 
       # deprecated, removed in 4.0

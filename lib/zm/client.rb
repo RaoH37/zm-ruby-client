@@ -223,6 +223,7 @@ module Zm
       autoload :ZimbraAttributesCollection, 'zm/client/base/zimbra_attributes_collection'
       autoload :ZimbraAttribute, 'zm/client/base/zimbra_attribute'
       autoload :HasZimbraAttributes, 'zm/client/base/has_zimbra_attributes'
+      autoload :ZimbraAttrsJsns, 'zm/client/base/zimbra_attrs_jsns'
       autoload :Object, 'zm/client/base/object'
       autoload :MailboxObject, 'zm/client/base/mailbox_object'
       autoload :MailboxInfosCollection, 'zm/client/base/mailbox_infos_collection'

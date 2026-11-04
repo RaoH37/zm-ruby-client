@@ -12,9 +12,9 @@ module Zm
 
           case item.zimbraMailHostPool
           when String
-            item.zimbraMailHostPool = [item.zimbraMailHostPool]
+            item.instance_variable_set(:@zimbraMailHostPool, [item.zimbraMailHostPool])
           when NilClass
-            item.zimbraMailHostPool = []
+            item.instance_variable_set(:@zimbraMailHostPool, [])
           end
 
           item

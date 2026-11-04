@@ -5,11 +5,12 @@ module Zm
     # class config for cluster connection
     class ClusterConfig
       BASE_URL_REGEX = %r{\A(https?://[^/?#]+).*}
+      ZIMBRA_VERSION_ADVICE = 'it is not used, call Cluster#infos! to read the server version with Cluster#version'
 
       attr_reader :zimbra_admin_url, :zimbra_public_url
       attr_writer :logger, :colorize_logging
       attr_accessor :zimbra_admin_login, :zimbra_admin_password,
-                    :domains, :zimbra_version, :log_path, :timeout,
+                    :domains, :log_path, :timeout,
                     :ssl_verify, :ssl_ca_file, :ssl_ca_path
 
       def initialize(parameters = nil)
@@ -94,6 +95,7 @@ module Zm
         init_public_url_from_parameters(parameters)
 
         if (version = parameters.delete(:zimbra_version))
+          Deprecation.warn_once('the zimbra_version parameter of Zm::Client::ClusterConfig', ZIMBRA_VERSION_ADVICE)
           @zimbra_version = version
         end
 
@@ -194,6 +196,16 @@ module Zm
       def zimbra_attributes_path=(_path)
         Deprecation.warn_once('Zm::Client::ClusterConfig#zimbra_attributes_path=',
                               'declare custom attributes with zimbra_attr (Zm::Client::Account.zimbra_attr :myAttr)')
+      end
+
+      def zimbra_version
+        Deprecation.warn_once('Zm::Client::ClusterConfig#zimbra_version', ZIMBRA_VERSION_ADVICE)
+        @zimbra_version
+      end
+
+      def zimbra_version=(version)
+        Deprecation.warn_once('Zm::Client::ClusterConfig#zimbra_version=', ZIMBRA_VERSION_ADVICE)
+        @zimbra_version = version
       end
 
       def logger

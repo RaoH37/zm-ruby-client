@@ -29,6 +29,7 @@ module Zm
           obj = super
           obj.remove_instance_variable(:@id) if obj.instance_variable_defined?(:@id)
           obj.remove_instance_variable(:@jsns_builder) if obj.instance_variable_defined?(:@jsns_builder)
+          obj.remove_instance_variable(:@zimbra_attrs_changes) if obj.instance_variable_defined?(:@zimbra_attrs_changes)
           obj.remove_dependents_of(self)
           yield(obj) if block_given?
           obj
@@ -64,6 +65,7 @@ module Zm
         def instance_variables_map
           keys = instance_variables.dup
           keys.delete(:@parent)
+          keys.delete(:@zimbra_attrs_changes)
           keys.map { |key| [key, instance_variable_get(key)] }
         end
 

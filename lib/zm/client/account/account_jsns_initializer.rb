@@ -9,7 +9,7 @@ module Zm
 
         def update(item, json)
           item.used = json.delete(:used) unless json[:used].nil?
-          item.zimbraMailQuota = json.delete(:limit) unless json[:limit].nil?
+          item.instance_variable_set(:@zimbraMailQuota, json.delete(:limit)) unless json[:limit].nil?
 
           super
         end

@@ -11,8 +11,7 @@ module Zm
           super
 
           unless item.zimbraMailForwardingAddress.is_a?(Array)
-            item.zimbraMailForwardingAddress = [item.zimbraMailForwardingAddress]
-            item.zimbraMailForwardingAddress.compact!
+            item.instance_variable_set(:@zimbraMailForwardingAddress, [item.zimbraMailForwardingAddress].compact)
           end
 
           update_members(item, json)
