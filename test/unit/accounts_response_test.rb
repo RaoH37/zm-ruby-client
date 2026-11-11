@@ -67,11 +67,19 @@ class AccountsResponseTest < ZmTest::UnitTest
     assert_instance_of Zm::Client::AccountsResponse, domain.accounts.all
   end
 
-  def test_other_admin_collections_return_an_admin_objects_response
+  def test_a_collection_without_response_class_returns_an_admin_objects_response
+    collection_class = Class.new(Zm::Client::Base::AdminObjectsCollection) do
+      def initialize(parent)
+        @child_class = Zm::Client::Cos
+        @builder_class = Zm::Client::CosesBuilder
+        @search_type = :coses
+        super
+      end
+    end
     coses_json = [{ name: 'default', id: 'c1', a: [] }]
     @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { cos: coses_json, num: 1 } })
 
-    coses = @cluster.coses.all
+    coses = collection_class.new(@cluster).all
 
     assert_instance_of Zm::Client::Base::AdminObjectsResponse, coses
     assert_equal %w[default], coses.map(&:name)

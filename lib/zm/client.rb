@@ -41,6 +41,7 @@ module Zm
     autoload :CosJsnsBuilder, 'zm/client/cos/cos_jsns_builder'
     autoload :CosesBuilder, 'zm/client/cos/coses_builder'
     autoload :CosesCollection, 'zm/client/cos/coses_collection'
+    autoload :CosesResponse, 'zm/client/cos/coses_response'
     autoload :CosServersCollection, 'zm/client/cos/cos_servers_collection'
     autoload :CosDomainsCollection, 'zm/client/cos/cos_domains_collection'
     autoload :CosAccountsCollection, 'zm/client/cos/cos_accounts_collection'

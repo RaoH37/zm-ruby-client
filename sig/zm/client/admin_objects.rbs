@@ -157,6 +157,21 @@ module Zm
 
     class CosesCollection < Base::AdminObjectsCollection[Cos]
       def clone!: (String new_name) ?{ (Cos) -> void } -> String
+      def all: () -> CosesResponse
+      alias all! all
+      def find_in_batches: (?offset: Integer, ?limit: Integer) { (CosesResponse) -> void } -> nil
+    end
+
+    # Classes of service returned by CosesCollection#all and find_in_batches.
+    # with_server and by_server read zimbraMailHostPool (server ids), unlimited_quotas zimbraMailQuota (0):
+    # a COS searched without them (attrs) is in none of them.
+    class CosesResponse < Base::AdminObjectsResponse[Cos]
+      UNLIMITED_QUOTA: Integer
+
+      def with_server: (Server | String server) -> CosesResponse
+      # A COS is in the group of each server of its pool, the keys are the server ids.
+      def by_server: () -> Hash[String, CosesResponse]
+      def unlimited_quotas: () -> CosesResponse
     end
 
     class Server < Base::Object

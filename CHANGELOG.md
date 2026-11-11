@@ -87,6 +87,7 @@
 - [Added]   ServersCollection#all returns a ServersResponse: with_service, mailbox_servers, mta_servers, proxy_servers and ldap_servers select the servers by zimbraServiceEnabled, by_service groups them by enabled service
 - [Added]   DomainsCollection#all and find_in_batches return a DomainsResponse: locals and aliases select the domains by zimbraDomainType, statuses counts them by zimbraDomainStatus
 - [Added]   Domain::LOCAL and Domain::ALIAS
+- [Added]   CosesCollection#all and find_in_batches return a CosesResponse: with_server and by_server select or group the classes of service by zimbraMailHostPool, unlimited_quotas selects those with a zimbraMailQuota of 0
 
 ## Released [3.1.1]
 

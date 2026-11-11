@@ -7,6 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Cos
         @builder_class = CosesBuilder
+        @response_class = CosesResponse
         @search_type = :coses
         super
       end
