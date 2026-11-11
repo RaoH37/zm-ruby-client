@@ -52,6 +52,7 @@ module Zm
 
         @is_immutable = Zm::Client::FolderDefault::IDS.include?(id.to_i)
       end
+      alias immutable? is_immutable?
 
       def to_query
         "inid:#{id}"
