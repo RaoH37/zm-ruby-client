@@ -17,6 +17,7 @@ module Zm
       CHATS = FolderData.new(14, 'Chats', '/Chats', 'message')
       TASKS = FolderData.new(15, 'Tasks', '/Tasks', 'task')
       BRIEFCASE = FolderData.new(16, 'Briefcase', '/Briefcase', 'document')
+      ARCHIVE = FolderData.new(20, 'Archive', '/Archive', 'message')
 
       ALL = [
         ROOT,
@@ -30,7 +31,8 @@ module Zm
         JUNK,
         SENT,
         TASKS,
-        TRASH
+        TRASH,
+        ARCHIVE
       ].freeze
 
       IDS = ALL.map(&:id).freeze
