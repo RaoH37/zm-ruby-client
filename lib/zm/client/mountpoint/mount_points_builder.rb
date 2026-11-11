@@ -8,7 +8,7 @@ module Zm
         super
         @key_link = :link
         @key_folder = :folder
-        @list = []
+        @list = MountPointsResponse.new
       end
 
       def make
@@ -22,8 +22,8 @@ module Zm
       def construct_tree(json_folders)
         json_folders.each do |json_folder|
           if json_folder[@key_link].is_a?(Array)
-            @list += json_folder[@key_link].map do |json_link|
-              MountPointJsnsInitializer.create(@parent, json_link)
+            json_folder[@key_link].each do |json_link|
+              @list << MountPointJsnsInitializer.create(@parent, json_link)
             end
           end
 

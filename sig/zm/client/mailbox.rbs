@@ -274,15 +274,21 @@ module Zm
       def document: () -> self
     end
 
+    # Filters by view of FoldersResponse and MountPointsResponse, they return an Array.
+    module FolderViewFilters[T] : Array[T]
+      def messages: () -> Array[T]
+      def appointments: () -> Array[T]
+      def contacts: () -> Array[T]
+      def tasks: () -> Array[T]
+      def documents: () -> Array[T]
+      def by_view: (String view) -> Array[T]
+    end
+
     # Array of the folders returned by FoldersCollection#all, the filters return an Array.
     class FoldersResponse < Array[Folder]
-      def messages: () -> Array[Folder]
-      def appointments: () -> Array[Folder]
-      def contacts: () -> Array[Folder]
-      def tasks: () -> Array[Folder]
-      def documents: () -> Array[Folder]
+      include FolderViewFilters[Folder]
+
       def immutables: () -> Array[Folder]
-      def by_view: (String view) -> Array[Folder]
     end
 
     class FolderGrant
@@ -386,6 +392,13 @@ module Zm
 
       def where: (?view: String?, ?tr: untyped) -> self
       def clear: () -> void
+      def all: () -> MountPointsResponse
+      def first: () -> MountPoint?
+    end
+
+    # Array of the mountpoints returned by MountPointsCollection#all, the filters return an Array.
+    class MountPointsResponse < Array[MountPoint]
+      include FolderViewFilters[MountPoint]
     end
 
     class SearchFolder < Base::Object

@@ -177,6 +177,7 @@ module Zm
     autoload :FoldersBuilder, 'zm/client/folder/folders_builder'
     autoload :FoldersCollection, 'zm/client/folder/folders_collection'
     autoload :FoldersResponse, 'zm/client/folder/folders_response'
+    autoload :FolderViewFilters, 'zm/client/folder/folder_view_filters'
     autoload :ModDocumentFolder, 'zm/client/folder/mod_document_folder'
 
     autoload :Identity, 'zm/client/identity/identity'
@@ -190,6 +191,7 @@ module Zm
     autoload :MountPointJsnsInitializer, 'zm/client/mountpoint/mount_point_jsns_initializer'
     autoload :MountPointsBuilder, 'zm/client/mountpoint/mount_points_builder'
     autoload :MountPointsCollection, 'zm/client/mountpoint/mount_points_collection'
+    autoload :MountPointsResponse, 'zm/client/mountpoint/mount_points_response'
 
     autoload :Message, 'zm/client/message/message'
     autoload :MessageFlagsCollection, 'zm/client/message/message_flags_collection'

@@ -75,6 +75,8 @@
 - [Added]   ZmLogger#colorize=, ZmLogger#colorize?, ZmLogger::ZmLoggerColors
 - [Added]   FoldersCollection#all returns a FoldersResponse (an Array) with messages, appointments, contacts, tasks, documents, immutables and by_view
 - [Added]   FoldersCollection#tree returns the root folder with its children (Folder#folders)
+- [Added]   MountPointsCollection#all returns a MountPointsResponse (an Array) with messages, appointments, contacts, tasks, documents and by_view
+- [Added]   FolderViewFilters, the filters by view shared by FoldersResponse and MountPointsResponse
 
 ## Released [3.1.1]
 
