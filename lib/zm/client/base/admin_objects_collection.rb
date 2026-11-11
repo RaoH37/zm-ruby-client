@@ -62,7 +62,7 @@ module Zm
           self
         end
 
-        def find_each(offset: 0, limit: 1_000, &)
+        def find_in_batches(offset: 0, limit: 1_000)
           previous_persistent = @persistent
           @persistent = true
 
@@ -72,14 +72,21 @@ module Zm
           @limit = limit
 
           while @offset < total
-            build_response.each(&)
+            batch = build_response
+            break if batch.empty?
+
+            yield batch
             @offset += @limit
           end
-
+          nil
+        ensure
           ldap_filter.clear
           reset_query_params
-
           @persistent = previous_persistent
+        end
+
+        def find_each(offset: 0, limit: 1_000, &)
+          find_in_batches(offset:, limit:) { |batch| batch.each(&) }
         end
 
         def make_query

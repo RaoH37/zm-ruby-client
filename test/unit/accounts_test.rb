@@ -212,7 +212,87 @@ class AccountsTest < ZmTest::UnitTest
     end
   end
 
+  def test_find_in_batches_yields_each_page
+    paginate_accounts(5)
+
+    batches = []
+    @cluster.accounts.find_in_batches(limit: 2) { |accounts| batches << accounts.map(&:name) }
+
+    assert_equal [%w[user0@domain.tld user1@domain.tld], %w[user2@domain.tld user3@domain.tld],
+                  %w[user4@domain.tld]], batches
+    pages = @fake.requests.select { |r| r.name == 'SearchDirectoryRequest' && r.body[:countOnly].zero? }
+    offsets = pages.map { |r| r.body.values_at(:offset, :limit) }
+    assert_equal [[0, 2], [2, 2], [4, 2]], offsets
+  end
+
+  def test_find_in_batches_starts_at_the_offset
+    paginate_accounts(5)
+
+    batches = []
+    @cluster.accounts.find_in_batches(offset: 3, limit: 2) { |accounts| batches << accounts.map(&:name) }
+
+    assert_equal [%w[user3@domain.tld user4@domain.tld]], batches
+  end
+
+  def test_find_in_batches_keeps_the_query_params_for_every_page
+    paginate_accounts(3)
+
+    @cluster.accounts.ldap.where('(zimbraAccountStatus=locked)').attrs('zimbraId')
+            .find_in_batches(limit: 2) { nil }
+
+    pages = @fake.requests.select { |r| r.name == 'SearchDirectoryRequest' && r.body[:countOnly].zero? }
+    assert_equal 2, pages.size
+    pages.each do |page|
+      assert_equal [0, '(zimbraAccountStatus=locked)', 'zimbraId'], page.body.values_at(:applyCos, :query, :attrs)
+    end
+  end
+
+  def test_find_in_batches_stops_on_an_empty_page
+    @fake.on(:SearchDirectoryRequest) do |request|
+      next { SearchDirectoryResponse: { num: 4 } } if request.body[:countOnly] == 1
+
+      { SearchDirectoryResponse: { num: 0 } }
+    end
+
+    batches = []
+    @cluster.accounts.find_in_batches(limit: 2) { |accounts| batches << accounts }
+
+    assert_empty batches
+    pages = @fake.requests.count { |r| r.name == 'SearchDirectoryRequest' && r.body[:countOnly].zero? }
+    assert_equal 1, pages
+  end
+
+  def test_find_in_batches_resets_the_collection_when_the_block_raises
+    paginate_accounts(3)
+    collection = @cluster.accounts.ldap.where('(zimbraAccountStatus=locked)')
+
+    assert_raises(RuntimeError) { collection.find_in_batches(limit: 2) { raise 'boom' } }
+
+    collection.all
+    request = @fake.last_request(:SearchDirectoryRequest)
+    assert_equal 1, request.body[:applyCos]
+    assert_equal '', request.body[:query].to_s
+    assert_nil request.body[:limit]
+  end
+
+  def test_find_each_returns_nil
+    paginate_accounts(1)
+
+    assert_nil(@cluster.accounts.find_each { nil })
+  end
+
   private
+
+  def paginate_accounts(total)
+    @fake.on(:SearchDirectoryRequest) do |request|
+      next { SearchDirectoryResponse: { num: total } } if request.body[:countOnly] == 1
+
+      offset = request.body[:offset].to_i
+      last = [offset + request.body[:limit].to_i, total].min
+      accounts = (offset...last).map { |index| ZmTest::FakeData.account(name: "user#{index}@domain.tld") }
+      { SearchDirectoryResponse: { account: accounts, num: total } }
+    end
+  end
 
   def search_accounts(*names)
     accounts = names.map { |name| ZmTest::FakeData.account(name:) }
