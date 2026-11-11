@@ -369,6 +369,8 @@ module Zm
       def create: (Symbol | String policy, String? lifetime, Symbol | String type) -> Array[FolderRetentionPolicy]
       def add: (FolderRetentionPolicy retention_policy) -> Array[FolderRetentionPolicy]
       def save!: () -> true
+      def keeps: () -> Array[FolderRetentionPolicy]
+      def purges: () -> Array[FolderRetentionPolicy]
 
       # Delegated to all through method_missing.
       def each: () { (FolderRetentionPolicy) -> void } -> Array[FolderRetentionPolicy]

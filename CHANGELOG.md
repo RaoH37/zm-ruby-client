@@ -90,6 +90,9 @@
 - [Added]   CosesCollection#all and find_in_batches return a CosesResponse: with_server and by_server select or group the classes of service by zimbraMailHostPool, unlimited_quotas selects those with a zimbraMailQuota of 0
 - [Added]   BackupsCollection#all returns a BackupsResponse (an Array) with fulls and incrementals
 - [Added]   FolderGrantsCollection#accounts, distribution_lists, domains, publics, externals and keys select the grants by grantee type
+- [Added]   FolderRetentionPoliciesCollection#keeps and purges select the retention policies by policy
+- [Fixed]   FolderJsnsInitializer loads the retention policies of GetFolderResponse, they were always ignored (the retentionPolicy element is a Hash, not an Array)
+- [Fixed]   FolderRetentionPolicy#keep? and purge? accept a policy given as a String ('keep', 'purge')
 
 ## Released [3.1.1]
 

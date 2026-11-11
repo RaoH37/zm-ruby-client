@@ -14,11 +14,11 @@ module Zm
       end
 
       def keep?
-        @policy == :keep
+        @policy.to_sym == :keep
       end
 
       def purge?
-        @policy == :purge
+        @policy.to_sym == :purge
       end
     end
   end

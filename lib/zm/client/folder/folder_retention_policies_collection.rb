@@ -24,6 +24,14 @@ module Zm
         @all << retention_policy
       end
 
+      def keeps
+        @all.select(&:keep?)
+      end
+
+      def purges
+        @all.select(&:purge?)
+      end
+
       def save!
         soap_connector.invoke(jsns_builder.to_retentionpolicy)
         true

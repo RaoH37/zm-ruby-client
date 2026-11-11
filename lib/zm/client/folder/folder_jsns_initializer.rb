@@ -45,9 +45,9 @@ module Zm
 
           update_grants(item, json)
 
-          if (policies = json.fetch(:retentionPolicy, []).first).is_a?(Array)
+          if (policies = json.fetch(:retentionPolicy, []).first).is_a?(Hash)
             policies.each do |policy, v|
-              params = v.first[:policy]&.first
+              params = v.first&.dig(:policy, 0)
               next if params.nil?
 
               type = params.delete(:type)
