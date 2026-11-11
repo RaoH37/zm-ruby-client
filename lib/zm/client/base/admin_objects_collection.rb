@@ -11,6 +11,7 @@ module Zm
           super()
           @parent = parent
           @persistent = false
+          @response_class ||= AdminObjectsResponse
           reset_query_params
         end
 
@@ -142,7 +143,7 @@ module Zm
         private
 
         def build_response
-          AdminObjectsResponse.new(self, @builder_class.new(@parent, make_query).make)
+          @response_class.new(self, @builder_class.new(@parent, make_query).make)
         end
 
         def format_mass_items_parameter(items)

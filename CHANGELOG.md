@@ -81,6 +81,7 @@
 - [Fixed]   AdminObjectsCollection#find_each resets the query params and the ldap filter when the block raises, the collection kept them for the next request
 - [Changed] AdminObjectsCollection#find_each stops at the first empty page and returns nil
 - [Added]   AdminObjectsCollection#all and find_in_batches return a Base::AdminObjectsResponse (an Array) with update_all! and delete_all!
+- [Added]   AccountsCollection#all and find_in_batches return an AccountsResponse: by_server groups the accounts by zimbraMailHost (an AccountsResponse per server), statuses counts them by zimbraAccountStatus
 
 ## Released [3.1.1]
 

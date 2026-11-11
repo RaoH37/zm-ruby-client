@@ -7,6 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Account
         @builder_class = AccountsBuilder
+        @response_class = AccountsResponse
         @search_type = :accounts
         super
       end

@@ -275,21 +275,21 @@ class AccountsTest < ZmTest::UnitTest
     assert_nil request.body[:limit]
   end
 
-  def test_all_returns_an_admin_objects_response
+  def test_all_returns_an_accounts_response
     search_accounts('a@domain.tld', 'b@domain.tld')
 
     accounts = @cluster.accounts.all
 
-    assert_instance_of Zm::Client::Base::AdminObjectsResponse, accounts
+    assert_instance_of Zm::Client::AccountsResponse, accounts
     assert_equal %w[a@domain.tld b@domain.tld], accounts.map(&:name)
   end
 
-  def test_empty_search_returns_an_empty_admin_objects_response
+  def test_empty_search_returns_an_empty_accounts_response
     @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { num: 0 } })
 
     accounts = @cluster.accounts.all
 
-    assert_instance_of Zm::Client::Base::AdminObjectsResponse, accounts
+    assert_instance_of Zm::Client::AccountsResponse, accounts
     assert_empty accounts
   end
 
@@ -327,7 +327,7 @@ class AccountsTest < ZmTest::UnitTest
     @fake.on(:ModifyAccountRequest, { ModifyAccountResponse: { account: [] } })
 
     @cluster.accounts.find_in_batches(limit: 2) do |accounts|
-      assert_instance_of Zm::Client::Base::AdminObjectsResponse, accounts
+      assert_instance_of Zm::Client::AccountsResponse, accounts
       accounts.update_all!(zimbraAccountStatus: 'locked')
     end
 

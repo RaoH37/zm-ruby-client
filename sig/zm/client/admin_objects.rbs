@@ -32,7 +32,18 @@ module Zm
     end
 
     class AccountsCollection < Base::AdminObjectsCollection[Account]
+      def all: () -> AccountsResponse
+      alias all! all
+      def find_in_batches: (?offset: Integer, ?limit: Integer) { (AccountsResponse) -> void } -> nil
       def quotas: (?domain_name: String?, ?target_server_id: String?) -> Array[untyped]?
+    end
+
+    # Accounts returned by AccountsCollection#all and find_in_batches.
+    # by_server and statuses read zimbraMailHost and zimbraAccountStatus: an account searched without them
+    # (attrs) is counted under nil.
+    class AccountsResponse < Base::AdminObjectsResponse[Account]
+      def by_server: () -> Hash[String?, AccountsResponse]
+      def statuses: () -> Hash[String?, Integer]
     end
 
     class AccountAliasesCollection

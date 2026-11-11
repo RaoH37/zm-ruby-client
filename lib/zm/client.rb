@@ -58,6 +58,7 @@ module Zm
     autoload :AccountJsnsInitializer, 'zm/client/account/account_jsns_initializer'
     autoload :AccountsBuilder, 'zm/client/account/accounts_builder'
     autoload :AccountsCollection, 'zm/client/account/accounts_collection'
+    autoload :AccountsResponse, 'zm/client/account/accounts_response'
     autoload :AccountAliasesCollection, 'zm/client/account/account_aliases_collection'
     autoload :AccountDlsMembershipCollection, 'zm/client/account/account_dls_membership_collection'
     autoload :AccountDlsOwnerCollection, 'zm/client/account/account_dls_owner_collection'
