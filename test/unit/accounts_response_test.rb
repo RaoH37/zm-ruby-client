@@ -68,13 +68,13 @@ class AccountsResponseTest < ZmTest::UnitTest
   end
 
   def test_other_admin_collections_return_an_admin_objects_response
-    @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { domain: [{ name: 'domain.tld', id: 'd1', a: [] }],
-                                                                   num: 1 } })
+    coses_json = [{ name: 'default', id: 'c1', a: [] }]
+    @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { cos: coses_json, num: 1 } })
 
-    domains = @cluster.domains.all
+    coses = @cluster.coses.all
 
-    assert_instance_of Zm::Client::Base::AdminObjectsResponse, domains
-    assert_equal %w[domain.tld], domains.map(&:name)
+    assert_instance_of Zm::Client::Base::AdminObjectsResponse, coses
+    assert_equal %w[default], coses.map(&:name)
   end
 
   private

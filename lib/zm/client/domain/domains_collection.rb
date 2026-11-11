@@ -7,6 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Domain
         @builder_class = DomainsBuilder
+        @response_class = DomainsResponse
         @search_type = :domains
         super
       end

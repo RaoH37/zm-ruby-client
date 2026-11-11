@@ -88,6 +88,9 @@ module Zm
 
       include SoapRequest::RequestMethodsAdmin
 
+      LOCAL: String
+      ALIAS: String
+
       def create!: () -> String
       def cos: () -> Cos?
       def DKIMPublicTxt: () -> String?
@@ -99,6 +102,18 @@ module Zm
     end
 
     class DomainsCollection < Base::AdminObjectsCollection[Domain]
+      def all: () -> DomainsResponse
+      alias all! all
+      def find_in_batches: (?offset: Integer, ?limit: Integer) { (DomainsResponse) -> void } -> nil
+    end
+
+    # Domains returned by DomainsCollection#all and find_in_batches.
+    # locals and aliases read zimbraDomainType, statuses zimbraDomainStatus: a domain searched without them (attrs)
+    # is in neither group and counted under nil.
+    class DomainsResponse < Base::AdminObjectsResponse[Domain]
+      def locals: () -> DomainsResponse
+      def aliases: () -> DomainsResponse
+      def statuses: () -> Hash[String?, Integer]
     end
 
     class DomainAccountsCollection < AccountsCollection

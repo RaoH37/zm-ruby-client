@@ -50,6 +50,7 @@ module Zm
     autoload :DomainJsnsBuilder, 'zm/client/domain/domain_jsns_builder'
     autoload :DomainJsnsInitializer, 'zm/client/domain/domain_jsns_initializer'
     autoload :DomainsCollection, 'zm/client/domain/domains_collection'
+    autoload :DomainsResponse, 'zm/client/domain/domains_response'
     autoload :DomainAccountsCollection, 'zm/client/domain/domain_accounts_collection'
     autoload :DomainDistributionListsCollection, 'zm/client/domain/domain_distributionlists_collection'
     autoload :DomainResourcesCollection, 'zm/client/domain/domain_resources_collection'

@@ -54,6 +54,9 @@ module Zm
         zimbraId zimbraCreateTimestamp zimbraGalDefinitionLastModifiedTime zimbraDomainName zimbraDomainType
       ], readonly: true
 
+      LOCAL = 'local'
+      ALIAS = 'alias'
+
       def create!
         resp = sac.invoke(build_create)
         clear_zimbra_attrs_changes
