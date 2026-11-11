@@ -225,6 +225,14 @@ module Zm
     end
 
     class BackupsCollection < Base::ObjectsCollection[Backup]
+      def all: () -> BackupsResponse
+      alias all! all
+    end
+
+    # Backups returned by BackupsCollection#all, the filters return a BackupsResponse.
+    class BackupsResponse < Array[Backup]
+      def fulls: () -> BackupsResponse
+      def incrementals: () -> BackupsResponse
     end
 
     class ServerAccountsCollection < AccountsCollection

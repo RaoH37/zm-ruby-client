@@ -18,7 +18,7 @@ module Zm
       end
 
       def build_response
-        BackupsBuilder.new(@parent, make_query).make
+        BackupsResponse.new(BackupsBuilder.new(@parent, make_query).make)
       end
     end
   end

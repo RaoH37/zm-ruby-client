@@ -112,6 +112,7 @@ module Zm
     autoload :BackupJsnsInitializer, 'zm/client/backup/backup_jsns_initializer'
     autoload :BackupsBuilder, 'zm/client/backup/backups_builder'
     autoload :BackupsCollection, 'zm/client/backup/backups_collection'
+    autoload :BackupsResponse, 'zm/client/backup/backups_response'
 
     autoload :DataSource, 'zm/client/datasource/datasource'
     autoload :DataSourceJsnsInitializer, 'zm/client/datasource/datasource_jsns_initializer'

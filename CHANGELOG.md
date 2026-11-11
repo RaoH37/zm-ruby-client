@@ -88,6 +88,7 @@
 - [Added]   DomainsCollection#all and find_in_batches return a DomainsResponse: locals and aliases select the domains by zimbraDomainType, statuses counts them by zimbraDomainStatus
 - [Added]   Domain::LOCAL and Domain::ALIAS
 - [Added]   CosesCollection#all and find_in_batches return a CosesResponse: with_server and by_server select or group the classes of service by zimbraMailHostPool, unlimited_quotas selects those with a zimbraMailQuota of 0
+- [Added]   BackupsCollection#all returns a BackupsResponse (an Array) with fulls and incrementals
 
 ## Released [3.1.1]
 
