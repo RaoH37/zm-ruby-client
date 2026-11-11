@@ -8,6 +8,7 @@ module Zm
       def initialize(parent)
         @child_class = Server
         @builder_class = ServersBuilder
+        @response_class = ServersResponse
         @service = nil
         super
       end

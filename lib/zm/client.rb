@@ -32,6 +32,7 @@ module Zm
     autoload :ServerJsnsInitializer, 'zm/client/server/server_jsns_initializer'
     autoload :ServersBuilder, 'zm/client/server/servers_builder'
     autoload :ServersCollection, 'zm/client/server/servers_collection'
+    autoload :ServersResponse, 'zm/client/server/servers_response'
     autoload :ServerAccountsCollection, 'zm/client/server/server_accounts_collection'
     autoload :ServerServices, 'zm/client/server/server_services'
 

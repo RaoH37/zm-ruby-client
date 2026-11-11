@@ -203,6 +203,19 @@ module Zm
     class ServersCollection < Base::AdminObjectsCollection[Server]
       # Filters servers by enabled service (mailbox, mta, proxy...).
       def where: (String service) -> self
+      def all: () -> ServersResponse
+      alias all! all
+    end
+
+    # Servers returned by ServersCollection#all, selected by zimbraServiceEnabled (ServerServices).
+    class ServersResponse < Base::AdminObjectsResponse[Server]
+      def with_service: (String service) -> ServersResponse
+      def mailbox_servers: () -> ServersResponse
+      def mta_servers: () -> ServersResponse
+      def proxy_servers: () -> ServersResponse
+      def ldap_servers: () -> ServersResponse
+      # A server is in the group of each of its enabled services.
+      def by_service: () -> Hash[String, ServersResponse]
     end
 
     class DistributionList < Base::Object

@@ -84,6 +84,7 @@
 - [Added]   AccountsCollection#all and find_in_batches return an AccountsResponse: by_server groups the accounts by zimbraMailHost (an AccountsResponse per server), statuses counts them by zimbraAccountStatus
 - [Added]   ResourcesCollection#all and find_in_batches return a ResourcesResponse: locations and equipments select the resources by zimbraCalResType (a ResourcesResponse each)
 - [Added]   DistributionListsCollection#all and find_in_batches return a DistributionListsResponse: groups (zimbraMailStatus disabled) and mailing_lists (enabled) select the lists (a DistributionListsResponse each)
+- [Added]   ServersCollection#all returns a ServersResponse: with_service, mailbox_servers, mta_servers, proxy_servers and ldap_servers select the servers by zimbraServiceEnabled, by_service groups them by enabled service
 
 ## Released [3.1.1]
 
