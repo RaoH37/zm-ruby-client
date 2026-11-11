@@ -221,6 +221,7 @@ module Zm
       autoload :ObjectsBuilder, 'zm/client/base/objects_builder'
       autoload :ObjectsCollection, 'zm/client/base/objects_collection'
       autoload :AdminObjectsCollection, 'zm/client/base/admin_objects_collection'
+      autoload :AdminObjectsResponse, 'zm/client/base/admin_objects_response'
       autoload :AccountObjectsCollection, 'zm/client/base/account_objects_collection'
       autoload :AccountSearchObjectsCollection, 'zm/client/base/account_search_objects_collection'
       autoload :ZimbraAttributesCollection, 'zm/client/base/zimbra_attributes_collection'

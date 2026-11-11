@@ -60,9 +60,11 @@ module Zm
         def attrs: (*(String | Symbol | Array[String | Symbol]) attributes) -> self
         def count: () -> Integer
         def clear: () -> self
+        def all: () -> AdminObjectsResponse[T]
+        alias all! all
 
-        # Yields each page of the search (an Array of limit objects at most).
-        def find_in_batches: (?offset: Integer, ?limit: Integer) { (Array[T]) -> void } -> nil
+        # Yields each page of the search (limit objects at most).
+        def find_in_batches: (?offset: Integer, ?limit: Integer) { (AdminObjectsResponse[T]) -> void } -> nil
         def find_each: (?offset: Integer, ?limit: Integer) { (T) -> void } -> nil
 
         def update_all!: (?Hash[Symbol, untyped]? hash, ?onerror: onerror, ?update_attributes: bool, **untyped attrs)
@@ -71,6 +73,16 @@ module Zm
                            ?update_attributes: bool, **untyped attrs) -> Array[T]
         def delete_all!: (?onerror: onerror) -> Array[T]
         def mass_delete!: (Array[T | String] items, ?onerror: onerror) -> Array[T]
+      end
+
+      # Array of the objects returned by AdminObjectsCollection#all and find_in_batches.
+      # update_all! and delete_all! send one request per object, select, map or dup return a plain Array.
+      class AdminObjectsResponse[T] < Array[T]
+        def initialize: (AdminObjectsCollection[T] collection, ?Array[T] items) -> void
+
+        def update_all!: (?Hash[Symbol, untyped]? hash, ?onerror: AdminObjectsCollection::onerror,
+                          ?update_attributes: bool, **untyped attrs) -> Array[T]
+        def delete_all!: (?onerror: AdminObjectsCollection::onerror) -> Array[T]
       end
 
       class AccountObjectsCollection[T] < ObjectsCollection[T]

@@ -141,6 +141,10 @@ module Zm
 
         private
 
+        def build_response
+          AdminObjectsResponse.new(self, @builder_class.new(@parent, make_query).make)
+        end
+
         def format_mass_items_parameter(items)
           items.map! do |item|
             if item.is_a?(@child_class)

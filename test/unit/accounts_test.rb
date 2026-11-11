@@ -275,6 +275,65 @@ class AccountsTest < ZmTest::UnitTest
     assert_nil request.body[:limit]
   end
 
+  def test_all_returns_an_admin_objects_response
+    search_accounts('a@domain.tld', 'b@domain.tld')
+
+    accounts = @cluster.accounts.all
+
+    assert_instance_of Zm::Client::Base::AdminObjectsResponse, accounts
+    assert_equal %w[a@domain.tld b@domain.tld], accounts.map(&:name)
+  end
+
+  def test_empty_search_returns_an_empty_admin_objects_response
+    @fake.on(:SearchDirectoryRequest, { SearchDirectoryResponse: { num: 0 } })
+
+    accounts = @cluster.accounts.all
+
+    assert_instance_of Zm::Client::Base::AdminObjectsResponse, accounts
+    assert_empty accounts
+  end
+
+  def test_response_update_all_updates_its_accounts
+    search_accounts('a@domain.tld', 'b@domain.tld')
+    @fake.on(:ModifyAccountRequest, { ModifyAccountResponse: { account: [] } })
+    accounts = @cluster.accounts.all
+
+    assert_same accounts, accounts.update_all!(zimbraAccountStatus: 'locked')
+    modify_requests = @fake.requests.select { |request| request.name == 'ModifyAccountRequest' }
+    assert_equal 2, modify_requests.size
+    assert(modify_requests.all? { |r| attr_nodes(r.body) == [{ n: 'zimbraAccountStatus', _content: 'locked' }] })
+  end
+
+  def test_response_update_all_stops_on_soap_error
+    search_accounts('a@domain.tld', 'b@domain.tld')
+    @fake.fault(:ModifyAccountRequest, code: 'service.FAILURE')
+
+    @cluster.accounts.all.update_all!({ description: 'x' }, onerror: 'stop')
+
+    assert_equal(1, @fake.requests.count { |request| request.name == 'ModifyAccountRequest' })
+  end
+
+  def test_response_delete_all_deletes_its_accounts
+    search_accounts('a@domain.tld', 'b@domain.tld')
+    @fake.on(:DeleteAccountRequest, { DeleteAccountResponse: {} })
+
+    @cluster.accounts.all.delete_all!
+
+    assert_equal(2, @fake.requests.count { |request| request.name == 'DeleteAccountRequest' })
+  end
+
+  def test_find_in_batches_yields_responses_to_update
+    paginate_accounts(3)
+    @fake.on(:ModifyAccountRequest, { ModifyAccountResponse: { account: [] } })
+
+    @cluster.accounts.find_in_batches(limit: 2) do |accounts|
+      assert_instance_of Zm::Client::Base::AdminObjectsResponse, accounts
+      accounts.update_all!(zimbraAccountStatus: 'locked')
+    end
+
+    assert_equal(3, @fake.requests.count { |request| request.name == 'ModifyAccountRequest' })
+  end
+
   def test_find_each_returns_nil
     paginate_accounts(1)
 
