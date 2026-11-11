@@ -31,6 +31,10 @@
   object (`'1024'` equals `1024`, `'a'` equals `['a']`) is not sent, unless it has a change pending through its
   setter. Without difference `update!` sends no request and returns `false`. `update!(..., force: true)` sends every
   given value as in 3.1.
+- **`account.folders.ids` returns `MailboxItemID` objects instead of id strings.** Each one gives the folder id
+  (`item_id`) and, for a folder of another mailbox, its mailbox id (`mailbox_id`). Use
+  `account.folders.ids.map(&:item_id)` to get the 3.1 strings back (a remote folder id loses its `<mailbox id>:`
+  prefix, read it from `mailbox_id`).
 
 #### Changes
 
@@ -75,6 +79,8 @@
 - [Added]   ZmLogger#colorize=, ZmLogger#colorize?, ZmLogger::ZmLoggerColors
 - [Added]   FoldersCollection#all returns a FoldersResponse (an Array) with messages, appointments, contacts, tasks, documents, immutables and by_view
 - [Added]   FoldersCollection#tree returns the root folder with its children (Folder#folders)
+- [Changed] FoldersCollection#ids returns MailboxItemID objects instead of id strings
+- [Added]   MailboxItemID.create parses a remote id ("257" or "<mailbox id>:257")
 - [Added]   MountPointsCollection#all returns a MountPointsResponse (an Array) with messages, appointments, contacts, tasks, documents and by_view
 - [Added]   FolderViewFilters, the filters by view shared by FoldersResponse and MountPointsResponse
 - [Added]   AdminObjectsCollection#find_in_batches yields each page of the search (an Array of limit objects at most), find_each is built on it

@@ -43,6 +43,9 @@ module Zm
     class MailboxItemID < Data
       attr_reader item_id: String
       attr_reader mailbox_id: String?
+
+      # Parses a remote id ("257" or "<mailbox id>:257").
+      def self.create: (String | Integer | nil remote_id) -> MailboxItemID
     end
 
     class AccountObjectTagsCollection
@@ -259,7 +262,8 @@ module Zm
       def find: (String | Integer id) -> Folder
       def root: () -> Folder
       def where: (?view: String?, ?tr: untyped) -> self
-      def ids: () -> Array[String]
+      # Ids of every folder under the root, the mailbox id is set for a remote folder.
+      def ids: () -> Array[MailboxItemID]
       def clear: () -> void
       def all: () -> FoldersResponse
       def first: () -> Folder?
