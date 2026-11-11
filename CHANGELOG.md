@@ -38,6 +38,8 @@
 - **`FoldersBuilder#flatten` takes keyword arguments.** `flatten(folder, collector)` becomes
   `flatten(folder: folder, collector: collector)`. Without `folder:` it builds the tree from the response (`make`)
   instead of reusing the root of a previous `make`.
+- **`MountPointsCollection#root` is removed.** It was never set and always returned `nil`. Use
+  `account.folders.tree` for the root folder.
 
 #### Changes
 
@@ -87,6 +89,7 @@
 - [Changed] FoldersBuilder#flatten takes keyword arguments (folder:, collector:), folder defaults to the tree built by make
 - [Added]   MountPointsCollection#all returns a MountPointsResponse (an Array) with messages, appointments, contacts, tasks, documents and by_view
 - [Added]   FolderViewFilters, the filters by view shared by FoldersResponse and MountPointsResponse
+- [Removed] MountPointsCollection#root, never set (always nil)
 - [Added]   AdminObjectsCollection#find_in_batches yields each page of the search (an Array of limit objects at most), find_each is built on it
 - [Fixed]   AdminObjectsCollection#find_each resets the query params and the ldap filter when the block raises, the collection kept them for the next request
 - [Changed] AdminObjectsCollection#find_each stops at the first empty page and returns nil

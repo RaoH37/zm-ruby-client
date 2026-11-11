@@ -4,15 +4,12 @@ module Zm
   module Client
     # collection of mountpoints
     class MountPointsCollection < Base::AccountObjectsCollection
-      attr_reader :root
-
       attr_accessor :view, :tr, :visible, :needGranteeName, :depth
 
       def initialize(parent)
         @child_class = MountPoint
         @builder_class = MountPointsBuilder
         super
-        @root = nil
         reset_query_params
       end
 
@@ -23,7 +20,6 @@ module Zm
       end
 
       def clear
-        @root = nil
         reset_query_params
       end
 

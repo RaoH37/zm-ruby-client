@@ -66,6 +66,10 @@ class MountPointsResponseTest < ZmTest::UnitTest
     assert_equal %w[300], share.mountpoints.all.map(&:id)
   end
 
+  def test_collection_has_no_root
+    refute_respond_to @account.mountpoints, :root
+  end
+
   def test_folders_response_keeps_the_view_filters
     assert_includes Zm::Client::FoldersResponse.ancestors, Zm::Client::FolderViewFilters
   end
