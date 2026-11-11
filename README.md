@@ -73,6 +73,19 @@ cluster.accounts
 cluster.accounts.where('(zimbraLastLogonTimestamp<=20250101000000Z)').update_all!(zimbraAccountStatus: 'locked')
 ```
 
+**Or work page by page on a large directory.**
+
+```ruby
+cluster.accounts
+       .where('(zimbraLastLogonTimestamp<=20250101000000Z)')
+       .find_in_batches(limit: 500) do |accounts|
+         cluster.accounts.mass_update!(accounts, zimbraAccountStatus: 'locked')
+       end
+```
+
+> Each page is read at the next offset: do not delete the objects of a page inside the block, the next page would skip
+> as many objects.
+
 **Step into any mailbox, no user password needed.**
 
 ```ruby
