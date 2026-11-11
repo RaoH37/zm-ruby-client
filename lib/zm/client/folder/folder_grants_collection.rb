@@ -55,6 +55,30 @@ module Zm
         @all << fg
       end
 
+      def accounts
+        @all.select(&:is_account?)
+      end
+
+      def distribution_lists
+        @all.select(&:is_dl?)
+      end
+
+      def domains
+        @all.select(&:is_dom?)
+      end
+
+      def publics
+        @all.select(&:is_public?)
+      end
+
+      def externals
+        @all.select(&:is_external?)
+      end
+
+      def keys
+        @all.select(&:is_key?)
+      end
+
       def soap_account_connector
         @parent.parent.soap_account_connector
       end

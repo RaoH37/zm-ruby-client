@@ -333,6 +333,14 @@ module Zm
       def create_from_object: (Account | Resource | DistributionList | Domain item, String perm) -> FolderGrant
       def add: (FolderGrant fg) -> Array[FolderGrant]
 
+      # Grants selected by grantee type (gt), accounts includes the resources (usr).
+      def accounts: () -> Array[FolderGrant]
+      def distribution_lists: () -> Array[FolderGrant]
+      def domains: () -> Array[FolderGrant]
+      def publics: () -> Array[FolderGrant]
+      def externals: () -> Array[FolderGrant]
+      def keys: () -> Array[FolderGrant]
+
       # Delegated to all through method_missing.
       def each: () { (FolderGrant) -> void } -> Array[FolderGrant]
       def map: [U] () { (FolderGrant) -> U } -> Array[U]
