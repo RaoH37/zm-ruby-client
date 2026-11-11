@@ -176,6 +176,7 @@ module Zm
     autoload :FolderRetentionPoliciesCollection, 'zm/client/folder/folder_retention_policies_collection'
     autoload :FoldersBuilder, 'zm/client/folder/folders_builder'
     autoload :FoldersCollection, 'zm/client/folder/folders_collection'
+    autoload :FoldersResponse, 'zm/client/folder/folders_response'
     autoload :ModDocumentFolder, 'zm/client/folder/mod_document_folder'
 
     autoload :Identity, 'zm/client/identity/identity'

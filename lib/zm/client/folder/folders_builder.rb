@@ -7,21 +7,14 @@ module Zm
       def initialize(parent, json)
         super
         @key = :folder
-        @root_folder = nil
-        @list = []
       end
 
       def ids
+        @ids = []
         root = @json[:GetFolderResponse][@key]
         construct_tree_ids(root.first[@key])
-        @list
-      end
-
-      def construct_tree_ids(json_folders)
-        json_folders.each do |json_folder|
-          @list << json_folder[:id]
-          construct_tree_ids(json_folder[@key]) if !json_folder[@key].nil? && json_folder[@key].any?
-        end
+        @ids.map! { |id| MailboxItemID.create(id) }
+        @ids
       end
 
       def make
@@ -35,6 +28,23 @@ module Zm
         @root_folder
       end
 
+      def flatten(folder: make, collector: [])
+        collector.push(folder)
+        folder.folders.each do |child|
+          flatten(folder: child, collector:)
+        end
+        collector
+      end
+
+      private
+
+      def construct_tree_ids(json_folders)
+        json_folders.each do |json_folder|
+          @ids << json_folder[:id]
+          construct_tree_ids(json_folder[@key]) if !json_folder[@key].nil? && json_folder[@key].any?
+        end
+      end
+
       def construct_tree(parent_folder, json_folders)
         json_folders.each do |json_folder|
           folder = FolderJsnsInitializer.create(@parent, json_folder)
@@ -44,16 +54,6 @@ module Zm
           construct_tree(folder, json_folder[@key]) if !json_folder[@key].nil? && json_folder[@key].any?
         end
       end
-
-      def flatten(folder = @root_folder, collector = [])
-        collector.push(folder)
-        folder.folders.each do |child|
-          flatten(child, collector)
-        end
-        collector
-      end
-
-      private
 
       def root_path(folder)
         FolderDefault::ROOT.path if folder.id.to_i == FolderDefault::ROOT.id

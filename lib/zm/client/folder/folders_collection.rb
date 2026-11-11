@@ -10,7 +10,7 @@ module Zm
         @child_class = Folder
         @builder_class = FoldersBuilder
         super
-        @root = nil
+
         reset_query_params
       end
 
@@ -34,12 +34,7 @@ module Zm
       end
 
       def ids
-        @builder_class.new(@parent, make_query).ids
-      end
-
-      def clear
-        @root = nil
-        reset_query_params
+        folder_builder.ids
       end
 
       def document
@@ -77,18 +72,32 @@ module Zm
         jsns_builder.to_jsns
       end
 
+      def tree
+        folder_builder.make
+      end
+
+      def clear
+        reset_query_params
+      end
+
       private
 
       def build_response
-        fb = @builder_class.new(@parent, make_query)
-        @root = fb.make
-        folders = fb.flatten
-        folders.select! { |folder| folder.view == @view } unless @view.nil?
+        view = @view
+        folders = folder_builder.flatten(collector: FoldersResponse.new)
+        # When folders are filtered by view, unknown folders remain in the list
+        folders.select! { |folder| folder.view == view } unless view.nil?
         folders
       end
 
+      def folder_builder
+        @builder_class.new(@parent, make_query)
+      end
+
       def make_query
-        @parent.soap_connector.invoke(jsns_builder.to_jsns)
+        response = @parent.soap_connector.invoke(jsns_builder.to_jsns)
+        reset_query_params
+        response
       end
 
       def reset_query_params

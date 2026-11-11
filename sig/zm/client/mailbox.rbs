@@ -261,6 +261,10 @@ module Zm
       def where: (?view: String?, ?tr: untyped) -> self
       def ids: () -> Array[String]
       def clear: () -> void
+      def all: () -> FoldersResponse
+      def first: () -> Folder?
+      # Sends a GetFolderRequest and returns the root folder with its children in folders.
+      def tree: () -> Folder
 
       # Restrict all to the folders of one view.
       def message: () -> self
@@ -268,6 +272,17 @@ module Zm
       def appointment: () -> self
       def task: () -> self
       def document: () -> self
+    end
+
+    # Array of the folders returned by FoldersCollection#all, the filters return an Array.
+    class FoldersResponse < Array[Folder]
+      def messages: () -> Array[Folder]
+      def appointments: () -> Array[Folder]
+      def contacts: () -> Array[Folder]
+      def tasks: () -> Array[Folder]
+      def documents: () -> Array[Folder]
+      def immutables: () -> Array[Folder]
+      def by_view: (String view) -> Array[Folder]
     end
 
     class FolderGrant

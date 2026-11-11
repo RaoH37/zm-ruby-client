@@ -4,9 +4,7 @@ module Zm
   module Client
     module MailboxItemConcern
       def id=(remote_id)
-        parts = remote_id.to_s.split(':').reverse
-        parts << nil if parts.length == 1
-        @id = MailboxItemID.new(*parts)
+        @id = MailboxItemID.create(remote_id)
       end
 
       def id

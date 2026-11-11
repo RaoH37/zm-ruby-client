@@ -73,6 +73,8 @@
 - [Fixed]   ClusterConfig#colorize_logging= turns the colors on or off on the logger already created instead of being ignored
 - [Changed] ZmLogger#colorize! sets a flag instead of extending the logger with ZmLogger::ZmLoggerColorized (still available), the colors can be turned off
 - [Added]   ZmLogger#colorize=, ZmLogger#colorize?, ZmLogger::ZmLoggerColors
+- [Added]   FoldersCollection#all returns a FoldersResponse (an Array) with messages, appointments, contacts, tasks, documents, immutables and by_view
+- [Added]   FoldersCollection#tree returns the root folder with its children (Folder#folders)
 
 ## Released [3.1.1]
 
