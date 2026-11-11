@@ -513,6 +513,54 @@ module Zm
     class ContactsCollection < Base::AccountSearchObjectsCollection[Contact]
     end
 
+    class ContactMember
+      INTERNAL: String
+      FREE: String
+      LDAP: String
+      ADD: String
+      DEL: String
+
+      attr_reader type: String
+      attr_reader value: String | Integer
+      attr_reader op: String?
+      attr_reader shared_account_id: String?
+
+      def initialize: (String type, String | Integer value, ?String? op) -> void
+
+      def internal?: () -> bool
+      def shared?: () -> bool
+      def free?: () -> bool
+      def ldap?: () -> bool
+      def current?: () -> bool
+      def add!: () -> String
+      def remove!: () -> String
+      def email_address: () -> String?
+    end
+
+    # Members of a contact group (Contact#members once the contact is a group).
+    class ContactMembersCollection
+      attr_reader all: Array[ContactMember]
+      attr_writer all: Array[ContactMember]
+
+      def initialize: (Contact parent) -> void
+
+      def add: (ContactMember new_member) -> bool
+      def remove: (ContactMember new_member) -> bool
+
+      # Members selected by type, removed members (op "-") included until the group is saved.
+      # internals includes the shared contacts (C with an Integer id), shared those of another account.
+      def internals: () -> Array[ContactMember]
+      def shared: () -> Array[ContactMember]
+      def frees: () -> Array[ContactMember]
+      def ldaps: () -> Array[ContactMember]
+
+      # Delegated to all through method_missing.
+      def each: () { (ContactMember) -> void } -> Array[ContactMember]
+      def map: [U] () { (ContactMember) -> U } -> Array[U]
+      def select: () { (ContactMember) -> boolish } -> Array[ContactMember]
+      def length: () -> Integer
+    end
+
     class Appointment < Base::Object
       include Utils::BelongsToFolder
       include Utils::BelongsToTag

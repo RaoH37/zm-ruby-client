@@ -3,11 +3,29 @@
 module Zm
   module Client
     class ContactMembersCollection
-      attr_accessor :all
+      include Zm::Utils::MissingMethodStaticCollection
+
+      attr_writer :all
 
       def initialize(parent)
         @parent = parent
         @all = []
+      end
+
+      def internals
+        @all.select(&:internal?)
+      end
+
+      def shared
+        @all.select(&:shared?)
+      end
+
+      def frees
+        @all.select(&:free?)
+      end
+
+      def ldaps
+        @all.select(&:ldap?)
       end
 
       def add(new_member)

@@ -93,6 +93,9 @@
 - [Added]   FolderRetentionPoliciesCollection#keeps and purges select the retention policies by policy
 - [Fixed]   FolderJsnsInitializer loads the retention policies of GetFolderResponse, they were always ignored (the retentionPolicy element is a Hash, not an Array)
 - [Fixed]   FolderRetentionPolicy#keep? and purge? accept a policy given as a String ('keep', 'purge')
+- [Added]   ContactMembersCollection#internals, shared, frees and ldaps select the members of a contact group by type
+- [Changed] ContactMembersCollection delegates to all through MissingMethodStaticCollection (each, map, select...) like the other static collections
+- [Added]   sig: ContactMember and ContactMembersCollection
 
 ## Released [3.1.1]
 
