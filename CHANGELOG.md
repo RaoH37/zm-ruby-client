@@ -35,6 +35,9 @@
   (`item_id`) and, for a folder of another mailbox, its mailbox id (`mailbox_id`). Use
   `account.folders.ids.map(&:item_id)` to get the 3.1 strings back (a remote folder id loses its `<mailbox id>:`
   prefix, read it from `mailbox_id`).
+- **`FoldersBuilder#flatten` takes keyword arguments.** `flatten(folder, collector)` becomes
+  `flatten(folder: folder, collector: collector)`. Without `folder:` it builds the tree from the response (`make`)
+  instead of reusing the root of a previous `make`.
 
 #### Changes
 
@@ -81,6 +84,7 @@
 - [Added]   FoldersCollection#tree returns the root folder with its children (Folder#folders)
 - [Changed] FoldersCollection#ids returns MailboxItemID objects instead of id strings
 - [Added]   MailboxItemID.create parses a remote id ("257" or "<mailbox id>:257")
+- [Changed] FoldersBuilder#flatten takes keyword arguments (folder:, collector:), folder defaults to the tree built by make
 - [Added]   MountPointsCollection#all returns a MountPointsResponse (an Array) with messages, appointments, contacts, tasks, documents and by_view
 - [Added]   FolderViewFilters, the filters by view shared by FoldersResponse and MountPointsResponse
 - [Added]   AdminObjectsCollection#find_in_batches yields each page of the search (an Array of limit objects at most), find_each is built on it
