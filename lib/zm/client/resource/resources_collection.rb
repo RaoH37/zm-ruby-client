@@ -7,6 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = Resource
         @builder_class = ResourcesBuilder
+        @response_class = ResourcesResponse
         @search_type = :resources
         super
       end

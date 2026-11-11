@@ -70,6 +70,16 @@ module Zm
     end
 
     class ResourcesCollection < Base::AdminObjectsCollection[Resource]
+      def all: () -> ResourcesResponse
+      alias all! all
+      def find_in_batches: (?offset: Integer, ?limit: Integer) { (ResourcesResponse) -> void } -> nil
+    end
+
+    # Resources returned by ResourcesCollection#all and find_in_batches.
+    # locations and equipments read zimbraCalResType: a resource searched without it (attrs) is in neither.
+    class ResourcesResponse < Base::AdminObjectsResponse[Resource]
+      def locations: () -> ResourcesResponse
+      def equipments: () -> ResourcesResponse
     end
 
     class Domain < Base::Object

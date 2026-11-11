@@ -68,6 +68,7 @@ module Zm
     autoload :ResourceJsnsInitializer, 'zm/client/resource/resource_jsns_initializer'
     autoload :ResourcesBuilder, 'zm/client/resource/resources_builder'
     autoload :ResourcesCollection, 'zm/client/resource/resources_collection'
+    autoload :ResourcesResponse, 'zm/client/resource/resources_response'
 
     autoload :DistributionList, 'zm/client/distributionlist/distributionlist'
     autoload :DistributionListJsnsBuilder, 'zm/client/distributionlist/distributionlist_jsns_builder'
