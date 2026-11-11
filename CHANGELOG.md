@@ -83,6 +83,7 @@
 - [Added]   AdminObjectsCollection#all and find_in_batches return a Base::AdminObjectsResponse (an Array) with update_all! and delete_all!
 - [Added]   AccountsCollection#all and find_in_batches return an AccountsResponse: by_server groups the accounts by zimbraMailHost (an AccountsResponse per server), statuses counts them by zimbraAccountStatus
 - [Added]   ResourcesCollection#all and find_in_batches return a ResourcesResponse: locations and equipments select the resources by zimbraCalResType (a ResourcesResponse each)
+- [Added]   DistributionListsCollection#all and find_in_batches return a DistributionListsResponse: groups (zimbraMailStatus disabled) and mailing_lists (enabled) select the lists (a DistributionListsResponse each)
 
 ## Released [3.1.1]
 

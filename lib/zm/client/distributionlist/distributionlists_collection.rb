@@ -7,6 +7,7 @@ module Zm
       def initialize(parent)
         @child_class = DistributionList
         @builder_class = DistributionListsBuilder
+        @response_class = DistributionListsResponse
         @search_type = :distributionlists
         super
       end

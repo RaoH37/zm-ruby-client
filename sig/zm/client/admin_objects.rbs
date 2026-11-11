@@ -228,6 +228,17 @@ module Zm
     end
 
     class DistributionListsCollection < Base::AdminObjectsCollection[DistributionList]
+      def all: () -> DistributionListsResponse
+      alias all! all
+      def find_in_batches: (?offset: Integer, ?limit: Integer) { (DistributionListsResponse) -> void } -> nil
+    end
+
+    # Distribution lists returned by DistributionListsCollection#all and find_in_batches.
+    # groups (zimbraMailStatus disabled) and mailing_lists (enabled): a list searched without zimbraMailStatus
+    # (attrs) is in neither.
+    class DistributionListsResponse < Base::AdminObjectsResponse[DistributionList]
+      def groups: () -> DistributionListsResponse
+      def mailing_lists: () -> DistributionListsResponse
     end
 
     class DistributionListAliasesCollection

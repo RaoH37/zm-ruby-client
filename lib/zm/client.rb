@@ -75,6 +75,7 @@ module Zm
     autoload :DistributionListJsnsInitializer, 'zm/client/distributionlist/distributionlist_jsns_initializer'
     autoload :DistributionListsBuilder, 'zm/client/distributionlist/distributionlists_builder'
     autoload :DistributionListsCollection, 'zm/client/distributionlist/distributionlists_collection'
+    autoload :DistributionListsResponse, 'zm/client/distributionlist/distributionlists_response'
     autoload :DlsMembershipCollection, 'zm/client/distributionlist/dls_membership_collection'
     autoload :DlMembership, 'zm/client/distributionlist/dls_membership_collection'
     autoload :DistributionListAliasesCollection, 'zm/client/distributionlist/distributionlist_aliases_collection'
