@@ -14,7 +14,6 @@ module Zm
         reset_query_params
       end
 
-      # TODO: forcer id en string
       def find(id)
         folder = @child_class.new(@parent) do |f|
           f.id = id
