@@ -26,11 +26,14 @@ module Zm
       extend Base::HasCos
       include Base::HasCos::EffectiveCos
 
+      NOT_INHERITED_FROM_COS: Array[Symbol]
+
       def cos: () -> Cos?
       def cos=: (Cos? value) -> Cos?
       def create!: () -> String
       def created_at: () -> Time?
       def flush_cache!: () -> true
+      def reset_to_cos!: (?cos: Cos) -> Array[Symbol]
       def batch: () -> BatchRequest
       def empty_dumpster!: () -> untyped
     end

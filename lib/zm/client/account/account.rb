@@ -7,6 +7,8 @@ module Zm
       include SoapRequest::RequestMethodsAdmin
       extend Base::HasZimbraAttributes
 
+      NOT_INHERITED_FROM_COS = %i[cn description zimbraNotes].freeze
+
       zimbra_attr %i[
         c co company cn description destinationIndicator displayName facsimileTelephoneNumber gn givenName homePhone
         initials internationaliSDNNumber l mobile o ou pager physicalDeliveryOfficeName postOfficeBox postalAddress
@@ -241,6 +243,16 @@ module Zm
         @created_at = Time.parse(zimbraCreateTimestamp) unless zimbraCreateTimestamp.nil?
       end
 
+      def reset_to_cos!(cos: effective_cos)
+        reset = attrs_equal_to_cos(cos)
+        return reset if reset.empty?
+
+        hash = reset.to_h { |name| [name, ''] }
+        do_update!(hash)
+        do_update_attributes(hash)
+        reset
+      end
+
       def flush_cache!
         sac.invoke(build_flush_cache)
         true
@@ -275,6 +287,18 @@ module Zm
 
       def do_update!(hash)
         sac.invoke(jsns_builder.to_patch(hash))
+      end
+
+      def attrs_equal_to_cos(cos)
+        cos_inheritable_attrs.select { |name| same_as_cos_value?(public_send(name), cos.public_send(name)) }
+      end
+
+      def cos_inheritable_attrs
+        (self.class.zimbra_attrs_writable & Cos.zimbra_attrs_writable) - NOT_INHERITED_FROM_COS
+      end
+
+      def same_as_cos_value?(value, cos_value)
+        !value.nil? && !cos_value.nil? && same_zimbra_values?(value, cos_value)
       end
     end
   end

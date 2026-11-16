@@ -117,6 +117,7 @@
 - [Fixed]   Account#cos and Domain#cos read the COS again when its id changed, they returned the memoized COS of the previous id
 - [Added]   Base::HasCos: has_cos defines cos and cos= from the attribute holding the COS id, used by Account, Resource and Domain
 - [Added]   Resource#cos and Resource#cos=
+- [Added]   Account#reset_to_cos!(cos: effective_cos) clears (ModifyAccountRequest) the attributes of the account with the same value as the COS, so that they inherit it again, returns their names. It compares the attributes loaded on the object: load the account with ldap (applyCos=0)
 - [Added]   Account#effective_cos and Resource#effective_cos return the COS applied by Zimbra: their own COS, else the default COS of their domain, else the "default" COS
 
 ## Released [3.1.1]
