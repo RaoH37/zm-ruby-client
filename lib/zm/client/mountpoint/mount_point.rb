@@ -22,7 +22,7 @@ module Zm
         rep = @parent.soap_connector.invoke(build_create)
         json = rep[:CreateMountpointResponse][:link].first
 
-        MountpointJsnsInitializer.update(self, json)
+        MountPointJsnsInitializer.update(self, json)
         id
       end
 
