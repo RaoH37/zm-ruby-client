@@ -71,10 +71,18 @@ module Zm
 
       def cos
         return nil if zimbraDomainDefaultCOSId.nil?
-
-        return @cos if defined? @cos
+        return @cos if @cos&.id == zimbraDomainDefaultCOSId
 
         @cos = @parent.coses.find_by(id: zimbraDomainDefaultCOSId)
+      end
+
+      def cos=(value)
+        unless value.nil? || (value.is_a?(Cos) && value.recorded?)
+          raise ArgumentError, "cos must be nil or a recorded Zm::Client::Cos, got #{value.class}"
+        end
+
+        @cos = value
+        self.zimbraDomainDefaultCOSId = value&.id
       end
 
       def DKIMPublicTxt

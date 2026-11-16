@@ -222,9 +222,19 @@ module Zm
       # #################################################################
 
       def cos
-        return @cos if defined? @cos
+        return nil if zimbraCOSId.nil?
+        return @cos if @cos&.id == zimbraCOSId
 
         @cos = @parent.coses.find_by(id: zimbraCOSId)
+      end
+
+      def cos=(value)
+        unless value.nil? || (value.is_a?(Cos) && value.recorded?)
+          raise ArgumentError, "cos must be nil or a recorded Zm::Client::Cos, got #{value.class}"
+        end
+
+        @cos = value
+        self.zimbraCOSId = value&.id
       end
 
       # #################################################################

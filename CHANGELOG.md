@@ -40,6 +40,8 @@
   instead of reusing the root of a previous `make`.
 - **`MountPointsCollection#root` is removed.** It was never set and always returned `nil`. Use
   `account.folders.tree` for the root folder.
+- **`Account#cos` returns `nil` when `zimbraCOSId` is not set** instead of searching a COS without id. The account
+  then uses the default COS of its domain (`zimbraDomainDefaultCOSId`).
 
 #### Changes
 
@@ -109,6 +111,9 @@
 - [Added]   ContactMembersCollection#internals, shared, frees and ldaps select the members of a contact group by type
 - [Changed] ContactMembersCollection delegates to all through MissingMethodStaticCollection (each, map, select...) like the other static collections
 - [Added]   sig: ContactMember and ContactMembersCollection
+- [Added]   Account#cos= and Domain#cos= set the COS and its id (zimbraCOSId, zimbraDomainDefaultCOSId), nil clears it, raise ArgumentError for an object that is not a recorded Cos
+- [Changed] Account#cos returns nil when zimbraCOSId is not set
+- [Fixed]   Account#cos and Domain#cos read the COS again when its id changed, they returned the memoized COS of the previous id
 
 ## Released [3.1.1]
 

@@ -24,6 +24,7 @@ module Zm
       include SoapRequest::RequestMethodsAdmin
 
       def cos: () -> Cos?
+      def cos=: (Cos? value) -> Cos?
       def create!: () -> String
       def created_at: () -> Time?
       def flush_cache!: () -> true
@@ -93,6 +94,7 @@ module Zm
 
       def create!: () -> String
       def cos: () -> Cos?
+      def cos=: (Cos? value) -> Cos?
       def DKIMPublicTxt: () -> String?
 
       def accounts: () -> DomainAccountsCollection
