@@ -49,6 +49,7 @@ module Zm
         json_folders.each do |json_folder|
           folder = FolderJsnsInitializer.create(@parent, json_folder)
           folder.absFolderPath ||= child_path(parent_folder.absFolderPath, folder.name)
+          folder.view ||= parent_folder.view
           parent_folder.folders << folder
 
           construct_tree(folder, json_folder[@key]) if !json_folder[@key].nil? && json_folder[@key].any?
