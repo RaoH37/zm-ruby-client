@@ -69,21 +69,9 @@ module Zm
 
       has_many :resources, klass: :'Zm::Client::DomainResourcesCollection'
 
-      def cos
-        return nil if zimbraDomainDefaultCOSId.nil?
-        return @cos if @cos&.id == zimbraDomainDefaultCOSId
+      extend Base::HasCos
 
-        @cos = @parent.coses.find_by(id: zimbraDomainDefaultCOSId)
-      end
-
-      def cos=(value)
-        unless value.nil? || (value.is_a?(Cos) && value.recorded?)
-          raise ArgumentError, "cos must be nil or a recorded Zm::Client::Cos, got #{value.class}"
-        end
-
-        @cos = value
-        self.zimbraDomainDefaultCOSId = value&.id
-      end
+      has_cos :zimbraDomainDefaultCOSId
 
       def DKIMPublicTxt
         return if self.DKIMPublicKey.nil?

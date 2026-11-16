@@ -24,5 +24,8 @@ Metrics/MethodLength:
   Exclude:
     - 'test/**/*'
 
+Naming/PredicatePrefix:
+  AllowedMethods: ['has_many', 'has_jsns_builder', 'has_cos']
+
 Naming/PredicateMethod:
   AllowBangMethods: true

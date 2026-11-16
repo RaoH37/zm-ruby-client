@@ -222,6 +222,10 @@ module Zm
       EQUIPMENT = 'Equipment'
       TYPES = [LOCATION, EQUIPMENT].freeze
 
+      extend Base::HasCos
+
+      has_cos :zimbraCOSId, effective: true
+
       def create!
         resp = sac.invoke(build_create)
         clear_zimbra_attrs_changes

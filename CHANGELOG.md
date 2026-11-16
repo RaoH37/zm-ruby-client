@@ -41,7 +41,8 @@
 - **`MountPointsCollection#root` is removed.** It was never set and always returned `nil`. Use
   `account.folders.tree` for the root folder.
 - **`Account#cos` returns `nil` when `zimbraCOSId` is not set** instead of searching a COS without id. The account
-  then uses the default COS of its domain (`zimbraDomainDefaultCOSId`).
+  then uses the default COS of its domain (`zimbraDomainDefaultCOSId`): use `account.effective_cos` for the COS
+  applied by Zimbra.
 
 #### Changes
 
@@ -114,6 +115,9 @@
 - [Added]   Account#cos= and Domain#cos= set the COS and its id (zimbraCOSId, zimbraDomainDefaultCOSId), nil clears it, raise ArgumentError for an object that is not a recorded Cos
 - [Changed] Account#cos returns nil when zimbraCOSId is not set
 - [Fixed]   Account#cos and Domain#cos read the COS again when its id changed, they returned the memoized COS of the previous id
+- [Added]   Base::HasCos: has_cos defines cos and cos= from the attribute holding the COS id, used by Account, Resource and Domain
+- [Added]   Resource#cos and Resource#cos=
+- [Added]   Account#effective_cos and Resource#effective_cos return the COS applied by Zimbra: their own COS, else the default COS of their domain, else the "default" COS
 
 ## Released [3.1.1]
 

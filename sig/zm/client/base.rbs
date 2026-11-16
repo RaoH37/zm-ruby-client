@@ -140,6 +140,23 @@ module Zm
         end
       end
 
+      module HasCos
+        DEFAULT_COS_NAME: String
+
+        def has_cos: (Symbol attribute, ?effective: bool) -> void
+
+        private
+
+        def define_cos_reader: (Symbol ivar) -> Symbol
+        def define_cos_writer: (Symbol setter) -> Symbol
+
+        public
+
+        module EffectiveCos
+          def effective_cos: () -> Cos
+        end
+      end
+
       module ZimbraAttrsJsns
         CLEARED_VALUES: Array[String]
 

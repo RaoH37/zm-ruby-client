@@ -97,7 +97,65 @@ class CosAssignmentTest < ZmTest::UnitTest
     assert_equal 'cos-a', domain.zimbraDomainDefaultCOSId
   end
 
+  def test_resource_cos_setter_sets_the_cos_and_tracks_its_id
+    resource = find_resource
+    cos = recorded_cos('cos-b')
+
+    assert_nil resource.cos
+
+    resource.cos = cos
+
+    assert_same cos, resource.cos
+    assert_equal 'cos-b', resource.zimbraCOSId
+    assert resource.zimbra_attr_changed?(:zimbraCOSId)
+    assert_raises(ArgumentError) { resource.cos = @cluster.coses.new }
+  end
+
+  def test_account_effective_cos_is_its_own_cos
+    account = find_account(zimbraCOSId: 'cos-a')
+    stub_cos('cos-a')
+
+    assert_equal 'cos-a', account.effective_cos.id
+    assert_nil @fake.last_request(:GetDomainRequest)
+  end
+
+  def test_account_effective_cos_is_the_default_cos_of_its_domain
+    account = find_account
+    find_domain(zimbraDomainDefaultCOSId: 'cos-d')
+    stub_cos('cos-d')
+
+    assert_equal 'cos-d', account.effective_cos.id
+    assert_includes @fake.last_request(:GetDomainRequest).body.to_s, 'domain.tld'
+  end
+
+  def test_account_effective_cos_is_the_default_cos_without_domain_cos
+    account = find_account
+    find_domain
+    stub_cos('default-id')
+
+    assert_equal 'default-id', account.effective_cos.id
+    assert_includes @fake.last_request(:GetCosRequest).body.to_s, Zm::Client::Base::HasCos::DEFAULT_COS_NAME
+  end
+
+  def test_resource_effective_cos_is_the_default_cos_of_its_domain
+    resource = find_resource
+    find_domain(zimbraDomainDefaultCOSId: 'cos-d')
+    stub_cos('cos-d')
+
+    assert_equal 'cos-d', resource.effective_cos.id
+  end
+
+  def test_domain_has_no_effective_cos
+    refute_respond_to Zm::Client::Domain.allocate, :effective_cos
+  end
+
   private
+
+  def find_resource(**attributes)
+    json = ZmTest::FakeData.account(name: 'room@domain.tld', id: 'r1', **attributes)
+    @fake.on(:GetCalendarResourceRequest, { GetCalendarResourceResponse: { calresource: [json] } })
+    @cluster.resources.find_by(name: 'room@domain.tld')
+  end
 
   def find_account(**attributes)
     json = ZmTest::FakeData.account(name: 'user@domain.tld', id: 'a1b2', **attributes)
