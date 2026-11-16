@@ -6,6 +6,7 @@ module Zm
       # cos and cos= accessors of an admin object linked to a COS by one of its Zimbra attributes
       module HasCos
         DEFAULT_COS_NAME = 'default'
+        NOT_INHERITED_FROM_COS = %i[cn description zimbraNotes].freeze
 
         def has_cos(attribute, effective: false)
           define_cos_reader(:"@#{attribute}")
@@ -36,10 +37,35 @@ module Zm
           end
         end
 
-        # COS applied by Zimbra to a mailbox: its own, else the default COS of its domain, else the "default" COS
+        # COS applied by Zimbra to a mailbox (its own, else the default COS of its domain, else the "default" COS)
+        # and reset of the mailbox attributes to the values inherited from it
         module EffectiveCos
           def effective_cos
             cos || @parent.domains.find_by(name: domain_name).cos || @parent.coses.find_by(name: DEFAULT_COS_NAME)
+          end
+
+          def reset_to_cos!(cos: effective_cos)
+            reset = attrs_equal_to_cos(cos)
+            return reset if reset.empty?
+
+            hash = reset.to_h { |name| [name, ''] }
+            do_update!(hash)
+            do_update_attributes(hash)
+            reset
+          end
+
+          private
+
+          def attrs_equal_to_cos(cos)
+            cos_inheritable_attrs.select { |name| same_as_cos_value?(public_send(name), cos.public_send(name)) }
+          end
+
+          def cos_inheritable_attrs
+            (self.class.zimbra_attrs_writable & Cos.zimbra_attrs_writable) - NOT_INHERITED_FROM_COS
+          end
+
+          def same_as_cos_value?(value, cos_value)
+            !value.nil? && !cos_value.nil? && same_zimbra_values?(value, cos_value)
           end
         end
       end

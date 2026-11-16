@@ -2,7 +2,7 @@
 
 require_relative '../test_helper'
 
-class AccountResetToCosTest < ZmTest::UnitTest
+class ResetToCosTest < ZmTest::UnitTest
   def setup
     super
     @cluster = logged_cluster
@@ -81,7 +81,40 @@ class AccountResetToCosTest < ZmTest::UnitTest
     assert_equal [:zimbraMailQuota], account.reset_to_cos!
   end
 
+  def test_resource_clears_the_attributes_equal_to_the_cos
+    @fake.on(:ModifyCalendarResourceRequest, { ModifyCalendarResourceResponse: { calresource: [] } })
+    resource = ldap_resource(zimbraMailQuota: '1024', zimbraPrefMailItemsPerPage: '50')
+    stub_cos(zimbraMailQuota: '1024', zimbraPrefMailItemsPerPage: '100')
+
+    assert_equal [:zimbraMailQuota], resource.reset_to_cos!
+
+    request = @fake.last_request(:ModifyCalendarResourceRequest)
+
+    assert_equal 'r1', request.body[:id]
+    assert_equal [{ n: 'zimbraMailQuota', _content: '' }], attr_nodes(request.body)
+    assert_nil resource.zimbraMailQuota
+    assert_equal 50, resource.zimbraPrefMailItemsPerPage
+  end
+
+  def test_resource_uses_the_given_cos
+    resource = ldap_resource(zimbraMailQuota: '1024')
+    cos = @cluster.coses.new do |c|
+      c.id = 'other-cos'
+      c.zimbraMailQuota = 1024
+    end
+    @fake.on(:ModifyCalendarResourceRequest, { ModifyCalendarResourceResponse: { calresource: [] } })
+
+    assert_equal [:zimbraMailQuota], resource.reset_to_cos!(cos:)
+    assert_nil @fake.last_request(:GetCosRequest)
+  end
+
   private
+
+  def ldap_resource(**attributes)
+    json = ZmTest::FakeData.account(name: 'room@domain.tld', id: 'r1', zimbraCOSId: 'cos-id', **attributes)
+    @fake.on(:GetCalendarResourceRequest, { GetCalendarResourceResponse: { calresource: [json] } })
+    @cluster.resources.ldap.find_by(name: 'room@domain.tld')
+  end
 
   def ldap_account(cos_id: 'cos-id', **attributes)
     attributes[:zimbraCOSId] = cos_id unless cos_id.nil?

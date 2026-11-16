@@ -142,6 +142,7 @@ module Zm
 
       module HasCos
         DEFAULT_COS_NAME: String
+        NOT_INHERITED_FROM_COS: Array[Symbol]
 
         def has_cos: (Symbol attribute, ?effective: bool) -> void
 
@@ -154,6 +155,13 @@ module Zm
 
         module EffectiveCos
           def effective_cos: () -> Cos
+          def reset_to_cos!: (?cos: Cos) -> Array[Symbol]
+
+          private
+
+          def attrs_equal_to_cos: (Cos cos) -> Array[Symbol]
+          def cos_inheritable_attrs: () -> Array[Symbol]
+          def same_as_cos_value?: (untyped value, untyped cos_value) -> bool
         end
       end
 
